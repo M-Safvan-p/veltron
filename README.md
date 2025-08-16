@@ -36,18 +36,3 @@ It provides **User, Vendor, and Admin roles** with powerful features like produc
 - **Architecture:** MVC  
 
 ---
-
-## 📂 Project Structure
-veltron-ecommerce/
-│── public/ # Static files (CSS, JS, Images)
-│── views/ # EJS templates
-│── src/
-│ ├── controllers/ # Business logic
-│ ├── models/ # MongoDB schemas
-│ ├── routes/ # Route handlers
-│ ├── config/ # Database & environment config
-│ └── helpers/ # Utility functions
-│── .env # Environment variables
-│── package.json
-│── README.md
-
