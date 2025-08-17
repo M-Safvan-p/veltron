@@ -1,0 +1,47 @@
+
+```
+Veltron
+├─ .env
+├─ FILE-TREE.txt
+├─ package-lock.json
+├─ package.json
+├─ public
+│  └─ styles
+│     ├─ admin
+│     ├─ partials
+│     │  ├─ admin
+│     │  ├─ user
+│     │  │  └─ headerAndFooter.css
+│     │  └─ vendor
+│     ├─ user
+│     │  └─ 404.css
+│     └─ vendor
+├─ README.md
+├─ src
+│  ├─ app.js
+│  ├─ config
+│  │  ├─ connectDB.js
+│  │  └─ env.js
+│  ├─ controllers
+│  │  ├─ adminController.js
+│  │  ├─ userController.js
+│  │  └─ vendorController.js
+│  ├─ helpers
+│  ├─ models
+│  └─ routes
+│     ├─ adminRoute.js
+│     ├─ userRoute.js
+│     └─ vendorRoute.js
+└─ views
+   ├─ admin
+   ├─ partials
+   │  ├─ admin
+   │  ├─ user
+   │  │  ├─ footer.ejs
+   │  │  └─ header.ejs
+   │  └─ vendor
+   ├─ user
+   │  └─ 404.ejs
+   └─ vendor
+
+```
