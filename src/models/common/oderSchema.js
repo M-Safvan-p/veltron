@@ -1,7 +1,14 @@
 const mongoose = require("mongoose");
+const { v4: uuidv4 } = require("uuid");
 
 const orderSchema = new mongoose.Schema(
   {
+    orderId: {
+      type: String,
+      default: () => uuidv4(),
+      unique: true,
+      required: true,
+    },
     customerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -9,8 +16,9 @@ const orderSchema = new mongoose.Schema(
     },
     status: {
       type: String,
+      enum: ["pending", "processed", "failed", "completed"],
+      default: "pending",
       required: true,
-      trim: true,
     },
     paymentMethodId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -21,6 +29,13 @@ const orderSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Coupon",
       default: null,
+    },
+    couponDetails: {
+      code: { type: String },
+      discount: { type: Number },
+      discountType: { type: String },
+      maxDiscount: { type: Number },
+      minPurchase: { type: Number },
     },
     totalAmount: {
       type: Number,
@@ -65,6 +80,11 @@ const orderSchema = new mongoose.Schema(
         vendorEarning: { type: Number, required: true },
       },
     ],
+    invoiceDate: {
+      type: Date,
+      default: Date.now,
+      required: true,
+    },
   },
   { timestamps: true }
 );
