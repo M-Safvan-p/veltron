@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../../styles/user/signUp.css">
+</head>
+
+<body>
+    <div class="signup-container">
+        <h2 class="text-center">Sign up</h2>
+
+        <form action="/signUp" method="POST" id="signUpForm">
+            <!-- Full Name -->
+            <div class="mb-2">
+                <label for="fullName" class="form-label">Full name</label>
+                <input type="text" class="form-control" id="fullName" name="fullName" placeholder="Label (required)" />
+            </div>
+
+            <!-- Email -->
+            <div class="mb-2">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="Label (required)" />
+            </div>
+
+            <!-- Mobile Number -->
+            <div class="mb-2">
+                <label for="mobile" class="form-label">Mobile Number</label>
+                <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber"
+                    placeholder="Label (required)" />
+            </div>
+
+            <!-- Password -->
+            <div class="mb-2">
+                <label for="password" class="form-label">Password</label>
+                <div class="password-field">
+                    <input type="password" class="form-control" id="password" name="password"
+                        placeholder="Label (required)" />
+                    <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                        <i class="bi bi-eye" id="password-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="mb-2">
+                <label for="confirmPassword" class="form-label">Confirm password</label>
+                <div class="password-field">
+                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
+                        placeholder="Label (required)" />
+                    <button type="button" class="password-toggle" onclick="togglePassword('confirmPassword')">
+                        <i class="bi bi-eye" id="confirmPassword-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Referral Code Input -->
+            <div class="mb-2">
+                <label for="referralCode" class="form-label">Referral Code (optional)</label>
+                <input type="text" class="form-control" id="referralCode" name="referralCode"
+                    placeholder="Enter referral code if you have one" />
+            </div>
+
+            <!-- Already have an account -->
+            <div class="text-center mb-2">
+                <span class="text-muted" style="font-size: 0.8rem;">Already have an account?</span>
+                <a href="/logIn" class="login-link">Log in</a>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" class="btn btn-primary mb-3">Sign Up</button>
+
+            <!-- Divider -->
+            <div class="divider">Or Register with</div>
+
+            <!-- Google -->
+            <button type="button" class="btn btn-outline-secondary" onclick="signUpWithGoogle()">
+                <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google" class="google-icon" />
+                Google
+            </button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!--Swal alert-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!--Form vaidation-->
+    <script type="module">
+
+        // Form submit handler
+        import { validateSignUpForm } from "/js/utils/formValidator.js";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const form = document.getElementById("signUpForm");
+
+            form.addEventListener("submit", (e) => {
+                e.preventDefault();
+
+                const data = {
+                    fullName: document.getElementById("fullName").value,
+                    email: document.getElementById("email").value,
+                    phoneNumber: document.getElementById("phoneNumber").value,
+                    password: document.getElementById("password").value,
+                    confirmPassword: document.getElementById("confirmPassword").value,
+                    referralCode: document.getElementById("referralCode").value
+                };
+
+                const { isValid, messages } = validateSignUpForm(data);
+
+                if (!isValid) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validation Error',
+                        html: messages.join("<br>"),
+                        confirmButtonText: 'OK',
+                        customClass: {
+                            confirmButton: 'swal-confirm-black'
+                        }
+                    });
+                } else {
+                    form.submit();
+                }
+            });
+        });
+    </script>
+    <script type="module">
+        // Toggle Password
+        function togglePassword(fieldId) {
+            const input = document.getElementById(fieldId);
+            const eyeIcon = document.getElementById(fieldId + '-eye');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                eyeIcon.className = 'bi bi-eye-slash';
+            } else {
+                input.type = 'password';
+                eyeIcon.className = 'bi bi-eye';
+            }
+        }
+
+        // Dummy Google Sign-up
+        function signUpWithGoogle() {
+            alert('Google sign-up clicked!');
+        }
+    </script>
+
+</body>
+
+</html>
