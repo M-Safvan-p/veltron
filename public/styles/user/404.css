@@ -38,3 +38,58 @@
 .back-button:hover {
     background-color: #333;
 }
+/* Main Content Responsive Styles */
+
+/* Tablet (<= 992px) */
+@media (max-width: 992px) {
+    .error-code {
+        font-size: 100px;
+    }
+
+    .error-message {
+        font-size: 16px;
+    }
+
+    .back-button {
+        padding: 10px 25px;
+        font-size: 15px;
+    }
+}
+
+/* Mobile (<= 768px) */
+@media (max-width: 768px) {
+    .error-code {
+        font-size: 80px;
+    }
+
+    .error-message {
+        font-size: 15px;
+        margin-bottom: 25px;
+    }
+
+    .back-button {
+        font-size: 14px;
+        padding: 10px 20px;
+    }
+}
+
+/* Very Small Phones (<= 480px) */
+@media (max-width: 480px) {
+    .main-content {
+        padding: 30px 15px;
+    }
+
+    .error-code {
+        font-size: 60px;
+    }
+
+    .error-message {
+        font-size: 14px;
+    }
+
+    .back-button {
+        width: 100%;
+        padding: 12px;
+        font-size: 14px;
+    }
+}
