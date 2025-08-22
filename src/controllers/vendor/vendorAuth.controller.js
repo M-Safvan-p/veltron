@@ -2,6 +2,7 @@ const formValidator = require("../../helpers/formValidator");
 const Vendor = require("../../models/vendor/vendorSchema");
 const otpControl = require("../../helpers/otpControl");
 const passwordControl = require("../../helpers/passwordControl");
+const { render } = require("ejs");
 
 const loadSignup = (req, res) => {
   res.render("vendor/signup");
@@ -109,12 +110,39 @@ const verifyOtp = async (req, res) => {
 };
 
 const loadLogin = (req, res) => {
-  res.send("Vendor Login Page");
+  res.render("vendor/login")
 };
 
-const login = (req, res) => {
-  // Handle vendor login logic here
+const login = async (req, res) => {
+  try {
+    const {email, password} = req.body;
+    //validation
+    const errorMessage = formValidator.validateLogIn(email,password)
+    if(errorMessage){
+      return res.status(400).json({error:errorMessage});
+    }
+
+    //check data
+    const findVendor = await Vendor.findOne({email});
+    if(!findVendor){
+      return res.status(400).json({message:"Invalid credential"});
+    }
+
+    const isMatch = await passwordControl.comparePassword(password,findVendor.password)
+    if(!isMatch){
+      return res.status(400).json({message:"Invalid credential"});
+    }
+
+    return res.status(200).json({ redirectUrl: "/vendor/home"})
+
+  } catch (error) {
+      return res.status(500).json({message:"An error occurred during login. Please try again."})
+  }
 };
+
+const loadHome = (req,res)=>{
+  res.send("vendor home")
+}
 
 module.exports = {
   loadSignup,
@@ -123,4 +151,5 @@ module.exports = {
   verifyOtp,
   loadLogin,
   login,
+  loadHome,
 };

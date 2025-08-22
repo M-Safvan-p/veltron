@@ -204,22 +204,18 @@ const logIn = async (req, res) => {
     const user = await User.findOne({ email });
     console.log(user);//user data
     if (!user) {
-      return res.status(401).json({ success: false, message: "User not found." });
+      return res.status(400).json({ success: false, message: "User not found." });
     }
     // Check password
     const isMatch = passwordControl.comparePassword(password,user.password)
     if (!isMatch) {
-      return res.status(401).json({ success: false, message: "Incorrect password." });
+      return res.status(400).json({ success: false, message: "Incorrect password." });
     }
 
     // Set session or token here if needed
-    // req.session.user = user._id;
-
-    // Success response
-    console.log("trd");
+    req.session.user = user._id;
 
     // res.redirect('/home')
-    console.log("trwwwwcd");
     return res.json({ success: true, redirectUrl: "/home" });
   } catch (error) {
     console.error("Login error:", error);
