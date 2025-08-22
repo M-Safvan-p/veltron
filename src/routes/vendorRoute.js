@@ -9,5 +9,5 @@ router.get("/verify-otp", vendorAuthController.loadVerifyOtp);
 router.post("/verify-otp", vendorAuthController.verifyOtp);
 router.get("/login", vendorAuthController.loadLogin);
 router.post("/login", vendorAuthController.login);
-
+router.get("/home", vendorAuthController.loadHome);
 module.exports = router; 
