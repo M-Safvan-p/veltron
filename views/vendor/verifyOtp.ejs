@@ -119,7 +119,7 @@
                     submitBtn.disabled = false;
                 }
             } catch (error) {
-                swal("Error", "Something went wrong. Please try again.", "error");
+                swal("Error", error.response?.data?.message || "Something went wrong. Please try again.", "error");
                 submitBtn.disabled = false;
             }
         }
