@@ -43,21 +43,26 @@ export function validateSignUpForm(data) {
   return { isValid, messages };
 }
 
-export function validateLogInForm(data) {
+export function validateLogInForm(email, password) {
+  console.log("validatin reached fronted");
   let isValid = true;
   let messages = [];
 
   // Email
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!data.email || !emailRegex.test(data.email.trim())) {
+  if (!email || !emailRegex.test(email.trim())) {
     isValid = false;
     messages.push("Please enter a valid email address.");
   }
 
   // Password (min 8 chars)
-  if (!data.password || data.password.length < 8) {
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  if (!password || !passwordRegex.test(password)) {
     isValid = false;
-    messages.push("Password must be at least 8 characters long.");
+    messages.push(
+      "Password must be at least 8 characters long, include uppercase and lowercase letters, a number, and a special character."
+    );
   }
 
   return { isValid, messages };

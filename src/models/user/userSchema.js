@@ -2,15 +2,17 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
-  name: {
+  fullName: {
     type: String,
     required: true,
     trim: true,
   },
   phoneNumber: {
     type: String,
-    required: true,
+    required: false,
     unique: true,
+    sparse:true,
+    default:null,
   },
   email: {
     type: String,
@@ -21,8 +23,7 @@ const userSchema = new Schema({
   },
   password: {
     type: String,
-    minlength: 8,
-    select: false,
+    required:false
   },
   isDeleted: {
     type: Boolean,
