@@ -1,7 +1,7 @@
-const validateSignUp = ({ fullName, email, phoneNumber, password, confirmPassword, refferalCode }) => {
+const validateSignUp = ({ name, email, phoneNumber, password, confirmPassword }) => {
   // Full name validation
   const nameRegex = /^[A-Za-z\s]{3,}$/;
-  if (!fullName || !nameRegex.test(fullName)) {
+  if (!name || !nameRegex.test(name)) {
     return "Full name must be at least 3 letters and contain only alphabets and spaces.";
   }
 
@@ -27,11 +27,6 @@ const validateSignUp = ({ fullName, email, phoneNumber, password, confirmPasswor
   // Confirm password
   if (password !== confirmPassword) {
     return "Passwords do not match.";
-  }
-
-  // Optional: referral code
-  if (refferalCode && refferalCode.length < 6) {
-    return "Invalid referral code.";
   }
 
   return null; 
