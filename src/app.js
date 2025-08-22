@@ -48,7 +48,7 @@ app.set('views', path.join(__dirname, '../views'));
 //  Routes
 app.use("/", userRoutes);
 app.use("/admin",adminRoutes);
-// app.use("/vendor", vendorRoutes);
+app.use("/vendor", vendorRoutes);
 
 
 
