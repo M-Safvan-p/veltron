@@ -191,11 +191,9 @@ const loadLogIn = (req, res) => {
 
 const logIn = async (req, res) => {
   try {
-    console.log("Login request received");
     const { email, password } = req.body;
     //validation
     const errorMessage = formValidator.validateLogIn(email, password);
-
     console.log("Validation result:", errorMessage);
     if (errorMessage) {
       return res.status(400).json({ success: false, message: errorMessage });
@@ -207,12 +205,12 @@ const logIn = async (req, res) => {
       return res.status(400).json({ success: false, message: "User not found." });
     }
     // Check password
-    const isMatch = passwordControl.comparePassword(password,user.password)
+    const isMatch = await passwordControl.comparePassword(password,user.password)
     if (!isMatch) {
       return res.status(400).json({ success: false, message: "Incorrect password." });
     }
 
-    // Set session or token here if needed
+    // Set session 
     req.session.user = user._id;
 
     // res.redirect('/home')
