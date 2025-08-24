@@ -23,14 +23,13 @@ const signUp = async (req, res) => {
       confirmPassword,
       refferalCode,
     } = req.body;
-
+    console.log(req.body)
     const errorMessage = formValidator.validateSignUp({
-      fullName,
+      name: fullName,
       email,
       phoneNumber,
       password,
       confirmPassword,
-      refferalCode,
     });
     if (errorMessage) {
       return res.render("user/signUp", {
@@ -158,6 +157,7 @@ const resendOtp = async (req,res) => {
     const {email} = req.session.userData;
     const otp = otpControl.generateOtp();
     const emailSent = await otpControl.sendVerificationEmail(email, otp);
+    console.log("resend otp",otp)
     if (!emailSent) {
       return res.json({success:false, message:"email-error"});;
     }

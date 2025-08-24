@@ -32,7 +32,7 @@ async function sendVerificationEmail(email, otp) {
             </span>
           </div>
           
-          <p style="color: #555; font-size: 14px;">This OTP will expire in <b>10 minutes</b>. Do not share it with anyone for security reasons.</p>
+          <p style="color: #555; font-size: 14px;">This OTP will expire in <b>1 minutes</b>. Do not share it with anyone for security reasons.</p>
           
           <p style="color: #555; font-size: 14px;">If you didn’t request this, please ignore this email.</p>
           
