@@ -1,5 +1,6 @@
 const validateSignUp = ({ name, email, phoneNumber, password, confirmPassword }) => {
-  // Full name validation
+
+  // name validation
   const nameRegex = /^[A-Za-z\s]{3,}$/;
   if (!name || !nameRegex.test(name)) {
     return "Full name must be at least 3 letters and contain only alphabets and spaces.";

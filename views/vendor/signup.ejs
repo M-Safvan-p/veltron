@@ -31,8 +31,8 @@
             </div>
 
             <div class="form-group">
-                <label class="form-label" for="mobileNumber">Mobile Number</label>
-                <input type="tel" id="mobileNumber" class="form-input" placeholder="Label (required)">
+                <label class="form-label" for="phoneNumber">Phone Number</label>
+                <input type="tel" id="phoneNumber" class="form-input" placeholder="Label (required)">
             </div>
 
             <div class="form-group">
@@ -72,12 +72,12 @@
 
             const brandName = document.getElementById('brandName').value;
             const brandEmail = document.getElementById('brandEmail').value;
-            const mobileNumber = document.getElementById('mobileNumber').value;
+            const phoneNumber = document.getElementById('phoneNumber').value;
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
 
             // validation
-            const { isValid, messages } = validateLogInForm(brandEmail, brandEmail, mobileNumber, password, confirmPassword);
+            const { isValid, messages } = validateLogInForm(brandEmail, brandEmail, phoneNumber, password, confirmPassword);
             if (!isValid) {
                 Swal.fire({
                     icon: 'error',
@@ -87,7 +87,7 @@
                 return;
             }
             // Submit form data
-            const response = axios.post("/vendor/signup",{ brandName, brandEmail, mobileNumber, password, confirmPassword });
+            const response = axios.post("/vendor/signup",{ brandName, brandEmail, phoneNumber, password, confirmPassword });
             const result = response.data;
             if (result.success) {
                 Swal.fire({

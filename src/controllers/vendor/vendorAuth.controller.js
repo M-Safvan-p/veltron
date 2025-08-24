@@ -10,16 +10,16 @@ const loadSignup = (req, res) => {
 
 const signup = async (req, res) => {
   try {
-    const { brandName, brandEmail, mobileNumber, password, confirmPassword } =
+    const { brandName, brandEmail, phoneNumber, password, confirmPassword } =
       req.body;
     //validation
-    const errorMessage = formValidator.validateSignUp(
-      brandName,
-      brandEmail,
-      mobileNumber,
+    const errorMessage = formValidator.validateSignUp({
+      name:brandName,
+      email: brandEmail,
+      phoneNumber,
       password,
       confirmPassword
-    );
+  });
     if (errorMessage) {
       return res.status(400).json({ error: errorMessage });
     }
