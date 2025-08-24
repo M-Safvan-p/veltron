@@ -9,7 +9,6 @@ const securePassword = async (password) => {
 };
 
 const comparePassword = async (password, originalPassword) => {
-  console.log("pas compare")
   return bcrypt.compare(password, originalPassword);
 }
 
