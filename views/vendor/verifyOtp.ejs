@@ -36,7 +36,10 @@
 
             <div class="resend-section mt-2 text-center">
                 I didn’t receive a code
-                <a href="#" id="resendBtn" onclick="resendOTP(event)">Resend</a>
+                <button type="button" id="resendBtn" class="btn btn-link p-0 m-0 align-baseline"
+                    onclick="resendOTP(event)">
+                    Resend OTP
+                </button>
             </div>
 
             <div class="text-center mt-3">
@@ -60,7 +63,7 @@
         // OTP auto-focus and only numbers
         inputs.forEach((input, index) => {
             input.addEventListener('input', () => {
-                input.value = input.value.replace(/\D/g, ''); // Only digits
+                input.value = input.value.replace(/\D/g, '');
                 if (input.value.length === 1 && index < inputs.length - 1) {
                     inputs[index + 1].focus();
                 }
@@ -107,16 +110,13 @@
 
             try {
                 // Send OTP to backend using Axios
-                const response = await axios.post("/verifyOtp", data);
+                const response = await axios.post("/vendor/verify-otp", data);
                 const result = response.data;
                 if (result.success) {
                     swal("Success!", "OTP verified successfully!", "success")
                         .then(() => {
                             window.location.href = result.redirectUrl;
                         });
-                } else {
-                    swal("Error", result.message, "error");
-                    submitBtn.disabled = false;
                 }
             } catch (error) {
                 swal("Error", error.response?.data?.message || "Something went wrong. Please try again.", "error");
@@ -156,6 +156,7 @@
                 }
             }, 1000);
         }
+        
     </script>
 </body>
 

@@ -9,7 +9,8 @@ const loadSignup = (req, res) => {
 
 const signup = async (req, res) => {
   try {
-    const { brandName, brandEmail, phoneNumber, password, confirmPassword } = req.body;
+    const { brandName, brandEmail, phoneNumber, password, confirmPassword } =
+      req.body;
     console.log(req.body);
     //validation
     const errorMessage = formValidator.validateSignUp({
@@ -20,11 +21,11 @@ const signup = async (req, res) => {
       confirmPassword,
     });
     if (errorMessage) {
-      return res.status(400).json({ message:errorMessage });
+      return res.status(400).json({ message: errorMessage });
     }
-    
+
     // brand email already exists
-    const findEmail = await Vendor.findOne({ email:brandEmail });
+    const findEmail = await Vendor.findOne({ email: brandEmail });
     if (findEmail) {
       return res.status(400).json({ message: "Brand email already exists" });
     }
@@ -37,7 +38,9 @@ const signup = async (req, res) => {
     const otp = otpControl.generateOtp();
     const emailSent = await otpControl.sendVerificationEmail(brandEmail, otp);
     if (!emailSent) {
-      return res.status(500).json({ message: "Failed to send verification email" });
+      return res
+        .status(500)
+        .json({ message: "Failed to send verification email" });
     }
     console.log("OTP sent", otp);
     //Pass word hash
@@ -45,15 +48,14 @@ const signup = async (req, res) => {
 
     // Save OTP and vendor data in session
     req.session.vendorOtp = otp;
-    req.session.vendorData = { brandEmail, brandName, phoneNumber, hashedPassword};
+    req.session.vendorData = {brandEmail,brandName,phoneNumber,hashedPassword};
     req.session.otpExpires = Date.now() + 1 * 60 * 1000;
-    console.log("is here")
-    return res.status(200).json({
-      success:true,
-      message: "OTP sent to your email",
-      redirect: "/vendor/verify-otp"
-    });
 
+    return res.status(200).json({
+      success: true,
+      message: "OTP sent to your email",
+      redirect: "/vendor/verify-otp",
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
@@ -70,6 +72,10 @@ const verifyOtp = async (req, res) => {
   try {
     const { otp1, otp2, otp3, otp4 } = req.body;
     const fullOtp = `${otp1}${otp2}${otp3}${otp4}`.trim();
+    console.log("enterd otp", fullOtp);
+    //validate otp
+    const errorMessage = formValidator.validateOtp(fullOtp);
+    if (errorMessage) return res.status(400).json({ message: "Invalid Otp" });
 
     // Check if OTP and user session exist
     if (!req.session.vendorOtp || !req.session.vendorData) {
@@ -88,30 +94,39 @@ const verifyOtp = async (req, res) => {
     //compare OTP
     if (fullOtp == req.session.vendorOtp) {
       // Create new vendor
-      const { brandName, brandEmail, mobileNumber, password } =
+      const { brandName, brandEmail, phoneNumber, hashedPassword } =
         req.session.vendorData;
-      const hashedPassword = await passwordControl.hashPassword(password);
       const newVendor = new Vendor({
         brandName,
         brandEmail,
-        phoneNumber: mobileNumber,
+        phoneNumber,
         password: hashedPassword,
       });
+
       await newVendor.save();
+      // Set user session
+      req.session.vendor = newVendor._id;
 
       // Clear session data
       req.session.vendorOtp = null;
       req.session.vendorData = null;
       req.session.otpExpires = null;
 
-      return res
-        .status(200)
-        .json({
-          message: "Vendor registered successfully",
-          redirect: "/vendor/home",
-        });
+      return res.status(200).json({
+        success: true,
+        message: "Vendor registered successfully",
+        redirectUrl: "/vendor/home",
+      });
+    } else {
+      return res.status(400).json({
+        message: "Invalid OTP, please try again.",
+      });
     }
-  } catch (error) {}
+  } catch (error) {
+    res.status(500).json({
+      message: "An error occurred while verifying OTP. Please try again.",
+    });
+  }
 };
 
 const loadLogin = (req, res) => {
@@ -149,9 +164,7 @@ const login = async (req, res) => {
   }
 };
 
-const loadHome = (req, res) => {
-  res.send("vendor home");
-};
+
 
 module.exports = {
   loadSignup,
@@ -160,5 +173,4 @@ module.exports = {
   verifyOtp,
   loadLogin,
   login,
-  loadHome,
 };

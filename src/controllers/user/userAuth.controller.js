@@ -86,8 +86,10 @@ const verifyOtp = async (req, res) => {
   try {
     const { otp1, otp2, otp3, otp4 } = req.body;
     const fullOtp = `${otp1}${otp2}${otp3}${otp4}`.trim();
-
     console.log("User entered OTP:", fullOtp);
+    //validate otp 
+    const errorMessage = formValidator.validateOtp(fullOtp);
+    if(errorMessage)return res.status(400).json({message:"Invalid Otp"})
 
     // Check if OTP and user session exist
     if (!req.session.userOtp || !req.session.userData) {

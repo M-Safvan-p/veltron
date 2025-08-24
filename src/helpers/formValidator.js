@@ -51,7 +51,18 @@ const validateLogIn = (email, password) => {
   return null; 
 };
 
+const validateOtp = (otp) => {
+  const regex = /^[0-9]{4}$/;
+
+  if (!otp || typeof otp !== "string" || !regex.test(otp.trim())) {
+    return "Invalid OTP";
+  }
+  return null; 
+};
+
+
 module.exports = { 
   validateSignUp,
-  validateLogIn
+  validateLogIn,
+  validateOtp,
 };
