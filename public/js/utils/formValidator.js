@@ -1,4 +1,5 @@
 export function validateSignUpForm(name, email, phone, password, confirmPassword) {
+  console.log("fornted validation reached")
   let isValid = true;
   let messages = [];
 

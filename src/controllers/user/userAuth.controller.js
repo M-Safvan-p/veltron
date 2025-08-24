@@ -67,9 +67,11 @@ const signUp = async (req, res) => {
       return res.json("email-error");
     }
 
+    // Hash password
+      const passwordHash = await passwordControl.securePassword(password);
     // Save OTP & user data in session
     req.session.userOtp = otp;
-    req.session.userData = { fullName, email, phoneNumber, password };
+    req.session.userData = { fullName, email, phoneNumber, passwordHash };
     req.session.otpExpiry = Date.now() + 1 * 60 * 1000; // OTP valid for 1 minutes
 
     res.render("user/verifyOtp", { email: req.session.userData.email });
@@ -81,8 +83,6 @@ const signUp = async (req, res) => {
 };
 
 const verifyOtp = async (req, res) => {
-  console.log("reached");
-  
   try {
     const { otp1, otp2, otp3, otp4 } = req.body;
     const fullOtp = `${otp1}${otp2}${otp3}${otp4}`.trim();
@@ -108,16 +108,14 @@ const verifyOtp = async (req, res) => {
     // Compare OTP
     if (fullOtp === req.session.userOtp) {
       const userData = req.session.userData;
-
-      // Hash password
-      const passwordHash = await passwordControl.securePassword(userData.password);
+      
 
       // Save user in DB
       const saveUserData = new User({
         fullName: userData.fullName,
         email: userData.email,
         phoneNumber: userData.phoneNumber,
-        password: passwordHash,
+        password: userData.passwordHash,
       });
 
       await saveUserData.save();

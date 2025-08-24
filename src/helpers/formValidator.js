@@ -1,5 +1,5 @@
 const validateSignUp = ({ name, email, phoneNumber, password, confirmPassword }) => {
-
+  console.log("backend validation reached")
   // name validation
   const nameRegex = /^[A-Za-z\s]{3,}$/;
   if (!name || !nameRegex.test(name)) {
@@ -34,6 +34,7 @@ const validateSignUp = ({ name, email, phoneNumber, password, confirmPassword })
 };
 
 const validateLogIn = (email, password) => {
+  console.log("backend validation reached")
   // Email validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!email || !emailRegex.test(email)) {

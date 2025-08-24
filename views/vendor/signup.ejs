@@ -27,7 +27,7 @@
 
             <div class="form-group">
                 <label class="form-label" for="brandEmail">Brand Email</label>
-                <input type="email" id="brandEmail" class="form-input" placeholder="Label (required)">
+                <input type="text" id="brandEmail" class="form-input" placeholder="Label (required)">
             </div>
 
             <div class="form-group">
@@ -38,17 +38,14 @@
             <div class="form-group">
                 <label class="form-label" for="password">Password</label>
                 <div class="password-container">
-                    <input type="password" id="password" class="form-input" placeholder="Label (required)">
-                    <button type="button" class="password-toggle" onclick="togglePassword('password')">👁</button>
+                    <input type="password" id="password" class="form-input" value="@Safvan9633" placeholder="Label (required)">
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="form-label" for="confirmPassword">Confirm password</label>
                 <div class="password-container">
-                    <input type="password" id="confirmPassword" class="form-input" placeholder="Label (required)">
-                    <button type="button" class="password-toggle"
-                        onclick="togglePassword('confirmPassword')">👁</button>
+                    <input type="password" id="confirmPassword" class="form-input" value="@Safvan9633" placeholder="Label (required)">
                 </div>
             </div>
 
@@ -64,10 +61,10 @@
         //axios
         import axios from "https://cdn.jsdelivr.net/npm/axios@1.6.7/+esm";
         //validation
-        import { validateLogInForm } from "/js/utils/formValidator.js";
+        import { validateSignUpForm } from "/js/utils/formValidator.js";
 
         // Form validation
-        document.querySelector('form').addEventListener('submit', function (e) {
+        document.querySelector('form').addEventListener('submit', async function (e) {
             e.preventDefault();
 
             const brandName = document.getElementById('brandName').value;
@@ -75,9 +72,9 @@
             const phoneNumber = document.getElementById('phoneNumber').value;
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
-
-            // validation
-            const { isValid, messages } = validateLogInForm(brandEmail, brandEmail, phoneNumber, password, confirmPassword);
+            console.log(brandEmail, brandName, phoneNumber, password, confirmPassword)
+            //frontend validation
+            const { isValid, messages } = validateSignUpForm(brandEmail, brandEmail, phoneNumber, password, confirmPassword);
             if (!isValid) {
                 Swal.fire({
                     icon: 'error',
@@ -86,22 +83,25 @@
                 });
                 return;
             }
+
             // Submit form data
-            const response = axios.post("/vendor/signup",{ brandName, brandEmail, phoneNumber, password, confirmPassword });
-            const result = response.data;
-            if (result.success) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: result.message
-                }).then(() => {
-                    window.location.href = result.redirectUrl;
-                });
-            } else {
+            try {
+                const response = await axios.post("/vendor/signup", { brandName, brandEmail, phoneNumber, password, confirmPassword });
+                const result = response.data;
+                if (result.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: result.message
+                    }).then(() => {
+                        window.location.href = result.redirect;
+                    });
+                }
+            } catch (error) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: result.message
+                    text: error.response?.data?.message || "Something went wrong"
                 });
             }
         });
