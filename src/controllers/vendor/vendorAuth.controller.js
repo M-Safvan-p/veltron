@@ -25,7 +25,7 @@ const signup = async (req, res) => {
     }
 
     // brand email already exists
-    const findEmail = await Vendor.findOne({ email: brandEmail });
+    const findEmail = await Vendor.findOne({ brandEmail: brandEmail});
     if (findEmail) {
       return res.status(400).json({ message: "Brand email already exists" });
     }
@@ -115,8 +115,9 @@ const verifyOtp = async (req, res) => {
       return res.status(200).json({
         success: true,
         message: "Vendor registered successfully",
-        redirectUrl: "/vendor/home",
+        redirectUrl: "/vendor/login",
       });
+      
     } else {
       return res.status(400).json({
         message: "Invalid OTP, please try again.",
@@ -139,24 +140,27 @@ const login = async (req, res) => {
     //validation
     const errorMessage = formValidator.validateLogIn(email, password);
     if (errorMessage) {
-      return res.status(400).json({ error: errorMessage });
+      return res.status(400).json({ message: errorMessage });
     }
-
+    
     //check data
-    const findVendor = await Vendor.findOne({ email });
-    if (!findVendor) {
+    const vendor = await Vendor.findOne({ brandEmail: email });
+    if (!vendor) {
       return res.status(400).json({ message: "Invalid credential" });
     }
-
-    const isMatch = await passwordControl.comparePassword(
-      password,
-      findVendor.password
-    );
+    const isMatch = await passwordControl.comparePassword(password,vendor.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credential" });
     }
+    //check permission status
+    if(vendor.permissionStatus=="pending"){
+      return res.status(400).json({message:"Your registration is under review and awaiting administrator approval."});
+    }
+    if(vendor.permissionStatus=="rejected"){
+      return res.status(400).json({message:"We regret to inform you that your account request has been rejected."});
+    }
 
-    return res.status(200).json({ redirectUrl: "/vendor/home" });
+    return res.status(200).json({ success:true, redirectUrl: "/vendor/home" });
   } catch (error) {
     return res
       .status(500)

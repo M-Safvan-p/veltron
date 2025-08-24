@@ -130,7 +130,7 @@ const verifyOtp = async (req, res) => {
       delete req.session.otpExpiry;
       delete req.session.userData;
 
-      return res.json({ success: true, redirectUrl: "/home" });
+      return res.status(200).json({ success: true, redirectUrl: "/home" });
     } else {
       return res.json({
         success: false,
