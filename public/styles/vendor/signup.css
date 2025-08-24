@@ -137,3 +137,13 @@ body {
 .signup-button:active {
     transform: translateY(1px);
 }
+  .swal-confirm-black {
+    background-color: #000 !important;  /* black background */
+    color: #fff !important;             /* white text */
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.swal-confirm-black:hover {
+    background-color: #333 !important;  /* dark gray on hover */
+}

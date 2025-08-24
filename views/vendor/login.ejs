@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
     <link rel="stylesheet" href="../../styles/vendor/login.css">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -20,13 +22,13 @@
         <form>
             <div class="form-group">
                 <label class="form-label" for="email">Brand Email address</label>
-                <input type="email" id="email" class="form-input email-input" >
+                <input type="email" id="email" class="form-input email-input">
             </div>
 
             <div class="form-group">
                 <label class="form-label" for="password">Password</label>
                 <div class="password-container">
-                    <input type="password" id="password" class="form-input password-dots" value="" >
+                    <input type="password" id="password" class="form-input password-dots" value="@Safvan9633">
                 </div>
             </div>
 
@@ -47,37 +49,40 @@
         import axios from "https://cdn.jsdelivr.net/npm/axios@1.6.7/+esm";
         //validation
         import { validateLogInForm } from "/js/utils/formValidator.js";
-
-    
-
         // Form submission
-        document.querySelector('form').addEventListener('submit', async (e)=> {
+        document.querySelector('form').addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
-            //validation
+            //forntend validation
             const { isValid, messages } = validateLogInForm(email, password);
             if (!isValid) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Validation Error',
-                    html: messages.join('<br>')
+                    html: messages.join('<br>'),
+                    customClass: {
+                        confirmButton: "swal-confirm-black"
+                    }
                 });
                 return;
             }
 
             //Data send
             try {
-                const response = await axios.post("/vendor/login",{email,password});
+                const response = await axios.post("/vendor/login", { email, password });
                 const result = response.data;
-                if(result.success){
+                if (result.success) {
                     Swal.fire({
                         icon: 'success',
                         title: 'Login successful!',
                         timer: 1500,
-                        showConfirmButton: false
+                        showConfirmButton: false,
+                        customClass: {
+                            confirmButton: "swal-confirm-black"
+                        }
                     }).then(() => {
                         window.location.href = result.redirectUrl;
                     });
@@ -86,12 +91,15 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'Login failed',
-                    text: err.response?.data?.message || 'Invalid credential'
+                    text: error.response?.data?.message || 'Invalid credential',
+                    customClass: {
+                        confirmButton: "swal-confirm-black"
+                    }
                 });
             }
         });
 
-       
+
     </script>
 </body>
 
