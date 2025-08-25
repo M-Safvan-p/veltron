@@ -24,6 +24,7 @@ const signUp = async (req, res) => {
       refferalCode,
     } = req.body;
     console.log(req.body)
+    
     const errorMessage = formValidator.validateSignUp({
       name: fullName,
       email,

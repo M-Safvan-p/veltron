@@ -1,6 +1,7 @@
 const Admin = require("../../models/admin/adminSchema");
 const formValidator = require("../../helpers/formValidator");
 const passwordControl = require("../../helpers/passwordControl");
+const Vendor = require("../../models/vendor/vendorSchema");
 
 const loadLogIn = (req, res) => {
   res.render("admin/login.ejs");
@@ -31,11 +32,48 @@ const login = async (req, res) => {
 };
 
 const loadDashboard = (req,res)=>{
-    res.send("admin dashboard")
+    res.render("admin/dashboard", { layout: "layouts/adminLayout", activePage: "dashboard" });
+}
+
+const loadVendors = async (req,res)=>{
+try {
+  const vendors = await Vendor.find({permissionStatus:"pending"});
+  const admin = await Admin.findOne();
+
+  console.log("all vendors:",vendors)
+  console.log(admin)
+
+  res.render("admin/vendors", { 
+    layout: "layouts/adminLayout", 
+    activePage: "vendors",
+    admin,
+    vendors
+  });
+
+} catch (error) {}
+}
+
+const loadVendorsPendings = async (req,res)=>{
+  try {
+    const vendors = await Vendor.find({permissionStatus:"pending"});
+    const admin = await Admin.findOne();
+
+    console.log("all vendors",vendors)
+
+    res.render("admin/vendorsPendings",{
+      layout:"layouts/adminLayout",
+      activePage:"vendors",
+      admin,
+      vendors
+    });
+
+  } catch (error) {}
 }
 
 module.exports = {
   loadLogIn,
   login,
   loadDashboard,
+  loadVendors,
+  loadVendorsPendings
 };

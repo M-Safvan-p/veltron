@@ -34,6 +34,14 @@ const vendorSchema = new mongoose.Schema({
   wallet: {
     type: mongoose.Schema.Types.ObjectId,
     ref:"Wallet"
+  },
+  isBlocked: {   
+    type: Boolean,
+    default: false
+  },
+  sales: {
+    type: Number,
+    default: 0
   }
 }, { timestamps: true }); 
 
