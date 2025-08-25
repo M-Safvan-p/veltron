@@ -1,0 +1,139 @@
+<link rel="stylesheet" href="../../styles/admin/vendorPendings.css">
+<div id="main-content">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">Pending Vendors List</h1>
+    </div>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <a href="/admin/dashboard">Dashboard</a>
+        <span class="breadcrumb-separator">></span>
+        <a href="/admin/vendors">Vendors</a>
+        <span class="breadcrumb-separator">></span>
+        <span>Vendor Pendings</span>
+    </div>
+
+    <!-- Pending Vendors Table -->
+    <div class="pending-vendors-table">
+        <table>
+            <thead class="table-header">
+                <tr>
+                    <th>Brand Name</th>
+                    <th>Phone Number</th>
+                    <th>Email</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (vendors && vendors.length> 0) { %>
+                    <% vendors.forEach((vendor, index)=> { %>
+                        <tr class="table-row" id="vendor-row-<%= vendor.id %>">
+                            <td>
+                                <div class="vendor-info">
+                                    <div class="vendor-avatar">
+                                        <%= vendor.brandName ? vendor.brandName[0].toUpperCase() : 'V' %>
+                                    </div>
+                                    <span class="vendor-name">
+                                        <%= vendor.brandName %>
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="phone-number">
+                                <%= vendor.phoneNumber %>
+                            </td>
+                            <td class="email">
+                                <%= vendor.brandEmail %>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-approve" onclick="approveVendor('<%= vendor.id %>')">
+                                        Approve
+                                    </button>
+                                    <button class="btn btn-cancel" onclick="cancelVendor('<%= vendor.id %>')">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <% }) %>
+                            <% } else { %>
+                                <!-- Sample Data -->
+                                <tr class="table-row" id="vendor-row-1">
+                                    <td>
+                                        <div class="vendor-info">
+                                            <div class="vendor-avatar">C</div>
+                                            <span class="vendor-name">Casio</span>
+                                        </div>
+                                    </td>
+                                    <td class="phone-number">078 5054 8877</td>
+                                    <td class="email">casio@gmail.com</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-approve" onclick="approveVendor('1')">
+                                                Approve
+                                            </button>
+                                            <button class="btn btn-cancel" onclick="cancelVendor('1')">
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="table-row" id="vendor-row-2">
+                                    <td>
+                                        <div class="vendor-info">
+                                            <div class="vendor-avatar">C</div>
+                                            <span class="vendor-name">Casio</span>
+                                        </div>
+                                    </td>
+                                    <td class="phone-number">078 5054 8877</td>
+                                    <td class="email">casio@gmail.com</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-approve" onclick="approveVendor('2')">
+                                                Approve
+                                            </button>
+                                            <button class="btn btn-cancel" onclick="cancelVendor('2')">
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="table-row" id="vendor-row-3">
+                                    <td>
+                                        <div class="vendor-info">
+                                            <div class="vendor-avatar">C</div>
+                                            <span class="vendor-name">Casio</span>
+                                        </div>
+                                    </td>
+                                    <td class="phone-number">078 5054 8877</td>
+                                    <td class="email">casio@gmail.com</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-approve" onclick="approveVendor('3')">
+                                                Approve
+                                            </button>
+                                            <button class="btn btn-cancel" onclick="cancelVendor('3')">
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Empty State (hidden when data exists) -->
+                                <% if (false) { %> <!-- This will show when no pending vendors exist -->
+                                    <tr>
+                                        <td colspan="4">
+                                            <div class="empty-state">
+                                                <i class="fas fa-inbox"></i>
+                                                <h3>No Pending Vendors</h3>
+                                                <p>All vendor applications have been processed.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                                        <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,308 @@
+<link rel="stylesheet" href="../../styles/admin/vendors.css">
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">VENDOR LIST</h1>
+        <div class="breadcrumb">
+            <a href="/admin/dashboard">Dashboard</a> > <a href="/admin/vendors">VENDORS</a>
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search Vendor...">
+        </div>
+        <a href="/admin/vendors/vendor-pendings" class="product-pending-btn">Vendor Pendings</a>
+    </div>
+
+    <!-- Vendors Table -->
+    <div class="vendors-table">
+        <table>
+            <thead class="table-header">
+                <tr>
+                    <th>Brand name</th>
+                    <th>Phone</th>
+                    <th>Sales</th>
+                    <th>email</th>
+                    <th>Status</th>
+                    <th>BLOCK/UNBLOCK</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (vendors && vendors.length> 0) { %>
+                    <% vendors.forEach((vendor, index)=> { %>
+                        <tr class="table-row">
+                            <td>
+                                <div class="vendor-info">
+                                    <div class="vendor-avatar">
+                                        <%= vendor.brandName[0].toUpperCase() %>
+                                    </div>
+                                    <%= vendor.brandName %>
+                                </div>
+                            </td>
+                            <td>
+                                <%= vendor.phoneNumber %>
+                            </td>
+                            <td>
+                                <%= vendor?.sales %>
+                            </td>
+                            <td>
+                                <%= vendor.brandEmail %>
+                            </td>
+                            <td>
+                                <span class="status-badge <%= vendor.isBlocked ? 'status-blocked' : 'status-active' %>">
+                                    <%= vendor.isBlocked ? "Blocked" : "Active" %>
+                                </span>
+                            </td>
+                            <td>
+                                <div class="toggle-switch <%= vendor.isBlocked ? 'active' : 'blocked' %>"
+                                    data-vendor-id="<%= vendor._id %>">
+                                    <div class="slider"></div>
+                                </div>
+                            </td>
+
+                            <td>
+                                <button class="action-btn" onclick="viewVendor('<%= vendor.id %>')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <% }) %>
+                            <% } else { %>
+                                <!-- Sample Data
+                                <tr class="table-row">
+                                    <td>
+                                        <div class="vendor-info">
+                                            <div class="vendor-avatar">C</div>
+                                            Casio
+                                        </div>
+                                    </td>
+                                    <td>978 5654 8877</td>
+                                    <td>134</td>
+                                    <td>casio@gmail.com</td>
+                                    <td><span class="status-badge status-blocked">Blocked</span></td>
+                                    <td>
+                                        <div class="toggle-switch active">
+                                            <div class="slider"></div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button class="action-btn">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="table-row">
+                                    <td>
+                                        <div class="vendor-info">
+                                            <div class="vendor-avatar">R</div>
+                                            Rolex
+                                        </div>
+                                    </td>
+                                    <td>210 302 3376</td>
+                                    <td>45</td>
+                                    <td>rolex@gmail.com</td>
+                                    <td><span class="status-badge status-active">Active</span></td>
+                                    <td>
+                                        <div class="toggle-switch blocked">
+                                            <div class="slider"></div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button class="action-btn">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="table-row">
+                                    <td>
+                                        <div class="vendor-info">
+                                            <div class="vendor-avatar">T</div>
+                                            Titan
+                                        </div>
+                                    </td>
+                                    <td>650 814 5778</td>
+                                    <td>654</td>
+                                    <td>titan@gmail.com</td>
+                                    <td><span class="status-badge status-blocked">Blocked</span></td>
+                                    <td>
+                                        <div class="toggle-switch active">
+                                            <div class="slider"></div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button class="action-btn">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="table-row">
+                                    <td>
+                                        <div class="vendor-info">
+                                            <div class="vendor-avatar">F</div>
+                                            Fastrack
+                                        </div>
+                                    </td>
+                                    <td>216 78 815 706</td>
+                                    <td>99</td>
+                                    <td>fastrack@gmail.com</td>
+                                    <td><span class="status-badge status-blocked">Blocked</span></td>
+                                    <td>
+                                        <div class="toggle-switch active">
+                                            <div class="slider"></div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button class="action-btn">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="table-row">
+                                    <td>
+                                        <div class="vendor-info">
+                                            <div class="vendor-avatar">S</div>
+                                            Sonata
+                                        </div>
+                                    </td>
+                                    <td>92 76 160 655</td>
+                                    <td>1,540</td>
+                                    <td>sonata@gmail.com</td>
+                                    <td><span class="status-badge status-active">Active</span></td>
+                                    <td>
+                                        <div class="toggle-switch blocked">
+                                            <div class="slider"></div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button class="action-btn">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="table-row">
+                                    <td>
+                                        <div class="vendor-info">
+                                            <div class="vendor-avatar">H</div>
+                                            Hublot
+                                        </div>
+                                    </td>
+                                    <td>978 8503 3854</td>
+                                    <td>433</td>
+                                    <td>hublot@gmail.com</td>
+                                    <td><span class="status-badge status-active">Active</span></td>
+                                    <td>
+                                        <div class="toggle-switch blocked">
+                                            <div class="slider"></div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button class="action-btn">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="table-row">
+                                    <td>
+                                        <div class="vendor-info">
+                                            <div class="vendor-avatar">G</div>
+                                            G-shock
+                                        </div>
+                                    </td>
+                                    <td>834 245 2385</td>
+                                    <td>36</td>
+                                    <td>gshock@gmail.com</td>
+                                    <td><span class="status-badge status-blocked">Blocked</span></td>
+                                    <td>
+                                        <div class="toggle-switch active">
+                                            <div class="slider"></div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button class="action-btn">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="table-row">
+                                    <td>
+                                        <div class="vendor-info">
+                                            <div class="vendor-avatar">R</div>
+                                            Rado
+                                        </div>
+                                    </td>
+                                    <td>978 7379 9761</td>
+                                    <td>77</td>
+                                    <td>rado@gmail.com</td>
+                                    <td><span class="status-badge status-active">Active</span></td>
+                                    <td>
+                                        <div class="toggle-switch blocked">
+                                            <div class="slider"></div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button class="action-btn">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="table-row">
+                                    <td>
+                                        <div class="vendor-info">
+                                            <div class="vendor-avatar">T</div>
+                                            Timex
+                                        </div>
+                                    </td>
+                                    <td>977 8167 4249</td>
+                                    <td>89</td>
+                                    <td>timex@gmail.com</td>
+                                    <td><span class="status-badge status-active">Active</span></td>
+                                    <td>
+                                        <div class="toggle-switch blocked">
+                                            <div class="slider"></div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button class="action-btn">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="table-row">
+                                    <td>
+                                        <div class="vendor-info">
+                                            <div class="vendor-avatar">C</div>
+                                            Citizen
+                                        </div>
+                                    </td>
+                                    <td>950 434 8779</td>
+                                    <td>1,226</td>
+                                    <td>citizen@gmail.com</td>
+                                    <td><span class="status-badge status-active">Active</span></td>
+                                    <td>
+                                        <div class="toggle-switch blocked">
+                                            <div class="slider"></div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button class="action-btn">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr> -->
+                                <% } %>
+            </tbody>
+        </table>
+
+        <!-- Pagination
+        
+
+
+        </div> -->
+    </div>
+</div>
+<script src="../../js/script/admin/vendorsList.js"></script>
