@@ -1,52 +1,23 @@
-// Add interactive functionality
-document.addEventListener("DOMContentLoaded", function () {
-  // Search functionality
-  const searchInput = document.querySelector(".search-box input");
-  searchInput.addEventListener("input", function (e) {
-    // Implement search logic here
-    console.log("Searching for:", e.target.value);
+// Navigation functionality
+document.querySelectorAll(".nav-item").forEach((item) => {
+  item.addEventListener("click", function () {
+    document
+      .querySelectorAll(".nav-item")
+      .forEach((nav) => nav.classList.remove("active"));
+    this.classList.add("active");
+  });
+});
+
+// Account button functionality
+document
+  .querySelector(".account-btn:not(.logout-btn)")
+  .addEventListener("click", function () {
+    alert("Account settings clicked!");
   });
 
-  // Filter dropdowns
-  const filterDropdowns = document.querySelectorAll(".filter-dropdown");
-  filterDropdowns.forEach((dropdown) => {
-    dropdown.addEventListener("change", function (e) {
-      // Implement filter logic here
-      console.log("Filter changed:", e.target.name, e.target.value);
-    });
-  });
-
-  // Sort buttons
-  const sortButtons = document.querySelectorAll(".sort-btn");
-  sortButtons.forEach((button) => {
-    button.addEventListener("click", function () {
-      // Remove active class from all buttons
-      sortButtons.forEach((btn) => btn.classList.remove("active"));
-      // Add active class to clicked button
-      this.classList.add("active");
-    });
-  });
-
-  // Pagination buttons
-  const paginationButtons = document.querySelectorAll(".pagination-btn");
-  paginationButtons.forEach((button) => {
-    button.addEventListener("click", function () {
-      if (
-        !this.innerHTML.includes("fa-chevron") &&
-        this.textContent !== "..."
-      ) {
-        paginationButtons.forEach((btn) => btn.classList.remove("active"));
-        this.classList.add("active");
-      }
-    });
-  });
-
-  // Navigation items
-  const navItems = document.querySelectorAll(".nav-item");
-  navItems.forEach((item) => {
-    item.addEventListener("click", function () {
-      navItems.forEach((nav) => nav.classList.remove("active"));
-      this.classList.add("active");
-    });
-  });
+// Logout button functionality
+document.querySelector(".logout-btn").addEventListener("click", function () {
+  if (confirm("Are you sure you want to logout?")) {
+    alert("Logging out...");
+  }
 });

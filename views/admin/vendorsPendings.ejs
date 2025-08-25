@@ -27,7 +27,7 @@
             </thead>
             <tbody>
                 <% if (vendors && vendors.length> 0) { %>
-                    <% vendors.forEach((vendor, index)=> { %>
+                    <% vendors.forEach(vendor=> { %>
                         <tr class="table-row" id="vendor-row-<%= vendor.id %>">
                             <td>
                                 <div class="vendor-info">
@@ -47,93 +47,26 @@
                             </td>
                             <td>
                                 <div class="action-buttons">
-                                    <button class="btn btn-approve" onclick="approveVendor('<%= vendor.id %>')">
-                                        Approve
-                                    </button>
-                                    <button class="btn btn-cancel" onclick="cancelVendor('<%= vendor.id %>')">
-                                        Cancel
-                                    </button>
+                                    <button class="btn btn-approve" data-vendor-id="<%= vendor.id %>">Approve</button>
+                                    <button class="btn btn-cancel" data-vendor-id="<%= vendor.id %>">Cancel</button>
                                 </div>
                             </td>
                         </tr>
                         <% }) %>
                             <% } else { %>
-                                <!-- Sample Data -->
-                                <tr class="table-row" id="vendor-row-1">
-                                    <td>
-                                        <div class="vendor-info">
-                                            <div class="vendor-avatar">C</div>
-                                            <span class="vendor-name">Casio</span>
-                                        </div>
-                                    </td>
-                                    <td class="phone-number">078 5054 8877</td>
-                                    <td class="email">casio@gmail.com</td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="btn btn-approve" onclick="approveVendor('1')">
-                                                Approve
-                                            </button>
-                                            <button class="btn btn-cancel" onclick="cancelVendor('1')">
-                                                Cancel
-                                            </button>
+                                <tr>
+                                    <td colspan="4">
+                                        <div class="empty-state">
+                                            <i class="fas fa-inbox"></i>
+                                            <h3>No Pending Vendors</h3>
+                                            <p>All vendor applications have been processed.</p>
                                         </div>
                                     </td>
                                 </tr>
-                                <tr class="table-row" id="vendor-row-2">
-                                    <td>
-                                        <div class="vendor-info">
-                                            <div class="vendor-avatar">C</div>
-                                            <span class="vendor-name">Casio</span>
-                                        </div>
-                                    </td>
-                                    <td class="phone-number">078 5054 8877</td>
-                                    <td class="email">casio@gmail.com</td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="btn btn-approve" onclick="approveVendor('2')">
-                                                Approve
-                                            </button>
-                                            <button class="btn btn-cancel" onclick="cancelVendor('2')">
-                                                Cancel
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr class="table-row" id="vendor-row-3">
-                                    <td>
-                                        <div class="vendor-info">
-                                            <div class="vendor-avatar">C</div>
-                                            <span class="vendor-name">Casio</span>
-                                        </div>
-                                    </td>
-                                    <td class="phone-number">078 5054 8877</td>
-                                    <td class="email">casio@gmail.com</td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="btn btn-approve" onclick="approveVendor('3')">
-                                                Approve
-                                            </button>
-                                            <button class="btn btn-cancel" onclick="cancelVendor('3')">
-                                                Cancel
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <!-- Empty State (hidden when data exists) -->
-                                <% if (false) { %> <!-- This will show when no pending vendors exist -->
-                                    <tr>
-                                        <td colspan="4">
-                                            <div class="empty-state">
-                                                <i class="fas fa-inbox"></i>
-                                                <h3>No Pending Vendors</h3>
-                                                <p>All vendor applications have been processed.</p>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <% } %>
-                                        <% } %>
+                                <% } %>
             </tbody>
         </table>
     </div>
 </div>
+<!-- script -->
+<script src="../../js/script/admin/vendorsPendings.js"></script>

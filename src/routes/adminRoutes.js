@@ -15,8 +15,10 @@ router.post("/login",adminAuthController.login);
 
 router.get("/dashboard",adminAuthController.loadDashboard);
 router.get("/vendors",adminAuthController.loadVendors);
-router.get("/vendors/vendor-pendings",adminAuthController.loadVendorsPendings)
 
+router.get("/vendors/vendor-pendings",adminAuthController.loadVendorsPendings)
+router.post("/vendors/vendor-pendings/approve",adminAuthController.approveVendor)
+router.post("/vendors/vendor-pendings/cancel",adminAuthController.cancelVendor)
 
 
 
