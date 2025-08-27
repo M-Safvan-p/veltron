@@ -1,0 +1,23 @@
+<link rel="stylesheet" href="../../../styles/partials/vendor/header.css">
+<div class="header-bar">
+    <!-- Center brand name -->
+    <div class="brand-heading">
+        <%= vendor.brandName %>
+    </div>
+
+    <!-- User profile on right -->
+    <div class="user-profile">
+        <div class="user-avatar">
+            <%= (vendor.brandName)[0].toUpperCase() %>
+        </div>
+        <div class="user-info">
+            <div class="user-name">
+                <%= vendor.brandName %>
+            </div>
+            <div class="user-role">
+                Vendor
+            </div>
+        </div>
+        <i class="fas fa-chevron-down" style="margin-left: 8px; font-size: 12px;"></i>
+    </div>
+</div>

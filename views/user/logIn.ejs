@@ -90,7 +90,7 @@
             }
           }).then(() => {
             // Redirect after alert closes
-            window.location.href = response.data.redirectUrl;
+            window.location.replace(response.data.redirectUrl);
           });
         } else {
           Swal.fire({

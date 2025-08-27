@@ -1,0 +1,287 @@
+<!-- Breadcrumb -->
+<div class="breadcrumb">
+    <a href="/dashboard">Dashboard</a>
+    <span class="breadcrumb-separator">></span>
+    <span>Products</span>
+    <span class="breadcrumb-separator">></span>
+</div>
+
+<!-- Page Header -->
+<div class="page-header">
+    <h1 class="page-title">Products</h1>
+    <div class="header-controls">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search product..." value="<%= searchQuery || '' %>">
+        </div>
+        <div class="date-selector">
+            <i class="far fa-calendar"></i>
+            <span>Select Dates</span>
+        </div>
+        <button class="add-product-btn" onclick="addNewProduct()">
+            <span>Add New Product</span>
+            <i class="fas fa-plus"></i>
+        </button>
+    </div>
+</div>
+
+<!-- Filter Section -->
+<div class="filter-section">
+    <div class="filters">
+        <div class="filter-group">
+            <div class="filter-label">Filter By</div>
+        </div>
+        <div class="filter-group">
+            <select class="filter-dropdown" name="category">
+                <option value="">Product Category</option>
+                <option value="mechanical" <%=category==='mechanical' ? 'selected' : '' %>>Mechanical</option>
+                <option value="automatic" <%=category==='automatic' ? 'selected' : '' %>>Automatic</option>
+                <option value="quartz" <%=category==='quartz' ? 'selected' : '' %>>Quartz</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <select class="filter-dropdown" name="price">
+                <option value="">Price</option>
+                <option value="low">Low to High</option>
+                <option value="high">High to Low</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="sort-controls">
+        <span class="sort-label">Sort</span>
+        <button class="sort-btn <%= sortBy === 'price-high' ? 'active' : '' %>">Price High-Low</button>
+        <button class="sort-btn <%= sortBy === 'price-low' ? 'active' : '' %>">Price Low-High</button>
+        <button class="sort-btn <%= sortBy === 'recent' ? 'active' : '' %>">Last added first</button>
+    </div>
+</div>
+
+<!-- Products Table -->
+<div class="products-table">
+    <table>
+        <thead class="table-header">
+            <tr>
+                <th>Image</th>
+                <th>Product Name</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>List</th>
+                <th>Action</th>
+                <th>offer</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (products && products.length> 0) { %>
+                <% products.forEach((product, index)=> { %>
+                    <tr class="table-row">
+                        <td>
+                            <img src="<%= product.image || '/api/placeholder/60/60' %>" alt="<%= product.name %>"
+                                class="product-image">
+                        </td>
+                        <td class="product-name">
+                            <%= product.name %>
+                        </td>
+                        <td class="product-category">
+                            <%= product.category %>
+                        </td>
+                        <td class="product-price">₹ <%= product.price %>
+                        </td>
+                        <td class="stock-count">
+                            <%= product.stock %>
+                        </td>
+                        <td>
+                            <div class="toggle-switch <%= product.isListed ? 'list' : 'unlist' %>"
+                                data-product-id="<%= product.id %>">
+                                <div class="slider"></div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="action-btn edit" onclick="editProduct('<%= product.id %>')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-btn delete" onclick="deleteProduct('<%= product.id %>')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="offer-info">
+                                <% if (product.offer) { %>
+                                    <span class="offer-text">
+                                        <%= product.offer %>Off
+                                    </span>
+                                    <% } %>
+                                        <button class="add-offer-btn" onclick="addOffer('<%= product.id %>')">
+                                            Add Offer
+                                        </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <% }) %>
+                        <% } else { %>
+                            <!-- Sample Data -->
+                            <tr class="table-row">
+                                <td><img src="/api/placeholder/60/60" alt="Watch" class="product-image"></td>
+                                <td class="product-name">Titan Octane Chronograph</td>
+                                <td class="product-category">Mechanical</td>
+                                <td class="product-price">₹ 999</td>
+                                <td class="stock-count">100</td>
+                                <td>
+                                    <div class="toggle-switch unlist" data-product-id="1">
+                                        <div class="slider"></div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn edit" onclick="editProduct('1')">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="action-btn delete" onclick="deleteProduct('1')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="offer-info">
+                                        <span class="offer-text">20%Off</span>
+                                        <button class="add-offer-btn" onclick="addOffer('1')">Add Offer</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="table-row">
+                                <td><img src="/api/placeholder/60/60" alt="Watch" class="product-image"></td>
+                                <td class="product-name">Titan Octane Chronograph</td>
+                                <td class="product-category">Automatic</td>
+                                <td class="product-price">₹ 999</td>
+                                <td class="stock-count">100</td>
+                                <td>
+                                    <div class="toggle-switch list" data-product-id="2">
+                                        <div class="slider"></div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn edit" onclick="editProduct('2')">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="action-btn delete" onclick="deleteProduct('2')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="offer-info">
+                                        <button class="add-offer-btn" onclick="addOffer('2')">Add Offer</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="table-row">
+                                <td><img src="/api/placeholder/60/60" alt="Watch" class="product-image"></td>
+                                <td class="product-name">Titan Octane Chronograph</td>
+                                <td class="product-category">Automatic</td>
+                                <td class="product-price">₹ 999</td>
+                                <td class="stock-count">100</td>
+                                <td>
+                                    <div class="toggle-switch unlist" data-product-id="3">
+                                        <div class="slider"></div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn edit" onclick="editProduct('3')">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="action-btn delete" onclick="deleteProduct('3')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="offer-info">
+                                        <span class="offer-text">200rs Off</span>
+                                        <button class="add-offer-btn" onclick="addOffer('3')">Add Offer</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="table-row">
+                                <td><img src="/api/placeholder/60/60" alt="Watch" class="product-image"></td>
+                                <td class="product-name">Titan Octane Chronograph</td>
+                                <td class="product-category">Automatic</td>
+                                <td class="product-price">₹ 999</td>
+                                <td class="stock-count">100</td>
+                                <td>
+                                    <div class="toggle-switch unlist" data-product-id="4">
+                                        <div class="slider"></div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn edit" onclick="editProduct('4')">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="action-btn delete" onclick="deleteProduct('4')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="offer-info">
+                                        <button class="add-offer-btn" onclick="addOffer('4')">Add Offer</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="table-row">
+                                <td><img src="/api/placeholder/60/60" alt="Watch" class="product-image"></td>
+                                <td class="product-name">Titan Octane Chronograph</td>
+                                <td class="product-category">Quartz</td>
+                                <td class="product-price">₹ 999</td>
+                                <td class="stock-count">100</td>
+                                <td>
+                                    <div class="toggle-switch unlist" data-product-id="5">
+                                        <div class="slider"></div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn edit" onclick="editProduct('5')">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="action-btn delete" onclick="deleteProduct('5')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="offer-info">
+                                        <span class="offer-text">200rs Off</span>
+                                        <button class="add-offer-btn" onclick="addOffer('5')">Add Offer</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <% } %>
+        </tbody>
+    </table>
+
+    <!-- Pagination
+    <div class="pagination">
+        <div class="pagination-info">
+            Showing <%= startIndex || 1 %>-<%= endIndex || 5 %> from <%= totalProducts || 25 %>
+        </div>
+        <div class="pagination-controls">
+            <button class="pagination-btn" <%=currentPage <=1 ? 'disabled' : '' %>>
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="pagination-btn <%= currentPage === 1 ? 'active' : '' %>">1</button>
+            <button class="pagination-btn <%= currentPage === 2 ? 'active' : '' %>">2</button>
+            <button class="pagination-btn <%= currentPage === 3 ? 'active' : '' %>">3</button>
+            <button class="pagination-btn <%= currentPage === 4 ? 'active' : '' %>">4</button>
+            <button class="pagination-btn <%= currentPage === 5 ? 'active' : '' %>">5</button>
+            <button class="pagination-btn">...</button>
+            <button class="pagination-btn">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div> -->
+</div>

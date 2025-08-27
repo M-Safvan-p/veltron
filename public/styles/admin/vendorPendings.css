@@ -1,19 +1,3 @@
-.content {
-    margin-top: 50px;
-    margin-left: 250px;
-    flex: 1;
-    padding: 30px;
-    background: #f5f5f5;
-}
-
-.main-content {
-    background: #fff;                
-    border-radius: 20px;                  
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1); 
-    padding: 20px 30px;               
-    margin: 20px;                       
-}
-
 /* Breadcrumb */
 .breadcrumb {
     padding: 20px 30px 6px;

@@ -4,23 +4,24 @@
     background-color: white;
     border-right: 1px solid #e0e0e0;
     padding: 20px 0;
-    position: fixed; /* Changed from relative to fixed */
+    position: fixed;
     top: 0;
     left: 0;
-    height: 100vh; /* Full viewport height */
+    height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Pushes account-controls to bottom */
+    justify-content: space-between; /* pushes nav list top & account bottom */
     z-index: 999;
 }
 
 .logo {
     font-size: 24px;
     font-weight: bold;
-    padding: 0 20px 30px;
+    padding: 0 20px 20px;
     color: #000;
 }
 
+/* Navigation Items */
 .nav-item {
     display: flex;
     align-items: center;
@@ -29,6 +30,7 @@
     text-decoration: none;
     border-bottom: 1px solid #f0f0f0;
     cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
 .nav-item:hover {
@@ -57,6 +59,7 @@
 
 .nav-item .arrow {
     font-size: 12px;
+    color: #666;
 }
 
 /* Account Controls */
@@ -70,9 +73,9 @@
 }
 
 .account-btn {
-    display: block;              
-    text-align: center;         
-    text-decoration: none;       
+    display: block;          
+    text-align: center;   
+    text-decoration: none;      
     padding: 10px 20px;
     border-radius: 6px;
     border: 1px solid #ddd;
@@ -80,8 +83,8 @@
     cursor: pointer;
     font-size: 14px;
     width: 100%;
-    transition: all 0.2s ease;   
-    color: #555;
+    transition: all 0.2s ease; 
+    color: #555;  
 }
 
 .logout-btn {

@@ -1,0 +1,58 @@
+<link rel="stylesheet" href="../../styles/admin/addCategory.css">
+<div class="page-header">
+    <h1 class="page-title">ADD CATEGORY</h1>
+    <div class="breadcrumb">
+        <a href="/admin/dashboard">Dashboard</a>
+        <span class="breadcrumb-separator">></span> 
+        <a href="/admin/category">Categories</a> 
+        <span class="breadcrumb-separator">></span>
+        Add Category
+    </div>
+</div>
+
+<!-- Form Container -->
+<div class="form-container">
+    <form id="categoryForm" enctype="multipart/form-data">
+        <!-- Category Information -->
+        <div class="form-section">
+            <h3>Category Information</h3>
+
+            <div class="form-group">
+                <label class="form-label" for="categoryName">Category Name *</label>
+                <input type="text" id="categoryName" name="categoryName" class="form-input"
+                    placeholder="Enter category name..." required>
+                <div class="error-message" id="nameError"></div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="description">Description</label>
+                <textarea id="description" name="description" class="form-input form-textarea"
+                    placeholder="Enter category description..."></textarea>
+            </div>
+        </div>
+
+        <!-- Category Status -->
+        <div class="form-section">
+            <h3>Category Status</h3>
+
+            <div class="form-group">
+                <div class="status-group">
+                    <span class="status-label">List this category:</span>
+                    <div class="toggle-container">
+                        <div class="toggle-switch active" id="statusToggle">
+                            <div class="slider"></div>
+                        </div>
+                        <span class="toggle-text listed" id="statusText">Listed</span>
+                    </div>
+                </div>
+                <input type="hidden" id="isListed" name="isListed" value="true">
+            </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Add Category</button>
+            <a href="/admin/categories" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>

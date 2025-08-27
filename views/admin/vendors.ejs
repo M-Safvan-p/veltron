@@ -1,79 +1,79 @@
 <link rel="stylesheet" href="../../styles/admin/vendors.css">
 <!-- Main Content -->
-<div class="main-content">
-    <!-- Page Header -->
-    <div class="page-header">
-        <h1 class="page-title">VENDOR LIST</h1>
-        <div class="breadcrumb">
-            <a href="/admin/dashboard">Dashboard</a> > <a href="/admin/vendors">VENDORS</a>
-        </div>
+<div class="page-header">
+    <h1 class="page-title">VENDOR LIST</h1>
+    <div class="breadcrumb">
+        <a href="/admin/dashboard">Dashboard</a> 
+        <span class="breadcrumb-separator">></span>
+        <a href="/admin/vendors">VENDORS</a>
     </div>
+</div>
 
-    <!-- Controls -->
-    <div class="controls">
-        <div class="search-box">
-            <i class="fas fa-search"></i>
-            <input type="text" placeholder="Search Vendor...">
-        </div>
-        <a href="/admin/vendors/vendor-pendings" class="product-pending-btn">Vendor Pendings</a>
+<!-- Controls -->
+<div class="controls">
+    <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Search Vendor...">
     </div>
+    <a href="/admin/vendors/pendings" class="product-pending-btn">Vendor Pendings</a>
+</div>
 
-    <!-- Vendors Table -->
-    <div class="vendors-table">
-        <table>
-            <thead class="table-header">
-                <tr>
-                    <th>Brand name</th>
-                    <th>Phone</th>
-                    <th>Sales</th>
-                    <th>email</th>
-                    <th>Status</th>
-                    <th>BLOCK/UNBLOCK</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% if (vendors && vendors.length> 0) { %>
-                    <% vendors.forEach((vendor, index)=> { %>
-                        <tr class="table-row">
-                            <td>
-                                <div class="vendor-info">
-                                    <div class="vendor-avatar">
-                                        <%= vendor.brandName[0].toUpperCase() %>
-                                    </div>
-                                    <%= vendor.brandName %>
+<!-- Vendors Table -->
+<div class="vendors-table">
+    <table>
+        <thead class="table-header">
+            <tr>
+                <th>Brand name</th>
+                <th>Phone</th>
+                <th>Sales</th>
+                <th>email</th>
+                <th>Status</th>
+                <th>BLOCK/UNBLOCK</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (vendors && vendors.length> 0) { %>
+                <% vendors.forEach((vendor, index)=> { %>
+                    <tr class="table-row">
+                        <td>
+                            <div class="vendor-info">
+                                <div class="vendor-avatar">
+                                    <%= vendor.brandName[0].toUpperCase() %>
                                 </div>
-                            </td>
-                            <td>
-                                <%= vendor.phoneNumber %>
-                            </td>
-                            <td>
-                                <%= vendor?.sales %>
-                            </td>
-                            <td>
-                                <%= vendor.brandEmail %>
-                            </td>
-                            <td>
-                                <span class="status-badge <%= vendor.isBlocked ? 'status-blocked' : 'status-active' %>">
-                                    <%= vendor.isBlocked ? "Blocked" : "Active" %>
-                                </span>
-                            </td>
-                            <td>
-                                <div class="toggle-switch <%= vendor.isBlocked ? 'active' : 'blocked' %>"
-                                    data-vendor-id="<%= vendor._id %>">
-                                    <div class="slider"></div>
-                                </div>
-                            </td>
+                                <%= vendor.brandName %>
+                            </div>
+                        </td>
+                        <td>
+                            <%= vendor.phoneNumber %>
+                        </td>
+                        <td>
+                            <%= vendor?.sales %>
+                        </td>
+                        <td>
+                            <%= vendor.brandEmail %>
+                        </td>
+                        <td>
+                            <span class="status-badge <%= vendor.isBlocked ? 'status-blocked' : 'status-active' %>">
+                                <%= vendor.isBlocked ? "Blocked" : "Active" %>
+                            </span>
+                        </td>
+                        <td>
+                            <div class="toggle-switch <%= vendor.isBlocked ? 'active' : 'blocked' %>"
+                                data-vendor-id="<%= vendor._id %>">
+                                <div class="slider"></div>
+                            </div>
+                        </td>
 
-                            <td>
-                                <button class="action-btn" onclick="viewVendor('<%= vendor.id %>')">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <% }) %>
-                            <% } else { %>
-                                <!-- Sample Data
+                        <td>
+                            <button class="action-btn" onclick="viewVendor('<%= vendor.id %>')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <% }) %>
+                        <% } else { %>
+                            <!-- Sample Data
                                 <tr class="table-row">
                                     <td>
                                         <div class="vendor-info">
@@ -294,15 +294,14 @@
                                         </button>
                                     </td>
                                 </tr> -->
-                                <% } %>
-            </tbody>
-        </table>
+                            <% } %>
+        </tbody>
+    </table>
 
-        <!-- Pagination
+    <!-- Pagination
         
 
 
         </div> -->
-    </div>
 </div>
 <script src="../../js/script/admin/vendorsList.js"></script>

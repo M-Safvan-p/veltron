@@ -84,7 +84,7 @@
                             confirmButton: "swal-confirm-black"
                         }
                     }).then(() => {
-                        window.location.href = result.redirectUrl;
+                        window.location.replace(result.redirectUrl);
                     });
                 }
             } catch (error) {

@@ -1,0 +1,49 @@
+<link rel="stylesheet" href="../../../styles/partials/vendor/sidebar.css">
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <div>
+        <div class="logo">Veltron</div>
+
+        <a href="/vendor/dashboard" class="nav-item <%= activePage === 'dashboard' ? 'active' : '' %>">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+        </a>
+
+        <a href="/vendor/products" class="nav-item <%= activePage === 'products' ? 'active' : '' %>">
+            <i class="fas fa-box"></i>
+            <span>Products</span>
+            <span class="arrow">›</span>
+        </a>
+
+        <a href="/vendor/orders" class="nav-item <%= activePage === 'orders' ? 'active' : '' %>">
+            <i class="fas fa-clipboard-list"></i>
+            <span>Orders</span>
+            <span class="arrow">›</span>
+        </a>
+
+        <a href="/vendor/category" class="nav-item <%= activePage === 'category' ? 'active' : '' %>">
+            <i class="fas fa-tags"></i>
+            <span>Category</span>
+            <span class="arrow">›</span>
+        </a>
+
+        <a href="/vendor/wallet" class="nav-item <%= activePage === 'wallet' ? 'active' : '' %>">
+            <i class="fas fa-wallet"></i>
+            <span>Wallet</span>
+            <span class="arrow">›</span>
+        </a>
+
+        <a href="/vendor/profile" class="nav-item <%= activePage === 'profile' ? 'active' : '' %>">
+            <i class="fas fa-user"></i>
+            <span>Profile</span>
+            <span class="arrow">›</span>
+        </a>
+    </div>
+
+    <!-- Bottom buttons -->
+    <div class="account-controls">
+    <a href="/vendor/account" class="account-btn">Account</a>
+    <a href="/vendor/logout" class="account-btn logout-btn">Logout</a>
+</div>
+</div>
