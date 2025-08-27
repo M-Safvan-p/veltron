@@ -11,6 +11,18 @@ const loadCategory = async (req, res) => {
   });
 };
 
+const listAndUnlist = async (req, res)=>{
+  try {
+    const id = req.params.id;
+    const {isListed} = req.body;
+    //change
+    await Category.findByIdAndUpdate(id,{isListed})
+    res.json({success:true});
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+}
+
 const loadAddCategory = (req, res) => {
   res.render("admin/addCategory", {
     layout: "layouts/adminLayout",
@@ -56,4 +68,5 @@ module.exports = {
     loadAddCategory,
     loadEditCategory,
     addCategory,
+    listAndUnlist,
 };

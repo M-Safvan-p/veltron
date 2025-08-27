@@ -18,14 +18,20 @@ async function approveVendor(vendorId, button) {
   button.textContent = "Approving...";
 
   try {
-    const response = await axios.post("/admin/vendors/vendor-pendings/approve", { vendorId });
+    const response = await axios.post(
+      "/admin/vendors/vendor-pendings/approve",
+      { vendorId }
+    );
 
     await Swal.fire({
       icon: "success",
       title: "Approved!",
-      text: response.data.message, 
+      text: response.data.message,
       timer: 1500,
       showConfirmButton: false,
+      customClass: {
+        confirmButton: "swal-confirm-black",
+      },
     });
 
     removeVendorRow(vendorId);
@@ -35,7 +41,12 @@ async function approveVendor(vendorId, button) {
     Swal.fire({
       icon: "error",
       title: "Oops...",
-      text: error.response?.data?.message || "Failed to approve vendor. Please try again."
+      text:
+        error.response?.data?.message ||
+        "Failed to approve vendor. Please try again.",
+      customClass: {
+        confirmButton: "swal-confirm-black",
+      },
     });
 
     button.disabled = false;
@@ -63,14 +74,19 @@ async function cancelVendor(vendorId, button) {
   button.textContent = "Canceling...";
 
   try {
-    const response = await axios.post("/admin/vendors/vendor-pendings/cancel", { vendorId });
+    const response = await axios.post("/admin/vendors/vendor-pendings/cancel", {
+      vendorId,
+    });
 
     await Swal.fire({
       icon: "success",
       title: "Canceled!",
-      text: response.data.message, 
+      text: response.data.message,
       timer: 1500,
       showConfirmButton: false,
+      customClass: {
+        confirmButton: "swal-confirm-black",
+      },
     });
 
     removeVendorRow(vendorId);
@@ -80,7 +96,12 @@ async function cancelVendor(vendorId, button) {
     Swal.fire({
       icon: "error",
       title: "Oops...",
-      text: error.response?.data?.message || "Failed to cancel vendor. Please try again.",
+      text:
+        error.response?.data?.message ||
+        "Failed to cancel vendor. Please try again.",
+      customClass: {
+        confirmButton: "swal-confirm-black",
+      },
     });
 
     button.disabled = false;

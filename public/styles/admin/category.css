@@ -19,6 +19,7 @@
     color: #000;
     text-decoration: none;
 }
+
 .breadcrumb-separator {
     margin: 0 8px;
     color: #999;
@@ -116,8 +117,7 @@ table {
     font-size: 14px;
 }
 
-
-
+/* Status Badges */
 .status-badge {
     padding: 4px 12px;
     border-radius: 4px;
@@ -141,20 +141,16 @@ table {
     position: relative;
     width: 60px;
     height: 28px;
-    background: #dc3545;
+    background: #dc3545; /* default inactive */
     border-radius: 28px;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: background 0.3s ease;
     display: flex;
     align-items: center;
 }
 
-.toggle-switch.listed {
-    background: #28a745;
-}
-
-.toggle-switch.unlisted {
-    background: #dc3545;
+.toggle-switch.active {
+    background: #28a745; /* active state */
 }
 
 .toggle-switch .slider {
@@ -165,22 +161,20 @@ table {
     height: 22px;
     background: white;
     border-radius: 50%;
-    transition: transform 0.3s;
+    transition: transform 0.3s ease;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.toggle-switch.listed .slider {
+/* Slide when active */
+.toggle-switch.active .slider {
     transform: translateX(32px);
 }
 
-.toggle-switch::before {
-    content: 'OFF';
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 12px;
+/* Optional: Hover effect */
+.toggle-switch:hover {
+    opacity: 0.9;
 }
+
 /* Action Button */
 .action-btn {
     background: none;
@@ -201,6 +195,7 @@ table {
     color: #007bff;
 }
 
+/* Description Text */
 .description-text {
     max-width: 300px;
     overflow: hidden;

@@ -1,11 +1,12 @@
 <link rel="stylesheet" href="../../styles/admin/category.css">
+
 <!-- Page Header -->
 <div class="page-header">
     <h1 class="page-title">CATEGORY LIST</h1>
     <div class="breadcrumb">
         <a href="/admin/dashboard">Dashboard</a>
         <span class="breadcrumb-separator">></span>
-        <a href="/admin/category"> Categories</a>
+        <a href="/admin/category">Categories</a>
     </div>
 </div>
 
@@ -27,12 +28,10 @@
             </tr>
         </thead>
         <tbody>
-            <% if (category && category.length> 0) { %>
-                <% category.forEach((category, index)=> { %>
+            <% if (category && category.length > 0) { %>
+                <% category.forEach((category) => { %>
                     <tr class="table-row">
-                        <td>
-                            <%= category.name %>
-                        </td>
+                        <td><%= category.name %></td>
                         <td>
                             <div class="description-text" title="<%= category.description %>">
                                 <%= category.description || 'No description available' %>
@@ -45,77 +44,24 @@
                         </td>
                         <td>
                             <div class="toggle-switch <%= category.isListed ? 'active' : 'inactive' %>"
-                                data-category-id="<%= category._id %>">
+                                 data-category-id="<%= category._id %>">
                                 <div class="slider"></div>
                             </div>
                         </td>
                         <td>
-                            <button class="action-btn edit-btn" onclick="editCategory('<%= category._id %>')">
+                            <button class="action-btn edit-btn" onclick="editCategory('<%= category._id %>')" aria-label="Edit Category">
                                 <i class="fas fa-edit"></i>
                             </button>
                         </td>
                     </tr>
-                    <% }) %>
-                        <% } else { %>
-                            <!-- Sample Data for demonstration -->
-                            <tr class="table-row">
-                                <td>
-                                    Watches
-                                </td>
-                                <td>
-                                    <div class="description-text">Premium collection of luxury and casual watches</div>
-                                </td>
-                                <td><span class="status-badge status-listed">Listed</span></td>
-                                <td>
-                                    <div class="toggle-switch active">
-                                        <div class="slider"></div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <button class="action-btn edit-btn">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr class="table-row">
-                                <td>
-                                    Jewelry
-                                </td>
-                                <td>
-                                    <div class="description-text">Beautiful jewelry collection for all occasions</div>
-                                </td>
-                                <td><span class="status-badge status-listed">Listed</span></td>
-                                <td>
-                                    <div class="toggle-switch active">
-                                        <div class="slider"></div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <button class="action-btn edit-btn">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr class="table-row">
-                                <td>
-                                    Accessories
-                                </td>
-                                <td>
-                                    <div class="description-text">Fashion accessories and lifestyle products</div>
-                                </td>
-                                <td><span class="status-badge status-unlisted">Unlisted</span></td>
-                                <td>
-                                    <div class="toggle-switch inactive">
-                                        <div class="slider"></div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <button class="action-btn edit-btn">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <% } %>
+                <% }) %>
+            <% } else { %>
+                <tr>
+                    <td colspan="5" style="text-align:center;">No categories available</td>
+                </tr>
+            <% } %>
         </tbody>
     </table>
 </div>
+
+<script src="../../js/script/admin/category.js"></script>

@@ -30,7 +30,12 @@ router.post("/vendors/pending/reject", adminAuth.checkSession, vendorController.
 
 // ---------- Categories ----------
 router.get("/category", adminAuth.checkSession, categoryController.loadCategory);
-router.get("/category/add-category", adminAuth.checkSession, categoryController.addCategory);
+router.patch("/category/:id",adminAuth.checkSession, categoryController.listAndUnlist);
+router.get("/category/add-category", adminAuth.checkSession, categoryController.loadAddCategory);
 router.post("/category/add-category", adminAuth.checkSession, categoryController.addCategory);
+router.get("/category/edit-category", adminAuth.checkSession, categoryController.loadEditCategory);
+//router.post("/category/edit-category", adminAuth.checkSession, categoryController.editCategory);
+
+
 
 module.exports = router;

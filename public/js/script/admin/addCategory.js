@@ -20,29 +20,39 @@ statusToggle.addEventListener("click", () => {
 });
 
 // Form submission handling
-document.getElementById("categoryForm").addEventListener("submit", async (e) => {
+document
+  .getElementById("categoryForm")
+  .addEventListener("submit", async (e) => {
     e.preventDefault();
-    
+
     const name = document.getElementById("categoryName").value.trim();
     const description = document.getElementById("description").value.trim();
     const isListed = document.getElementById("isListed").value;
-    
-    
-    
+
     try {
-        await axios.post("/admin/category/add-category", { name, description, isListed });
-        
-        Swal.fire({
-            icon: 'success',
-            title: 'Success!',
-            text: 'Category added successfully.',
-            confirmButtonText: 'OK'
-        });
+      await axios.post("/admin/category/add-category", {
+        name,
+        description,
+        isListed,
+      });
+
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: "Category added successfully.",
+        confirmButtonText: "OK",
+        customClass: {
+          confirmButton: "swal-confirm-black",
+        },
+      });
     } catch (error) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: error.response?.data?.message || 'Something went wrong!',
-        });
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.response?.data?.message || "Something went wrong!",
+        customClass: {
+          confirmButton: "swal-confirm-black",
+        },
+      });
     }
-    });
+  });
