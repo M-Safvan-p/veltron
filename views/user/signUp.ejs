@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sign Up</title>
+    <title>User Sign Up</title>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -20,47 +20,43 @@
     <div class="signup-container">
         <h2 class="text-center">Sign up</h2>
 
-        <form action="/signUp" method="POST" id="signUpForm">
+        <form id="signUpForm">
             <!-- Full Name -->
             <div class="mb-2">
                 <label for="fullName" class="form-label">Full name</label>
-                <input type="text" class="form-control" id="fullName" name="fullName" placeholder="Enter your full name"
-                    value="<%= old ? old.fullName : '' %>" />
+                <input type="text" class="form-control" id="fullName" placeholder="Enter your full name" />
             </div>
 
             <!-- Email -->
             <div class="mb-2">
                 <label for="email" class="form-label">Email</label>
-                <input type="text" class="form-control" id="email" name="email" placeholder="Enter your email"
-                    value="<%= old ? old.email : '' %>" />
+                <input type="text" class="form-control" id="email" placeholder="Enter your email" />
             </div>
 
             <!-- Mobile Number -->
             <div class="mb-2">
                 <label for="phoneNumber" class="form-label">Mobile Number</label>
-                <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber"
-                    placeholder="Enter your mobile number" value="<%= old ? old.phoneNumber : '' %>" />
+                <input type="tel" class="form-control" id="phoneNumber" placeholder="Enter your mobile number" />
             </div>
 
             <!-- Password -->
             <div class="mb-2">
                 <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" name="password"
-                    placeholder="Enter your password" value="@Safvan9633" />
+                <input type="password" class="form-control" id="password" value="@Safvan9633"
+                    placeholder="Enter your password" />
             </div>
 
             <!-- Confirm Password -->
             <div class="mb-2">
                 <label for="confirmPassword" class="form-label">Confirm password</label>
-                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
-                    placeholder="Confirm your password" value="@Safvan9633" />
+                <input type="password" class="form-control" id="confirmPassword" value="@Safvan9633"
+                    placeholder="Confirm your password" />
             </div>
 
             <!-- Referral Code -->
             <div class="mb-2">
                 <label for="refferalCode" class="form-label">Referral Code (optional)</label>
-                <input type="text" class="form-control" id="refferalCode" name="refferalCode"
-                    placeholder="Enter referral code if you have one" />
+                <input type="text" class="form-control" id="refferalCode" placeholder="Enter referral code" />
             </div>
 
             <!-- Already have an account -->
@@ -76,20 +72,68 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- validation script  -->
+    <script src="/js/utils/formValidator.js"></script>
+
     <script>
-        // Show alert if server sends a message
-        const serverMessage = '<%= typeof message !== "undefined" ? message : "" %>';
-        if (serverMessage) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: serverMessage,
-                confirmButtonText: "OK",
-                customClass: {
-                    confirmButton: "swal-confirm-black"
+
+        document.getElementById("signUpForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const fullName = document.getElementById("fullName").value;
+            const email = document.getElementById("email").value;
+            const phoneNumber = document.getElementById("phoneNumber").value;
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
+            const refferalCode = document.getElementById("refferalCode").value;
+
+            // Frontend validation
+            const { isValid, messages } = validateSignUpForm(fullName, email, phoneNumber, password, confirmPassword);
+            if (!isValid) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    html: messages.join('<br>'),
+                    customClass: {
+                        confirmButton: "swal-confirm-black"
+                    }
+                });
+                return;
+            }
+
+            try {
+                const response = await axios.post("/signUp", {
+                    fullName,
+                    email,
+                    phoneNumber,
+                    password,
+                    confirmPassword,
+                    refferalCode
+                });
+
+                const result = response.data;
+                if (result.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Signup Successful',
+                        text: 'Redirecting...',
+                        timer: 1500,
+                        showConfirmButton: false,
+                        customClass: { confirmButton: "swal-confirm-black" }
+                    }).then(() => {
+                        window.location.href = result.redirect;
+                    });
                 }
-            });
-        }
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: error.response?.data?.message || "Something went wrong"
+                });
+            }
+        });
     </script>
 </body>
 

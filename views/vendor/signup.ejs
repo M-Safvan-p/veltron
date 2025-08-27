@@ -58,12 +58,11 @@
             <button type="submit" class="signup-button">Sign Up</button>
         </form>
     </div>
-
-    <script type="module">
-        //axios
-        import axios from "https://cdn.jsdelivr.net/npm/axios@1.6.7/+esm";
-        //validation
-        import { validateSignUpForm } from "/js/utils/formValidator.js";
+    <!-- validation script -->
+     <script src="/js/utils/formValidator.js"></script>
+     <!--Axios-->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
 
         // Form validation
         document.querySelector('form').addEventListener('submit', async function (e) {
@@ -76,7 +75,7 @@
             const confirmPassword = document.getElementById('confirmPassword').value;
             console.log(brandEmail, brandName, phoneNumber, password, confirmPassword)
             //frontend validation
-            const { isValid, messages } = validateSignUpForm(brandEmail, brandEmail, phoneNumber, password, confirmPassword);
+            const { isValid, messages } = validateSignUpForm(brandName, brandEmail, phoneNumber, password, confirmPassword);
             if (!isValid) {
                 Swal.fire({
                     icon: 'error',

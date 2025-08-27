@@ -15,16 +15,10 @@ function loadSignUp(req, res) {
 
 const signUp = async (req, res) => {
   try {
-    const {
-      fullName,
-      email,
-      phoneNumber,
-      password,
-      confirmPassword,
-      refferalCode,
-    } = req.body;
-    console.log(req.body)
-    
+    const { fullName, email, phoneNumber, password, confirmPassword, refferalCode } = req.body;
+    console.log(req.body);
+
+    // Validation
     const errorMessage = formValidator.validateSignUp({
       name: fullName,
       email,
@@ -33,55 +27,52 @@ const signUp = async (req, res) => {
       confirmPassword,
     });
     if (errorMessage) {
-      return res.render("user/signUp", {
-        message: errorMessage,
-        old: req.body,
-      });
+      return res.status(400).json({ message: errorMessage });
     }
-
-    // email already exists
+    // Check email exists
     const findUser = await User.findOne({ email });
     if (findUser) {
-      return res.render("user/signUp", {
-        message: "User already exists",
-        old: req.body,
-      });
+      return res.status(400).json({ message: "User already exists" });
     }
-    // phone number already exists
+    // Check phone exists
     const findPhone = await User.findOne({ phoneNumber });
     if (findPhone) {
-      return res.render("user/signUp", {
-        message: "Phone number already exists",
-        old: req.body,
-      });
+      return res.status(400).json({ message: "Phone number already exists" });
     }
-
-    // (Optional) Validate referral code if your business logic requires it
-    // if (refferalCode && refferalCode.length < 6) {
-    //   return res.render("user/signUp", { message: "Invalid referral code" });
-    // }
-
-    // 8. Generate OTP and send email
+    // Generate OTP and send email
     const otp = otpControl.generateOtp();
     const emailSent = await otpControl.sendVerificationEmail(email, otp);
     if (!emailSent) {
-      return res.json("email-error");
+      return res.status(500).json({ message: "Failed to send verification email" });
     }
-
+    console.log("OTP sent", otp);
     // Hash password
-      const passwordHash = await passwordControl.securePassword(password);
+    const passwordHash = await passwordControl.securePassword(password);
+
     // Save OTP & user data in session
     req.session.userOtp = otp;
     req.session.userData = { fullName, email, phoneNumber, passwordHash };
-    req.session.otpExpiry = Date.now() + 1 * 60 * 1000; // OTP valid for 1 minutes
+    req.session.otpExpiry = Date.now() + 1 * 60 * 1000; // OTP valid for 1 minute
 
-    res.render("user/verifyOtp", { email: req.session.userData.email });
-    console.log("OTP sent", otp);
+    return res.status(200).json({
+      success: true,
+      message: "OTP sent to your email",
+      redirect: "/verifyOtp"
+    });
+
   } catch (error) {
-    console.error("signup error", error);
-    res.redirect("pageNotFound");
+    console.error("Signup error", error);
+    res.status(500).json({ message: "Server error" });
   }
 };
+
+const loadVerifyOtp = (req, res) => {
+  if (!req.session.userData) {
+      return res.redirect('/signUp');
+  }
+  res.render("user/verifyOtp",{email:req.session.userData.email});
+};
+
 
 const verifyOtp = async (req, res) => {
   try {
@@ -180,7 +171,6 @@ const resendOtp = async (req,res) => {
   
 }
 
-
 const loadLogIn = (req, res) => {
   try {
     return res.render("user/logIn", { message: null });
@@ -193,37 +183,35 @@ const loadLogIn = (req, res) => {
 const logIn = async (req, res) => {
   try {
     const { email, password } = req.body;
-    //validation
+    // backend validation
     const errorMessage = formValidator.validateLogIn(email, password);
-    console.log("Validation result:", errorMessage);
     if (errorMessage) {
       return res.status(400).json({ success: false, message: errorMessage });
     }
-    // Find user by email
+    // Find user
     const user = await User.findOne({ email });
-    console.log(user);//user data
     if (!user) {
       return res.status(400).json({ success: false, message: "User not found." });
     }
     // Check password
-    const isMatch = await passwordControl.comparePassword(password,user.password)
+    const isMatch = await passwordControl.comparePassword(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ success: false, message: "Incorrect password." });
     }
-
-    // Set session 
+    // Set session and respond
     req.session.user = user._id;
 
-    // res.redirect('/home')
-    return res.json({ success: true, redirectUrl: "/home" });
+    return res.status(200).json({ success: true, redirectUrl: "/home" });
+
   } catch (error) {
     console.error("Login error:", error);
     return res.status(500).json({
       success: false,
-      message: "An error occurred during login. Please try again.",
+      message: "Something went wrong. Please try again later.",
     });
   }
 };
+
 
 const loadForgotPassword = (req, res) => {
   try {
@@ -238,6 +226,7 @@ const loadForgotPassword = (req, res) => {
 module.exports = {
   loadSignUp,
   signUp,
+  loadVerifyOtp,
   verifyOtp,
   resendOtp,
   loadLogIn,

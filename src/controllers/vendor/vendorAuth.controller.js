@@ -62,9 +62,9 @@ const signup = async (req, res) => {
 };
 
 const loadVerifyOtp = (req, res) => {
-  // if (!req.session.vendorData) {
-  //     return res.redirect('/vendor/signup');
-  // }
+  if (!req.session.vendorData) {
+      return res.redirect('/vendor/signup');
+  }
   res.render("vendor/verifyOtp", { email: req.session.vendorData.brandEmail });
 };
 

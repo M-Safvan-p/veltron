@@ -13,7 +13,7 @@ router.get("/pageNotFound", userPageController.pageNotFound);
 // ----------------- Auth Routes -----------------
 router.get("/signUp", noCache, userAuthController.loadSignUp);
 router.post("/signUp", userAuthController.signUp);
-
+router.get("/verifyOtp", noCache, userAuthController.loadVerifyOtp)
 router.post("/verifyOtp", noCache, userAuthController.verifyOtp);
 router.post("/resendOtp", noCache, userAuthController.resendOtp);
 
