@@ -23,5 +23,10 @@ router.post("/login", vendorAuthController.login);
 
 
 router.get("/dashboard", vendorAuth.checkSession,vendorPageController.loadDashboard);
+router.get("/products", vendorAuth.checkSession,vendorPageController.loadProducts);
+router.get("/add-product", vendorAuth.checkSession,vendorPageController.loadAddProduct);
+
+
+
 
 module.exports = router;

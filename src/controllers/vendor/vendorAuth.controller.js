@@ -94,8 +94,7 @@ const verifyOtp = async (req, res) => {
     //compare OTP
     if (fullOtp == req.session.vendorOtp) {
       // Create new vendor
-      const { brandName, brandEmail, phoneNumber, hashedPassword } =
-        req.session.vendorData;
+      const { brandName, brandEmail, phoneNumber, hashedPassword } = req.session.vendorData;
       const newVendor = new Vendor({
         brandName,
         brandEmail,
@@ -160,7 +159,10 @@ const login = async (req, res) => {
       return res.status(400).json({message:"We regret to inform you that your account request has been rejected."});
     }
 
-    return res.status(200).json({ success:true, redirectUrl: "/vendor/home" });
+    //set session 
+    req.session.vendor = vendor._id;
+
+    return res.status(200).json({ success:true, redirectUrl: "/vendor/dashboard" });
   } catch (error) {
     return res
       .status(500)
