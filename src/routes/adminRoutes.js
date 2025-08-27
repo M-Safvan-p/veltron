@@ -33,8 +33,8 @@ router.get("/category", adminAuth.checkSession, categoryController.loadCategory)
 router.patch("/category/:id",adminAuth.checkSession, categoryController.listAndUnlist);
 router.get("/category/add-category", adminAuth.checkSession, categoryController.loadAddCategory);
 router.post("/category/add-category", adminAuth.checkSession, categoryController.addCategory);
-router.get("/category/edit-category", adminAuth.checkSession, categoryController.loadEditCategory);
-//router.post("/category/edit-category", adminAuth.checkSession, categoryController.editCategory);
+router.get("/category/edit-category/:id", adminAuth.checkSession, categoryController.loadEditCategory);
+router.put("/category/edit-category/:id", adminAuth.checkSession, categoryController.editCategory);
 
 
 

@@ -34,7 +34,6 @@ const loadAddCategory = (req, res) => {
 const addCategory = async (req, res)=> {
   try {
     const { name, description, isListed } = req.body;
-    console.log(name);
     //validationn
     const errorMessage = formValidator.validateCategory(name,description,isListed);
     if(errorMessage)return res.status(400).json({message:errorMessage});
@@ -47,21 +46,44 @@ const addCategory = async (req, res)=> {
   
     await saveCategory.save();
     
-    console.log("done")
-    return res.status(200).json({message:"Category added successfully"})
+    return res.status(200).json({success:true})
   } catch (error) {
+    console.error("Error add category:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 }
 
 const loadEditCategory = async (req, res) => {
-  res.render("admin/editCategory", {
-    layout: "layouts/adminLayout",
-    activePage: "category",
-    admin:req.admin,
-  });
+  try {
+    const id = req.params.id;
+    const category = await Category.findById(id);
+    res.render("admin/editCategory", {
+      layout: "layouts/adminLayout",
+      activePage: "category",
+      admin:req.admin,
+      category,
+    });
+  } catch (error) {
+    console.error("Error loading edit category page:", error);
+    res.status(500).send("Internal Server Error");
+  }
 }; 
 
+const editCategory = async (req,res) => {
+  try {
+    const id = req.params.id;
+    const {name, description, isListed} = req.body;
+    //validation
+    const errorMessage = formValidator.validateCategory(name, description, isListed);
+    if(errorMessage)return res.status(400).json({message:errorMessage});
+     
+    await Category.findByIdAndUpdate(id,{name, description, isListed});
+    res.status(200).json({success:true, redirectUrl: "/admin/category" })
+  } catch (error) {
+    console.error("Error edit category:", error);
+    res.status(500).send("Internal Server Error");
+  }
+}
 
 module.exports = {
     loadCategory,
@@ -69,4 +91,5 @@ module.exports = {
     loadEditCategory,
     addCategory,
     listAndUnlist,
+    editCategory,
 };
