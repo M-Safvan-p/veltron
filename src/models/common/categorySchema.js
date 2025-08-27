@@ -9,8 +9,9 @@ const categorySchema = new mongoose.Schema({
     },
     description: {
         type: String,
+        required:false
     },
-    isActive: {
+    isListed: {
         type: Boolean,
         default: true
     },
@@ -18,10 +19,6 @@ const categorySchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    categoryOffer:{
-        type:Number,
-        default:0,
-    }
 }, { timestamps: true }); 
 
 module.exports = mongoose.model("Category", categorySchema);

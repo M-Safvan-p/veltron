@@ -12,7 +12,7 @@
 
 <!-- Form Container -->
 <div class="form-container">
-    <form id="categoryForm" enctype="multipart/form-data">
+    <form id="categoryForm">
         <!-- Category Information -->
         <div class="form-section">
             <h3>Category Information</h3>
@@ -25,12 +25,11 @@
             </div>
 
             <div class="form-group">
-                <label class="form-label" for="description">Description</label>
+                <label class="form-label" for="description">Description (Optional)</label>
                 <textarea id="description" name="description" class="form-input form-textarea"
                     placeholder="Enter category description..."></textarea>
             </div>
         </div>
-
         <!-- Category Status -->
         <div class="form-section">
             <h3>Category Status</h3>
@@ -52,7 +51,8 @@
         <!-- Form Actions -->
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">Add Category</button>
-            <a href="/admin/categories" class="btn btn-secondary">Cancel</a>
+            <a href="/admin/Category" class="btn btn-secondary">Cancel</a>
         </div>
     </form>
 </div>
+<script src="../../js/script/admin/addCategory.js"></script>
