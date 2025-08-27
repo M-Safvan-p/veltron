@@ -39,6 +39,19 @@ app.use("/", require("./routes/userRoute"));
 app.use("/admin", require("./routes/adminRoutes"));
 app.use("/vendor", require("./routes/vendorRoute"));
 
+//pagenot found
+app.use((req, res) => {
+    const url = req.originalUrl;
+
+    if (url.startsWith("/vendor")) {
+        return res.status(404).render("errors/vendor404");
+    } else if (url.startsWith("/user")) {
+        return res.status(404).render("errors/user404");
+    } else if (url.startsWith("/admin")) {
+        return res.status(404).render("errors/admin404");
+    }
+});
+
 // Start Server
 app.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
