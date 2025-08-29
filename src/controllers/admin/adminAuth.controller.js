@@ -1,6 +1,9 @@
 const Admin = require("../../models/admin/adminSchema");
 const formValidator = require("../../helpers/formValidator");
 const passwordControl = require("../../helpers/passwordControl");
+const HttpStatus = require("../../constants//statusCodes");
+const Messages = require("../../constants/messages");
+const {success, error:errorResponse} = require("../../helpers/responseHelper");
 
 const loadLogIn = (req, res) => {
   res.render("admin/login.ejs");
@@ -12,29 +15,37 @@ const login = async (req, res) => {
     //validation
     const errorMessage = formValidator.validateLogIn(email, password);
     if (errorMessage) {
-      return res.status(400).json({ success: false, message: errorMessage });
+      return errorResponse(res, HttpStatus.BAD_REQUEST, errorMessage)
     }
 
     //check admin
     const admin = await Admin.findOne({ email });
-    if (!admin) return res.status(400).json({ message: "Invalid credentials" });
+    if (!admin) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.INVALID_CREDENTIALS);
     const isMatch = await passwordControl.comparePassword(
       password,
       admin.password
     );
-    if (!isMatch)return res.status(400).json({ success: false, message: "Invalid credentials" });
+    if (!isMatch)return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.INVALID_CREDENTIALS)
     
     //set session
     req.session.admin = true;
-    return res
-      .status(200)
-      .json({ success: true, redirectUrl: "/admin/dashboard" });
+    return success(res, HttpStatus.OK, Messages.LOGIN_SUCCESS, {redirectUrl:"/admin/dashboard"} );  
   } catch (error) {
-    return res.status(500).json({
-      message: "An error occurred during login. Please try again.",
-    });
+    return errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
   }
 };
+
+const logout = (req,res)=>{
+  try {
+    req.session.admin=null;
+    delete req.session.admin;
+    res.clearCookie("connect.sid");
+    res.setHeader('Cache-Control', 'no-store');
+    res.redirect("/admin/login")
+  } catch (error) {
+    res.redirect("/admin/dashboard")
+  }
+}
 
 
 
@@ -44,4 +55,5 @@ const login = async (req, res) => {
 module.exports = {
   loadLogIn,
   login,
+  logout,
 };

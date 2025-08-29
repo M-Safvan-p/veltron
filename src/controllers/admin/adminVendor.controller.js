@@ -1,12 +1,14 @@
-
 const Vendor = require("../../models/vendor/vendorSchema");
+const {success, error:errorResponse} = require("../../helpers/responseHelper");
+const HttpStatus = require("../../constants/statusCodes");
+const PermissionStatus = require("../../constants/permissionStatus");
+const Messages = require("../../constants/messages");
 
 const loadVendors = async (req, res) => {
   try {
-    const vendors = await Vendor.find({ permissionStatus: "approved" });
+    const vendors = await Vendor.find({ permissionStatus: PermissionStatus.APPROVED });
 
     console.log("all vendors:", vendors);
-    console.log(req.admin);
 
     res.render("admin/vendors", {
       layout: "layouts/adminLayout",
@@ -14,12 +16,15 @@ const loadVendors = async (req, res) => {
       admin:req.admin,
       vendors,
     });
-  } catch (error) {}
+  } catch (error) {
+    console.log("Vendors page load Error",error);
+    return errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
+  }
 };
 
 const loadVendorsPendings = async (req, res) => {
   try {
-    const vendors = await Vendor.find({ permissionStatus: "pending" })
+    const vendors = await Vendor.find({ permissionStatus: PermissionStatus.PENDING})
 
     console.log("all vendors", vendors);
 
@@ -29,46 +34,44 @@ const loadVendorsPendings = async (req, res) => {
       admin:req.admin,
       vendors,
     });
-  } catch (error) {}
+  } catch (error) {
+    console.log("Vendors pending page load Error",error);
+    return errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
+  }
 };
 
 const approveVendor = async (req, res) => {
   try {
     const { vendorId } = req.body;
 
-    if (!vendorId) {
-      return res.status(400).json({ message: "Vendor ID is required" });
-    }
+    if (!vendorId) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.VENDOR_ID_REQUIRED);
 
     const vendor = await Vendor.findById(vendorId);
-    if (!vendor) {
-      return res.status(404).json({ message: "Vendor not found" });
-    }
+    if (!vendor) return errorResponse(res, HttpStatus.NOT_FOUND, Messages.VENDOR_NOT_FOUND);
 
-    vendor.permissionStatus = "approved";
+    vendor.permissionStatus = PermissionStatus.APPROVED;
     await vendor.save();
-
-    return res.status(200).json({ message: "Vendor approved successfully" });
+    success(res, HttpStatus.OK, Messages.VENDOR_APPROVED_SUCCESS);
   } catch (error) {
     console.error("Error approving vendor:", error);
-    return res.status(500).json({ message: "Internal server error" });
+    return errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
   }
 };
 
 const cancelVendor = async (req,res)=>{
   try {
     const { vendorId} = req.body;
-    if(!vendorId)return res.status(400).json({message:"Vendor ID is required"});
+    if(!vendorId) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.VENDOR_ID_REQUIRED);
 
     const vendor = await Vendor.findById(vendorId);
-    if(!vendor)return res.status(400).json({message:"Vendor not found"});
+    if(!vendor)return errorResponse(res, HttpStatus.NOT_FOUND, Messages.VENDOR_NOT_FOUND);
     //cancel
-    vendor.permissionStatus = "rejected";
+    vendor.permissionStatus = PermissionStatus.REJECTED;
     await vendor.save();
 
-    return res.status(200).json({message:"Vendor rejected successfully"});
+    return success(res, HttpStatus.OK, Messages.VENDOR_REJECTED_SUCCESS);
   } catch (error) {
-    return res.status(500).json({message:"Internal server error"})
+    return errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
   }
 }
 

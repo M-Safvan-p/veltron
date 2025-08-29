@@ -1,5 +1,8 @@
 const Category = require("../../models/common/categorySchema");
 const formValidator = require("../../helpers/formValidator");
+const HttpStatus = require("../../constants//statusCodes");
+const Messages = require("../../constants/messages");
+const {success, error: errorResponse} = require("../../helpers/responseHelper");
 
 const loadCategory = async (req, res) => {
   const category = await Category.find({});
@@ -17,9 +20,9 @@ const listAndUnlist = async (req, res)=>{
     const {isListed} = req.body;
     //change
     await Category.findByIdAndUpdate(id,{isListed})
-    res.json({success:true});
+    return success(res, HttpStatus.OK)
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
   }
 }
 
@@ -38,11 +41,11 @@ const addCategory = async (req, res)=> {
     const normalised = name.trim().toLowerCase();
 
     const findCategory = await Category.findOne({name:normalised});
-    if(findCategory)return res.status(400).json({message:"Category already exist"});
+    if(findCategory)return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.CATEGORY_ALREADY_EXISTS);
 
     //validationn
     const errorMessage = formValidator.validateCategory(normalised,description,isListed);
-    if(errorMessage)return res.status(400).json({message:errorMessage});
+    if(errorMessage)return errorResponse(res, HttpStatus.BAD_REQUEST, errorMessage);
 
     const saveCategory = new Category({
       name:normalised,
@@ -52,10 +55,10 @@ const addCategory = async (req, res)=> {
   
     await saveCategory.save();
     
-    return res.status(200).json({success:true, redirectUrl:"/admin/category"})
+    return success(res, HttpStatus.CREATED, Messages.CATEGORY_ADDED, {redirectUrl:"/admin/category"});
   } catch (error) {
     console.error("Error add category:", error);
-    return res.status(500).json({ message: "Internal server error" });
+    return errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.INTERNAL_SERVER_ERROR);
   }
 }
 
@@ -71,7 +74,7 @@ const loadEditCategory = async (req, res) => {
     });
   } catch (error) {
     console.error("Error loading edit category page:", error);
-    res.status(500).send("Internal Server Error");
+    return errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.INTERNAL_SERVER_ERROR);
   }
 }; 
 
@@ -79,17 +82,18 @@ const editCategory = async (req,res) => {
   try {
     const id = req.params.id;
     const {name, description, isListed} = req.body;
+    //validation
+    const errorMessage = formValidator.validateCategory(name, description, isListed);
+    if(errorMessage)return errorResponse(res, HttpStatus.BAD_REQUEST, errorMessage);
+
     //for case sensitive
     const normalised = name.trim().toLowerCase();
-    //validation
-    const errorMessage = formValidator.validateCategory(normalised, description, isListed);
-    if(errorMessage)return res.status(400).json({message:errorMessage});
      
-    await Category.findByIdAndUpdate(id,{name:normalised, description, isListed});
-    res.status(200).json({success:true, redirectUrl: "/admin/category" })
+    await Category.findByIdAndUpdate(id,{name:normalised, description, isListed:isListed==="true"});
+    return success(res, HttpStatus.OK, Messages.CATEGORY_UPDATED, {redirectUrl: "/admin/category" });
   } catch (error) {
     console.error("Error edit category:", error);
-    res.status(500).send("Internal Server Error");
+    return errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
   }
 }
 
