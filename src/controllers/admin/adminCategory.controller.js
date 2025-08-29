@@ -34,12 +34,18 @@ const loadAddCategory = (req, res) => {
 const addCategory = async (req, res)=> {
   try {
     const { name, description, isListed } = req.body;
+    //for case sensitive
+    const normalised = name.trim().toLowerCase();
+
+    const findCategory = await Category.findOne({name:normalised});
+    if(findCategory)return res.status(400).json({message:"Category already exist"});
+
     //validationn
     const errorMessage = formValidator.validateCategory(name,description,isListed);
     if(errorMessage)return res.status(400).json({message:errorMessage});
-  
+
     const saveCategory = new Category({
-      name,
+      name:normalised,
       description,
       isListed:isListed == "true"
     })
