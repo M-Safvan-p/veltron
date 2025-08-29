@@ -1,3 +1,20 @@
+// Attach event listeners after DOM load
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".btn-approve").forEach((button) => {
+    button.addEventListener("click", () => {
+      const vendorId = button.getAttribute("data-vendor-id");
+      approveVendor(vendorId, button);
+    });
+  });
+
+  document.querySelectorAll(".btn-cancel").forEach((button) => {
+    button.addEventListener("click", () => {
+      const vendorId = button.getAttribute("data-vendor-id");
+      cancelVendor(vendorId, button);
+    });
+  });
+});
+
 // Approve Vendor
 async function approveVendor(vendorId, button) {
   const originalText = button.textContent;
@@ -19,7 +36,7 @@ async function approveVendor(vendorId, button) {
 
   try {
     const response = await axios.post(
-      "/admin/vendors/vendor-pendings/approve",
+      "/admin/vendors/pendings/approve",
       { vendorId }
     );
 
@@ -74,9 +91,7 @@ async function cancelVendor(vendorId, button) {
   button.textContent = "Canceling...";
 
   try {
-    const response = await axios.post("/admin/vendors/vendor-pendings/cancel", {
-      vendorId,
-    });
+    const response = await axios.post("/admin/vendors/pendings/reject", {vendorId});
 
     await Swal.fire({
       icon: "success",
@@ -140,19 +155,3 @@ function checkEmptyState() {
   }
 }
 
-// Attach event listeners after DOM load
-document.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll(".btn-approve").forEach((button) => {
-    button.addEventListener("click", () => {
-      const vendorId = button.getAttribute("data-vendor-id");
-      approveVendor(vendorId, button);
-    });
-  });
-
-  document.querySelectorAll(".btn-cancel").forEach((button) => {
-    button.addEventListener("click", () => {
-      const vendorId = button.getAttribute("data-vendor-id");
-      cancelVendor(vendorId, button);
-    });
-  });
-});

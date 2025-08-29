@@ -14,21 +14,24 @@ router.use((req, res, next) => {
   res.locals.layout = "layouts/adminLayout";
   next();
 });
+//application level no cache
+router.use(noCache)
 
-// ---------- Auth ----------
-router.get("/login", noCache, adminAuth.isLogin, authController.loadLogIn);
+//  Auth 
+router.get("/login",  adminAuth.isLogin, authController.loadLogIn);
 router.post("/login", authController.login);
+router.get("/logout", authController.logout);
 
-// ---------- Dashboard ----------
+//  Dashboard 
 router.get("/dashboard", adminAuth.checkSession, dashboardController.loadDashboard);
 
-// ---------- Vendors ----------
+//  Vendors 
 router.get("/vendors", adminAuth.checkSession, vendorController.loadVendors);
 router.get("/vendors/pendings", adminAuth.checkSession, vendorController.loadVendorsPendings);
-router.post("/vendors/pending/approve", adminAuth.checkSession, vendorController.approveVendor);
-router.post("/vendors/pending/reject", adminAuth.checkSession, vendorController.cancelVendor);
+router.post("/vendors/pendings/approve", adminAuth.checkSession, vendorController.approveVendor);
+router.post("/vendors/pendings/reject", adminAuth.checkSession, vendorController.cancelVendor);
 
-// ---------- Categories ----------
+//  Categories 
 router.get("/category", adminAuth.checkSession, categoryController.loadCategory);
 router.patch("/category/:id",adminAuth.checkSession, categoryController.listAndUnlist);
 router.get("/category/add-category", adminAuth.checkSession, categoryController.loadAddCategory);

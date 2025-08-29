@@ -14,14 +14,16 @@ router.use((req, res, next) => {
     res.locals.layout = "layouts/vendorLayout"; 
     next();
 });
-//Authentication
-router.get("/signup", noCache, vendorAuth.isLogin, vendorAuthController.loadSignup);
+// no cache
+router.use(noCache)
+// Authentication routes
+router.get("/signup", vendorAuth.isLogin, vendorAuthController.loadSignup);
 router.post("/signup", vendorAuthController.signup);
-router.get("/verify-otp", noCache, vendorAuth.isLogin, vendorAuthController.loadVerifyOtp);
+router.get("/verify-otp", vendorAuth.isLogin, vendorAuthController.loadVerifyOtp);
 router.post("/verify-otp", vendorAuthController.verifyOtp);
-router.get("/login", noCache, vendorAuth.isLogin, vendorAuthController.loadLogin);
+router.get("/login", vendorAuth.isLogin, vendorAuthController.loadLogin);
 router.post("/login", vendorAuthController.login);
-
+router.get("/logout", vendorAuthController.logout);
 
 router.get("/dashboard", vendorAuth.checkSession,vendorPageController.loadDashboard);
 
