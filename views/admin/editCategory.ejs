@@ -21,7 +21,7 @@
             <div class="form-group">
                 <label class="form-label" for="categoryName">Category Name *</label>
                 <input type="text" id="categoryName" name="categoryName" class="form-input"
-                    placeholder="Enter category name..." value="<%= category.name %>" >
+                    placeholder="Enter category name..." value="<%= category.name.charAt(0).toUpperCase() + category.name.slice(1) %>" >
                 <div class="error-message" id="nameError"></div>
             </div>
 

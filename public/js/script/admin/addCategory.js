@@ -30,7 +30,7 @@ document
     const isListed = document.getElementById("isListed").value;
 
     try {
-      await axios.post("/admin/category/add-category", {
+      const response = await axios.post("/admin/category/add-category", {
         name,
         description,
         isListed,
@@ -44,7 +44,9 @@ document
         customClass: {
           confirmButton: "swal-confirm-black",
         },
-      });
+      }).then(()=>{
+        window.location.href=response.data.redirectUrl;
+      })
     } catch (error) {
       Swal.fire({
         icon: "error",

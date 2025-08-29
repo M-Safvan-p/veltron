@@ -41,7 +41,7 @@ const addCategory = async (req, res)=> {
     if(findCategory)return res.status(400).json({message:"Category already exist"});
 
     //validationn
-    const errorMessage = formValidator.validateCategory(name,description,isListed);
+    const errorMessage = formValidator.validateCategory(normalised,description,isListed);
     if(errorMessage)return res.status(400).json({message:errorMessage});
 
     const saveCategory = new Category({
@@ -52,7 +52,7 @@ const addCategory = async (req, res)=> {
   
     await saveCategory.save();
     
-    return res.status(200).json({success:true})
+    return res.status(200).json({success:true, redirectUrl:"/admin/category"})
   } catch (error) {
     console.error("Error add category:", error);
     return res.status(500).json({ message: "Internal server error" });
@@ -79,11 +79,13 @@ const editCategory = async (req,res) => {
   try {
     const id = req.params.id;
     const {name, description, isListed} = req.body;
+    //for case sensitive
+    const normalised = name.trim().toLowerCase();
     //validation
-    const errorMessage = formValidator.validateCategory(name, description, isListed);
+    const errorMessage = formValidator.validateCategory(normalised, description, isListed);
     if(errorMessage)return res.status(400).json({message:errorMessage});
      
-    await Category.findByIdAndUpdate(id,{name, description, isListed});
+    await Category.findByIdAndUpdate(id,{name:normalised, description, isListed});
     res.status(200).json({success:true, redirectUrl: "/admin/category" })
   } catch (error) {
     console.error("Error edit category:", error);

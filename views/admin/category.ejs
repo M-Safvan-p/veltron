@@ -31,7 +31,7 @@
             <% if (category && category.length > 0) { %>
                 <% category.forEach((category) => { %>
                     <tr class="table-row">
-                        <td><%= category.name %></td>
+                        <td><%= category.name.charAt(0).toUpperCase() + category.name.slice(1) %></td>
                         <td>
                             <div class="description-text" title="<%= category.description %>">
                                 <%= category.description || 'No description available' %>
