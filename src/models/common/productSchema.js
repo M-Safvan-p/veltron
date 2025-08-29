@@ -50,9 +50,14 @@ const productSchema = new mongoose.Schema(
     ],
     specification: [
       {
-        name: { type: String, required: true },
-        value: { type: String, required: true },
+        StrapStyle: { type: String, required: true },
+        Weight: { type: String, required: true },
+        DialType: { type: String, required: true },
+        AdditionalInformation: { type: String, required: true },
+        warrantyPeriod: { type: String, required: true },
+        Durability: { type: String, required: true },
       },
+      
     ],
   },
   { timestamps: true }

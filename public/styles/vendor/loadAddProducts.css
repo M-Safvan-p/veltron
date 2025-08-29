@@ -1,0 +1,313 @@
+/* Product Form Specific Styles */
+.product-form-container {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* Breadcrumb - Updated to grey */
+.breadcrumb {
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #666;
+}
+
+.breadcrumb a {
+    color: #666;
+    /* Changed to grey */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.breadcrumb a:hover {
+    color: #999;
+    /* Lighter grey on hover */
+}
+
+/* Container */
+.narrow-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+/* Card */
+.product-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 24px;
+    padding: 24px;
+}
+
+/* Card Title */
+.card-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Form Group */
+.form-group {
+    margin-bottom: 20px;
+}
+
+/* Form Label */
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #555;
+}
+
+/* Form Input */
+.form-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #333;
+    background-color: #fff;
+}
+
+/* Form Textarea */
+.form-textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* Form Select */
+.form-select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: #fff;
+    transition: border-color 0.3s ease;
+}
+
+.form-select:focus {
+    outline: none;
+    border-color: #333;
+}
+
+/* Radio Button Styling */
+.form-group label input[type="radio"] {
+    margin-right: 8px;
+    margin-left: 16px;
+}
+
+.form-group label:first-of-type input[type="radio"] {
+    margin-left: 0;
+}
+
+/* Price Row */
+.price-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+/* Image Upload Section */
+.image-upload-section {
+    margin: 20px 0;
+}
+
+/* Variant Container */
+.variant-container {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px solid #eee;
+}
+
+.variant-container:first-child {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+}
+
+/* Variant Header */
+.variant-container h4 {
+    margin: 0;
+    color: #333;
+    font-size: 16px;
+}
+
+/* Variant Images */
+.variant-images {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 20px;
+}
+
+/* Image Upload */
+.image-upload {
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    background-color: #fafafa;
+    transition: background-color 0.3s ease;
+    position: relative;
+}
+
+.image-upload:hover,
+.image-upload.dragover {
+    background-color: #f0f0f0;
+    border-color: #333;
+}
+
+/* Upload Icon */
+.upload-icon {
+    width: 32px;
+    height: 32px;
+    margin: 0 auto 8px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.upload-icon svg {
+    width: 16px;
+    height: 16px;
+    color: #666;
+}
+
+/* Upload Text */
+.upload-text {
+    color: #666;
+    margin-bottom: 12px;
+    font-size: 12px;
+    word-break: break-word;
+}
+
+/* Upload Button - Changed to black */
+.upload-btn {
+    background-color: #000;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background-color 0.3s ease;
+}
+
+.upload-btn:hover {
+    background-color: #333;
+}
+
+/* Specifications Grid */
+.specifications-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+/* Buttons - Updated to black */
+.custom-btn {
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.custom-btn-primary {
+    background-color: #000;
+    color: #fff;
+}
+
+.custom-btn-primary:hover {
+    background-color: #333;
+    color: #fff;
+}
+
+.custom-btn-secondary {
+    background-color: #000;
+    color: #fff;
+    border: 1px solid #000;
+}
+
+.custom-btn-secondary:hover {
+    background-color: #333;
+    color: #fff;
+}
+
+/* Page Title */
+.page-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #333;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .price-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .variant-images {
+        grid-template-columns: 1fr;
+    }
+
+    .specifications-grid {
+        grid-template-columns: 1fr;
+        max-width: 100%;
+    }
+
+    .narrow-content {
+        padding: 0 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .product-card {
+        padding: 16px;
+    }
+
+    .custom-btn {
+        padding: 10px 16px;
+        font-size: 12px;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+        font-size: 12px;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+}

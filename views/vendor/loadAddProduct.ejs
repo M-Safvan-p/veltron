@@ -1,0 +1,378 @@
+<link rel="stylesheet" href="/styles/vendor/loadAddProducts.css">
+<div class="product-form-container">
+    <!-- Product Details Title -->
+    <h1 class="page-title">Product Details</h1>
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+        <a href="/vendor/dashboard">Dashboard</a> >
+        <a href="/vendor/products">Products</a> >
+        <a href="/vendor/products/add-product">Add Product</a>
+    </nav>
+
+    <!-- Product Details Card -->
+    <form action="/vendor/products/add-product" method="POST" enctype="multipart/form-data" id="add-product-form">
+        <!-- Product Details -->
+        <div class="narrow-content">
+            <div class="product-card">
+                <div class="form-group">
+                    <label class="form-label" for="name">Product Name</label>
+                    <input type="text" id="name" name="name" class="form-input" required aria-label="Product name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="description">Description</label>
+                    <textarea id="description" name="description" class="form-input form-textarea" required aria-label="Product description"></textarea>
+                </div>
+                <div class="price-row">
+                    <div class="form-group">
+                        <label class="form-label" for="price">Price</label>
+                        <input type="number" id="price" name="price" class="form-input" step="0.01" min="0" required aria-label="Product price">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="discountedPrice">Discount Price</label>
+                        <input type="number" id="discountedPrice" name="discountedPrice" class="form-input" step="0.01" min="0" aria-label="Discounted price">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Listing Status</label>
+                        <label><input type="radio" name="isListed" value="true" checked aria-label="List product"> Listed</label>
+                        <label><input type="radio" name="isListed" value="false" aria-label="Unlist product"> Unlisted</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="category">Select Category</label>
+                    <select id="category" name="category" class="form-select" required aria-label="Product category">
+                        <option value="" disabled selected>Select a category</option>
+                        <% if (typeof categories !== 'undefined' && categories.length > 0) { %>
+                            <% categories.forEach(category => { %>
+                                <option value="<%= category._id %>"><%= category.name %></option>
+                            <% }) %>
+                        <% } else { %>
+                            <option value="electronics">Electronics</option>
+                            <option value="clothing">Clothing</option>
+                            <option value="books">Books</option>
+                            <option value="home">Home & Garden</option>
+                            <option value="sports">Sports</option>
+                        <% } %>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Variants -->
+        <div class="narrow-content">
+            <div class="product-card">
+                <h3 class="card-title">Variant Images</h3>
+                <div class="image-upload-section">
+                    <div class="variant-container" id="variant-0">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                            <h4>Variant 1</h4>
+                            <div style="display: flex; gap: 12px;">
+                                <input type="text" placeholder="Color name " name="variants[0][color]" class="form-input" required aria-label="Color for variant 1">
+                                <button type="button" class="custom-btn custom-btn-secondary" onclick="removeVariant(0)" aria-label="Remove variant 1">Remove</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Product Images (3 images)</label>
+                            <div class="variant-images">
+                                <div class="image-upload">
+                                    <div class="upload-icon">
+                                        <i class="fas fa-image"></i>
+                                    </div>
+                                    <div class="upload-text">Image 1</div>
+                                    <input type="file" name="variants[0][images][]" accept="image/*" style="display: none;" id="variantImage-0-1" required aria-label="Image 1 for variant 1">
+                                    <button type="button" class="upload-btn" onclick="document.getElementById('variantImage-0-1').click()" aria-label="Browse image 1 for variant 1">BROWSE IMAGE</button>
+                                </div>
+                                <div class="image-upload">
+                                    <div class="upload-icon">
+                                        <i class="fas fa-image"></i>
+                                    </div>
+                                    <div class="upload-text">Image 2</div>
+                                    <input type="file" name="variants[0][images][]" accept="image/*" style="display: none;" id="variantImage-0-2" aria-label="Image 2 for variant 1">
+                                    <button type="button" class="upload-btn" onclick="document.getElementById('variantImage-0-2').click()" aria-label="Browse image 2 for variant 1">BROWSE IMAGE</button>
+                                </div>
+                                <div class="image-upload">
+                                    <div class="upload-icon">
+                                        <i class="fas fa-image"></i>
+                                    </div>
+                                    <div class="upload-text">Image 3</div>
+                                    <input type="file" name="variants[0][images][]" accept="image/*" style="display: none;" id="variantImage-0-3" aria-label="Image 3 for variant 1">
+                                    <button type="button" class="upload-btn" onclick="document.getElementById('variantImage-0-3').click()" aria-label="Browse image 3 for variant 1">BROWSE IMAGE</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="stockQuantity-0">Stock Quantity</label>
+                            <input type="number" id="stockQuantity-0" name="variants[0][stock]" class="form-input" min="0" required aria-label="Stock quantity for variant 1">
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center;">
+                    <button id="add-variant-button" type="button" class="custom-btn custom-btn-secondary" onclick="addVariant()">+ ADD ANOTHER VARIANT</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Specifications -->
+        <div class="narrow-content">
+            <div class="product-card">
+                <h3 class="card-title">Product Specifications</h3>
+                <div class="specifications-grid">
+                    <div class="form-group">
+                        <label class="form-label" for="StrapStyle">Strap Style</label>
+                        <input type="text" id="StrapStyle" name="specifications.StrapStyle" class="form-input" aria-label="Strap style">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="Weight">Weight</label>
+                        <input type="text" id="Weight" name="specifications.Weight" class="form-input" aria-label="Weight">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="DialType">Dial Type</label>
+                        <input type="text" id="DialType" name="specifications.DialType" class="form-input" aria-label="Dial type">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="warrantyPeriod">Warranty Period</label>
+                        <input type="text" id="warrantyPeriod" name="specifications.warrantyPeriod" class="form-input" aria-label="Warranty period">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="Durability">Durability</label>
+                        <input type="text" id="Durability" name="specifications.Durability" class="form-input" aria-label="Durability">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="AdditionalInformation">Additional Information</label>
+                        <textarea id="AdditionalInformation" name="specifications.AdditionalInformation" class="form-input form-textarea" aria-label="Additional information"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button type="submit" class="custom-btn custom-btn-primary" aria-label="Add product">ADD PRODUCT</button>
+            <button type="button" class="custom-btn custom-btn-secondary" onclick="window.history.back()" aria-label="Cancel">CANCEL</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Handle file input changes to show selected file names
+    function setupFileInputs() {
+        document.querySelectorAll('input[type="file"]').forEach(input => {
+            input.addEventListener('change', function () {
+                if (this.files.length > 0) {
+                    const fileName = this.files[0].name;
+                    const uploadDiv = this.parentElement;
+                    const textDiv = uploadDiv.querySelector('.upload-text');
+                    if (textDiv) {
+                        textDiv.textContent = fileName;
+                    }
+                }
+            });
+        });
+    }
+
+    // Initialize file inputs
+    setupFileInputs();
+
+    let variantCount = 1;
+
+    function addVariant() {
+        const container = document.querySelector('.image-upload-section');
+        const variantHtml = `
+            <div class="variant-container" id="variant-${variantCount}">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h4>Variant ${variantCount + 1}</h4>
+                    <div style="display: flex; gap: 12px;">
+                        <input type="text" placeholder="Color name " name="variants[${variantCount}][color]" class="form-input" required aria-label="Color for variant ${variantCount + 1}">
+                        <button type="button" class="custom-btn custom-btn-secondary" onclick="removeVariant(${variantCount})" aria-label="Remove variant ${variantCount + 1}">Remove</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Product Images (3 images)</label>
+                    <div class="variant-images">
+                        <div class="image-upload">
+                            <div class="upload-icon">
+                                <i class="fas fa-image"></i>
+                            </div>
+                            <div class="upload-text">Image 1</div>
+                            <input type="file" name="variants[${variantCount}][images][]" accept="image/*" style="display: none;" id="variantImage-${variantCount}-1" required aria-label="Image 1 for variant ${variantCount + 1}">
+                            <button type="button" class="upload-btn" onclick="document.getElementById('variantImage-${variantCount}-1').click()" aria-label="Browse image 1 for variant ${variantCount + 1}">BROWSE IMAGE</button>
+                        </div>
+                        <div class="image-upload">
+                            <div class="upload-icon">
+                                <i class="fas fa-image"></i>
+                            </div>
+                            <div class="upload-text">Image 2</div>
+                            <input type="file" name="variants[${variantCount}][images][]" accept="image/*" style="display: none;" id="variantImage-${variantCount}-2" aria-label="Image 2 for variant ${variantCount + 1}">
+                            <button type="button" class="upload-btn" onclick="document.getElementById('variantImage-${variantCount}-2').click()" aria-label="Browse image 2 for variant ${variantCount + 1}">BROWSE IMAGE</button>
+                        </div>
+                        <div class="image-upload">
+                            <div class="upload-icon">
+                                <i class="fas fa-image"></i>
+                            </div>
+                            <div class="upload-text">Image 3</div>
+                            <input type="file" name="variants[${variantCount}][images][]" accept="image/*" style="display: none;" id="variantImage-${variantCount}-3" aria-label="Image 3 for variant ${variantCount + 1}">
+                            <button type="button" class="upload-btn" onclick="document.getElementById('variantImage-${variantCount}-3').click()" aria-label="Browse image 3 for variant ${variantCount + 1}">BROWSE IMAGE</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="stockQuantity-${variantCount}">Stock Quantity</label>
+                    <input type="number" id="stockQuantity-${variantCount}" name="variants[${variantCount}][stock]" class="form-input" min="0" required aria-label="Stock quantity for variant ${variantCount + 1}">
+                </div>
+            </div>
+        `;
+
+        container.insertAdjacentHTML('beforeend', variantHtml);
+        variantCount++;
+
+        // Add event listeners to new file inputs
+        const newVariant = document.getElementById(`variant-${variantCount - 1}`);
+        if (newVariant) {
+            newVariant.querySelectorAll('input[type="file"]').forEach(input => {
+                input.addEventListener('change', function () {
+                    if (this.files.length > 0) {
+                        const fileName = this.files[0].name;
+                        const uploadDiv = this.parentElement;
+                        const textDiv = uploadDiv.querySelector('.upload-text');
+                        if (textDiv) {
+                            textDiv.textContent = fileName;
+                        }
+                    }
+                });
+            });
+
+            // Bind drag & drop to newly added upload areas
+            setupDragAndDrop(newVariant);
+        }
+    }
+
+    function removeVariant(variantId) {
+        const variant = document.getElementById(`variant-${variantId}`);
+        const totalVariants = document.querySelectorAll('.variant-container').length;
+        
+        if (variant && totalVariants > 1) {
+            variant.remove();
+        } else if (totalVariants === 1) {
+            Swal.fire({
+                title: 'Warning!',
+                text: 'At least one variant is required.',
+                icon: 'warning',
+                confirmButtonColor: '#000'
+            });
+        }
+    }
+
+    function setupDragAndDrop(container = document) {
+        // Handle drag and drop for image uploads
+        container.querySelectorAll('.image-upload').forEach(uploadArea => {
+            uploadArea.addEventListener('dragover', function (e) {
+                e.preventDefault();
+                this.classList.add('dragover');
+            });
+            
+            uploadArea.addEventListener('dragleave', function (e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+            });
+            
+            uploadArea.addEventListener('drop', function (e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    const fileInput = this.querySelector('input[type="file"]');
+                    if (fileInput && files[0].type.startsWith('image/')) {
+                        // Create a new FileList-like object
+                        const dt = new DataTransfer();
+                        dt.items.add(files[0]);
+                        fileInput.files = dt.files;
+                        
+                        const textDiv = this.querySelector('.upload-text');
+                        if (textDiv) {
+                            textDiv.textContent = files[0].name;
+                        }
+                    }
+                }
+            });
+        });
+    }
+
+    // Initialize drag and drop for existing elements
+    setupDragAndDrop();
+
+    // Client-side form validation with SweetAlert2
+    document.getElementById('add-product-form').addEventListener('submit', function (e) {
+        const price = document.getElementById('price').value;
+        const discountedPrice = document.getElementById('discountedPrice').value;
+        
+        if (discountedPrice && parseFloat(discountedPrice) >= parseFloat(price)) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Invalid Price!',
+                text: 'Discounted price must be less than the original price.',
+                icon: 'error',
+                confirmButtonColor: '#000'
+            });
+            return false;
+        }
+
+        // Validate that all variants have required fields
+        const variants = document.querySelectorAll('.variant-container');
+        let isValid = true;
+        let errorMessage = '';
+        
+        variants.forEach((variant, index) => {
+            const colorInput = variant.querySelector(`input[name="variants[${index}][color]"]`);
+            const stockInput = variant.querySelector(`input[name="variants[${index}][stock]"]`);
+            const imageInputs = variant.querySelectorAll(`input[type="file"]`);
+            
+            if (!colorInput || !colorInput.value.trim()) {
+                errorMessage = `Please enter a color for Variant ${index + 1}`;
+                isValid = false;
+                return;
+            }
+            
+            if (!stockInput || !stockInput.value || parseInt(stockInput.value) < 0) {
+                errorMessage = `Please enter a valid stock quantity for Variant ${index + 1}`;
+                isValid = false;
+                return;
+            }
+            
+            let hasImages = false;
+            imageInputs.forEach(input => {
+                if (input.files.length > 0) {
+                    hasImages = true;
+                }
+            });
+            
+            if (!hasImages) {
+                errorMessage = `Please upload at least one image for Variant ${index + 1}`;
+                isValid = false;
+                return;
+            }
+        });
+        
+        if (!isValid) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Validation Error!',
+                text: errorMessage,
+                icon: 'error',
+                confirmButtonColor: '#000'
+            });
+            return false;
+        }
+
+        // Show loading state
+        Swal.fire({
+            title: 'Adding Product...',
+            text: 'Please wait while we add your product.',
+            icon: 'info',
+            showConfirmButton: false,
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+    });
+</script>
