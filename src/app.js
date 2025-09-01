@@ -35,9 +35,9 @@ app.use(expressLayouts);
 app.set("layout", false); // Disable global layout (important)
 
 // Routes
-app.use("/", require("./routes/userRoute"));
 app.use("/admin", require("./routes/adminRoutes"));
 app.use("/vendor", require("./routes/vendorRoute"));
+app.use("/", require("./routes/userRoute"));
 
 //pagenot found
 app.use((req, res) => {
