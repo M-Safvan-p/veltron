@@ -18,8 +18,8 @@ router.use((req, res, next) => {
 router.use(noCache)
 
 //  Auth 
-router.get("/login",  adminAuth.isLogin, authController.loadLogIn);
-router.post("/login", authController.login);
+router.get("/",  adminAuth.isLogin, authController.loadLogIn);
+router.post("/", authController.login);
 router.get("/logout", authController.logout);
 
 //  Dashboard 

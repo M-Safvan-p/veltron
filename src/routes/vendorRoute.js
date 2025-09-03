@@ -22,8 +22,8 @@ router.get("/signup", vendorAuth.isLogin, vendorAuthController.loadSignup);
 router.post("/signup", vendorAuthController.signup);
 router.get("/verify-otp", vendorAuth.isLogin, vendorAuthController.loadVerifyOtp);
 router.post("/verify-otp", vendorAuthController.verifyOtp);
-router.get("/login", vendorAuth.isLogin, vendorAuthController.loadLogin);
-router.post("/login", vendorAuthController.login);
+router.get("/", vendorAuth.isLogin, vendorAuthController.loadLogin);
+router.post("/", vendorAuthController.login);
 router.get("/logout", vendorAuthController.logout);
 
 router.get("/dashboard", vendorAuth.checkSession,vendorPageController.loadDashboard);
