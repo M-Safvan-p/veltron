@@ -70,7 +70,7 @@
 
             //Data send
             try {
-                const response = await axios.post("/vendor/login", { email, password });
+                const response = await axios.post("/vendor/", { email, password });
                 const result = response.data;
                 if (result.success) {
                     Swal.fire({

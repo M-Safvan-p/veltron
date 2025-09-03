@@ -63,7 +63,7 @@
             }
 
             try {
-                const response = await axios.post('/admin/login', { email, password });
+                const response = await axios.post('/admin/', { email, password });
                 if (response.data.redirectUrl) {
                     Swal.fire({
                         icon: 'success',

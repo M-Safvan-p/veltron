@@ -41,7 +41,7 @@ const logout = (req,res)=>{
     delete req.session.admin;
     res.clearCookie("connect.sid");
     res.setHeader('Cache-Control', 'no-store');
-    res.redirect("/admin/login")
+    res.redirect("/admin/")
   } catch (error) {
     res.redirect("/admin/dashboard")
   }

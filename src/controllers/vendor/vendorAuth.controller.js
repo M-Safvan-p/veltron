@@ -150,9 +150,9 @@ const logout = (req, res) => {
     delete req.session.vendor;
     res.clearCookie("connect.sid");
     res.setHeader('Cache-Control', 'no-store');
-    res.redirect("/vendor/login");
+    res.redirect("/vendor/");
   } catch (error) {
-    res.redirect("/vendor/login");
+    res.redirect("/vendor/dashboard");
   }
 };
 
