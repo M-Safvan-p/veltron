@@ -1,10 +1,11 @@
-const formValidator = require("../../helpers/formValidator");
 const Vendor = require("../../models/vendor/vendorSchema");
+
+const formValidator = require("../../helpers/formValidator");
+const {success, error:errorResponse} = require("../../helpers/responseHelper");
 const otpControl = require("../../helpers/otpControl");
 const passwordControl = require("../../helpers/passwordControl");
-const User = require("../../models/user/userSchema");
+
 const Messages = require("../../constants/messages");
-const {success, error:errorResponse} = require("../../helpers/responseHelper");
 const HttpStatus = require("../../constants/statusCodes");
 const PermissionStatus = require("../../constants/permissionStatus");
 

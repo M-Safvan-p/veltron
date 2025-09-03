@@ -63,5 +63,30 @@
         </tbody>
     </table>
 </div>
-
+<!-- Pagination -->
+<div class="pagination">
+    <div class="pagination-info">
+        Showing 1-<%= category.length %> of <%= totalCategories  %> categories
+    </div>
+    <div class="pagination-controls">
+        <button class="pagination-btn" <%= currentPage == 1 ? 'disabled' : '' %> onclick="changePage(<%= currentPage - 1 %>)" aria-label="Previous page">
+            <i class="fas fa-chevron-left" aria-hidden="true"></i>
+        </button>
+        <% for (let i = 1; i <= totalPages; i++) { %>
+            <button class="pagination-btn <%= i === currentPage ? 'active' : '' %>" onclick="changePage(<%= i %>)" aria-label="Page <%= i %>">
+                <%= i %>
+            </button>
+        <% } %>
+        <button class="pagination-btn" <%= currentPage == totalPages ? 'disabled' : '' %> onclick="changePage(<%= currentPage + 1 %>)" aria-label="Next page">
+            <i class="fas fa-chevron-right" aria-hidden="true"></i>
+        </button>
+    </div>
+</div>
+<script>
+    function changePage(page) {
+        const url = new URL(window.location);
+        url.searchParams.set('page', page);
+        window.location.href = url.href;
+    }
+</script>
 <script src="../../js/script/admin/category.js"></script>

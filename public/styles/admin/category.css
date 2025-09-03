@@ -128,7 +128,7 @@ table {
 
 .status-listed {
     background: #d1ecf1;
-    color: #0c5460;
+    color: #084c61;
 }
 
 .status-unlisted {
@@ -136,12 +136,12 @@ table {
     color: #721c24;
 }
 
-/* Toggle Switch for List/Unlist */
+/* Toggle Switch */
 .toggle-switch {
     position: relative;
     width: 60px;
     height: 28px;
-    background: #dc3545; /* default inactive */
+    background: #dc3545;
     border-radius: 28px;
     cursor: pointer;
     transition: background 0.3s ease;
@@ -150,7 +150,7 @@ table {
 }
 
 .toggle-switch.active {
-    background: #28a745; /* active state */
+    background: #28a745;
 }
 
 .toggle-switch .slider {
@@ -165,12 +165,10 @@ table {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* Slide when active */
 .toggle-switch.active .slider {
     transform: translateX(32px);
 }
 
-/* Optional: Hover effect */
 .toggle-switch:hover {
     opacity: 0.9;
 }
@@ -201,4 +199,132 @@ table {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+/* Pagination Container */
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 30px;
+    background: white;
+    border-top: 1px solid #f0f0f0;
+    border-radius: 0 0 8px 8px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Pagination Info Text */
+.pagination-info {
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Pagination Controls */
+.pagination-controls {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+/* Pagination Buttons */
+.pagination-btn {
+    min-width: 36px;
+    height: 36px;
+    border: 1px solid #e1e5e9;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: #374151;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.pagination-btn.active {
+    background: #000;
+    color: white;
+    border-color: #000;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.pagination-btn:hover:not(.active):not(:disabled) {
+    background: #f8f9fa;
+    border-color: #d1d5db;
+    color: #000;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    color: #9ca3af;
+}
+
+.pagination-btn:disabled:hover {
+    background: white;
+    border-color: #e1e5e9;
+}
+
+/* Navigation buttons (prev/next) */
+.pagination-btn.nav-btn {
+    padding: 0 12px;
+    font-weight: 500;
+}
+
+/* Ellipsis styling */
+.pagination-btn.ellipsis {
+    border: none;
+    background: none;
+    cursor: default;
+    color: #9ca3af;
+}
+
+.pagination-btn.ellipsis:hover {
+    background: none;
+    border: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .pagination {
+        padding: 15px 20px;
+        flex-direction: column;
+        gap: 15px;
+        align-items: center;
+    }
+    
+    .pagination-controls {
+        gap: 2px;
+    }
+    
+    .pagination-btn {
+        min-width: 32px;
+        height: 32px;
+        font-size: 13px;
+    }
+    
+    .pagination-btn.nav-btn {
+        padding: 0 8px;
+    }
+    
+    .pagination-info {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .pagination-btn {
+        min-width: 28px;
+        height: 28px;
+        font-size: 12px;
+    }
+    
+    .pagination-btn.nav-btn {
+        padding: 0 6px;
+        font-size: 12px;
+    }
 }

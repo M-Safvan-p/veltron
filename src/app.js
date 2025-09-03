@@ -42,7 +42,6 @@ app.use("/", require("./routes/userRoute"));
 //pagenot found
 app.use((req, res) => {
     const url = req.originalUrl;
-
     if (url.startsWith("/vendor")) {
         return res.status(404).render("errors/vendor404");
     } else if (url.startsWith("/user")) {

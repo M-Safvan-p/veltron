@@ -5,7 +5,7 @@
     <div class="header-controls">
         <button class="add-product-btn" onclick="window.location.href='/vendor/products/add-product'">
             <span>Add New Product</span>
-            <i class="fas fa-plus"></i>
+            <i class="fas fa-plus" aria-hidden="true"></i>
         </button>
     </div>
 </div>
@@ -15,7 +15,6 @@
     <a href="/vendor/dashboard">Dashboard</a>
     <span class="breadcrumb-separator">></span>
     <a href="/vendor/products">Products</a>
-    <span class="breadcrumb-separator">></span>
 </div>
 
 <!-- Products Table -->
@@ -34,84 +33,154 @@
             </tr>
         </thead>
         <tbody>
-            <% if (products && products.length> 0) { %>
-                <% products.forEach((product, index)=> { %>
+            <% if (products && products.length > 0) { %>
+                <% products.forEach((product, index) => { %>
                     <tr class="table-row">
                         <td>
-                            <img src="<%= product.variants[0]?.images[0] || '/api/placeholder/60/60' %>"
-                                alt="<%= product.name %>" class="product-image">
+                            <img src="<%= (product.variants && product.variants[0]?.images && product.variants[0]?.images[0]) || '/api/placeholder/60/60' %>"
+                                alt="<%= product.name || 'Product image' %>" class="product-image">
                         </td>
                         <td class="product-name">
-                            <%= product.name %>
-                        </td>
-                        <td class="product-category">
-                            <%= product.category?.name || 'Unknown' %>
-                        </td>
-                        <td class="product-price">₹ <%= product.price.toFixed(2) %>
-                        </td>
-                        <td class="stock-count">
-                            <%= product.variants.reduce((sum, variant)=> sum + (variant.stock || 0), 0) %>
+                            <%= product.name || 'Unnamed Product' %>
                         </td>
                         <td>
-                            <div class="toggle-switch <%= product.isListed ? 'list' : 'unlist' %>"
-                                data-product-id="<%= product._id %>">
+                            <span class="product-category">
+                                <%= product.category?.name || 'Unknown' %>
+                            </span>
+                        </td>
+                        <td class="product-price">₹ <%= (product.price || 0).toFixed(2) %>
+                        </td>
+                        <td class="stock-count">
+                            <div class="total-stock">
+                                <%= product.variants ? product.variants.reduce((sum, variant) => sum + (variant.stock || 0), 0) : 0 %>
+                            </div>
+                            <!-- Variant stock details -->
+                            <% if (product.variants && product.variants.length > 0) { %>
+                                <div class="variant-stock-container" id="variant-container-<%= product._id %>" style="display: none;">
+                                    <% product.variants.forEach((variant) => { %>
+                                        <div class="variant-item">
+                                            <span class="variant-color"><%= variant.color || 'Default' %></span>
+                                            <span class="variant-stock <%= variant.stock <= 5 ? 'low' : '' %>">
+                                                <%= variant.stock || 0 %>
+                                            </span>
+                                        </div>
+                                    <% }); %>
+                                </div>
+                                
+                                <% if (product.variants.length > 1) { %>
+                                    <button class="toggle-variants" onclick="toggleVariants('<%= product._id %>')" aria-expanded="false">
+                                        Show variants
+                                    </button>
+                                <% } %>
+                            <% } %>
+                        </td>
+                        <td>
+                            <div class="toggle-switch <%= product.isListed ? 'active' : '' %>"
+                                data-product-id="<%= product._id %>" role="switch"
+                                aria-checked="<%= product.isListed ? 'true' : 'false' %>">
                                 <div class="slider"></div>
                             </div>
                         </td>
                         <td>
                             <div class="action-buttons">
-                                <button class="action-btn edit" onclick="editProduct('<%= product._id %>')">
-                                    <i class="fas fa-edit"></i>
+                                <button class="action-btn edit" onclick="editProduct('<%= product._id %>')" aria-label="Edit product">
+                                    <i class="fas fa-edit" aria-hidden="true"></i>
                                 </button>
-                                <button class="action-btn delete" onclick="deleteProduct('<%= product._id %>')">
-                                    <i class="fas fa-trash"></i>
+                                <button class="action-btn delete" onclick="deleteProduct('<%= product._id %>')" aria-label="Delete product">
+                                    <i class="fas fa-trash" aria-hidden="true"></i>
                                 </button>
                             </div>
                         </td>
                         <td>
                             <div class="approval-status">
-                                <% if (product.approvalStatus==='approved' ) { %>
+                                <% if (product.approvalStatus === 'approved') { %>
                                     <span class="status approved">Approved</span>
-                                    <% } else if (product.approvalStatus==='rejected' ) { %>
-                                        <span class="status rejected">Rejected</span>
-                                        <% } else { %>
-                                            <span class="status pending">Pending</span>
-                                            <% } %>
+                                <% } else if (product.approvalStatus === 'rejected') { %>
+                                    <span class="status rejected">Rejected</span>
+                                <% } else { %>
+                                    <span class="status pending">Pending</span>
+                                <% } %>
                             </div>
                         </td>
-
                     </tr>
-                    <% }) %>
-                        <% } else { %>
-                            <tr class="table-row">
-                                <td colspan="8">No products found.</td>
-                            </tr>
-                            <% } %>
+                <% }); %>
+            <% } else { %>
+                <tr class="table-row">
+                    <td colspan="8" style="text-align: center; padding: 40px; color: #666;">
+                        <i class="fas fa-box-open"
+                            style="font-size: 48px; margin-bottom: 15px; display: block; opacity: 0.5;" aria-hidden="true"></i>
+                        No products found. Add your first product to get started.
+                    </td>
+                </tr>
+            <% } %>
         </tbody>
     </table>
 </div>
 
+<!-- Pagination -->
+<div class="pagination">
+    <div class="pagination-info">
+        Showing 1-<%= products.length %> of <%= totalProducts %> products
+    </div
+    <div class="pagination-controls">
+        <button class="pagination-btn" <%= currentPage == 1 ? 'disabled' : '' %> onclick="changePage(<%= currentPage - 1 %>)" aria-label="Previous page">
+            <i class="fas fa-chevron-left" aria-hidden="true"></i>
+        </button>
+        <% for (let i = 1; i <= totalPages; i++) { %>
+            <button class="pagination-btn <%= i === currentPage ? 'active' : '' %>" onclick="changePage(<%= i %>)" aria-label="Page <%= i %>">
+                <%= i %>
+            </button>
+        <% } %>
+        <button class="pagination-btn" <%= currentPage == totalPages ? 'disabled' : '' %> onclick="changePage(<%= currentPage + 1 %>)" aria-label="Next page">
+            <i class="fas fa-chevron-right" aria-hidden="true"></i>
+        </button>
+    </div>
+</div>
+
 <script>
-    function addNewProduct() {
-        window.location.href = '/vendor/products/add-product';
-    }
-
-    function editProduct(productId) {
-        window.location.href = `/vendor/products/edit-produc/${productId}`;
-    }
-
-    function deleteProduct(productId) {
-        if (confirm('Are you sure you want to delete this product?')) {
-            fetch(`/vendor/products/${productId}`, { method: 'DELETE' })
-                .then(response => {
-                    if (response.ok) window.location.reload();
-                    else alert('Error deleting product');
-                });
+    // toggle variant
+    function toggleVariants(productId) {
+        const container = document.getElementById(`variant-container-${productId}`);
+        const button = container.nextElementSibling;
+        
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            button.textContent = 'Hide variants';
+            button.setAttribute('aria-expanded', 'true');
+        } else {
+            container.style.display = 'none';
+            button.textContent = 'Show variants';
+            button.setAttribute('aria-expanded', 'false');
         }
     }
 
-    function addOffer(productId) {
-        window.location.href = `/vendor/products/offer/${productId}`;
+    //edit profile
+    function editProduct(productId) {
+        window.location.href = `/vendor/products/edit-product/${productId}`;
+    }
+
+    async function deleteProduct(productId) {
+        if (confirm('Are you sure you want to delete this product?')) {
+            try {
+                await axios.delete(`/vendor/products/${productId}`);
+                window.location.reload();
+            } catch (error) {
+                const message = error.response?.data?.message || 'Error deleting product';
+                alert(message);
+                console.error('Delete error:', error);
+            }
+        }
+    }
+
+    async function toggleProductListing(productId, isListed) {
+        try {
+            await axios.patch(`/vendor/products/${productId}/toggle-list`, { isListed });
+            window.location.reload();
+        } catch (error) {
+            const message = error.response?.data?.message || 'Error updating listing status';
+            alert(message);
+            console.error('Toggle error:', error);
+        }
     }
 
     function changePage(page) {
@@ -120,39 +189,13 @@
         window.location.href = url.toString();
     }
 
-    document.querySelectorAll('.sort-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const url = new URL(window.location);
-            url.searchParams.set('sortBy', btn.dataset.sort);
-            window.location.href = url.toString();
-        });
-    });
-
-    document.querySelectorAll('.filter-dropdown').forEach(select => {
-        select.addEventListener('change', () => {
-            const url = new URL(window.location);
-            url.searchParams.set(select.name, select.value);
-            window.location.href = url.toString();
-        });
-    });
-
-    document.querySelector('.search-box input').addEventListener('change', (e) => {
-        const url = new URL(window.location);
-        url.searchParams.set('searchQuery', e.target.value);
-        window.location.href = url.toString();
-    });
-
-    document.querySelectorAll('.toggle-switch').forEach(toggle => {
-        toggle.addEventListener('click', () => {
-            const productId = toggle.dataset.productId;
-            const isListed = toggle.classList.contains('list');
-            fetch(`/vendor/products/${productId}/toggle-list`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ isListed: !isListed })
-            }).then(response => {
-                if (response.ok) window.location.reload();
-                else alert('Error updating listing status');
+    // Add event listeners to toggle switches after page load
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.toggle-switch').forEach(toggle => {
+            toggle.addEventListener('click', function () {
+                const productId = this.dataset.productId;
+                const isListed = this.classList.contains('active');
+                toggleProductListing(productId, !isListed);
             });
         });
     });

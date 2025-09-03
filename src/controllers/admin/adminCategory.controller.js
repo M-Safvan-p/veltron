@@ -3,14 +3,24 @@ const formValidator = require("../../helpers/formValidator");
 const HttpStatus = require("../../constants//statusCodes");
 const Messages = require("../../constants/messages");
 const {success, error: errorResponse} = require("../../helpers/responseHelper");
+const { createReadStream } = require("streamifier");
 
 const loadCategory = async (req, res) => {
-  const category = await Category.find({});
+  const page = parseInt(req.query.page) || 1;
+  const limit = 5;
+  const skip = (page - 1) * 5;
+  // total categories
+  const totalCategories = await Category.countDocuments();
+  const category = await Category.find().sort({ createdAt:-1 }) .skip(skip).limit(limit);
+  console.log(category)
   res.render("admin/category", {
     layout: "layouts/adminLayout",
     activePage: "category",
     admin:req.admin,
     category,
+    currentPage: page,
+    totalCategories,
+    totalPages: Math.ceil(totalCategories / limit),
   });
 };
 

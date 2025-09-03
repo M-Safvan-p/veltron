@@ -6,15 +6,20 @@ const Messages = require("../../constants/messages");
 
 const loadVendors = async (req, res) => {
   try {
-    const vendors = await Vendor.find({ permissionStatus: PermissionStatus.APPROVED });
-
-    console.log("all vendors:", vendors);
+    const page = parseInt(req.query.page || 1);
+    const limit = 5;
+    const skip = (page - 1) * limit;
+    const vendors = await Vendor.find({ permissionStatus: PermissionStatus.APPROVED }).skip(skip).limit(limit);
+    const totalVendors = await Vendor.countDocuments({permissionStatus:PermissionStatus.APPROVED});
 
     res.render("admin/vendors", {
       layout: "layouts/adminLayout",
       activePage: "vendors",
       admin:req.admin,
       vendors,
+      totalVendors,
+      currentPage:page,
+      totalPages:Math.ceil(totalVendors / limit),
     });
   } catch (error) {
     console.log("Vendors page load Error",error);
@@ -24,15 +29,20 @@ const loadVendors = async (req, res) => {
 
 const loadVendorsPendings = async (req, res) => {
   try {
-    const vendors = await Vendor.find({ permissionStatus: PermissionStatus.PENDING})
-
-    console.log("all vendors", vendors);
+    const page = parseInt(req.query.page || 1);
+    const limit = 5;
+    const skip = (page - 1) * limit;
+    const vendors = await Vendor.find({ permissionStatus: PermissionStatus.PENDING}).sort({createdAt:-1}).skip(skip).limit(limit);
+    const totalVendors = await Vendor.countDocuments({permissionStatus:PermissionStatus.PENDING});
 
     res.render("admin/vendorsPendings", {
       layout: "layouts/adminLayout",
       activePage: "vendors",
       admin:req.admin,
       vendors,
+      currentPage:page,
+      totalVendors,
+      totalPages:Math.ceil(totalVendors / limit)
     });
   } catch (error) {
     console.log("Vendors pending page load Error",error);

@@ -10,4 +10,5 @@ const loadDashboard = async (req, res) => {
 
 module.exports = {
   loadDashboard,
-};
+}; 
+
