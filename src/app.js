@@ -30,26 +30,16 @@ app.use(passport.session());
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '../views'));
 
-//Express EJS Layouts
+//EJS Layouts
 app.use(expressLayouts);
-app.set("layout", false); // Disable global layout (important)
+app.set("layout", false); 
 
 // Routes
 app.use("/admin", require("./routes/adminRoutes"));
 app.use("/vendor", require("./routes/vendorRoute"));
 app.use("/", require("./routes/userRoute"));
 
-//pagenot found
-app.use((req, res) => {
-    const url = req.originalUrl;
-    if (url.startsWith("/vendor")) {
-        return res.status(404).render("errors/vendor404");
-    } else if (url.startsWith("/user")) {
-        return res.status(404).render("errors/user404");
-    } else if (url.startsWith("/admin")) {
-        return res.status(404).render("errors/admin404");
-    }
-});
+
 
 // Start Server
 app.listen(PORT, () => {

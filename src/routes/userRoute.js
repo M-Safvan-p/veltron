@@ -30,5 +30,7 @@ router.get("/forgotPassword", noCache, userAuthController.loadForgotPassword);
 
 // ----------------- Protected Pages -----------------
 router.get("/home", userPageController.loadHome);
+//Page not found
+router.use((req,res)=>res.status(404).render("errors/404"))
 
 module.exports = router;

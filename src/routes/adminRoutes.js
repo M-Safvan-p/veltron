@@ -39,6 +39,7 @@ router.post("/category/add-category", adminAuth.checkSession, categoryController
 router.get("/category/edit-category/:id", adminAuth.checkSession, categoryController.loadEditCategory);
 router.put("/category/edit-category/:id", adminAuth.checkSession, categoryController.editCategory);
 
-
+//Page not found
+router.use((req,res)=>res.status(404).render("errors/admin404"))
 
 module.exports = router;
