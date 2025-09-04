@@ -13,9 +13,9 @@ const productSchema = new mongoose.Schema(
       default: "pending",
     },
     productStatus: {
-        type: String,
-        enum: ["Available","out-of-stock", "Discountinued"],
-        default: "Available",
+      type: String,
+      enum: ["Available", "out-of-stock", "Discountinued"],
+      default: "Available",
     },
     name: {
       type: String,
@@ -45,20 +45,23 @@ const productSchema = new mongoose.Schema(
       {
         color: { type: String, required: true },
         stock: { type: Number, default: 0 },
-        images: [{ type: String, required: true }],
+        images: [
+          {
+            url: { type: String, required: true },
+            public_id: { type: String, required: true },
+            filename: { type: String }
+          },
+        ],
       },
     ],
-    specification: [
-      {
-        StrapStyle: { type: String, required: true },
-        Weight: { type: String, required: true },
-        DialType: { type: String, required: true },
-        AdditionalInformation: { type: String, required: true },
-        warrantyPeriod: { type: String, required: true },
-        Durability: { type: String, required: true },
-      },
-      
-    ],
+    specifications: { 
+      strapStyle: { type: String, required: true },
+      weight: { type: String },
+      dialType: { type: String },
+      additionalInformation: { type: String },
+      warrantyPeriod: { type: String },
+      durability: { type: String },
+    },
   },
   { timestamps: true }
 );

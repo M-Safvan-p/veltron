@@ -5,12 +5,12 @@ const checkSession = async (req, res, next) => {
     const admin = await Admin.findOne();
     if (!admin) {
       req.session.admin = null;
-      return res.redirect("/admin/login");
+      return res.redirect("/admin/");
     }
     req.admin = admin;
     return next();
   }
-  return res.redirect("/admin/login");
+  return res.redirect("/admin/");
 };
 
 const isLogin = async (req, res, next) => {

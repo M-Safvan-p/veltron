@@ -1,9 +1,12 @@
 const express = require("express");
 const router = express.Router();
 
+const upload = require('../config/multerConfig');
+const productSchema = require("../validators/vendor/productValidator");
+
 const vendorAuth = require("../middleware/vendorAuth");
 const {noCache} = require("../middleware/noCache");
-const upload = require('../config/multerConfig');
+const validate = require("../middleware/validate");
 
 const vendorAuthController = require("../controllers/vendor/vendorAuth.controller");
 const vendorPageController = require("../controllers/vendor/vendorPage.controller");
@@ -28,10 +31,13 @@ router.get("/logout", vendorAuthController.logout);
 
 router.get("/dashboard", vendorAuth.checkSession,vendorPageController.loadDashboard);
 
-
+//productss
 router.get("/products", vendorAuth.checkSession, vendorProductController.loadProducts);
+router.patch("/products/:id", vendorAuth.checkSession, vendorProductController.listAndUnlist)
 router.get("/products/add-product", vendorAuth.checkSession,vendorProductController.loadAddProduct);
-router.post("/products/add-product", vendorAuth.checkSession, upload.any(), vendorProductController.addProduct);
+router.post("/products/add-product", vendorAuth.checkSession, upload.any(),  validate(productSchema), vendorProductController.addProduct);
+router.get("/products/edit-product/:id", vendorAuth.checkSession, vendorProductController.loadEditProduct)
+router.post("/products/edit-product/:id", vendorAuth.checkSession, vendorProductController.loadEditProduct)
 
 // Add this after your routes
 router.use((error, req, res, next) => {

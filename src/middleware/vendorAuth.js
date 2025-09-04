@@ -7,7 +7,7 @@ const checkSession = async (req,res,next)=>{
         return next();
     }
     else {
-        return res.redirect("/vendor/login");
+        return res.redirect("/vendor/");
     }
 }
 

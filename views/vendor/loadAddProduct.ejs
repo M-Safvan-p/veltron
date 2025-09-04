@@ -37,8 +37,8 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="discountedPrice">Discount Price</label>
-                        <input type="number" value="500" id="discountedPrice" name="discountedPrice" class="form-input" step="0.01"
-                            min="0" aria-label="Discounted price">
+                        <input type="number" value="500" id="discountedPrice" name="discountedPrice" class="form-input"
+                            step="0.01" min="0" aria-label="Discounted price">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Listing Status</label>
@@ -69,96 +69,99 @@
         </div>
 
         <!-- Variants -->
-<div class="narrow-content">
-    <div class="product-card">
-        <h3 class="card-title">Variant Images</h3>
-        <div class="image-upload-section">
-            <div class="variant-container" id="variant-0">
-                <div class="variant-header">
-                    <h4 class="variant-title">Variant 1</h4>
-                    <div class="variant-controls">
-                        <input type="text" value="Yellow" placeholder="Color name" name="variants[0][color]" class="form-input"
-                            aria-label="Color for variant 1">
-                        <button type="button" class="custom-btn custom-btn-secondary" onclick="removeVariant(0)"
-                            aria-label="Remove variant 1">Remove</button>
+        <div class="narrow-content">
+            <div class="product-card">
+                <h3 class="card-title">Variant Images</h3>
+                <div class="image-upload-section">
+                    <div class="variant-container" id="variant-0">
+                        <div class="variant-header">
+                            <h4 class="variant-title">Variant 1</h4>
+                            <div class="variant-controls">
+                                <input type="text" value="Yellow" placeholder="Color name" name="variants[0][color]"
+                                    class="form-input" aria-label="Color for variant 1">
+                                <button type="button" class="custom-btn custom-btn-secondary" onclick="removeVariant(0)"
+                                    aria-label="Remove variant 1">Remove</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Product Images (3 images)</label>
+                            <div class="variant-images">
+                                <div class="image-upload" data-variant="0" data-image="0">
+                                    <div class="upload-icon">
+                                        <i class="fas fa-image"></i>
+                                    </div>
+                                    <div class="upload-text">Image 1</div>
+                                    <div class="image-preview-container hidden">
+                                        <img class="image-preview" src="" alt="Preview">
+                                        <button type="button" class="delete-image-btn" aria-label="Delete image">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                    <!-- CHANGED: Added [0] to the name -->
+                                    <input type="file" name="variants[0][images][0]" accept="image/*"
+                                        style="display: none;" id="variantImage-0-0" aria-label="Image 1 for variant 1">
+                                    <input type="hidden" name="variants[0][croppedImages][0]"
+                                        class="cropped-image-data">
+                                    <button type="button" class="upload-btn"
+                                        onclick="document.getElementById('variantImage-0-0').click()"
+                                        aria-label="Browse image 1 for variant 1">BROWSE IMAGE</button>
+                                </div>
+                                <div class="image-upload" data-variant="0" data-image="1">
+                                    <div class="upload-icon">
+                                        <i class="fas fa-image"></i>
+                                    </div>
+                                    <div class="upload-text">Image 2</div>
+                                    <div class="image-preview-container hidden">
+                                        <img class="image-preview" src="" alt="Preview">
+                                        <button type="button" class="delete-image-btn" aria-label="Delete image">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                    <!-- CHANGED: Added [1] to the name -->
+                                    <input type="file" name="variants[0][images][1]" accept="image/*"
+                                        style="display: none;" id="variantImage-0-1" aria-label="Image 2 for variant 1">
+                                    <input type="hidden" name="variants[0][croppedImages][1]"
+                                        class="cropped-image-data">
+                                    <button type="button" class="upload-btn"
+                                        onclick="document.getElementById('variantImage-0-1').click()"
+                                        aria-label="Browse image 2 for variant 1">BROWSE IMAGE</button>
+                                </div>
+                                <div class="image-upload" data-variant="0" data-image="2">
+                                    <div class="upload-icon">
+                                        <i class="fas fa-image"></i>
+                                    </div>
+                                    <div class="upload-text">Image 3</div>
+                                    <div class="image-preview-container hidden">
+                                        <img class="image-preview" src="" alt="Preview">
+                                        <button type="button" class="delete-image-btn" aria-label="Delete image">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                    <!-- CHANGED: Added [2] to the name -->
+                                    <input type="file" name="variants[0][images][2]" accept="image/*"
+                                        style="display: none;" id="variantImage-0-2" aria-label="Image 3 for variant 1">
+                                    <input type="hidden" name="variants[0][croppedImages][2]"
+                                        class="cropped-image-data">
+                                    <button type="button" class="upload-btn"
+                                        onclick="document.getElementById('variantImage-0-2').click()"
+                                        aria-label="Browse image 3 for variant 1">BROWSE IMAGE</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="stockQuantity-0">Stock Quantity</label>
+                            <input type="number" value="20
+                    " id="stockQuantity-0" name="variants[0][stock]" class="form-input" min="0"
+                                aria-label="Stock quantity for variant 1">
+                        </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Product Images (3 images)</label>
-                    <div class="variant-images">
-                        <div class="image-upload" data-variant="0" data-image="0">
-                            <div class="upload-icon">
-                                <i class="fas fa-image"></i>
-                            </div>
-                            <div class="upload-text">Image 1</div>
-                            <div class="image-preview-container hidden">
-                                <img class="image-preview" src="" alt="Preview">
-                                <button type="button" class="delete-image-btn" aria-label="Delete image">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            </div>
-                            <!-- CHANGED: Added [0] to the name -->
-                            <input type="file" name="variants[0][images][0]" accept="image/*"
-                                style="display: none;" id="variantImage-0-0" aria-label="Image 1 for variant 1">
-                            <input type="hidden" name="variants[0][croppedImages][0]" class="cropped-image-data">
-                            <button type="button" class="upload-btn"
-                                onclick="document.getElementById('variantImage-0-0').click()"
-                                aria-label="Browse image 1 for variant 1">BROWSE IMAGE</button>
-                        </div>
-                        <div class="image-upload" data-variant="0" data-image="1">
-                            <div class="upload-icon">
-                                <i class="fas fa-image"></i>
-                            </div>
-                            <div class="upload-text">Image 2</div>
-                            <div class="image-preview-container hidden">
-                                <img class="image-preview" src="" alt="Preview">
-                                <button type="button" class="delete-image-btn" aria-label="Delete image">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            </div>
-                            <!-- CHANGED: Added [1] to the name -->
-                            <input type="file" name="variants[0][images][1]" accept="image/*"
-                                style="display: none;" id="variantImage-0-1" aria-label="Image 2 for variant 1">
-                            <input type="hidden" name="variants[0][croppedImages][1]" class="cropped-image-data">
-                            <button type="button" class="upload-btn"
-                                onclick="document.getElementById('variantImage-0-1').click()"
-                                aria-label="Browse image 2 for variant 1">BROWSE IMAGE</button>
-                        </div>
-                        <div class="image-upload" data-variant="0" data-image="2">
-                            <div class="upload-icon">
-                                <i class="fas fa-image"></i>
-                            </div>
-                            <div class="upload-text">Image 3</div>
-                            <div class="image-preview-container hidden">
-                                <img class="image-preview" src="" alt="Preview">
-                                <button type="button" class="delete-image-btn" aria-label="Delete image">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            </div>
-                            <!-- CHANGED: Added [2] to the name -->
-                            <input type="file" name="variants[0][images][2]" accept="image/*"
-                                style="display: none;" id="variantImage-0-2" aria-label="Image 3 for variant 1">
-                            <input type="hidden" name="variants[0][croppedImages][2]" class="cropped-image-data">
-                            <button type="button" class="upload-btn"
-                                onclick="document.getElementById('variantImage-0-2').click()"
-                                aria-label="Browse image 3 for variant 1">BROWSE IMAGE</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="stockQuantity-0">Stock Quantity</label>
-                    <input type="number" value="20
-                    " id="stockQuantity-0" name="variants[0][stock]" class="form-input"
-                        min="0" aria-label="Stock quantity for variant 1">
+                <div style="text-align: center;">
+                    <button id="add-variant-button" type="button" class="custom-btn custom-btn-secondary"
+                        onclick="addVariant()">+ ADD ANOTHER VARIANT</button>
                 </div>
             </div>
         </div>
-        <div style="text-align: center;">
-            <button id="add-variant-button" type="button" class="custom-btn custom-btn-secondary"
-                onclick="addVariant()">+ ADD ANOTHER VARIANT</button>
-        </div>
-    </div>
-</div>
 
         <!-- Specifications -->
         <div class="narrow-content">
@@ -167,8 +170,8 @@
                 <div class="specifications-grid">
                     <div class="form-group">
                         <label class="form-label" for="StrapStyle">Strap Style</label>
-                        <input type="text" value="Lether Strap" id="StrapStyle" name="specifications[strapStyle]" class="form-input"
-                            aria-label="Strap style">
+                        <input type="text" value="Lether Strap" id="StrapStyle" name="specifications[strapStyle]"
+                            class="form-input" aria-label="Strap style">
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="Weight">Weight</label>
@@ -177,7 +180,7 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="DialType">Dial Type</label>
-                        <input type="text" id="DialType" name="specifications[DialType]" class="form-input"
+                        <input type="text" id="DialType" name="specifications[dialType]" class="form-input"
                             aria-label="Dial type">
                     </div>
                     <div class="form-group">
@@ -432,10 +435,10 @@
         });
     }
 
-   // Add a new variant
-function addVariant() {
-    const container = document.querySelector('.image-upload-section');
-    const variantHtml = `
+    // Add a new variant
+    function addVariant() {
+        const container = document.querySelector('.image-upload-section');
+        const variantHtml = `
         <div class="variant-container" id="variant-${variantCount}">
             <div class="variant-header">
                 <h4 class="variant-title">Variant ${variantCount + 1}</h4>
@@ -504,17 +507,17 @@ function addVariant() {
         </div>
     `;
 
-    container.insertAdjacentHTML('beforeend', variantHtml);
+        container.insertAdjacentHTML('beforeend', variantHtml);
 
-    // Add event listeners to new file inputs
-    const newVariant = document.getElementById(`variant-${variantCount}`);
-    if (newVariant) {
-        setupFileInputs();
-        setupDragAndDrop(newVariant);
+        // Add event listeners to new file inputs
+        const newVariant = document.getElementById(`variant-${variantCount}`);
+        if (newVariant) {
+            setupFileInputs();
+            setupDragAndDrop(newVariant);
+        }
+
+        variantCount++;
     }
-
-    variantCount++;
-}
 
     // Remove a variant
     function removeVariant(variantId) {
@@ -595,15 +598,15 @@ function addVariant() {
             // Check if at least one image is uploaded for each variant
             document.querySelectorAll('.variant-container').forEach((variant, variantIndex) => {
                 const croppedImages = variant.querySelectorAll('.cropped-image-data');
-                let hasImage = false;
+                let imageCount = 0;
 
                 croppedImages.forEach(input => {
-                    if (input.value) hasImage = true;
+                    if (input.value) imageCount++;
                 });
 
-                if (!hasImage) {
+                if (imageCount < 3) {
                     isValid = false;
-                    errorMessage = `Please upload at least one image for Variant ${variantIndex + 1}`;
+                    errorMessage = `Please upload at least 3 images for Variant ${variantIndex + 1}`;
                 }
             });
 
@@ -684,7 +687,7 @@ function addVariant() {
 
                 Swal.fire({
                     title: 'Error!',
-                    text: errorMessage,
+                    html: errorMessage,
                     icon: 'error',
                     confirmButtonColor: '#000',
                     customClass: {

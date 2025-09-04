@@ -1,10 +1,9 @@
+const mongoose = require('mongoose');
 const Product = require("../../models/common/productSchema");
 const Category = require("../../models/common/categorySchema");
-//const productValidationSchema = require("../validations/productValidation");// validation
-const { success, error: errorResponsem} = require("../../helpers/responseHelper");
+const { success, error: errorResponse} = require("../../helpers/responseHelper");
 const Messages = require("../../constants/messages");
 const HttpStatus = require("../../constants/statusCodes");
-const PermissionStatus = require("../../constants/permissionStatus");
 
 const loadProducts = async (req, res) => {
   let page = parseInt(req.query.page) || 1;
@@ -13,10 +12,7 @@ const loadProducts = async (req, res) => {
   // total products
   const totalProducts = await Product.countDocuments();
   // products
-  const products = await Product.find()
-    .skip(skip)
-    .limit(limit)
-    .populate("category");
+  const products = await Product.find().sort({createdAt:-1}).skip(skip).limit(limit).populate("category");
 
   res.render("vendor/loadProducts", {
     layout: "layouts/vendorLayout",
@@ -29,6 +25,19 @@ const loadProducts = async (req, res) => {
   });
 };
 
+const listAndUnlist = async (req,res) => {
+  try {
+    const id = req.params.id;
+    const {isListed} = req.body
+    await Product.findByIdAndUpdate(id,{isListed})
+    return success(res, HttpStatus.OK);
+  } catch (error) {
+   console.error("Error while update product:", error);
+    return errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
+  }
+
+}
+
 const loadAddProduct = async (req, res) => {
   const category = await Category.find();
   res.render("vendor/loadAddProduct", {
@@ -39,62 +48,40 @@ const loadAddProduct = async (req, res) => {
   });
 };
 
-
 const addProduct = async (req, res) => {
   try {
-    console.log("Request body:", req.body);
-    console.log("Request files:", req.files);
-    // Basic fields
-    const {name,description,price,discountedPrice,isListed,category,specifications} = req.body;
-
-    // Validate required specifications
-    if (!specifications || !specifications.strapStyle) {
-      return res.status(400).json({
-        success: false,
-        message: "Specifications strapStyle is required",
-      });
-    }
-
-    // Use variants directly from req.body (already parsed by multer)
-    let variants = req.body.variants || [];
-
-    // Vendor ID - adapt to how you store vendor (passport, session etc.)
+    // console.log("Request body:", req.body);
+    // console.log("Request files:", req.files);
+  
+    const {name,description,price,discountedPrice,isListed,category,variants,specifications} = req.body;
+    // Validate 
+    const find = await Product.findOne({name});
+    if(find)return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.PRODUCT_ALREADY_EXISTS);
+    // vendor id
     const vendorId = req.session.vendor;
-    if (!vendorId) {
-      return res.status(401).json({ success: false, message: "Vendor not authenticated" });
-    }
+    if (!vendorId)return errorResponse(res, HttpStatus.UNAUTHORIZED, Messages.VENDOR_NOT_FOUND);
+    
 
     // Process each variant and upload images
     const processedVariants = [];
 
     for (const [i, variant] of variants.entries()) {
       // Validate color
-      if (!variant.color || variant.color.trim() === "") {
-        return res.status(400).json({
-          success: false,
-          message: `Variant ${i + 1} requires a color (please enter a color name)`,
-        });
-      }
+      if (!variant.color || variant.color.trim() === "") return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.VARIANT_COLOR_REQUIRED(i+1));
 
       // Get files for this variant by matching fieldnames
-      const variantFiles = req.files.filter(file =>
-        file.fieldname.startsWith(`variants[${i}][images]`)
-      );
+      const variantFiles = req.files.filter(file => file.fieldname.startsWith(`variants[${i}][images]`));
 
       const uploadedImages = [];
 
       for (const file of variantFiles) {
         try {
-          // Cloudinary multer storage provides path (URL) and filename (public_id)
           const url = file.path;
           const public_id = file.filename;
 
           if (!url || !public_id) {
             console.error(`Missing URL or public_id for variant ${i + 1}:`, { url, public_id });
-            return res.status(400).json({
-              success: false,
-              message: `Failed to upload image for variant ${i + 1} to Cloudinary`,
-            });
+            return errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.VARIANT_IMAGE_UPLOAD_FAILED(i+1))
           }
 
           uploadedImages.push({
@@ -103,24 +90,13 @@ const addProduct = async (req, res) => {
             filename: file.originalname || "unknown",
           });
         } catch (uploadError) {
-          console.error(
-            `Error processing image for variant ${i + 1}:`,
-            uploadError
-          );
-          return res.status(500).json({
-            success: false,
-            message: `Failed to process images for variant ${i + 1}`,
-          });
+          console.error(`Error processing image for variant ${i + 1}:`,uploadError);
+          return errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.VARIANT_IMAGE_PROCESS_FAILED(i+1))
         }
       }
 
-      // Validate at least one image per variant
-      if (uploadedImages.length === 0) {
-        return res.status(400).json({
-          success: false,
-          message: `Variant ${i + 1} requires at least one image`,
-        });
-      }
+      //Check images
+      if (uploadedImages.length < 3) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.VARIANT_IMAGE_REQUIRED(i+1));
 
       // Create the processed variant with uploaded images
       processedVariants.push({
@@ -130,7 +106,6 @@ const addProduct = async (req, res) => {
       });
     }
 
-    console.log("Parsed Variants:", JSON.stringify(variants, null, 2));
     //Create new product
     const newProduct = new Product({
       vendorId: vendorId,
@@ -138,41 +113,67 @@ const addProduct = async (req, res) => {
       description: description.trim(),
       price: Number(price),
       discountedPrice: discountedPrice ? Number(discountedPrice) : undefined,
-      isListed: isListed === "true",
+      isListed: isListed == "true",
       category: category.trim(),
       specifications: specifications,
       variants: processedVariants, 
     });
-
+    console.log(newProduct)
+    //SAVE
     await newProduct.save();
 
-    // Return success response
-    return res.status(201).json({
-      success: true,
-      message: "Product added successfully",
-      productId: newProduct._id,
-    });
+    return success(res, HttpStatus.CREATED, Messages.PRODUCT_ADDED);
 
   } catch (err) {
     console.error("Add product error:", err);
-
-    // Handle duplicate key errors or other MongoDB errors
-    if (err.code === 11000) {
-      return res.status(400).json({
-        success: false,
-        message: "Product with this name already exists",
-      });
-    }
-
-    return res.status(500).json({
-      success: false,
-      message: "Server error while adding product",
-    });
+    errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
   }
 };
 
+const loadEditProduct = async (req,res) => {
+  try {
+    const id = req.params.id;
+    if (!mongoose.Types.ObjectId.isValid(id)) return res.redirect('/vendor/products'); 
+
+    const categories = await Category.find();
+    const product = await Product.findById(id).populate("category");
+
+  res.render("vendor/loadEditProduct", {
+    layout: "layouts/vendorLayout",
+    activePage: "products",
+    vendor: req.vendor,
+    categories,
+    product
+  });
+  } catch (error) {
+    console.error("Error loading product edit page:", error);
+    return errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
+  }
+}
+
+const editProduct = async (req,res) => {
+  try {
+    // console.log("Request body:", req.body);
+    // console.log("Request files:", req.files);
+      
+    const {name,description,price,discountedPrice,isListed,category,variants,specifications} = req.body;
+    // Validate 
+    const find = await Product.findOne({name});
+    if(find)return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.PRODUCT_ALREADY_EXISTS);
+    //vendor id
+    const vendorId = req.session.vendor;
+    if (!vendorId)return errorResponse(res, HttpStatus.UNAUTHORIZED, Messages.VENDOR_NOT_FOUND);
+    
+  } catch (error) {
+    
+  }
+
+}
+
 module.exports = {
   loadProducts,
+  listAndUnlist,
   loadAddProduct,
   addProduct,
+  loadEditProduct,
 };
