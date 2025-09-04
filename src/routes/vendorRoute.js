@@ -33,11 +33,26 @@ router.get("/dashboard", vendorAuth.checkSession,vendorPageController.loadDashbo
 
 //productss
 router.get("/products", vendorAuth.checkSession, vendorProductController.loadProducts);
-router.patch("/products/:id", vendorAuth.checkSession, vendorProductController.listAndUnlist)
+router.patch("/products/:id", vendorAuth.checkSession, vendorProductController.listAndUnlist);
 router.get("/products/add-product", vendorAuth.checkSession,vendorProductController.loadAddProduct);
-router.post("/products/add-product", vendorAuth.checkSession, upload.any(),  validate(productSchema), vendorProductController.addProduct);
-router.get("/products/edit-product/:id", vendorAuth.checkSession, vendorProductController.loadEditProduct)
-router.post("/products/edit-product/:id", vendorAuth.checkSession, vendorProductController.loadEditProduct)
+router.post("/products/add-product", vendorAuth.checkSession, upload.any(), validate(productSchema), vendorProductController.addProduct);
+router.get("/products/edit-product/:id", vendorAuth.checkSession, vendorProductController.loadEditProduct);
+router.put("/products/edit-product/:id", vendorAuth.checkSession, upload.any(), validate(productSchema), vendorProductController.editProduct);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Add this after your routes
 router.use((error, req, res, next) => {

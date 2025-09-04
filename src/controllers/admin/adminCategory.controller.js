@@ -99,7 +99,7 @@ const editCategory = async (req,res) => {
     //for case sensitive
     const normalised = name.trim().toLowerCase();
      
-    await Category.findByIdAndUpdate(id,{name:normalised, description, isListed:isListed==="true"});
+    await Category.findByIdAndUpdate(id,{name:normalised, description, isListed:isListed=="true"});
     return success(res, HttpStatus.OK, Messages.CATEGORY_UPDATED, {redirectUrl: "/admin/category" });
   } catch (error) {
     console.error("Error edit category:", error);

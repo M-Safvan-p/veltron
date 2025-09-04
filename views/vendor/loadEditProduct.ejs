@@ -587,8 +587,8 @@
             submitBtn.classList.add('loading');
 
             Swal.fire({
-                title: 'Adding Product...',
-                text: 'Please wait while we add your product.',
+                title: 'Updating Product...',
+                text: 'Please wait while we update your product.',
                 icon: 'info',
                 showConfirmButton: false,
                 allowOutsideClick: false,
@@ -618,7 +618,7 @@
                     }
                 });
 
-                const response = await axios.post('/vendor/products/edit-product', formData, {
+                const response = await axios.put('/vendor/products/edit-product', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
