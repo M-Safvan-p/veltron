@@ -85,6 +85,5 @@ document.querySelectorAll(".toggle-switch").forEach((toggle) => {
 
 // Edit category function
 function editCategory(categoryId) {
-  console.log("Edit category:", categoryId);
   window.location.href = `/admin/category/edit-category/${categoryId}`;
 }
