@@ -16,9 +16,9 @@ const Messages = {
   // Login
   LOGIN_SUCCESS: "Login successful",
   INVALID_CREDENTIALS: "Invalid credential",
-  
+
   // User
-  USER_ALREADY_EXISTS:"User already exists",
+  USER_ALREADY_EXISTS: "User already exists",
   LOGIN_USER_NOT_FOUND: "User not found.",
   // Vendor
   VENDOR_REGISTER_SUCCESS: "Vendor registered successfully.",
@@ -27,8 +27,10 @@ const Messages = {
   VENDOR_NOT_FOUND: "Vendor not found",
   VENDOR_APPROVED_SUCCESS: "Vendor has been approved successfully.",
   VENDOR_REJECTED_SUCCESS: "Vendor has been rejected successfully.",
-  REGISTRATION_PENDING: "Your registration is under review and awaiting administrator approval.",
-  REGISTRATION_REJECTED: "We regret to inform you that your account request has been rejected.",
+  REGISTRATION_PENDING:
+    "Your registration is under review and awaiting administrator approval.",
+  REGISTRATION_REJECTED:
+    "We regret to inform you that your account request has been rejected.",
 
   // Category
   CATEGORY_NOT_FOUND: "Category not found",
@@ -37,6 +39,20 @@ const Messages = {
   CATEGORY_ALREADY_EXISTS: "Category already exists.",
   CATEGORY_ADDED: "Category has been added successfully",
   CATEGORY_UPDATED: "Category has been updated successfully.",
+
+  //Product
+  // PRODUCT_NOT_FOUND: "Product not found",
+  // PRODUCT_LISTED: "Product has been listed successfully.",
+  // PRODUCT_UNLISTED: "Product has been unlisted successfully.",
+  PRODUCT_ALREADY_EXISTS: "Product already exists.",
+  PRODUCT_ADDED: "Product has been added successfully.",
+  // PRODUCT_UPDATED: "Product has been updated successfully.",
+
+  // Variant
+  VARIANT_COLOR_REQUIRED: (i) =>`Variant ${i + 1} requires a color (please enter a color name).`,
+  VARIANT_IMAGE_REQUIRED: (i) =>`Variant ${i + 1} must have at least 3 images.`,
+  VARIANT_IMAGE_PROCESS_FAILED: (index) =>`Failed to process images for variant ${index}.`,
+  VARIANT_IMAGE_UPLOAD_FAILED: (index) =>`Failed to upload image for variant ${index} to Cloudinary.`,
 
   // Server errors
   SERVER_ERROR: "An error occurred. Please try again later.",
