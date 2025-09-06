@@ -1,4 +1,5 @@
 const Vendor = require("../../models/vendor/vendorSchema");
+const VendorWallet = require("../../models/vendor/vendorWalletSchema");
 
 const formValidator = require("../../helpers/formValidator");
 const {success, error:errorResponse} = require("../../helpers/responseHelper");
@@ -95,6 +96,16 @@ const verifyOtp = async (req, res) => {
         password: hashedPassword,
       });
       await newVendor.save();
+    // sett wallet
+    const newWallet = new VendorWallet({
+      vendorId:newVendor._id,
+      balance:0,
+      transactionHistory:[],
+    });
+    await newWallet.save();
+    //link
+
+    await Vendor.findByIdAndUpdate(newVendor._id, { wallet: newWallet._id });
 
       // Clear session data
       req.session.vendorOtp = null;
@@ -131,6 +142,8 @@ const login = async (req, res) => {
     //check permission status
     if (vendor.permissionStatus == PermissionStatus.PENDING) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.REGISTRATION_PENDING);
     if (vendor.permissionStatus == PermissionStatus.REJECTED) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.REGISTRATION_REJECTED);
+    // check block 
+    if(vendor.isBlocked)return errorResponse(res, HttpStatus.FORBIDDEN, Messages.VENDOR_BLOCKED);
 
     
     //set session
