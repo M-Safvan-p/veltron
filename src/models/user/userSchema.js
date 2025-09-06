@@ -9,10 +9,9 @@ const userSchema = new Schema({
   },
   phoneNumber: {
     type: String,
-    required: false,
     unique: true,
-    sparse:true,
-    default:null,
+    sparse: true,
+    default: null,
   },
   email: {
     type: String,
@@ -23,77 +22,25 @@ const userSchema = new Schema({
   },
   password: {
     type: String,
-    required:false
+    required: false,
   },
-  isDeleted: {
-    type: Boolean,
-    default: false,
-  },
-  isActive: {
-    type: Boolean,
-    default: true,
-  },
-  isReferred: {
-    type: Boolean,
-    default: false,
-  },
-  referralCode: {
-    type: String,
-    unique: true,
-    sparse: true,
-  },
-  referredUsers: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-    },
-  ],
-  googleId: {
-    type: String,
-    unique: true,
-    sparse: true,
-  },
-  cart: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Cart",
-    },
-  ],
-  wallet: {
-    type: Schema.Types.ObjectId,
-    ref: "UserWallet",
-  },
-  paymentMethods: [ 
-    {
-      type: Schema.Types.ObjectId,
-      ref: "PaymentMethod",
-    },
-  ],
-  wishlist: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Wishlist",
-    },
-  ],
-  orderHistory: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Order",
-    },
-  ],
+  isDeleted: { type: Boolean, default: false },
+  isBlocked:{type:Boolean, default:false},
+  isActive: { type: Boolean, default: true },
+
+  isReferred: { type: Boolean, default: false },
+  referralCode: { type: String, unique: true, sparse: true },
+  referredUsers: [{ type: Schema.Types.ObjectId, ref: "User" }],
+
+  googleId: { type: String, unique: true, sparse: true },
+
+  wallet: { type: Schema.Types.ObjectId, ref: "UserWallet" },
+
   searchHistory: [
     {
-      category: {
-        type: Schema.Types.ObjectId,
-        ref: "Category",
-      },
-      vendor: {
-        type: String,
-      },
-      searchOn: {
-        type: Date,
-        default: Date.now,
-      },
+      category: { type: Schema.Types.ObjectId, ref: "Category" },
+      vendor: { type: String },
+      searchOn: { type: Date, default: Date.now },
     },
   ],
 }, { timestamps: true });
