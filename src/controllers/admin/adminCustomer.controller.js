@@ -33,16 +33,16 @@ const blockAndUnblock = async (req, res)=>{
         const isBlocked = req.body.isBlocked === true || req.body.isBlocked === "true";
         //find
         const user = Customer.findById(id);
-        if(!user)return errorResponse(res, )
+        if(!user)return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.LOGIN_USER_NOT_FOUND);
         //change
-        await Customer.findByIdAndUpdate(id, { isBlocked }, { new: true });
-        //
+        await Customer.findByIdAndUpdate(id, { isBlocked });
+        //session clear if login
         req.session.user=null;
         return success(res, HttpStatus.OK); 
     } catch (error) {
         errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
     }
-}
+};
 
 module.exports = {
     loadCustomers,
