@@ -6,6 +6,7 @@ const dashboardController = require("../controllers/admin/adminDashboard.control
 const vendorController = require("../controllers/admin/adminVendor.controller");
 const categoryController = require("../controllers/admin/adminCategory.controller");
 const customerController = require("../controllers/admin/adminCustomer.controller");
+const productController = require("../controllers/admin/adminProduct.controller");
 
 const { noCache } = require("../middleware/noCache");
 const adminAuth = require("../middleware/adminAuth");
@@ -29,8 +30,13 @@ router.get("/dashboard", adminAuth.checkSession, dashboardController.loadDashboa
 //  Vendors 
 router.get("/vendors", adminAuth.checkSession, vendorController.loadVendors);
 router.get("/vendors/pendings", adminAuth.checkSession, vendorController.loadVendorsPendings);
+router.patch("/vendors/:id", adminAuth.checkSession, vendorController.blockAndUnblock);
 router.post("/vendors/pendings/approve", adminAuth.checkSession, vendorController.approveVendor);
 router.post("/vendors/pendings/reject", adminAuth.checkSession, vendorController.cancelVendor);
+
+// Product
+router.get("/products", adminAuth.checkSession, productController.loadProducts);
+router.patch("/products/:id", adminAuth.checkSession, productController.listAndUnlist);
 
 //customers
 router.get("/customers", adminAuth.checkSession, customerController.loadCustomers);
