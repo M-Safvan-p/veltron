@@ -12,7 +12,7 @@ const loadProducts = async (req, res) => {
   // total products
   const totalProducts = await Product.countDocuments();
   // products
-  const products = await Product.find().sort({ createdAt: -1 }).skip(skip).limit(limit).populate('category');
+  const products = await Product.find({vendorId:req.session.vendor}).sort({ createdAt: -1 }).skip(skip).limit(limit).populate('category');
 
   res.render('vendor/loadProducts', {
     layout: 'layouts/vendorLayout',
@@ -29,7 +29,7 @@ const listAndUnlist = async (req, res) => {
   try {
     const id = req.params.id;
     const { isListed } = req.body;
-    await Product.findByIdAndUpdate(id, { isListed });
+    await Product.findByIdAndUpdate({_id:id, vendor:req.session.vendor}, { isListed });
     return success(res, HttpStatus.OK);
   } catch (error) {
     console.error('Error while update product:', error);
@@ -133,7 +133,8 @@ const loadEditProduct = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(id)) return res.redirect('/vendor/products');
 
     const categories = await Category.find();
-    const product = await Product.findById(id).populate('category');
+    const product = await Product.findOne({_id:id, vendorId:req.session.vendor}).populate("category");
+    if(!product)return res.redirect("/vendor/products");
 
     res.render('vendor/loadEditProduct', {
       layout: 'layouts/vendorLayout',
@@ -144,7 +145,7 @@ const loadEditProduct = async (req, res) => {
     });
   } catch (error) {
     console.error('Error loading product edit page:', error);
-    return errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
+    return res.redirect("/vendor/products"); 
   }
 };
 
@@ -167,6 +168,8 @@ const editProduct = async (req, res) => {
       { _id: id, vendor: vendorId }, 
       { name, description, price, discountedPrice, isListed: isListed == 'true', category, variants, specifications }
     );
+
+    return success(res, HttpStatus.OK, Messages.PRODUCT_UPDATED);
   } catch (error) {
     console.error('Error edit product:', error);
     return errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
