@@ -3,7 +3,7 @@
 <div class="page-header">
     <h1 class="page-title">CUSTOMER LIST</h1>
     <div class="breadcrumb">
-        <a href="/admin/dashboard">Dashboard</a> 
+        <a href="/admin/dashboard">Dashboard</a>
         <span class="breadcrumb-separator">></span>
         <a href="/admin/customers">Customers</a>
     </div>
@@ -36,45 +36,49 @@
             </tr>
         </thead>
         <tbody>
-                <% customers.forEach((customer, index) => { %>
-                    <tr class="table-row">
-                        <td>
-                            <div class="customer-info">
-                                <div class="customer-avatar">
-                                    <%= customer.fullName[0].toUpperCase() || 'U' %> 
+            <% customers.forEach((customer, index)=> { %>
+                <tr class="table-row">
+                    <td>
+                        <div class="customer-info">
+                            <div class="customer-avatar">
+                                <%= customer.fullName[0].toUpperCase() || 'U' %>
+                            </div>
+                            <div class="customer-details">
+                                <div class="customer-name">
+                                    <%= customer.fullName %>
                                 </div>
-                                <div class="customer-details">
-                                    <div class="customer-name"><%= customer.fullName %></div>
-                                    <div class="customer-email"><%= customer.email %></div>
+                                <div class="customer-email">
+                                    <%= customer.email %>
                                 </div>
                             </div>
-                        </td>
-                        <td>
-                            <%= customer.phoneNumber %>
-                        </td>
-                        <td>
-                            <%= customer?.orders || 0 %>
-                        </td>
-                        <td>
-                            $<%= customer.wallet ? customer.wallet.balance : '0.0000' %>
-                        </td>
-                        <td>
-                            <span class="status-badge <%= customer.isBlocked ? 'status-blocked' : 'status-active' %>">
-                                <%= customer.isBlocked ? "Blocked" : "Active" %>
-                            </span>
-                        </td>
-                        <td>
-                            <div class="toggle-switch <%= customer.isBlocked ? 'active' : 'blocked' %>"
-                                data-customer-id="<%= customer._id %>">
-                                <div class="slider"></div>
-                            </div>
-                        </td>
-                        <td>
-                            <button class="action-btn" onclick="viewCustomer('<%= customer.id %>')">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </td>
-                    </tr>
+                        </div>
+                    </td>
+                    <td>
+                        <%= customer.phoneNumber %>
+                    </td>
+                    <td>
+                        <%= customer?.orders || 0 %>
+                    </td>
+                    <td>
+                        $<%= customer.wallet ? customer.wallet.balance.toFixed(2) : '0.00' %>
+                    </td>
+                    <td>
+                        <span class="status-badge <%= customer.isBlocked ? 'status-blocked' : 'status-active' %>">
+                            <%= customer.isBlocked ? "Blocked" : "Active" %>
+                        </span>
+                    </td>
+                    <td>
+                        <div class="toggle-switch <%= customer.isBlocked ? 'active' : 'blocked' %>"
+                            data-customer-id="<%= customer._id %>">
+                            <div class="slider"></div>
+                        </div>
+                    </td>
+                    <td>
+                        <button class="action-btn" onclick="viewCustomer('<%= customer.id %>')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                </tr>
                 <% }) %>
         </tbody>
     </table>
@@ -86,25 +90,81 @@
         Showing 1-<%= customers.length %> from <%= totalCustomers %>
     </div>
     <div class="pagination-controls">
-        <button class="pagination-btn" <%= currentPage == 1 ? 'disabled' : '' %> onclick="changePage(<%= currentPage - 1 %>)" aria-label="Previous page">
-            <i class="fas fa-chevron-left" aria-hidden="true"></i>
+        <button class="pagination-btn" <%=currentPage==1 ? 'disabled' : '' %> onclick="changePage(<%= currentPage - 1 %>
+                )" aria-label="Previous page">
+                <i class="fas fa-chevron-left" aria-hidden="true"></i>
         </button>
-        <% for (let i = 1; i <= totalPages; i++) { %>
-            <button class="pagination-btn <%= i === currentPage ? 'active' : '' %>" onclick="changePage(<%= i %>)" aria-label="Page <%= i %>">
+        <% for (let i=1; i <=totalPages; i++) { %>
+            <button class="pagination-btn <%= i === currentPage ? 'active' : '' %>" onclick="changePage(<%= i %>)"
+                aria-label="Page <%= i %>">
                 <%= i %>
             </button>
-        <% } %>
-        <button class="pagination-btn" <%= currentPage == totalPages ? 'disabled' : '' %> onclick="changePage(<%= currentPage + 1 %>)" aria-label="Next page">
-            <i class="fas fa-chevron-right" aria-hidden="true"></i>
-        </button>
+            <% } %>
+                <button class="pagination-btn" <%=currentPage==totalPages ? 'disabled' : '' %> onclick="changePage(<%=
+                        currentPage + 1 %>)" aria-label="Next page">
+                        <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                </button>
     </div>
 </div>
-
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Toggle switch functionality
+        const toggleSwitches = document.querySelectorAll(".toggle-switch");
+        toggleSwitches.forEach((toggle) => {
+            toggle.addEventListener("click", async function () {
+                const customerId = this.dataset.customerId;
+                
+                // Current state: if toggle has 'active' class, customer is currently blocked
+                const currentlyBlocked = this.classList.contains("active");
+                
+                // New state will be opposite of current state
+                const newBlockedState = !currentlyBlocked;
+
+                // Optimistically toggle the switch
+                this.classList.toggle("active");
+                this.classList.toggle("blocked");
+
+                // Update the status badge text and class
+                const statusBadge = this.closest("tr").querySelector(".status-badge");
+                if (statusBadge) {
+                    statusBadge.textContent = newBlockedState ? "Blocked" : "Active";
+                    statusBadge.className = `status-badge ${newBlockedState ? 'status-blocked' : 'status-active'}`;
+                }
+
+                // Send update to server
+                try {
+                    const response = await axios.patch(`/admin/customers/${customerId}`, { 
+                        isBlocked: newBlockedState 
+                    });
+                    console.log('Customer status updated successfully');
+                } catch (error) {
+                    console.error("Failed to update status:", error);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Failed to update customer status.",
+                    });
+
+                    // Revert toggle and badge on error
+                    this.classList.toggle("active");
+                    this.classList.toggle("blocked");
+                    if (statusBadge) {
+                        statusBadge.textContent = currentlyBlocked ? "Blocked" : "Active";
+                        statusBadge.className = `status-badge ${currentlyBlocked ? 'status-blocked' : 'status-active'}`;
+                    }
+                }
+            });
+        });
+    });
+
     function changePage(page) {
         const url = new URL(window.location);
         url.searchParams.set('page', page);
         window.location.href = url.href;
     }
+
+    function viewCustomer(customerId) {
+        console.log("Viewing customer:", customerId);
+        window.location.href = `/admin/customers/${customerId}`;
+    }
 </script>
-<script src="../../js/script/admin/customersList.js"></script>

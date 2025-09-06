@@ -44,9 +44,7 @@ document.querySelectorAll(".toggle-switch").forEach((toggle) => {
           }`;
 
           try {
-            await axios.patch(`/admin/category/${categoryId}`, {
-              isListed: newStatus,
-            });
+            await axios.patch(`/admin/category/${categoryId}`, { isListed: newStatus});
           } catch (error) {
             Swal.fire({
               icon: "error",

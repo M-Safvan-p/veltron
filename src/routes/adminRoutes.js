@@ -5,6 +5,7 @@ const authController = require("../controllers/admin/adminAuth.controller");
 const dashboardController = require("../controllers/admin/adminDashboard.controller");
 const vendorController = require("../controllers/admin/adminVendor.controller");
 const categoryController = require("../controllers/admin/adminCategory.controller");
+const customerController = require("../controllers/admin/adminCustomer.controller");
 
 const { noCache } = require("../middleware/noCache");
 const adminAuth = require("../middleware/adminAuth");
@@ -30,6 +31,10 @@ router.get("/vendors", adminAuth.checkSession, vendorController.loadVendors);
 router.get("/vendors/pendings", adminAuth.checkSession, vendorController.loadVendorsPendings);
 router.post("/vendors/pendings/approve", adminAuth.checkSession, vendorController.approveVendor);
 router.post("/vendors/pendings/reject", adminAuth.checkSession, vendorController.cancelVendor);
+
+//customers
+router.get("/customers", adminAuth.checkSession, customerController.loadCustomers);
+router.patch("/customers/:id", adminAuth.checkSession, customerController.blockAndUnblock);
 
 //  Categories 
 router.get("/category", adminAuth.checkSession, categoryController.loadCategory);

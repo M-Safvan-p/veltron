@@ -20,9 +20,11 @@ const Messages = {
   // User
   USER_ALREADY_EXISTS: "User already exists",
   LOGIN_USER_NOT_FOUND: "User not found.",
+  USER_BLOCKED: "Your account has been blocked.",
   // Vendor
   VENDOR_REGISTER_SUCCESS: "Vendor registered successfully.",
   VENDOR_EMAIL_ALREADY_EXISTS: "Brand email already exists",
+  VENDOR_BLOCKED: "Your vendor account has been blocked.",
   VENDOR_ID_REQUIRED: "Vendor ID is required",
   VENDOR_NOT_FOUND: "Vendor not found",
   VENDOR_APPROVED_SUCCESS: "Vendor has been approved successfully.",
@@ -46,7 +48,7 @@ const Messages = {
   // PRODUCT_UNLISTED: "Product has been unlisted successfully.",
   PRODUCT_ALREADY_EXISTS: "Product already exists.",
   PRODUCT_ADDED: "Product has been added successfully.",
-  // PRODUCT_UPDATED: "Product has been updated successfully.",
+  PRODUCT_UPDATED: "Product has been updated successfully.",
 
   // Variant
   VARIANT_COLOR_REQUIRED: (i) =>`Variant ${i + 1} requires a color (please enter a color name).`,

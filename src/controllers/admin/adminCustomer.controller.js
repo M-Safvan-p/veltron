@@ -1,4 +1,4 @@
-const Customers = require("../../models/user/userSchema");
+const Customer = require("../../models/user/userSchema");
 const {success, error:errorResponse} = require("../../helpers/responseHelper");
 const HttpStatus = require("../../constants/statusCodes");
 const Messages = require("../../constants/messages");
@@ -9,8 +9,8 @@ const loadCustomers = async (req, res)=> {
         const limit = 5;
         const skip = (page - 1) * limit;
 
-        const customers = await Customers.find().sort({createdAt:-1}).skip(skip).limit(limit).populate("wallet");
-        const totalCustomers = await Customers.countDocuments();
+        const customers = await Customer.find().sort({createdAt:-1}).skip(skip).limit(limit).populate("wallet");
+        const totalCustomers = await Customer.countDocuments();
     
         res.render("admin/customers",{
             layout:"layouts/adminLayout",
@@ -27,10 +27,25 @@ const loadCustomers = async (req, res)=> {
     }
 }
 
-
-
+const blockAndUnblock = async (req, res)=>{
+    try {
+        const id = req.params.id;
+        const isBlocked = req.body.isBlocked === true || req.body.isBlocked === "true";
+        //find
+        const user = Customer.findById(id);
+        if(!user)return errorResponse(res, )
+        //change
+        await Customer.findByIdAndUpdate(id, { isBlocked }, { new: true });
+        //
+        req.session.user=null;
+        return success(res, HttpStatus.OK); 
+    } catch (error) {
+        errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
+    }
+}
 
 module.exports = {
     loadCustomers,
+    blockAndUnblock,
     
 }
