@@ -10,7 +10,7 @@ const loadProducts = async (req, res) => {
   let limit = 5;
   let skip = (page - 1) * limit;
   // total products
-  const totalProducts = await Product.countDocuments();
+  const totalProducts = await Product.countDocuments({vendorId:req.session.vendor});
   // products
   const products = await Product.find({vendorId:req.session.vendor}).sort({ createdAt: -1 }).skip(skip).limit(limit).populate('category');
 
@@ -116,7 +116,7 @@ const addProduct = async (req, res) => {
       specifications: specifications,
       variants: processedVariants,
     });
-    console.log(newProduct);
+    console.log("save",newProduct);
     //SAVE
     await newProduct.save();
 
