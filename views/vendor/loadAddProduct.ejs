@@ -233,6 +233,9 @@
 
 <!-- Add Cropper.js and other scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+<!-- Validation Script and form data to object -->
+<script src="/js/utils/formValidator.js"></script>
+<script src="/js/utils/formDataToObject.js"></script>
 <script>
     // Global variables
     var variantCount = 1;
@@ -591,31 +594,17 @@
         form.addEventListener('submit', async function (e) {
             e.preventDefault();
 
-            // Frontend validation
-            let isValid = true;
-            let errorMessage = '';
+            // Convert form data to object
+            const productData = formDataToObject(form);
 
-            // Check if at least one image is uploaded for each variant
-            document.querySelectorAll('.variant-container').forEach((variant, variantIndex) => {
-                const croppedImages = variant.querySelectorAll('.cropped-image-data');
-                let imageCount = 0;
-
-                croppedImages.forEach(input => {
-                    if (input.value) imageCount++;
-                });
-
-                if (imageCount < 3) {
-                    isValid = false;
-                    errorMessage = `Please upload at least 3 images for Variant ${variantIndex + 1}`;
-                }
-            });
+            // Run validator with data (includes image validation)
+            const { isValid, messages } = validateProductForm(productData);
 
             if (!isValid) {
                 Swal.fire({
-                    title: 'Error!',
-                    text: errorMessage,
-                    icon: 'error',
-                    confirmButtonColor: '#000',
+                    title: "Error!",
+                    html: messages.join("<br>"),
+                    icon: "error",
                     customClass: {
                         confirmButton: "swal-confirm-black"
                     }
