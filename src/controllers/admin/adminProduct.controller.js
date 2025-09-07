@@ -9,7 +9,7 @@ const loadProducts = async (req, res) => {
     const page = parseInt(req.query.page || 1);
     const limit = 5;
     const skip = (page - 1) * limit;
-    const products = await Product.find({approvalStatus:{ $ne: PermissionStatus.PENDING }}).sort({ createdAt: -1 }).skip(skip).limit(limit).populate("category").populate("vendorId");
+    const products = await Product.find({approvalStatus:{ $ne: PermissionStatus.PENDING }}).sort({ createdAt: -1 }).skip(skip).limit(limit).populate("category").populate("vendorId").lean();
     const totalProducts = await Product.countDocuments({approvalStatus:{ $ne: PermissionStatus.PENDING }});
 
     res.render('admin/products', {

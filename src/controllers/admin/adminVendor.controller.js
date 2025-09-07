@@ -9,7 +9,7 @@ const loadVendors = async (req, res) => {
     const page = parseInt(req.query.page || 1);
     const limit = 5;
     const skip = (page - 1) * limit;
-    const vendors = await Vendor.find({ permissionStatus: PermissionStatus.APPROVED }).sort({ createdAt: -1 }).skip(skip).limit(limit);
+    const vendors = await Vendor.find({ permissionStatus: PermissionStatus.APPROVED }).sort({ createdAt: -1 }).skip(skip).limit(limit).lean();
     const totalVendors = await Vendor.countDocuments({ permissionStatus: PermissionStatus.APPROVED });
 
     res.render('admin/vendors', {
@@ -49,7 +49,7 @@ const loadVendorsPendings = async (req, res) => {
     const page = parseInt(req.query.page || 1);
     const limit = 5;
     const skip = (page - 1) * limit;
-    const vendors = await Vendor.find({ permissionStatus: PermissionStatus.PENDING }).sort({ createdAt: -1 }).skip(skip).limit(limit);
+    const vendors = await Vendor.find({ permissionStatus: PermissionStatus.PENDING }).sort({ createdAt: -1 }).skip(skip).limit(limit).lean();
     const totalVendors = await Vendor.countDocuments({ permissionStatus: PermissionStatus.PENDING });
 
     res.render('admin/vendorsPendings', {

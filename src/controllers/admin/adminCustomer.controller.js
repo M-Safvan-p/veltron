@@ -9,7 +9,7 @@ const loadCustomers = async (req, res)=> {
         const limit = 5;
         const skip = (page - 1) * limit;
 
-        const customers = await Customer.find().sort({createdAt:-1}).skip(skip).limit(limit).populate("wallet");
+        const customers = await Customer.find().sort({createdAt:-1}).skip(skip).limit(limit).populate("wallet").lean();
         const totalCustomers = await Customer.countDocuments();
     
         res.render("admin/customers",{

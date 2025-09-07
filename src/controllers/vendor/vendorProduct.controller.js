@@ -12,7 +12,7 @@ const loadProducts = async (req, res) => {
   // total products
   const totalProducts = await Product.countDocuments({vendorId:req.session.vendor});
   // products
-  const products = await Product.find({vendorId:req.session.vendor}).sort({ createdAt: -1 }).skip(skip).limit(limit).populate('category');
+  const products = await Product.find({vendorId:req.session.vendor}).sort({ createdAt: -1 }).skip(skip).limit(limit).populate('category').lean();
 
   res.render('vendor/loadProducts', {
     layout: 'layouts/vendorLayout',
@@ -38,7 +38,7 @@ const listAndUnlist = async (req, res) => {
 };
 
 const loadAddProduct = async (req, res) => {
-  const category = await Category.find();
+  const category = await Category.find().lean();
   res.render('vendor/loadAddProduct', {
     layout: 'layouts/vendorLayout',
     activePage: 'products',
@@ -132,8 +132,8 @@ const loadEditProduct = async (req, res) => {
     const id = req.params.id;
     if (!mongoose.Types.ObjectId.isValid(id)) return res.redirect('/vendor/products');
 
-    const categories = await Category.find();
-    const product = await Product.findOne({_id:id, vendorId:req.session.vendor}).populate("category");
+    const categories = await Category.find().lean();
+    const product = await Product.findOne({_id:id, vendorId:req.session.vendor}).populate("category").lean();
     if(!product)return res.redirect("/vendor/products");
 
     res.render('vendor/loadEditProduct', {

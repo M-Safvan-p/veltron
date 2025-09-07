@@ -9,7 +9,7 @@ const loadCategory = async (req, res) => {
   const limit = 5;
   const skip = (page - 1) * 5;
   const totalCategories = await Category.countDocuments();
-  const category = await Category.find().sort({ createdAt:-1 }) .skip(skip).limit(limit);
+  const category = await Category.find().sort({ createdAt:-1 }) .skip(skip).limit(limit).lean();
 
   res.render("admin/category", {
     layout: "layouts/adminLayout",
@@ -74,7 +74,7 @@ const loadEditCategory = async (req, res) => {
   try {
     const id = req.params.id;
     if (!mongoose.Types.ObjectId.isValid(id)) return res.redirect('/admin/category'); 
-    const category = await Category.findById(id);
+    const category = await Category.findById(id).lean();
     res.render("admin/editCategory", {
       layout: "layouts/adminLayout",
       activePage: "category",
