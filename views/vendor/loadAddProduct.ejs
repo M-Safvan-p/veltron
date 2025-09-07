@@ -440,6 +440,19 @@
 
     // Add a new variant
     function addVariant() {
+        if (variantCount >= 5) {
+            Swal.fire({
+                title: 'Limit Reached!',
+                text: 'You can only add up to 5 variants per product.',
+                icon: 'warning',
+                confirmButtonColor: '#000',
+                customClass: {
+                    confirmButton: "swal-confirm-black"
+                }
+            });
+            return;
+        }
+
         const container = document.querySelector('.image-upload-section');
         const variantHtml = `
         <div class="variant-container" id="variant-${variantCount}">
@@ -520,6 +533,10 @@
         }
 
         variantCount++;
+
+        if (variantCount >= 5) {
+            document.getElementById('add-variant-button').style.display = 'none';
+        }
     }
 
     // Remove a variant
@@ -530,6 +547,10 @@
         if (variant && totalVariants > 1) {
             variant.remove();
             reindexVariants();
+
+            if (variantCount < 5) {
+                document.getElementById('add-variant-button').style.display = 'block';
+            }
         } else if (totalVariants === 1) {
             Swal.fire({
                 title: 'Warning!',
