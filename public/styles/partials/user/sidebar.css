@@ -45,10 +45,10 @@
     position: relative;
 }
 
-/* Elegant Header */
+/* Elegant Header - Softer Dark Theme */
 .profile-header {
     padding: 30px 25px;
-    background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
     display: flex;
     align-items: center;
     gap: 15px;
@@ -65,55 +65,28 @@
     right: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(23, 23, 23, 0.723) 0%, transparent 70%);
     animation: subtle-glow 6s ease-in-out infinite alternate;
 }
 
 @keyframes subtle-glow {
-    0% { opacity: 0.3; transform: scale(1); }
-    100% { opacity: 0.1; transform: scale(1.1); }
-}
-
-/* Close Button */
-.profile-close {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    width: 35px;
-    height: 35px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    color: #fff;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    z-index: 10;
-}
-
-.profile-close:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: rotate(90deg) scale(1.1);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+    0% { opacity: 0.4; transform: scale(1); }
+    100% { opacity: 0.2; transform: scale(1.1); }
 }
 
 /* Avatar */
 .profile-avatar {
     width: 60px;
     height: 60px;
-    background: linear-gradient(135deg, #ffffff 0%, #f1f3f4 100%);
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #000;
+    color: #100f0f;
     font-size: 24px;
     font-weight: 600;
-    /* border: 3px solid rgba(255, 255, 255, 0.3); */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
     transition: all 0.3s ease;
     z-index: 10;
     position: relative;
@@ -121,8 +94,9 @@
 
 .profile-avatar:hover {
     transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
+
 .profile-image {
     width: 100%;
     height: 100%;
@@ -135,9 +109,9 @@
 .profile-name {
     font-size: 18px;
     font-weight: 600;
-    color: #fff;
+    color: #ffffff;
     letter-spacing: 0.5px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     z-index: 10;
     position: relative;
 }
@@ -213,29 +187,22 @@
 }
 
 .menu-link.active {
-    background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
-    color: #fff;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    color: #2c3e50;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
     transform: translateX(8px);
+    border-left: 5px solid #2c3e50;
 }
 
 .menu-link.active::before {
     opacity: 1;
-    background: linear-gradient(180deg, #fff 0%, #f0f0f0 100%);
-    width: 4px;
+    background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+    width: 5px;
 }
 
-/* Menu Icons */
-.menu-icon {
-    width: 22px;
-    height: 22px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    color: #666;
-    transition: all 0.3s ease;
-    flex-shrink: 0;
+.menu-link.active .menu-icon {
+    color: #2c3e50;
+    transform: scale(1.1);
 }
 
 .menu-link:hover .menu-icon {
@@ -244,7 +211,6 @@
 }
 
 .menu-link.active .menu-icon {
-    color: #fff;
     transform: scale(1.1);
 }
 
