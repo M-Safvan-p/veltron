@@ -13,7 +13,7 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: 'veltron_uploads',
-    allowed_formats: ['jpg', 'png', 'jpeg', 'webp', 'heif', 'heic', 'svg']
+    allowed_formats: ['jpg', 'png', 'jpeg', 'webp', 'heic', 'svg']
   },
 });
 

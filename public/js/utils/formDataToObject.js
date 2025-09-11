@@ -3,20 +3,23 @@ function formDataToObject(form) {
   const data = {};
 
   formData.forEach((value, key) => {
+    // Trim string values to avoid whitespace issues
+    const trimmedValue = typeof value === 'string' ? value.trim() : value;
+
     // Handle nested keys like variants[0][color]
     if (key.includes("[")) {
       const keys = key.replace(/\]/g, "").split("[");
       let current = data;
       keys.forEach((k, i) => {
         if (i === keys.length - 1) {
-          current[k] = value;
+          current[k] = trimmedValue;
         } else {
           current[k] = current[k] || {};
           current = current[k];
         }
       });
     } else {
-      data[key] = value;
+      data[key] = trimmedValue;
     }
   });
 

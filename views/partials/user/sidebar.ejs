@@ -1,0 +1,92 @@
+<!-- Profile Sidebar Partial - Save as: views/partials/_sidebar.ejs -->
+<link rel="stylesheet" href="../../../styles/partials/user/sidebar.css">
+<!-- Sidebar (no overlay since it's always visible) -->
+<div class="profile-sidebar">
+    <div class="profile-sidebar-content">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="profile-avatar">
+                <% if (user.profileImage) { %>
+                    <img src="<%= user.profileImage %>" alt="<%= user.fullName %>" class="profile-image">
+                <% } else { %>
+                    <i class="fas fa-user"></i>
+                <% } %>
+            </div>
+            <div class="profile-name"><%= user.fullName %></div>
+        </div>
+
+        <!-- Profile Menu -->
+        <ul class="profile-menu">
+            <li class="menu-item">
+                <a href="/profile" class="menu-link <%= (typeof currentPage !== 'undefined' && currentPage === 'profile') ? 'active' : '' %>">
+                    <i class="fas fa-user menu-icon"></i>
+                    <span class="menu-text">My Profile</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="/address" class="menu-link <%= (typeof currentPage !== 'undefined' && currentPage === 'address') ? 'active' : '' %>">
+                    <i class="fas fa-map-marker-alt menu-icon"></i>
+                    <span class="menu-text">My Address</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="/orders" class="menu-link <%= (typeof currentPage !== 'undefined' && currentPage === 'orders') ? 'active' : '' %>">
+                    <i class="fas fa-shopping-bag menu-icon"></i>
+                    <span class="menu-text">My Order</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="/wishlist" class="menu-link <%= (typeof currentPage !== 'undefined' && currentPage === 'wishlist') ? 'active' : '' %>">
+                    <i class="fas fa-heart menu-icon"></i>
+                    <span class="menu-text">My Wishlist</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="/wallet" class="menu-link <%= (typeof currentPage !== 'undefined' && currentPage === 'wallet') ? 'active' : '' %>">
+                    <i class="fas fa-wallet menu-icon"></i>
+                    <span class="menu-text">My Wallet</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="/coupons" class="menu-link <%= (typeof currentPage !== 'undefined' && currentPage === 'coupons') ? 'active' : '' %>">
+                    <i class="fas fa-ticket-alt menu-icon"></i>
+                    <span class="menu-text">My Coupon</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="/profile/change-password" class="menu-link <%= (typeof currentPage !== 'undefined' && currentPage === 'change-password') ? 'active' : '' %>">
+                    <i class="fas fa-lock menu-icon"></i>
+                    <span class="menu-text">Change Password</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="/profile/change-email" class="menu-link <%= (typeof currentPage !== 'undefined' && currentPage === 'change-email') ? 'active' : '' %>">
+                    <i class="fas fa-envelope menu-icon"></i>
+                    <span class="menu-text">Change Email</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="/referral" class="menu-link <%= (typeof currentPage !== 'undefined' && currentPage === 'referral') ? 'active' : '' %>">
+                    <i class="fas fa-users menu-icon"></i>
+                    <span class="menu-text">Referral Code</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="/logout" class="menu-link logout-link" onclick="handleLogout(event)">
+                    <i class="fas fa-sign-out-alt menu-icon"></i>
+                    <span class="menu-text">Log Out</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- JavaScript Functions (only handleLogout remains) -->
+<script>
+    function handleLogout(event) {
+        event.preventDefault();
+        if (confirm('Are you sure you want to log out?')) {
+            window.location.href = '/logout';
+        }
+    }
+</script>

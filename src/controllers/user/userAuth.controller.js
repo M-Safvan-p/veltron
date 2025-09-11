@@ -6,10 +6,11 @@ const formValidator = require('../../helpers/formValidator');
 const { success, error: errorResponse } = require('../../helpers/responseHelper');
 const HttpStatus = require('../../constants/statusCodes');
 const Messages = require('../../constants/messages');
+const { message } = require('../../validators/vendor/productValidator');
 
 function loadSignUp(req, res) {
   try {
-    return res.render('user/signUp', { message: null, old: {} });
+    return res.render('user/signUp', { message: null, old: {}, layout: false });
   } catch (error) {
     console.log('Signup page not loading ' + error);
     res.status(500).send('Server Error');
@@ -65,7 +66,7 @@ const loadVerifyOtp = (req, res) => {
   if (!req.session.userData) {
     return res.redirect('/signUp');
   }
-  res.render('user/verifyOtp', { email: req.session.userData.email });
+  res.render('user/verifyOtp', { email: req.session.userData.email, layout: false });
 };
 
 const verifyOtp = async (req, res) => {
@@ -145,7 +146,7 @@ const resendOtp = async (req, res) => {
 
 const loadLogIn = (req, res) => {
   try {
-    return res.render('user/logIn', { message: null });
+    return res.render('user/logIn', { message: null, layout: false });
   } catch (error) {
     console.log('login page not loading ', error);
     return errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
@@ -179,7 +180,7 @@ const logIn = async (req, res) => {
 
 const loadForgotPassword = (req, res) => {
   try {
-    return res.render('user/forgotPassword');
+    return res.render('user/forgotPassword', { layout: false });
   } catch (error) {
     console.log('Forgot page load Error:', error);
     return res.errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);

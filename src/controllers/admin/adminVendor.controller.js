@@ -76,7 +76,7 @@ const approveVendor = async (req, res) => {
     const vendor = await Vendor.findById(vendorId);
     if (!vendor) return errorResponse(res, HttpStatus.NOT_FOUND, Messages.VENDOR_NOT_FOUND);
 
-    vendor.permissionStatus = PermissionStatus.APPROVED;
+    vendor.permissionStatus = PermissionStatus.APPROVED.toLowerCase();
     await vendor.save();
     success(res, HttpStatus.OK, Messages.VENDOR_APPROVED_SUCCESS);
   } catch (error) {
@@ -93,7 +93,7 @@ const cancelVendor = async (req, res) => {
     const vendor = await Vendor.findById(vendorId);
     if (!vendor) return errorResponse(res, HttpStatus.NOT_FOUND, Messages.VENDOR_NOT_FOUND);
     //cancel
-    vendor.permissionStatus = PermissionStatus.REJECTED;
+    vendor.permissionStatus = PermissionStatus.REJECTED.toLowerCase();
     await vendor.save();
 
     return success(res, HttpStatus.OK, Messages.VENDOR_REJECTED_SUCCESS);

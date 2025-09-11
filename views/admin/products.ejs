@@ -100,11 +100,11 @@
                                         <% } %>
                         </td>
                         <td>
-                            <div class="list-toggle <%= product.approvalStatus === 'APPROVED' ? 'listed' : 'unlisted' %>"
+                            <div class="list-toggle <%= product.approvalStatus === 'approved' ? 'listed' : 'unlisted' %>"
                                 data-product-id="<%= product._id %>"
                                 data-current-status="<%= product.approvalStatus %>">
                                 <span class="toggle-text">
-                                    <%= product.approvalStatus==='APPROVED' ? 'APPROVED' : 'REJECTED' %>
+                                    <%= product.approvalStatus==='approved' ? 'approved' : 'rejected' %>
                                 </span>
                                 <div class="toggle-switch">
                                     <div class="slider"></div>
@@ -162,7 +162,7 @@
             const currentStatus = this.dataset.currentStatus;
 
             // Change status
-            const newStatus = currentStatus === 'APPROVED' ? 'REJECTED' : 'APPROVED';
+            const newStatus = currentStatus === 'approved' ? 'rejected' : 'approved';
 
             try {
                 // Make API call with axios
@@ -170,10 +170,10 @@
 
                 // Update UI
                 this.classList.remove('listed', 'unlisted');
-                this.classList.add(newStatus === 'APPROVED' ? 'listed' : 'unlisted');
+                this.classList.add(newStatus === 'approved' ? 'listed' : 'unlisted');
 
                 // Update text based on current state (not action)
-                this.querySelector('.toggle-text').textContent = newStatus === 'APPROVED' ? 'APPROVED' : 'REJECTED';
+                this.querySelector('.toggle-text').textContent = newStatus === 'approved' ? 'approved' : 'rejected';
                 this.dataset.currentStatus = newStatus;
 
             } catch (error) {

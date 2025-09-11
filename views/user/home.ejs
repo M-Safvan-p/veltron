@@ -1,0 +1,127 @@
+<link rel="stylesheet" href="../../styles/user/home.css">
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content container">
+        <h1>Luxury Watches</h1>
+        <p>Discover timeless elegance crafted with precision.</p>
+    </div>
+</section>
+
+<!-- New Arrivals -->
+<section class="new-arrivals">
+    <div class="container">
+        <h2 class="section-title">New Arrivals</h2>
+        <div class="products-grid">
+            <% newArrivals.forEach(function(product) { %>
+                <a href="/sale/<%= product._id %>" class="product-link">
+                    <div class="product-card">
+                        <img src="<%= product.variants[0].images[0].url %>" alt="<%= product.name %>" />
+                        <h3 class="product-name">
+                            <%= product.name %>
+                        </h3>
+                        <div class="product-price">
+                            ₹<%= product.discountedPrice ? product.discountedPrice.toFixed(2) :
+                                product.price.toFixed(2) %>
+                                <% if (product.discountedPrice) { %>
+                                    <span class="original-price">₹<%= product.price.toFixed(2) %></span>
+                                    <% } %>
+                        </div>
+                    </div>
+                </a>
+                <% }); %>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Section -->
+<section class="featured">
+    <div class="featured-watch">
+        <img src="https://res.cloudinary.com/ddj9jtbof/image/upload/v1757247814/middlephoto_swbnal.jpg"
+            alt=" Featured Watch" />
+    </div>
+</section>
+
+<!-- Trending Section -->
+<section class="trending">
+    <div class="container">
+        <h2 class="section-title">Trending</h2>
+        <div class="products-grid">
+            <% trending.forEach(function(product) { %>
+                <a href="/sale/<%= product._id %>" class="product-link">
+                    <div class="product-card">
+                        <img src="<%= product.variants[0].images[0].url %>" alt="<%= product.name %>" />
+                        <h3 class="product-name">
+                            <%= product.name %>
+                        </h3>
+                        <div class="product-price">
+                            ₹<%= product.discountedPrice ? product.discountedPrice.toFixed(2) :
+                                product.price.toFixed(2) %>
+                                <% if (product.discountedPrice) { %>
+                                    <span class="original-price">₹<%= product.price.toFixed(2) %></span>
+                                    <% } %>
+                        </div>
+                    </div>
+                </a>
+                <% }); %>
+        </div>
+    </div>
+</section>
+
+<!-- Explore More -->
+<section class="explore-more">
+    <div class="container">
+        <h2 class="section-title">EXPLORE MORE</h2>
+        <div class="explore-grid">
+            <% exploreMore.forEach(function(product) { %>
+                <a href="/sale/<%= product._id %>" class="product-link">
+                    <div class="product-card">
+                        <img src="<%= product.variants[0].images[0].url %>" alt="<%= product.name %>" />
+                        <h3 class="product-name">
+                            <%= product.name %>
+                        </h3>
+                        <div class="product-price">
+                            ₹<%= product.discountedPrice ? product.discountedPrice.toFixed(2) :
+                                product.price.toFixed(2) %>
+                                <% if (product.discountedPrice) { %>
+                                    <span class="original-price">₹<%= product.price.toFixed(2) %></span>
+                                    <% } %>
+                        </div>
+                    </div>
+                </a>
+                <% }); %>
+        </div>
+    </div>
+</section>
+
+<!-- JavaScript for animations -->
+<script>
+    // Add loading animation for product cards
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    const observer = new IntersectionObserver(function (entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.animation = 'fadeInUp 0.6s ease forwards';
+            }
+        });
+    }, observerOptions);
+    document.querySelectorAll('.product-card').forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        observer.observe(card);
+    });
+    // Add CSS animation keyframes
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    `;
+    document.head.appendChild(style);
+</script>

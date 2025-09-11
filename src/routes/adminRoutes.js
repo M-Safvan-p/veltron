@@ -37,6 +37,11 @@ router.post("/vendors/pendings/reject", adminAuth.checkSession, vendorController
 // Product
 router.get("/products", adminAuth.checkSession, productController.loadProducts);
 router.patch("/products/:id", adminAuth.checkSession, productController.listAndUnlist);
+router.get("/products/pendings", adminAuth.checkSession, productController.loadProductsPendings);
+router.patch("/products/pendings/approve", adminAuth.checkSession, productController.approveProduct);
+router.patch("/products/pendings/reject", adminAuth.checkSession, productController.rejectProduct);
+
+
 
 //customers
 router.get("/customers", adminAuth.checkSession, customerController.loadCustomers);

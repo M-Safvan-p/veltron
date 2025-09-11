@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
+const multer = require('multer');
 const upload = require('../config/multerConfig');
 const productSchema = require("../validators/vendor/productValidator");
 
@@ -42,18 +43,6 @@ router.put("/products/edit-product/:id", vendorAuth.checkSession, upload.any(), 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 // Add this after your routes
 router.use((error, req, res, next) => {
   if (error instanceof multer.MulterError) {
@@ -64,8 +53,13 @@ router.use((error, req, res, next) => {
       return res.status(400).json({ message: 'Too many files' });
     }
   }
+
+  if (error.message && error.message.includes('Invalid file type')) {
+    return res.status(400).json({ message:'Invalid image format. Allowed formats: jpg, png, jpeg, webp, heif, heic, svg' });
+  }
   next(error);
 });
+
 
 //Page not found
 router.use((req,res)=>res.status(404).render("errors/vendor404"))

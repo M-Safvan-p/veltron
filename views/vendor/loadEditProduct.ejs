@@ -110,8 +110,11 @@
                                     <% }) %>
                             </div>
 
-                            <input type="number" name="variants[<%= vIndex %>][stock]" class="form-input" min="0"
-                                value="<%= variant.stock %>" aria-label="Stock quantity for variant <%= vIndex+1 %>">
+                            <div class="form-group">
+                                <label class="form-label" for="stockQuantity-<%= vIndex %>">Stock Quantity</label>
+                                <input type="number" id="stockQuantity-<%= vIndex %>" name="variants[<%= vIndex %>][stock]" class="form-input" min="0"
+                                    value="<%= variant.stock %>" aria-label="Stock quantity for variant <%= vIndex+1 %>">
+                            </div>
                         </div>
                         <% }) %>
                 </div>
@@ -194,7 +197,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 <script>
     // Global variables
-    var variantCount = 1;
+    var variantCount = <%- product.variants.length %>;
     const form = document.getElementById('add-product-form');
     let currentCropper = null;
     let currentUploadArea = null;

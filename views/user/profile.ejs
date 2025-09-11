@@ -1,0 +1,285 @@
+<style>
+    .main-content {
+        background-color: white;
+        width: 100%;
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    .profile-page {
+        display: flex;
+        gap: 30px;
+        align-items: flex-start;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .sidebar {
+        flex-shrink: 0;
+    }
+
+    .profile-container {
+        flex: 1;
+        max-width: 800px;
+        width: 100%;
+        margin: 0;
+        padding: 18px;
+    }
+
+    .user-profile-header {
+        background: white;
+        border-radius: 14px;
+        /* Slightly larger than 12px */
+        padding: 25px;
+        /* Increased from 20px */
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.09);
+        border: 1px solid #e9ecef;
+        margin-bottom: 18px;
+        /* Increased from 15px */
+        text-align: center;
+    }
+
+    .user-avatar {
+        width: 70px;
+        /* Increased from 60px */
+        height: 70px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #212529, #495057);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        /* Increased from 24px */
+        font-weight: 600;
+        margin: 0 auto 12px;
+        /* Increased from 10px */
+        text-transform: uppercase;
+        overflow: hidden;
+    }
+
+    .user-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+
+    .user-name {
+        font-size: 22px;
+        /* Increased from 20px */
+        color: #212529;
+        font-weight: 600;
+        margin-bottom: 7px;
+        /* Increased from 6px */
+    }
+
+    .user-email {
+        font-size: 14px;
+        /* Increased from 13px */
+        color: #6c757d;
+        margin-bottom: 5px;
+        /* Increased from 4px */
+    }
+
+    .user-phone {
+        font-size: 14px;
+        color: #6c757d;
+    }
+
+    .welcome-section {
+        text-align: center;
+        margin-bottom: 25px;
+        /* Increased from 20px */
+    }
+
+    .welcome-title {
+        font-size: 22px;
+        /* Increased from 20px */
+        color: #212529;
+        font-weight: 400;
+        letter-spacing: 0.5px;
+    }
+
+    .profile-card {
+        background: white;
+        border-radius: 14px;
+        /* Increased from 12px */
+        padding: 30px;
+        /* Increased from 25px */
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e9ecef;
+    }
+
+    .profile-form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        /* Increased from 15px */
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+        /* Increased from 6px */
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: #495057;
+        font-size: 14px;
+        /* Increased from 13px */
+        letter-spacing: 0.3px;
+        text-transform: capitalize;
+    }
+
+    .form-input {
+        padding: 14px 18px;
+        /* Increased from 12px 15px */
+        border: 1px solid #dee2e6;
+        border-radius: 7px;
+        /* Increased from 6px */
+        font-size: 15px;
+        /* Increased from 14px */
+        color: #6c757d;
+        background-color: #f8f9fa;
+        transition: all 0.2s ease;
+        outline: none;
+        cursor: not-allowed;
+    }
+
+    .form-input:focus {
+        border-color: #adb5bd;
+        background-color: #fff;
+    }
+
+    .edit-button {
+        background: #212529;
+        color: white;
+        border: none;
+        padding: 14px 35px;
+        /* Increased from 12px 30px */
+        border-radius: 7px;
+        /* Increased from 6px */
+        font-size: 14px;
+        /* Increased from 13px */
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 18px;
+        /* Increased from 15px */
+        align-self: center;
+        min-width: 110px;
+        /* Increased from 100px */
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+
+    .edit-button:hover {
+        background: #495057;
+        transform: translateY(-1px);
+    }
+
+    .edit-button:active {
+        transform: translateY(0);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 640px) {
+        .profile-container {
+            padding: 12px;
+            /* Increased from 10px */
+        }
+
+        .profile-card {
+            padding: 22px;
+            /* Increased from 20px */
+            border-radius: 11px;
+            /* Increased from 10px */
+        }
+
+        .welcome-title {
+            font-size: 20px;
+            /* Increased from 18px */
+        }
+
+        .edit-button {
+            width: 100%;
+        }
+
+        .user-avatar {
+            width: 60px;
+            /* Increased from 50px */
+            height: 60px;
+            font-size: 24px;
+            /* Increased from 22px */
+        }
+
+        .user-name {
+            font-size: 20px;
+            /* Increased from 18px */
+        }
+
+        .profile-page {
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .sidebar .profile-sidebar {
+            width: 100%;
+        }
+
+        .profile-card {
+            padding: 40px;
+            border-radius: 16px;
+        }
+    }
+
+    /* Add to your profile page or create a separate CSS file */
+    .profile-page .profile-sidebar {
+        position: static !important;
+        left: auto !important;
+        width: 320px;
+        height: fit-content;
+        border-radius: 16px;
+        overflow: hidden;
+        transform: none !important;
+    }
+</style>
+<link rel="stylesheet" href="">
+<div class="profile-page">
+    <aside class="sidebar">
+        <%- include('../partials/user/sidebar') %>
+    </aside>
+    <div class="profile-container">
+        <div class="welcome-section">
+            <h1 class="welcome-title">Welcome <%= user.fullName %>!</h1>
+        </div>
+        <div class="profile-card">
+            <div class="user-avatar">
+                <img src="<%= user.profileImage %>" alt="<%= user.fullName %>'s Avatar">
+            </div>
+            <form class="profile-form">
+                <div class="form-group">
+                    <label class="form-label">Full name</label>
+                    <input type="text" class="form-input" value="<%= user.fullName %>" disabled readonly>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" value="<%= user.email %>" disabled readonly>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Phone</label>
+                    <input type="tel" class="form-input" value="<%= user.phoneNumber %>" disabled readonly>
+                </div>
+
+                <a href="/profile/edit" class="edit-button">Edit</a>
+            </form>
+        </div>
+    </div>

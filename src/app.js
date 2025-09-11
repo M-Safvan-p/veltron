@@ -34,6 +34,7 @@ app.set('views', path.join(__dirname, '../views'));
 app.use(expressLayouts);
 app.set("layout", false); 
 
+
 // Routes
 app.use("/admin", require("./routes/adminRoutes"));
 app.use("/vendor", require("./routes/vendorRoute"));

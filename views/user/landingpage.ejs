@@ -51,64 +51,46 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="container">
-            <h1>YOUR TIME, YOUR STYLE, YOUR TRUE IDENTITY</h1>
-            <p>Discover our exquisite collection of luxury timepieces</p>
-
-            <div class="hero-watches">
-                <div class="hero-watch">
-                    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&h=200&fit=crop"
-                        alt="Watch Movement" />
-                </div>
-                <div class="hero-watch">
-                    <img src="https://images.unsplash.com/photo-1547996160-81dfa63595aa?w=200&h=200&fit=crop"
-                        alt="Luxury Watch" />
-                </div>
-            </div>
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content container">
+            <h1>Luxury Watches</h1>
+            <p>Discover timeless elegance crafted with precision.</p>
         </div>
     </section>
+
 
     <!-- New Arrivals -->
     <section class="new-arrivals">
         <div class="container">
             <h2 class="section-title">New Arrivals</h2>
             <div class="products-grid">
-                <% const newArrivals=[ { name: "Classic Gold" , price: "$2,450" , originalPrice: "$2,800" ,
-                    image: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=150&h=150&fit=crop" }, {
-                    name: "Sport Elite" , price: "$1,850" , originalPrice: "$2,200" ,
-                    image: "https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?w=150&h=150&fit=crop" }, {
-                    name: "Ocean Blue" , price: "$3,200" , originalPrice: "$3,600" ,
-                    image: "https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?w=150&h=150&fit=crop" }, {
-                    name: "Heritage Silver" , price: "$2,950" , originalPrice: "$3,300" ,
-                    image: "https://images.unsplash.com/photo-1594534475808-b18fc33b045e?w=150&h=150&fit=crop" } ]; %>
-                    <% newArrivals.forEach(function(watch) { %>
+                <% newArrivals.forEach(function(product) { %>
+                    <a href="/sale/<%= product._id %>" class="product-link">
                         <div class="product-card">
-                            <img src="<%= watch.image %>" alt="<%= watch.name %>" />
+                            <img src="<%= product.variants[0].images[0].url %>" alt="<%= product.name %>" />
                             <h3 class="product-name">
-                                <%= watch.name %>
+                                <%= product.name %>
                             </h3>
                             <div class="product-price">
-                                <%= watch.price %>
-                                    <span class="original-price">
-                                        <%= watch.originalPrice %>
-                                    </span>
+                                ₹<%= product.discountedPrice ? product.discountedPrice.toFixed(2) :
+                                    product.price.toFixed(2) %>
+                                    <% if (product.discountedPrice) { %>
+                                        <span class="original-price">₹<%= product.price.toFixed(2) %></span>
+                                        <% } %>
                             </div>
                         </div>
-                        <% }); %>
+                    </a>
+                    <% }); %>
             </div>
         </div>
     </section>
 
     <!-- Featured Section -->
     <section class="featured">
-        <div class="container">
-            <h2>Featured Timepiece</h2>
-            <div class="featured-watch">
-                <img src="https://images.unsplash.com/photo-1548181017-999c7efce2ad?w=300&h=300&fit=crop"
-                    alt="Featured Watch" />
-            </div>
+        <div class="featured-watch">
+            <img src="https://res.cloudinary.com/ddj9jtbof/image/upload/v1757247814/middlephoto_swbnal.jpg"
+                alt=" Featured Watch" />
         </div>
     </section>
 
@@ -117,26 +99,23 @@
         <div class="container">
             <h2 class="section-title">Trending</h2>
             <div class="products-grid">
-                <% const trending=[ { name: "Vintage Rose" , price: "$4,200" , originalPrice: "$4,800" ,
-                    image: "https://images.unsplash.com/photo-1533139502658-0198f920d8e8?w=150&h=150&fit=crop" }, {
-                    name: "Modern Steel" , price: "$2,750" , originalPrice: "$3,100" ,
-                    image: "https://images.unsplash.com/photo-1625277375532-a0d3aab3ae14?w=150&h=150&fit=crop" }, {
-                    name: "Executive Gold" , price: "$5,500" , originalPrice: "$6,200" ,
-                    image: "https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=150&h=150&fit=crop" } ]; %>
-                    <% trending.forEach(function(watch) { %>
+                <% trending.forEach(function(product) { %>
+                    <a href="/sale/<%= product._id %>" class="product-link">
                         <div class="product-card">
-                            <img src="<%= watch.image %>" alt="<%= watch.name %>" />
+                            <img src="<%= product.variants[0].images[0].url %>" alt="<%= product.name %>" />
                             <h3 class="product-name">
-                                <%= watch.name %>
+                                <%= product.name %>
                             </h3>
                             <div class="product-price">
-                                <%= watch.price %>
-                                    <span class="original-price">
-                                        <%= watch.originalPrice %>
-                                    </span>
+                                ₹<%= product.discountedPrice ? product.discountedPrice.toFixed(2) :
+                                    product.price.toFixed(2) %>
+                                    <% if (product.discountedPrice) { %>
+                                        <span class="original-price">₹<%= product.price.toFixed(2) %></span>
+                                        <% } %>
                             </div>
                         </div>
-                        <% }); %>
+                    </a>
+                    <% }); %>
             </div>
         </div>
     </section>
@@ -146,25 +125,23 @@
         <div class="container">
             <h2 class="section-title">EXPLORE MORE</h2>
             <div class="explore-grid">
-                <% const exploreMore=[ { name: "Diamond Elite" , price: "$8,900" ,
-                    image: "https://images.unsplash.com/photo-1585123334904-845d60e97b29?w=200&h=200&fit=crop" }, {
-                    name: "Chrono Master" , price: "$4,500" ,
-                    image: "https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?w=200&h=200&fit=crop" }, {
-                    name: "Platinum Series" , price: "$12,000" ,
-                    image: "https://images.unsplash.com/photo-1609081219090-a6d81d3085bf?w=200&h=200&fit=crop" }, {
-                    name: "Carbon Fiber" , price: "$6,750" ,
-                    image: "https://images.unsplash.com/photo-1611930022073-b7a4ba5fcccd?w=200&h=200&fit=crop" } ]; %>
-                    <% exploreMore.forEach(function(watch) { %>
+                <% exploreMore.forEach(function(product) { %>
+                    <a href="/sale/<%= product._id %>" class="product-link">
                         <div class="product-card">
-                            <img src="<%= watch.image %>" alt="<%= watch.name %>" />
+                            <img src="<%= product.variants[0].images[0].url %>" alt="<%= product.name %>" />
                             <h3 class="product-name">
-                                <%= watch.name %>
+                                <%= product.name %>
                             </h3>
                             <div class="product-price">
-                                <%= watch.price %>
+                                ₹<%= product.discountedPrice ? product.discountedPrice.toFixed(2) :
+                                    product.price.toFixed(2) %>
+                                    <% if (product.discountedPrice) { %>
+                                        <span class="original-price">₹<%= product.price.toFixed(2) %></span>
+                                        <% } %>
                             </div>
                         </div>
-                        <% }); %>
+                    </a>
+                    <% }); %>
             </div>
         </div>
     </section>
@@ -176,7 +153,7 @@
                 <h3>Subscribe now and be the first to know about exclusive offers, latest fashion trends & style tips!
                 </h3>
                 <form class="newsletter-form">
-                    <input type="email" placeholder="Enter Your Email" >
+                    <input type="email" placeholder="Enter Your Email">
                     <button type="submit">Subscribe</button>
                 </form>
             </div>
@@ -196,7 +173,7 @@
                 <div class="feature">
                     <div class="feature-icon">🚚</div>
                     <h3>Free Shipping</h3>
-                    <p>Orders over $150</p>
+                    <p>Orders over ₹150</p>
                 </div>
                 <div class="feature">
                     <div class="feature-icon">🎧</div>
