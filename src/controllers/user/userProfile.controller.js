@@ -2,7 +2,8 @@ const User = require('../../models/user/userSchema');
 const { success, error: errorResponse } = require('../../helpers/responseHelper');
 const Messages = require('../../constants/messages');
 const HttpStatus = require('../../constants/statusCodes');
-const passwordControl = require("../../helpers/passwordControl")
+const passwordControl = require('../../helpers/passwordControl');
+const otpControl = require('../../helpers/otpControl');
 
 const loadProfile = async (req, res) => {
   try {
@@ -65,43 +66,101 @@ const profileEdit = async (req, res) => {
 };
 
 const loadChangePassword = async (req, res) => {
-    try {
-        const user = await User.findById(req.session.user)
-        res.render('user/changePassword', {
-          layout: 'layouts/userLayout',
-          currentPage: 'change-password',
-          user
-        });
-    } catch (error) {
-        console.log("change passwore error:", error);
-        res.redirect("/profile");
-    }
+  try {
+    const user = await User.findById(req.session.user);
+    res.render('user/changePassword', {
+      layout: 'layouts/userLayout',
+      currentPage: 'change-password',
+      user,
+    });
+  } catch (error) {
+    console.log('change passwore error:', error);
+    res.redirect('/profile');
+  }
 };
 
-const changePassword = async (req,res) => {
-    try {
-        const user = await User.findById(req.session.user);
-        const { currentPassword, newPassword, confirmPassword } = req.body;
-        // current password check
-        const checkCurrent = await passwordControl.comparePassword(currentPassword, user.password);
-        if(!checkCurrent) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.WRONG_CURRENT_PASSWORD);
-        // HASH
-        const newHashedPassword = await passwordControl.securePassword(newPassword);
-        //update
-        await User.findByIdAndUpdate(user.id,{password:newHashedPassword});
+const changePassword = async (req, res) => {
+  try {
+    const user = await User.findById(req.session.user);
+    const { currentPassword, newPassword, confirmPassword } = req.body;
+    // current password check
+    const checkCurrent = await passwordControl.comparePassword(currentPassword, user.password);
+    if (!checkCurrent) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.WRONG_CURRENT_PASSWORD);
+    // HASH
+    const newHashedPassword = await passwordControl.securePassword(newPassword);
+    //update
+    await User.findByIdAndUpdate(user.id, { password: newHashedPassword });
 
-        success(res, HttpStatus.OK, Messages.UPDATE_SUCCESS_PASSWORD);
-    } catch (error) {
-        console.log("Error in password updating", error);
-        errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
-    }
-}
+    success(res, HttpStatus.OK, Messages.UPDATE_SUCCESS_PASSWORD);
+  } catch (error) {
+    console.log('Error in password updating', error);
+    errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
+  }
+};
 
+const loadChangeEmail = async (req, res) => {
+  try {
+    const user = await User.findById(req.session.user);
+    res.render('user/changeEmail', {
+      layout: 'layouts/userLayout',
+      currentPage: 'change-email',
+      user,
+    });
+  } catch (error) {
+    console.log('change email error:', error);
+    res.redirect('/profile');
+  }
+};
 
+const veriryEmail = async (req, res) => {
+  try {
+    const { newEmail } = req.body;
+    //validate
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!newEmail || !emailRegex.test(newEmail)) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.INVALID_EMAIL);
+    const checkEmail = await User.findOne({ email: newEmail });
+    if (checkEmail) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.EMAIL_ALREADY_EXISTS);
 
+    //otp send
+    const otp = otpControl.generateOtp();
+    const emailSent = await otpControl.sendChangeEmailOtp(newEmail, otp);
+    if (!emailSent) return errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.OTP_SEND_FAILED);
+    console.log('OTP sent', otp);
 
+    req.session.userData = { email: newEmail, otp };
+    success(res, HttpStatus.OK, Messages.OTP_SENT_SUCCESS);
+  } catch (error) {
+    console.log('Send email is error ', error);
+    errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
+  }
+};
 
+const verifyOtp = async (req, res) => {
+  try {
+    const sessionOtp = req.session.userData.otp;
+    const sessionEmail = req.session.userData.email;
+    const { otp } = req.body;
 
+    //validate
+    if (!req.session.userData) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.OTP_EXPIRED);
+
+    const otpRegex = /^\d{4}$/;
+    if (!otp || !otpRegex.test(otp)) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.OTP_INVALID);
+
+    //check
+    if (sessionOtp !== otp) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.OTP_INVALID);
+
+    // update email
+    await User.findByIdAndUpdate(req.session.user, { email: sessionEmail });
+
+    delete req.session.userData;
+
+    return success(res, HttpStatus.OK, Messages.EMAIL_UPDATE_SUCCESS);
+  } catch (error) {
+    console.error('Verify OTP error:', error);
+    return errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
+  }
+};
 
 module.exports = {
   loadProfile,
@@ -109,4 +168,7 @@ module.exports = {
   profileEdit,
   loadChangePassword,
   changePassword,
+  loadChangeEmail,
+  veriryEmail,
+  verifyOtp,
 };
