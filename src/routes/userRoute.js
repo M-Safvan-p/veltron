@@ -1,9 +1,12 @@
 const express = require("express");
 const router = express.Router();
+const passport = require("passport");
 
+//joi validation schemas
 const validate = require("../middleware/validate");
 const userSchema = require("../validators/user/userUpdate");
 const passwordSchema = require("../validators/user/changePassword");
+const addressSchema = require("../validators/user/address");
 
 const upload = require("../config/multerConfig");
 
@@ -13,9 +16,9 @@ const userAuth = require("../middleware/userAuth");
 const authController = require("../controllers/user/userAuth.controller");
 const pageController = require("../controllers/user/userPage.controller");
 const productController = require("../controllers/user/userProduct.controller");
-const profileController = require("../controllers/user/userProfile.controller")
+const profileController = require("../controllers/user/userProfile.controller");
+const addressController = require("../controllers/user/userAddress.controller");
 
-const passport = require("passport");
 
 // Apply user layout to all user routes
 router.use((req, res, next) => {
@@ -24,7 +27,7 @@ router.use((req, res, next) => {
 });
 
 
-//  nologin Pages 
+//  no login Pages 
 router.get("/", userAuth.isLogin, pageController.loadLanding);
 //product pages
 router.get("/sale", productController.getProducts);
@@ -50,13 +53,22 @@ router.get("/forgotPassword", userAuth.isLogin, noCache, authController.loadForg
 
 // ----------------- Protected Pages -----------------
 router.get("/home", userAuth.checkSession, pageController.loadHome);
+//profile
 router.get("/profile", userAuth.checkSession, profileController.loadProfile);
 router.get("/profile/edit", userAuth.checkSession, profileController.loadProfileEdit);
 router.post("/profile/edit", userAuth.checkSession, upload.single("profileImage"), validate(userSchema), profileController.profileEdit);
 router.get("/profile/change-password", userAuth.checkSession, profileController.loadChangePassword);
 router.put("/profile/change-password", userAuth.checkSession, validate(passwordSchema), profileController.changePassword);
-
-
+router.get("/profile/change-email", userAuth.checkSession, profileController.loadChangeEmail)
+router.post("/profile/change-email", userAuth.checkSession, profileController.veriryEmail);
+router.put("/profile/verify-otp", userAuth.checkSession, profileController.verifyOtp)
+// Address
+router.get("/profile/address", userAuth.checkSession, addressController.loadAddress);
+router.get("/profile/address/add", userAuth.checkSession, addressController.loadAddAddress);
+router.post("/profile/address/add", userAuth.checkSession, validate(addressSchema), addressController.addAddress);
+router.get("/profile/address/edit/:id", userAuth.checkSession, addressController.loadEditAddress);
+router.put("/profile/address/edit/:id", userAuth.checkSession, validate(addressSchema), addressController.editAddress);
+router.delete("/profile/address/:id", userAuth.checkSession, addressController.deleteAddress);
 
 
 

@@ -58,11 +58,16 @@ const Messages = {
   VARIANT_IMAGE_UPLOAD_FAILED: index => `Failed to upload image for variant ${index} to Cloudinary.`,
 
   //passowrd
-  WRONG_CURRENT_PASSWORD: "Current password is incorrect.",
-  UPDATE_SUCCESS_PASSWORD: "Password updated successfully!",
-
-
-
+  WRONG_CURRENT_PASSWORD: 'Current password is incorrect.',
+  UPDATE_SUCCESS_PASSWORD: 'Password updated successfully!',
+  // email
+  INVALID_EMAIL: 'Invalid email address.',
+  EMAIL_UPDATE_SUCCESS: 'Email updated successfully.',
+  //Address
+    ADDRESS_CREATED: "Address created successfully",
+    ADDRESS_UPDATED: "Address updated successfully",
+    ADDRESS_DELETED: "Address deleted successfully",
+    ADDRESS_NOT_FOUND: "Address not found",
   // Server errors
   SERVER_ERROR: 'An error occurred. Please try again later.',
 };
