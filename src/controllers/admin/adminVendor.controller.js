@@ -38,6 +38,7 @@ const blockAndUnblock = async (req, res) => {
     await vendor.findByIdAndUpdate(id, { isBlocked });
     //session clear if login
     req.session.vendor = null;
+    delete req.session.vendor
     return success(res, HttpStatus.OK);
   } catch (error) {
     errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);

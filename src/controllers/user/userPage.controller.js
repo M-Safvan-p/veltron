@@ -1,6 +1,5 @@
 const Product = require("../../models/common/productSchema");
-
-const HttpStatus = require("../../constants//statusCodes");
+const HttpStatus = require("../../constants/statusCodes");
 const Messages = require("../../constants/messages");
 const {success, error:errorResponse} = require("../../helpers/responseHelper");
 

@@ -31,12 +31,13 @@ const signUp = async (req, res) => {
     });
     if (errorMessage) {
       return errorResponse(res, HttpStatus.BAD_REQUEST, errorMessage);
+      res.status(200).message(khfskfs)
     }
     // Check email exists
     const findUser = await User.findOne({ email });
     if (findUser) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.USER_ALREADY_EXISTS);
 
-    // Check phone exists
+    // Check phone      exists
     const findPhone = await User.findOne({ phoneNumber });
     if (findPhone) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.PHONE_ALREADY_EXISTS);
 
@@ -187,7 +188,7 @@ const loadForgotPassword = (req, res) => {
 };
 
 const logout = (req, res) => {
-  try{
+  try {
     req.session.user = null;
     delete req.session.user;
     res.clearCookie('connect.sid');
@@ -207,5 +208,5 @@ module.exports = {
   loadLogIn,
   logIn,
   loadForgotPassword,
-  logout
+  logout,
 };

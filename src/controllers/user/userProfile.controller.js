@@ -7,10 +7,9 @@ const otpControl = require('../../helpers/otpControl');
 
 const loadProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.session.user).lean();
     res.render('user/profile', {
       layout: 'layouts/userLayout',
-      user,
+      user:req.user,
       currentPage: 'profile',
     });
   } catch (error) {
@@ -21,10 +20,9 @@ const loadProfile = async (req, res) => {
 
 const loadProfileEdit = async (req, res) => {
   try {
-    const user = await User.findById(req.session.user).lean();
     res.render('user/profileEdit', {
       layout: 'layouts/userLayout',
-      user,
+      user:req.user,
       currentPage: 'profile',
     });
   } catch (error) {
@@ -67,11 +65,10 @@ const profileEdit = async (req, res) => {
 
 const loadChangePassword = async (req, res) => {
   try {
-    const user = await User.findById(req.session.user);
     res.render('user/changePassword', {
       layout: 'layouts/userLayout',
       currentPage: 'change-password',
-      user,
+      user:req.user,
     });
   } catch (error) {
     console.log('change passwore error:', error);
@@ -100,11 +97,10 @@ const changePassword = async (req, res) => {
 
 const loadChangeEmail = async (req, res) => {
   try {
-    const user = await User.findById(req.session.user);
     res.render('user/changeEmail', {
       layout: 'layouts/userLayout',
       currentPage: 'change-email',
-      user,
+      user:req.user,
     });
   } catch (error) {
     console.log('change email error:', error);

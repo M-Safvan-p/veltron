@@ -7,11 +7,10 @@ const mongoose = require('mongoose');
 
 const loadAddress = async (req, res) => {
   try {
-    const user = await User.findById(req.session.user).lean();
     const addresses = await Address.find({ userId: req.session.user }).lean();
     res.render('user/address', {
       layout: 'layouts/userLayout',
-      user,
+      user:req.user,
       addresses,
       currentPage: 'address',
     });
@@ -23,11 +22,10 @@ const loadAddress = async (req, res) => {
 
 const loadAddAddress = async (req, res) => {
   try {
-    const user = await User.findById(req.session.user).lean();
     const addresses = await Address.find({ userId: req.session.user }).lean();
     res.render('user/addAddress', {
       layout: 'layouts/userLayout',
-      user,
+      user:req.user,
       addresses,
       currentPage: 'address',
     });
@@ -67,7 +65,6 @@ const loadEditAddress = async (req, res) => {
     const nestedAddress = req.params.id;
     if (!mongoose.Types.ObjectId.isValid(nestedAddress)) return res.redirect('/profile/address');
 
-    const user = await User.findById(req.session.user).lean();
     const fullAddress = await Address.findOne({ userId: req.session.user });
     if (!fullAddress) return res.redirect('/profile/address');
 
@@ -79,7 +76,7 @@ const loadEditAddress = async (req, res) => {
 
     res.render('user/editAddress', {
       layout: 'layouts/userLayout',
-      user,
+      user:req.user,
       address,
       currentPage: 'address',
     });

@@ -2,7 +2,7 @@ const Product = require('../../models/common/productSchema');
 const Category = require('../../models/common/categorySchema');
 const Vendor = require('../../models/vendor/vendorSchema');
 
-const HttpStatus = require('../../constants//statusCodes');
+const HttpStatus = require('../../constants/statusCodes');
 const Messages = require('../../constants/messages');
 const { success, error: errorResponse } = require('../../helpers/responseHelper');
 
