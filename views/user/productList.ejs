@@ -23,184 +23,207 @@
             <form action="/sale" method="GET" id="filterForm">
                 <div class="search-section">
                     <input type="text" name="search" placeholder="Search watches (e.g., Veltron)"
-                           value="<%= query.search || '' %>" aria-label="Search watches">
+                        value="<%= query.search || '' %>" aria-label="Search watches">
                     <button type="submit">Search</button>
                 </div>
 
                 <div class="filter-products-wrapper">
                     <aside class="sidebar">
-                    <div class="filter-section">
-                        <h3 class="filter-title">Categories</h3>
-                        <ul class="filter-list">
-                            <% if (categories && categories.length > 0) { %>
-                                <% categories.forEach(function(cat) { %>
-                                    <li>
-                                        <label>
-                                            <input type="checkbox" name="category" value="<%= cat._id %>" 
-                                                   <%= query.category && Array.isArray(query.category) && query.category.includes(cat._id.toString()) ? 'checked' : '' %> 
-                                                   onchange="this.form.submit()">
-                                            <%= cat.name || 'Uncategorized' %>
-                                        </label>
-                                    </li>
-                                <% }); %>
-                            <% } else { %>
-                                <li>No categories available</li>
-                            <% } %>
-                        </ul>
-                    </div>
+                        <div class="filter-section">
+                            <h3 class="filter-title">Categories</h3>
+                            <ul class="filter-list">
+                                <% if (categories && categories.length> 0) { %>
+                                    <% categories.forEach(function(cat) { %>
+                                        <li>
+                                            <label>
+                                                <input type="checkbox" name="category" value="<%= cat._id %>"
+                                                    <%=query.category && Array.isArray(query.category) &&
+                                                    query.category.includes(cat._id.toString()) ? 'checked' : '' %>
+                                                onchange="this.form.submit()">
+                                                <%= cat.name || 'Uncategorized' %>
+                                            </label>
+                                        </li>
+                                        <% }); %>
+                                            <% } else { %>
+                                                <li>No categories available</li>
+                                                <% } %>
+                            </ul>
+                        </div>
 
-                    <div class="filter-section">
-                        <h3 class="filter-title">Strap Style</h3>
-                        <ul class="filter-list">
-                            <% if (strapStyles && strapStyles.length > 0) { %>
-                                <% strapStyles.forEach(function(style) { %>
-                                    <li>
-                                        <label>
-                                            <input type="checkbox" name="strapStyle" value="<%= style %>" 
-                                                   <%= query.strapStyle && Array.isArray(query.strapStyle) && query.strapStyle.includes(style) ? 'checked' : '' %> 
-                                                   onchange="this.form.submit()">
-                                            <%= style %>
-                                        </label>
-                                    </li>
-                                <% }); %>
-                            <% } else { %>
-                                <li>No strap styles available</li>
-                            <% } %>
-                        </ul>
-                    </div>
+                        <div class="filter-section">
+                            <h3 class="filter-title">Strap Style</h3>
+                            <ul class="filter-list">
+                                <% if (strapStyles && strapStyles.length> 0) { %>
+                                    <% strapStyles.forEach(function(style) { %>
+                                        <li>
+                                            <label>
+                                                <input type="checkbox" name="strapStyle" value="<%= style %>"
+                                                    <%=query.strapStyle && Array.isArray(query.strapStyle) &&
+                                                    query.strapStyle.includes(style) ? 'checked' : '' %>
+                                                onchange="this.form.submit()">
+                                                <%= style %>
+                                            </label>
+                                        </li>
+                                        <% }); %>
+                                            <% } else { %>
+                                                <li>No strap styles available</li>
+                                                <% } %>
+                            </ul>
+                        </div>
 
-                    <div class="filter-section">
-                        <h3 class="filter-title">Price Range</h3>
-                        <div class="price-range">
-                            <input type="range" min="0" max="10000" 
-                                   id="priceRange"
-                                   value="<%= query.maxPrice || 10000 %>" 
-                                   class="price-slider" name="maxPrice" 
-                                   aria-label="Maximum price filter"
-                                   oninput="document.getElementById('maxPrice').textContent = `₹${this.value === '10000' ? '10000+' : this.value}`; this.form.submit()">
-                            <div class="price-labels">
-                                <span id="minPrice">₹0</span>
-                                <span id="maxPrice">₹<%= query.maxPrice || '10000+' %></span>
+                        <div class="filter-section">
+                            <h3 class="filter-title">Price Range</h3>
+                            <div class="price-range">
+                                <input type="range" min="0" max="10000" id="priceRange"
+                                    value="<%= query.maxPrice || 10000 %>" class="price-slider" name="maxPrice"
+                                    aria-label="Maximum price filter"
+                                    oninput="document.getElementById('maxPrice').textContent = `₹${this.value === '10000' ? '10000+' : this.value}`; this.form.submit()">
+                                <div class="price-labels">
+                                    <span id="minPrice">₹0</span>
+                                    <span id="maxPrice">₹<%= query.maxPrice || '10000+' %></span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </aside>
+                    </aside>
 
-                <section class="products">
-                    <div class="products-header">
-                        <h2 class="products-title">All Watches (<span id="productCount"><%= totalProducts || 0 %></span>)</h2>
-                        <div class="products-controls">
-                            <select class="sort-select" name="sort" onchange="this.form.submit()">
-                                <option value="featured" <%= query.sort === 'featured' ? 'selected' : '' %>>Featured</option>
-                                <option value="price-low" <%= query.sort === 'price-low' ? 'selected' : '' %>>Price: Low to High</option>
-                                <option value="price-high" <%= query.sort === 'price-high' ? 'selected' : '' %>>Price: High to Low</option>
-                                <option value="newest" <%= query.sort === 'newest' ? 'selected' : '' %>>Newest</option>
-                            </select>
+                    <section class="products">
+                        <div class="products-header">
+                            <h2 class="products-title">All Watches (<span id="productCount">
+                                    <%= totalProducts || 0 %>
+                                </span>)</h2>
+                            <div class="products-controls">
+                                <select class="sort-select" name="sort" onchange="this.form.submit()">
+                                    <option value="featured" <%=query.sort==='featured' ? 'selected' : '' %>>Featured
+                                    </option>
+                                    <option value="price-low" <%=query.sort==='price-low' ? 'selected' : '' %>>Price:
+                                        Low to High</option>
+                                    <option value="price-high" <%=query.sort==='price-high' ? 'selected' : '' %>>Price:
+                                        High to Low</option>
+                                    <option value="newest" <%=query.sort==='newest' ? 'selected' : '' %>>Newest</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="product-grid" id="productGrid">
-                        <% if (products && products.length > 0) { %>
-                            <% products.forEach(function(product) { %>
-                                <% if (product.isListed && product.approvalStatus === 'approved') { %>
-                                    <div class="product-card" 
-                                         data-category="<%= product.category._id || product.category %>"
-                                         data-price="<%= product.discountedPrice || product.price %>"
-                                         data-original-price="<%= product.price %>"
-                                         data-status="<%= product.productStatus %>"
-                                         data-date="<%= product.createdAt %>">
-                                        <div class="product-image">
-                                            <% 
-                                                let primaryImage = '/images/placeholder-watch.jpg';
-                                                if (product.variants && product.variants.length > 0 && 
-                                                    product.variants[0].images && product.variants[0].images.length > 0) {
+                        <div class="product-grid" id="productGrid">
+                            <% if (products && products.length> 0) { %>
+                                <% products.forEach(function(product) { %>
+                                    <% if (product.isListed && product.approvalStatus==='approved' ) { %>
+                                        <div class="product-card"
+                                            data-category="<%= product.category._id || product.category %>"
+                                            data-price="<%= product.discountedPrice || product.price %>"
+                                            data-original-price="<%= product.price %>"
+                                            data-status="<%= product.productStatus %>"
+                                            data-date="<%= product.createdAt %>">
+                                            <div class="product-image">
+                                                <% let primaryImage='/images/placeholder-watch.jpg' ; if
+                                                    (product.variants && product.variants.length> 0 &&
+                                                    product.variants[0].images && product.variants[0].images.length > 0)
+                                                    {
                                                     primaryImage = product.variants[0].images[0].url;
-                                                }
-                                            %>
-                                            <img src="<%= primaryImage %>" 
-                                                 alt="<%= product.name %> Watch" 
-                                                 loading="lazy" 
-                                                 onerror="this.src='/images/placeholder-watch.jpg'" />
-                                            <div class="product-overlay">
-                                                <a href="/sale/<%= product._id %>" class="quick-view-btn">Quick View</a>
+                                                    }
+                                                    %>
+                                                    <img src="<%= primaryImage %>" alt="<%= product.name %> Watch"
+                                                        loading="lazy"
+                                                        onerror="this.src='/images/placeholder-watch.jpg'" />
+                                                    <div class="product-overlay">
+                                                        <a href="/sale/<%= product._id %>" class="quick-view-btn">Quick
+                                                            View</a>
+                                                    </div>
+                                                    <% if (product.createdAt && new Date(product.createdAt)> new
+                                                        Date(Date.now() - 30*24*60*60*1000)) { %>
+                                                        <span class="badge new-badge">New</span>
+                                                        <% } %>
+                                                            <% if (product.discountedPrice && product.discountedPrice <
+                                                                product.price) { %>
+                                                                <span class="badge sale-badge">
+                                                                    <%= Math.round(((product.price -
+                                                                        product.discountedPrice) / product.price) * 100)
+                                                                        %>% OFF
+                                                                </span>
+                                                                <% } %>
+                                                                    <% if (product.isOutOfStock) { %>
+                                                                        <span class="badge out-of-stock-badge">Out of
+                                                                            Stock</span>
+                                                                        <% } %>
                                             </div>
-                                            <% if (product.createdAt && new Date(product.createdAt) > new Date(Date.now() - 30*24*60*60*1000)) { %>
-                                                <span class="badge new-badge">New</span>
-                                            <% } %>
-                                            <% if (product.discountedPrice && product.discountedPrice < product.price) { %>
-                                                <span class="badge sale-badge">
-                                                    <%= Math.round(((product.price - product.discountedPrice) / product.price) * 100) %>% OFF
-                                                </span>
-                                            <% } %>
-                                            <% if (product.isOutOfStock) { %>
-                                                <span class="badge out-of-stock-badge">Out of Stock</span>
-                                            <% } %>
-                                        </div>
-                                        <div class="product-info">
-                                            <h3 class="product-vendor">
-                                                <%= product.vendorId && product.vendorId.brandName ? product.vendorId.brandName : 
-                                                    (product.vendorId && product.vendorId.businessName ? product.vendorId.businessName : 'Unknown Vendor') %>
-                                            </h3>
-                                            <h4 class="product-name"><%= product.name %></h4>
-                                            <div class="product-category">
-                                                <span class="category-tag">
-                                                    <%= product.category && product.category.name ? product.category.name : 'Uncategorized' %>
-                                                </span>
-                                            </div>
-                                            <div class="product-price">
-                                                <% if (product.discountedPrice && product.discountedPrice < product.price) { %>
-                                                    <span class="original-price">₹<%= product.price.toLocaleString() %></span>
-                                                    <span class="current-price">₹<%= product.discountedPrice.toLocaleString() %></span>
-                                                <% } else { %>
-                                                    <span class="current-price">₹<%= product.price.toLocaleString() %></span>
-                                                <% } %>
-                                            </div>
-                                            <button class="add-to-cart-btn <%= product.isOutOfStock ? 'disabled' : '' %>" 
+                                            <div class="product-info">
+                                                <h3 class="product-vendor">
+                                                    <%= product.vendorId && product.vendorId.brandName ?
+                                                        product.vendorId.brandName : (product.vendorId &&
+                                                        product.vendorId.businessName ? product.vendorId.businessName
+                                                        : 'Unknown Vendor' ) %>
+                                                </h3>
+                                                <h4 class="product-name">
+                                                    <%= product.name %>
+                                                </h4>
+                                                <div class="product-category">
+                                                    <span class="category-tag">
+                                                        <%= product.category && product.category.name ?
+                                                            product.category.name : 'Uncategorized' %>
+                                                    </span>
+                                                </div>
+                                                <div class="product-price">
+                                                    <% if (product.discountedPrice && product.discountedPrice <
+                                                        product.price) { %>
+                                                        <span class="original-price">₹<%= product.price.toLocaleString()
+                                                                %></span>
+                                                        <span class="current-price">₹<%=
+                                                                product.discountedPrice.toLocaleString() %></span>
+                                                        <% } else { %>
+                                                            <span class="current-price">₹<%=
+                                                                    product.price.toLocaleString() %></span>
+                                                            <% } %>
+                                                </div>
+                                                <button
+                                                    class="add-to-cart-btn <%= product.variants[0].stock === 0 ? 'disabled' : '' %>"
                                                     data-product-id="<%= product._id %>"
+                                                    data-variant-id="<%= product.variants[0]._id %>"
                                                     data-product-name="<%= product.name %>"
                                                     data-product-price="<%= product.discountedPrice || product.price %>"
-                                                    <%= product.isOutOfStock ? 'disabled' : '' %>
-                                                    aria-label="<%= product.isOutOfStock ? 'Out of stock' : 'Add ' + product.name + ' to cart' %>">
-                                                <%= product.isOutOfStock ? 'Out of Stock' : 'Add to Cart' %>
-                                            </button>
-                                            <% if (!product.isOutOfStock && product.totalStock > 0 && product.totalStock <= 5) { %>
-                                                <div class="stock-warning">Only <%= product.totalStock %> left in stock!</div>
-                                            <% } %>
-                                        </div>
-                                    </div>
-                                <% } %>
-                            <% }); %>
-                        <% } else { %>
-                            <div class="no-products">
-                                <p>No products found. Try different filters.</p>
-                            </div>
-                        <% } %>
-                    </div>
+                                                    <%=product.variants[0].stock===0 ? 'disabled' : '' %>>
+                                                    <%= product.variants[0].stock===0 ? 'Out of Stock' : 'Add to Cart'
+                                                        %>
+                                                </button>
 
-                    <% if (products && products.length > 0) { %>
-                        <div class="pagination">
-                            <button class="page-btn prev-btn" 
-                                    <% if (currentPage <= 1) { %>disabled aria-disabled="true"<% } %> 
-                                    data-page="<%= currentPage - 1 %>"
-                                    aria-label="Previous page">
-                                Previous
-                            </button>
-                            <% for(let i = 1; i <= totalPages; i++) { %>
-                                <button class="page-btn <%= i === currentPage ? 'active' : '' %>" 
-                                        data-page="<%= i %>"
-                                        aria-label="Page <%= i %>">
-                                    <%= i %>
-                                </button>
-                            <% } %>
-                            <button class="page-btn next-btn" 
-                                    <% if (currentPage >= totalPages) { %>disabled aria-disabled="true"<% } %>
-                                    data-page="<%= currentPage + 1 %>"
-                                    aria-label="Next page">
-                                Next
-                            </button>
+                                                <% if (!product.isOutOfStock && product.totalStock> 0 &&
+                                                    product.totalStock <= 5) { %>
+                                                        <div class="stock-warning">Only <%= product.totalStock %> left
+                                                                in stock!</div>
+                                                        <% } %>
+                                            </div>
+                                        </div>
+                                        <% } %>
+                                            <% }); %>
+                                                <% } else { %>
+                                                    <div class="no-products">
+                                                        <p>No products found. Try different filters.</p>
+                                                    </div>
+                                                    <% } %>
                         </div>
-                    <% } %>
-                </section>
+
+                        <% if (products && products.length> 0) { %>
+                            <div class="pagination">
+                                <button class="page-btn prev-btn" <% if (currentPage <=1) { %>disabled
+                                    aria-disabled="true"<% } %>
+                                        data-page="<%= currentPage - 1 %>"
+                                            aria-label="Previous page">
+                                            Previous
+                                </button>
+                                <% for(let i=1; i <=totalPages; i++) { %>
+                                    <button class="page-btn <%= i === currentPage ? 'active' : '' %>"
+                                        data-page="<%= i %>" aria-label="Page <%= i %>">
+                                        <%= i %>
+                                    </button>
+                                    <% } %>
+                                        <button class="page-btn next-btn" <% if (currentPage>= totalPages) { %>disabled
+                                            aria-disabled="true"<% } %>
+                                                data-page="<%= currentPage + 1 %>"
+                                                    aria-label="Next page">
+                                                    Next
+                                        </button>
+                            </div>
+                            <% } %>
+                    </section>
                 </div>
             </form>
         </div>
@@ -208,7 +231,7 @@
 </main>
 
 <script>
-    document.getElementById('priceRange')?.addEventListener('input', function() {
+    document.getElementById('priceRange')?.addEventListener('input', function () {
         document.getElementById('maxPrice').textContent = `₹${this.value === '10000' ? '10000+' : this.value}`;
     });
 
@@ -222,4 +245,56 @@
             }
         }
     });
+
+    document.addEventListener('click', async (e) => {
+        if (e.target.classList.contains('add-to-cart-btn') && !e.target.disabled) {
+            const btn = e.target;
+
+            const productId = btn.dataset.productId;
+            const variantId = btn.dataset.variantId;
+            const productName = btn.dataset.productName;
+
+            btn.textContent = "Adding...";
+            btn.disabled = true;
+
+            try {
+                const response = await axios.post('/cart/add', { 
+                    productId: productId,
+                    variantId: variantId,
+                    name: productName,
+                });
+
+                btn.textContent = "Added!";
+
+                Swal.fire({
+                    title: "✅ Added to Cart",
+                    text: `${productName} has been added to your cart.`,
+                    icon: "success",
+                    showCancelButton: true,
+                    confirmButtonText: "Go to Cart",
+                    cancelButtonText: "Continue Shopping"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "/cart";
+                    }
+                });
+
+            } catch (error) {
+                console.error("Add to cart failed:", error);
+                btn.textContent = "Add to Cart";
+                btn.disabled = false;
+
+                Swal.fire({
+                    title: "Error",
+                    text: error?.response?.data?.message || "Something went wrong. Please try again.",
+                    icon: "error",
+                    customClass: {
+                        confirmButton: "swal-confirm-black"
+                    }
+                });
+            }
+
+        }
+    });
+
 </script>
