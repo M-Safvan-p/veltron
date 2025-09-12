@@ -22,7 +22,7 @@ router.use(noCache)
 //  Auth 
 router.get("/",  adminAuth.isLogin, authController.loadLogIn);
 router.post("/", authController.login);
-router.get("/logout", authController.logout);
+router.post("/logout", authController.logout);
 
 //  Dashboard 
 router.get("/dashboard", adminAuth.checkSession, dashboardController.loadDashboard);
