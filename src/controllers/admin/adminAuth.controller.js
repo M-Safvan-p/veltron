@@ -11,7 +11,7 @@ const loadLogIn = (req, res) => {
 
 const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password } = req.body; 
     //validation
     const errorMessage = formValidator.validateLogIn(email, password);
     if (errorMessage) {
@@ -41,9 +41,9 @@ const logout = (req,res)=>{
     delete req.session.admin;
     res.clearCookie("connect.sid");
     res.setHeader('Cache-Control', 'no-store');
-    res.redirect("/admin/")
+    success(res, HttpStatus.OK);
   } catch (error) {
-    res.redirect("/admin/dashboard")
+    errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
   }
 }
 

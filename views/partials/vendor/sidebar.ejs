@@ -48,7 +48,6 @@
     </div>
 </div>
 <script>
-    // Logout button with SweetAlert2
     document.querySelector('.logout-btn').addEventListener('click', function (e) {
         e.preventDefault(); // prevent direct navigation
 
@@ -61,17 +60,29 @@
             cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, logout',
             cancelButtonText: 'Cancel'
-        }).then((result) => {
+        }).then(async (result) => {
             if (result.isConfirmed) {
-                Swal.fire({
-                    title: 'Logged Out!',
-                    text: 'You have been logged out successfully.',
-                    icon: 'success',
-                    timer: 1500,
-                    showConfirmButton: false
-                }).then(() => {
-                    window.location.replace('/vendor/logout');
-                });
+                try {
+                    const response = await axios.post('/vendor/logout');
+
+                    if (response.data.success) {
+                        Swal.fire({
+                            title: 'Logged Out!',
+                            text: 'You have been logged out successfully.',
+                            icon: 'success',
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => {
+                            window.location.replace('/vendor/login'); // redirect to login page
+                        });
+                    } else {
+                        Swal.fire("Oops!", response.data.message || "Logout failed.", "error");
+                    }
+                } catch (error) {
+                    console.error("Logout failed:", error);
+                    const errMsg = error.response?.data?.message || "Something went wrong. Please try again.";
+                    Swal.fire("Error", errMsg, "error");
+                }
             }
         });
     });

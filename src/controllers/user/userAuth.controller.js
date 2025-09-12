@@ -1,12 +1,11 @@
 const User = require('../../models/user/userSchema');
-const UserWallet = require("../../models/user/userWalletSchema");
+const UserWallet = require('../../models/user/userWalletSchema');
 const otpControl = require('../../helpers/otpControl');
 const passwordControl = require('../../helpers/passwordControl');
 const formValidator = require('../../helpers/formValidator');
 const { success, error: errorResponse } = require('../../helpers/responseHelper');
 const HttpStatus = require('../../constants/statusCodes');
 const Messages = require('../../constants/messages');
-const { message } = require('../../validators/vendor/productValidator');
 
 function loadSignUp(req, res) {
   try {
@@ -98,10 +97,10 @@ const verifyOtp = async (req, res) => {
     await saveUserData.save();
     //wallet sett
     const newWallet = new UserWallet({
-      userId:saveUserData._id,
-      balance:0,
-      transactionHistory:[]
-    })
+      userId: saveUserData._id,
+      balance: 0,
+      transactionHistory: [],
+    });
     await newWallet.save();
     //linnk
     saveUserData.wallet = newWallet._id;
@@ -165,10 +164,10 @@ const logIn = async (req, res) => {
     // Check password
     const isMatch = await passwordControl.comparePassword(password, user.password);
     if (!isMatch) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.INVALID_CREDENTIALS);
-    // check block 
-    if(user.isBlocked)return errorResponse(res, HttpStatus.FORBIDDEN, Messages.USER_BLOCKED);
+    // check block
+    if (user.isBlocked) return errorResponse(res, HttpStatus.FORBIDDEN, Messages.USER_BLOCKED);
 
-    // Set session 
+    // Set session
     req.session.user = user._id;
 
     return success(res, HttpStatus.OK, Messages.LOGIN_SUCCESS, { redirectUrl: '/home' });
@@ -187,6 +186,18 @@ const loadForgotPassword = (req, res) => {
   }
 };
 
+const logout = (req, res) => {
+  try{
+    req.session.user = null;
+    delete req.session.user;
+    res.clearCookie('connect.sid');
+    res.setHeader('Cache-Control', 'no-store');
+    success(res, HttpStatus.OK);
+  } catch (error) {
+    errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
+  }
+};
+
 module.exports = {
   loadSignUp,
   signUp,
@@ -196,4 +207,5 @@ module.exports = {
   loadLogIn,
   logIn,
   loadForgotPassword,
+  logout
 };

@@ -163,9 +163,9 @@ const logout = (req, res) => {
     delete req.session.vendor;
     res.clearCookie("connect.sid");
     res.setHeader('Cache-Control', 'no-store');
-    res.redirect("/vendor/");
+    success(res, HttpStatus.OK)
   } catch (error) {
-    res.redirect("/vendor/dashboard");
+    errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
   }
 };
 
