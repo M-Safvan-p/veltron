@@ -73,7 +73,7 @@
                             timer: 1500,
                             showConfirmButton: false
                         }).then(() => {
-                            window.location.replace('/vendor/login'); // redirect to login page
+                            window.location.replace('/vendor/'); // redirect to login page
                         });
                     } else {
                         Swal.fire("Oops!", response.data.message || "Logout failed.", "error");
