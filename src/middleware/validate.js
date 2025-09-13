@@ -1,5 +1,4 @@
 const validate = (schema) => {
-  console.log("middlewar validation reached");
   return (req, res, next) => {
     try {
       const { error } = schema.validate(req.body, { abortEarly: false });
