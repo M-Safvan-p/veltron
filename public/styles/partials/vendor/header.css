@@ -1,0 +1,72 @@
+/* Header Bar */
+.header-bar {
+    position: absolute;
+    top: 0;
+    left: 250px; /* avoids overlapping sidebar */
+    right: 0;
+    height: 60px;
+    background: #f1f3f5;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* center brand */
+    padding: 0 30px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+}
+
+/* Brand name centered */
+.brand-heading {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 18px;
+    font-weight: bold;
+    color: #000;
+}
+
+/* User Profile (right side) */
+.user-profile {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    right: 30px; /* stick it to right */
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin-right: 8px;
+    background: #ff6b6b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.user-info {
+    font-size: 14px;
+    margin-right: 8px;
+}
+
+.user-name {
+    font-weight: 600;
+    color: #000;
+}
+
+.user-role {
+    color: #000;
+    font-size: 12px;
+}
+  .swal-confirm-black {
+    background-color: #000 !important;  /* black background */
+    color: #fff !important;             /* white text */
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.swal-confirm-black:hover {
+    background-color: #333 !important;  /* dark gray on hover */
+}

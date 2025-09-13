@@ -1,0 +1,66 @@
+<link rel="stylesheet" href="/styles/admin/editCategory.css">
+<!-- Page Header -->
+<div class="page-header">
+    <h1 class="page-title">EDIT CATEGORY</h1>
+    <div class="breadcrumb">
+        <a href="/admin/dashboard">Dashboard</a>
+        <span class="breadcrumb-separator">></span> 
+        <a href="/admin/category">Categories</a>
+        <span class="breadcrumb-separator">></span>
+        Edit Category
+    </div>
+</div>
+
+<!-- Form Container -->
+<div class="form-container">
+    <form id="categoryForm">
+        <!-- Category Information -->
+        <div class="form-section">
+            <h3>Category Information</h3>
+
+            <div class="form-group">
+                <label class="form-label" for="categoryName">Category Name *</label>
+                <input type="text" id="categoryName" name="categoryName" class="form-input"
+                    placeholder="Enter category name..." value="<%= category.name.charAt(0).toUpperCase() + category.name.slice(1) %>" >
+                <div class="error-message" id="nameError"></div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="description">Description (Optional)</label>
+                <textarea id="description" name="description" class="form-input form-textarea"
+                    placeholder="Enter category description..."><%= category.description %></textarea>
+            </div>
+        </div>
+
+        <!-- Category Status -->
+        <div class="form-section">
+            <h3>Category Status</h3>
+
+            <div class="form-group">
+                <div class="status-group">
+                    <span class="status-label">List this category:</span>
+                    <div class="toggle-container">
+                        <div class="toggle-switch <%= category.isListed ? 'active' : 'inactive' %>" id="statusToggle">
+                            <div class="slider"></div>
+                        </div>
+                        <span class="toggle-text <%= category.isListed ? 'listed' : 'unlisted' %>" id="statusText">
+                            <%= category.isListed ? 'Listed' : 'Unlisted' %>
+                        </span>
+                    </div>
+                </div>
+                <input type="hidden" id="isListed" name="isListed" value="<%= category.isListed %>">
+                <input type="hidden" id="categoryId" name="categoryId" value="<%= category._id %>">
+            </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                <span class="spinner"></span>
+                Update Category
+            </button>
+            <a href="/admin/category" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+<script src="/js/script/admin/editCategory.js"></script>

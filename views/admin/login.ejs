@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="../../styles/admin/login.css">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+    <div class="header">
+        Admin login
+    </div>
+
+    <div class="login-container">
+        <h1 class="login-title">Admin Login</h1>
+
+        <form id="login-form">
+            <div class="form-group">
+                <label for="email" class="form-label">Email</label>
+                <input type="text" id="email" name="email" class="form-input" value="admin@gmail.com">
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <div class="password-group">
+                    <input type="password" id="password" value="@Safvan9633" name="password" class="form-input">
+                </div>
+            </div>
+
+            <button type="submit" class="login-button">Log in</button>
+        </form>
+    </div>
+    <!-- Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- Validation Script -->
+    <script src="/js/utils/formValidator.js"></script>
+    <script>
+        const form = document.querySelector('#login-form');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            let email = document.getElementById('email').value;
+            let password = document.getElementById('password').value;
+
+
+            // validation
+            const { isValid, messages } = validateLogInForm(email, password);
+            if (!isValid) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    html: messages.join('<br>'),
+                    customClass: {
+                        confirmButton: "swal-confirm-black"
+                    }
+                });
+                return;
+            }
+
+            try {
+                const response = await axios.post('/admin/', { email, password });
+                if (response.data.redirectUrl) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Login Successful',
+                        text: 'Redirecting...',
+                        timer: 1500,
+                        showConfirmButton: false,
+                        customClass: {
+                            confirmButton: "swal-confirm-black"
+                        }
+                    }).then(() => {
+                        window.location.replace(response.data.redirectUrl);
+                    });
+                }
+            } catch (err) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Login failed',
+                    text: err.response?.data?.message || 'Invalid email or password',
+                    customClass: {
+                        confirmButton: "swal-confirm-black"
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

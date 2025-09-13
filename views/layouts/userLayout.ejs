@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%- typeof title !=='undefined' ? title : 'Veltron' %></title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Your CSS files -->
+    <link rel="stylesheet" href="/styles/partials/user/headerAndFooter.css">
+    <style>
+        * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; 
+        }
+        .main-content{
+            min-height: 100vh;
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Include Header Partial -->
+    <%- include('../partials/user/header') %>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <%- body %>
+        </main>
+
+        <!-- Include Footer Partial -->
+        <%- include('../partials/user/footer') %>
+
+            <!-- Scripts -->
+            <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</body>
+
+</html>

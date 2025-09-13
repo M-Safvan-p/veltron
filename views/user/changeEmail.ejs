@@ -1,0 +1,364 @@
+<style>
+    .main-content {
+        background-color: white;
+        width: 100%;
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    .profile-page {
+        display: flex;
+        gap: 30px;
+        align-items: flex-start;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .sidebar {
+        flex-shrink: 0;
+    }
+
+    .profile-container {
+        flex: 1;
+        max-width: 800px;
+        width: 100%;
+        margin: 0;
+        padding: 18px;
+    }
+
+    .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 25px;
+        font-size: 14px;
+        color: #6c757d;
+    }
+
+    .breadcrumb a {
+        color: #6c757d;
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+
+    .breadcrumb a:hover {
+        color: #212529;
+    }
+
+    .breadcrumb-separator {
+        color: #adb5bd;
+    }
+
+    .welcome-section {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .welcome-title {
+        font-size: 22px;
+        color: #212529;
+        font-weight: 400;
+        letter-spacing: 0.5px;
+    }
+
+    .email-card {
+        background: white;
+        border-radius: 14px;
+        padding: 40px;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e9ecef;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .email-form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: #495057;
+        font-size: 14px;
+        letter-spacing: 0.3px;
+    }
+
+    .form-input {
+        padding: 14px 18px;
+        border: 1px solid #dee2e6;
+        border-radius: 7px;
+        font-size: 15px;
+        color: #6c757d;
+        background-color: #f8f9fa;
+        transition: all 0.2s ease;
+        outline: none;
+    }
+
+    .form-input:focus {
+        border-color: #adb5bd;
+        background-color: #fff;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 18px;
+    }
+
+    .update-button,
+    .cancel-button {
+        background: #212529;
+        color: white;
+        border: none;
+        padding: 14px 35px;
+        border-radius: 7px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        min-width: 110px;
+        text-decoration: none;
+        text-align: center;
+        display: inline-block;
+    }
+
+    .cancel-button {
+        background: #6c757d;
+    }
+
+    .update-button:hover {
+        background: #495057;
+        transform: translateY(-1px);
+    }
+
+    .cancel-button:hover {
+        background: #5c636a;
+        transform: translateY(-1px);
+    }
+
+    .update-button:active,
+    .cancel-button:active {
+        transform: translateY(0);
+    }
+
+    @media (max-width: 640px) {
+        .profile-container {
+            padding: 12px;
+        }
+
+        .email-card {
+            padding: 25px;
+            border-radius: 11px;
+        }
+
+        .welcome-title {
+            font-size: 20px;
+        }
+
+        .button-group {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .update-button,
+        .cancel-button {
+            width: 100%;
+        }
+
+        .profile-page {
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .sidebar .profile-sidebar {
+            width: 100%;
+        }
+
+        .email-card {
+            max-width: none;
+        }
+
+        .breadcrumb {
+            font-size: 13px;
+        }
+    }
+
+    .profile-page .profile-sidebar {
+        position: static !important;
+        left: auto !important;
+        width: 320px;
+        height: fit-content;
+        border-radius: 16px;
+        overflow: hidden;
+        transform: none !important;
+    }
+</style>
+
+<div class="profile-page">
+    <aside class="sidebar">
+        <%- include('../partials/user/sidebar') %>
+    </aside>
+    <div class="profile-container">
+        <div class="breadcrumb">
+            <a href="/profile">profile</a>
+            <span class="breadcrumb-separator">></span>
+            <span>change email</span>
+        </div>
+
+        <div class="welcome-section">
+            <h1 class="welcome-title">Set New Email</h1>
+        </div>
+
+        <div class="email-card">
+            <form id="emailForm" class="email-form">
+                <div id="notification" style="display: none; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Enter New Email</label>
+                    <input type="email" class="form-input" name="newEmail">
+                </div>
+
+                <div class="form-group" id="otpGroup" style="display: none;">
+                    <label class="form-label">Enter OTP</label>
+                    <input type="text" class="form-input" name="otp" maxlength="6" placeholder="Enter 6-digit OTP">
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="update-button" id="updateButton">Update Email</button>
+                    <a href="/profile" class="cancel-button">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    let otpSent = false;
+    const updateButton = document.getElementById('updateButton');
+
+    document.getElementById('emailForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // disable button immediately
+        updateButton.disabled = true;
+        updateButton.textContent = otpSent ? 'Verifying...' : 'Sending...';
+
+        // Get form data
+        const formData = new FormData(e.target);
+        const newEmail = formData.get('newEmail');
+        const otp = formData.get('otp');
+
+        if (!otpSent) {
+            //validate
+            if (!newEmail) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'New email is required',
+                    confirmButtonText: 'Retry',
+                    customClass: { confirmButton: 'swal-confirm-black' }
+                });
+                return;
+            }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Please enter a valid email address',
+                    confirmButtonText: 'Retry',
+                    customClass: { confirmButton: 'swal-confirm-black' }
+                });
+                return;
+            }
+
+            try {
+                await axios.post('/profile/change-email', { newEmail });
+
+                document.getElementById('otpGroup').style.display = 'block';
+                document.getElementById('updateButton').textContent = 'Verify OTP';
+                otpSent = true;
+                // show message
+                showNotification("OTP sent to your new email!");
+            } catch (error) {
+                updateButton.disabled = false; 
+                updateButton.textContent = 'Update Email';
+                
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: error.response?.data?.message || 'Failed to send OTP. Try again.',
+                    confirmButtonText: 'Retry',
+                    customClass: { confirmButton: 'swal-confirm-black' }
+                });
+            }
+        } else {
+            // validate OTP
+            if (!otp) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'OTP is required',
+                    confirmButtonText: 'Retry',
+                    customClass: { confirmButton: 'swal-confirm-black' }
+                });
+                return;
+            }
+            if (!/^\d{4}$/.test(otp)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Please enter a valid 6-digit OTP',
+                    confirmButtonText: 'Retry',
+                    customClass: { confirmButton: 'swal-confirm-black' }
+                });
+                return;
+            }
+
+            try {
+                await axios.put('/profile/verify-otp', { otp });
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Email updated successfully!',
+                    confirmButtonText: 'OK',
+                    customClass: { confirmButton: 'swal-confirm-black' }
+                }).then(() => {
+                    window.location.href = '/profile/change-email';
+                });
+            } catch (error) {
+                updateButton.disabled = false; 
+                updateButton.textContent = 'Verify Otp';
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: error.response?.data?.message || 'Invalid OTP. Try again.',
+                    confirmButtonText: 'Retry',
+                    customClass: { confirmButton: 'swal-confirm-black' }
+                });
+            }
+        }
+    });
+    function showNotification(message, type = "success") {
+        const notif = document.getElementById("notification");
+        notif.style.display = "block";
+        notif.style.background = type === "success" ? "#d4edda" : "#f8d7da";
+        notif.style.color = type === "success" ? "#155724" : "#721c24";
+        notif.textContent = message;
+
+        setTimeout(() => {
+            notif.style.display = "none";
+        }, 5000); // auto hide after 4s
+    }
+
+</script>

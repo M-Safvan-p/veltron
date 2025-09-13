@@ -1,0 +1,255 @@
+<link rel="stylesheet" href="../../styles/admin/vendorPendings.css">
+
+<!-- Page Header -->
+<div class="page-header">
+    <h1 class="page-title">Pending Vendors List</h1>
+</div>
+
+<!-- Breadcrumb -->
+<div class="breadcrumb">
+    <a href="/admin/dashboard">Dashboard</a>
+    <span class="breadcrumb-separator">></span>
+    <a href="/admin/vendors">Vendors</a>
+    <span class="breadcrumb-separator">></span>
+    <span>Vendor Pendings</span>
+</div>
+
+<!-- Pending Vendors Table -->
+<div class="pending-vendors-table">
+    <table>
+        <thead class="table-header">
+            <tr>
+                <th>Brand Name</th>
+                <th>Phone Number</th>
+                <th>Email</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (vendors && vendors.length> 0) { %>
+                <% vendors.forEach(vendor=> { %>
+                    <tr class="table-row" id="vendor-row-<%= vendor.id %>">
+                        <td>
+                            <div class="vendor-info">
+                                <div class="vendor-avatar">
+                                    <%= vendor.brandName ? vendor.brandName[0].toUpperCase() : 'V' %>
+                                </div>
+                                <span class="vendor-name">
+                                    <%= vendor.brandName %>
+                                </span>
+                            </div>
+                        </td>
+                        <td class="phone-number">
+                            <%= vendor.phoneNumber %>
+                        </td>
+                        <td class="email">
+                            <%= vendor.brandEmail %>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-approve" data-vendor-id="<%= vendor.id %>">Approve</button>
+                                <button class="btn btn-cancel" data-vendor-id="<%= vendor.id %>">Cancel</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="4">
+                                    <div class="empty-state">
+                                        <i class="fas fa-inbox"></i>
+                                        <h3>No Pending Vendors</h3>
+                                        <p>All vendor applications have been processed.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                            <% } %>
+        </tbody>
+    </table>
+</div>
+<!-- Pagination -->
+<div class="pagination">
+    <div class="pagination-info">
+        Showing 1-<%= vendors.length %> of <%= totalVendors %> vendors
+    </div>
+    <div class="pagination-controls">
+        <button class="pagination-btn" <%=currentPage==1 ? 'disabled' : '' %> onclick="changePage(<%= currentPage - 1 %>
+                )" aria-label="Previous page">
+                <i class="fas fa-chevron-left" aria-hidden="true"></i>
+        </button>
+        <% for (let i=1; i <=totalPages; i++) { %>
+            <button class="pagination-btn <%= i === currentPage ? 'active' : '' %>" onclick="changePage(<%= i %>)"
+                aria-label="Page <%= i %>">
+                <%= i %>
+            </button>
+            <% } %>
+                <button class="pagination-btn" <%=currentPage==totalPages ? 'disabled' : '' %> onclick="changePage(<%=
+                        currentPage + 1 %>)" aria-label="Next page">
+                        <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                </button>
+    </div>
+</div>
+<script>
+    function changePage(page) {
+        const url = new URL(window.location);
+        url.searchParams.set('page', page);
+        window.location.href = url.href;
+    }
+    // Attach event listeners after DOM load
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".btn-approve").forEach((button) => {
+            button.addEventListener("click", () => {
+                const vendorId = button.getAttribute("data-vendor-id");
+                approveVendor(vendorId, button);
+            });
+        });
+
+        document.querySelectorAll(".btn-cancel").forEach((button) => {
+            button.addEventListener("click", () => {
+                const vendorId = button.getAttribute("data-vendor-id");
+                cancelVendor(vendorId, button);
+            });
+        });
+    });
+
+    // Approve Vendor
+    async function approveVendor(vendorId, button) {
+        const originalText = button.textContent;
+
+        const result = await Swal.fire({
+            title: "Approve Vendor?",
+            text: "Do you want to approve this vendor?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#28a745",
+            cancelButtonColor: "#6c757d",
+            confirmButtonText: "Yes, approve",
+        });
+
+        if (!result.isConfirmed) return;
+
+        button.disabled = true;
+        button.textContent = "Approving...";
+
+        try {
+            const response = await axios.post(
+                "/admin/vendors/pendings/approve",
+                { vendorId }
+            );
+
+            await Swal.fire({
+                icon: "success",
+                title: "Approved!",
+                text: response.data.message,
+                timer: 1500,
+                showConfirmButton: false,
+                customClass: {
+                    confirmButton: "swal-confirm-black",
+                },
+            });
+
+            removeVendorRow(vendorId);
+        } catch (error) {
+            console.error("Error approving vendor:", error);
+
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text:
+                    error.response?.data?.message ||
+                    "Failed to approve vendor. Please try again.",
+                customClass: {
+                    confirmButton: "swal-confirm-black",
+                },
+            });
+
+            button.disabled = false;
+            button.textContent = originalText;
+        }
+    }
+
+    // Cancel Vendor
+    async function cancelVendor(vendorId, button) {
+        const originalText = button.textContent;
+
+        const result = await Swal.fire({
+            title: "Cancel Vendor?",
+            text: "This vendor application will be rejected.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, cancel it",
+        });
+
+        if (!result.isConfirmed) return;
+
+        button.disabled = true;
+        button.textContent = "Canceling...";
+
+        try {
+            const response = await axios.post("/admin/vendors/pendings/reject", { vendorId });
+
+            await Swal.fire({
+                icon: "success",
+                title: "Canceled!",
+                text: response.data.message,
+                timer: 1500,
+                showConfirmButton: false,
+                customClass: {
+                    confirmButton: "swal-confirm-black",
+                },
+            });
+
+            removeVendorRow(vendorId);
+        } catch (error) {
+            console.error("Error canceling vendor:", error);
+
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text:
+                    error.response?.data?.message ||
+                    "Failed to cancel vendor. Please try again.",
+                customClass: {
+                    confirmButton: "swal-confirm-black",
+                },
+            });
+
+            button.disabled = false;
+            button.textContent = originalText;
+        }
+    }
+
+    // Remove row with animation & check empty state
+    function removeVendorRow(vendorId) {
+        const row = document.getElementById(`vendor-row-${vendorId}`);
+        if (row) {
+            row.style.transition = "opacity 0.3s ease";
+            row.style.opacity = "0";
+            setTimeout(() => {
+                row.remove();
+                checkEmptyState();
+            }, 300);
+        }
+    }
+
+    // Show empty state if no rows remain
+    function checkEmptyState() {
+        const tableBody = document.querySelector(".pending-vendors-table tbody");
+        if (!tableBody.querySelector(".table-row")) {
+            tableBody.innerHTML = `
+      <tr>
+        <td colspan="4">
+          <div class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <h3>No Pending Vendors</h3>
+            <p>All vendor applications have been processed.</p>
+          </div>
+        </td>
+      </tr>
+    `;
+        }
+    }
+
+</script>

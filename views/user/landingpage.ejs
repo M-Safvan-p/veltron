@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Veltron - Luxury Watches</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="../../styles/user/landingpage.css" />
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo">
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                Veltron
+            </div>
+
+            <nav class="nav-links">
+                <a href="/">Home</a>
+                <a href="/sale">SALE</a>
+            </nav>
+
+            <div class="header-right">
+                <div class="search-bar">
+                    <input type="text" placeholder="What are you looking for..." />
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                </div>
+                <nav class="right-nav-links">
+                    <a href="/logIn">Sign In</a>
+                    <a href="/signUp">Sign Up</a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div class="mobile-menu" id="mobileMenu">
+            <div class="mobile-menu-items">
+                <a href="/">Home</a>
+                <a href="/sale">SALE</a>
+                <a href="/contact">Contact</a>
+                <a href="/about">About us</a>
+                <a href="/products">All products</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content container">
+            <h1>Luxury Watches</h1>
+            <p>Discover timeless elegance crafted with precision.</p>
+        </div>
+    </section>
+
+
+    <!-- New Arrivals -->
+    <section class="new-arrivals">
+        <div class="container">
+            <h2 class="section-title">New Arrivals</h2>
+            <div class="products-grid">
+                <% newArrivals.forEach(function(product) { %>
+                    <a href="/sale/<%= product._id %>" class="product-link">
+                        <div class="product-card">
+                            <img src="<%= product.variants[0].images[0].url %>" alt="<%= product.name %>" />
+                            <h3 class="product-name">
+                                <%= product.name %>
+                            </h3>
+                            <div class="product-price">
+                                ₹<%= product.discountedPrice ? product.discountedPrice.toFixed(2) :
+                                    product.price.toFixed(2) %>
+                                    <% if (product.discountedPrice) { %>
+                                        <span class="original-price">₹<%= product.price.toFixed(2) %></span>
+                                        <% } %>
+                            </div>
+                        </div>
+                    </a>
+                    <% }); %>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Section -->
+    <section class="featured">
+        <div class="featured-watch">
+            <img src="https://res.cloudinary.com/ddj9jtbof/image/upload/v1757247814/middlephoto_swbnal.jpg"
+                alt=" Featured Watch" />
+        </div>
+    </section>
+
+    <!-- Trending Section -->
+    <section class="trending">
+        <div class="container">
+            <h2 class="section-title">Trending</h2>
+            <div class="products-grid">
+                <% trending.forEach(function(product) { %>
+                    <a href="/sale/<%= product._id %>" class="product-link">
+                        <div class="product-card">
+                            <img src="<%= product.variants[0].images[0].url %>" alt="<%= product.name %>" />
+                            <h3 class="product-name">
+                                <%= product.name %>
+                            </h3>
+                            <div class="product-price">
+                                ₹<%= product.discountedPrice ? product.discountedPrice.toFixed(2) :
+                                    product.price.toFixed(2) %>
+                                    <% if (product.discountedPrice) { %>
+                                        <span class="original-price">₹<%= product.price.toFixed(2) %></span>
+                                        <% } %>
+                            </div>
+                        </div>
+                    </a>
+                    <% }); %>
+            </div>
+        </div>
+    </section>
+
+    <!-- Explore More -->
+    <section class="explore-more">
+        <div class="container">
+            <h2 class="section-title">EXPLORE MORE</h2>
+            <div class="explore-grid">
+                <% exploreMore.forEach(function(product) { %>
+                    <a href="/sale/<%= product._id %>" class="product-link">
+                        <div class="product-card">
+                            <img src="<%= product.variants[0].images[0].url %>" alt="<%= product.name %>" />
+                            <h3 class="product-name">
+                                <%= product.name %>
+                            </h3>
+                            <div class="product-price">
+                                ₹<%= product.discountedPrice ? product.discountedPrice.toFixed(2) :
+                                    product.price.toFixed(2) %>
+                                    <% if (product.discountedPrice) { %>
+                                        <span class="original-price">₹<%= product.price.toFixed(2) %></span>
+                                        <% } %>
+                            </div>
+                        </div>
+                    </a>
+                    <% }); %>
+            </div>
+        </div>
+    </section>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <!-- Newsletter -->
+            <div class="newsletter">
+                <h3>Subscribe now and be the first to know about exclusive offers, latest fashion trends & style tips!
+                </h3>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Enter Your Email">
+                    <button type="submit">Subscribe</button>
+                </form>
+            </div>
+
+            <!-- Features -->
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">📦</div>
+                    <h3>High Quality Products</h3>
+                    <p>Carefully curated and tested</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>Warranty Protection</h3>
+                    <p>Over 2 years</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🚚</div>
+                    <h3>Free Shipping</h3>
+                    <p>Orders over ₹150</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🎧</div>
+                    <h3>24 / 7 Support</h3>
+                    <p>Dedicated support</p>
+                </div>
+            </div>
+            <!-- Footer Bottom -->
+            <div class="footer-bottom">
+                <div class="footer-section">
+                    <p>Our store has a wide collection of Casuals and formals that you are looking for</p>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Get in Touch</h4>
+                    <p>📍 8819 Ohio St. South Gate, CA 90280</p>
+                    <p>✉️ chronox@gmail.com</p>
+                    <p>📞 +1 386-688-3295</p>
+                </div>
+
+                <div class="footer-section">
+                    <div class="social-icons">
+                        <a href="#" class="social-icon">Dr</a>
+                        <a href="#" class="social-icon">Be</a>
+                        <a href="#" class="social-icon">Ig</a>
+                        <a href="#" class="social-icon">Tw</a>
+                    </div>
+                    <p style="margin-top: 15px;">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                    </p>
+                </div>
+            </div>
+
+            <div class="copyright">
+                Copyright WEART
+            </div>
+        </div>
+    </footer>
+
+    <!-- JS -->
+    <script>
+        //humberger hancle
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        hamburger.addEventListener('click', function () {
+            hamburger.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+        });
+
+        const mobileMenuItems = document.querySelectorAll('.mobile-menu-items a');
+        mobileMenuItems.forEach(item => {
+            item.addEventListener('click', function () {
+                hamburger.classList.remove('active');
+                mobileMenu.classList.remove('active');
+            });
+        });
+
+        document.addEventListener('click', function (event) {
+            const isClickInsideMenu = mobileMenu.contains(event.target);
+            const isClickOnHamburger = hamburger.contains(event.target);
+
+            if (!isClickInsideMenu && !isClickOnHamburger && mobileMenu.classList.contains('active')) {
+                hamburger.classList.remove('active');
+                mobileMenu.classList.remove('active');
+            }
+        });
+
+        // Add loading animation for product cards
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function (entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.6s ease forwards';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.product-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            observer.observe(card);
+        });
+
+        // Add CSS animation keyframes
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInUp {
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+
+</html>

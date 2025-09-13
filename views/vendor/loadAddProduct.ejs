@@ -1,0 +1,730 @@
+<link rel="stylesheet" href="../../styles/vendor/loadAddProducts.css">
+<!-- Add Cropper.js CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+
+<div class="product-form-container">
+    <!-- Product Details Title -->
+    <h1 class="page-title">Product Details</h1>
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+        <a href="/vendor/dashboard">Dashboard</a>
+        <span class="breadcrumb-separator">></span>
+        <a href="/vendor/products">Products</a>
+        <span class="breadcrumb-separator">></span>
+        <a href="/vendor/products/add-product">Add Product</a>
+    </nav>
+
+    <!-- Product Details Card -->
+    <form id="add-product-form" enctype="multipart/form-data">
+        <!-- Product Details -->
+        <div class="narrow-content">
+            <div class="product-card">
+                <div class="form-group">
+                    <label class="form-label" for="name">Product Name</label>
+                    <input type="text" id="name" name="name" class="form-input" aria-label="Product name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="description">Description</label>
+                    <textarea id="description" name="description" class="form-input form-textarea"
+                        aria-label="Product description"></textarea>
+                </div>
+                <div class="price-row">
+                    <div class="form-group">
+                        <label class="form-label" for="price">Price</label>
+                        <input type="number" value="1000" id="price" name="price" class="form-input" step="0.01" min="0"
+                            aria-label="Product price">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="discountedPrice">Discount Price</label>
+                        <input type="number" value="500" id="discountedPrice" name="discountedPrice" class="form-input"
+                            step="0.01" min="0" aria-label="Discounted price">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Listing Status</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="isListed" value="true" checked aria-label="List product">
+                                Listed</label>
+                            <label><input type="radio" name="isListed" value="false" aria-label="Unlist product">
+                                Unlisted</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="category">Select Category</label>
+                    <select id="category" name="category" class="form-select" aria-label="Product category">
+                        <option value="mechanical" disabled selected>Select a category</option>
+                        <% if (typeof categories !=='undefined' && categories.length> 0) { %>
+                            <% categories.forEach(category=> { %>
+                                <option value="<%= category._id %>">
+                                    <%= category.name %>
+                                </option>
+                                <% }); %>
+                                    <% } else { %>
+                                        <option value="electronics">Electronics</option>
+                                        <% } %>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Variants -->
+        <div class="narrow-content">
+            <div class="product-card">
+                <h3 class="card-title">Variant Images</h3>
+                <div class="image-upload-section">
+                    <div class="variant-container" id="variant-0">
+                        <div class="variant-header">
+                            <h4 class="variant-title">Variant 1</h4>
+                            <div class="variant-controls">
+                                <input type="text" value="Yellow" placeholder="Color name" name="variants[0][color]"
+                                    class="form-input" aria-label="Color for variant 1">
+                                <button type="button" class="custom-btn custom-btn-secondary" onclick="removeVariant(0)"
+                                    aria-label="Remove variant 1">Remove</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Product Images (3 images)</label>
+                            <div class="variant-images">
+                                <div class="image-upload" data-variant="0" data-image="0">
+                                    <div class="upload-icon">
+                                        <i class="fas fa-image"></i>
+                                    </div>
+                                    <div class="upload-text">Image 1</div>
+                                    <div class="image-preview-container hidden">
+                                        <img class="image-preview" src="" alt="Preview">
+                                        <button type="button" class="delete-image-btn" aria-label="Delete image">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                    <!-- CHANGED: Added [0] to the name -->
+                                    <input type="file" name="variants[0][images][0]" accept="image/*"
+                                        style="display: none;" id="variantImage-0-0" aria-label="Image 1 for variant 1">
+                                    <input type="hidden" name="variants[0][croppedImages][0]"
+                                        class="cropped-image-data">
+                                    <button type="button" class="upload-btn"
+                                        onclick="document.getElementById('variantImage-0-0').click()"
+                                        aria-label="Browse image 1 for variant 1">BROWSE IMAGE</button>
+                                </div>
+                                <div class="image-upload" data-variant="0" data-image="1">
+                                    <div class="upload-icon">
+                                        <i class="fas fa-image"></i>
+                                    </div>
+                                    <div class="upload-text">Image 2</div>
+                                    <div class="image-preview-container hidden">
+                                        <img class="image-preview" src="" alt="Preview">
+                                        <button type="button" class="delete-image-btn" aria-label="Delete image">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                    <!-- CHANGED: Added [1] to the name -->
+                                    <input type="file" name="variants[0][images][1]" accept="image/*"
+                                        style="display: none;" id="variantImage-0-1" aria-label="Image 2 for variant 1">
+                                    <input type="hidden" name="variants[0][croppedImages][1]"
+                                        class="cropped-image-data">
+                                    <button type="button" class="upload-btn"
+                                        onclick="document.getElementById('variantImage-0-1').click()"
+                                        aria-label="Browse image 2 for variant 1">BROWSE IMAGE</button>
+                                </div>
+                                <div class="image-upload" data-variant="0" data-image="2">
+                                    <div class="upload-icon">
+                                        <i class="fas fa-image"></i>
+                                    </div>
+                                    <div class="upload-text">Image 3</div>
+                                    <div class="image-preview-container hidden">
+                                        <img class="image-preview" src="" alt="Preview">
+                                        <button type="button" class="delete-image-btn" aria-label="Delete image">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                    <!-- CHANGED: Added [2] to the name -->
+                                    <input type="file" name="variants[0][images][2]" accept="image/*"
+                                        style="display: none;" id="variantImage-0-2" aria-label="Image 3 for variant 1">
+                                    <input type="hidden" name="variants[0][croppedImages][2]"
+                                        class="cropped-image-data">
+                                    <button type="button" class="upload-btn"
+                                        onclick="document.getElementById('variantImage-0-2').click()"
+                                        aria-label="Browse image 3 for variant 1">BROWSE IMAGE</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="stockQuantity-0">Stock Quantity</label>
+                            <input type="number" value="20" id="stockQuantity-0" name="variants[0][stock]" class="form-input" min="0"
+                                aria-label="Stock quantity for variant 1">
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center;">
+                    <button id="add-variant-button" type="button" class="custom-btn custom-btn-secondary"
+                        onclick="addVariant()">+ ADD ANOTHER VARIANT</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Specifications -->
+        <div class="narrow-content">
+            <div class="product-card">
+                <h3 class="card-title">Product Specifications</h3>
+                <div class="specifications-grid">
+                    <div class="form-group">
+                        <label class="form-label" for="StrapStyle">Strap Style</label>
+                        <input type="text" value="Lether Strap" id="StrapStyle" name="specifications[strapStyle]"
+                            class="form-input" aria-label="Strap style">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="Weight">Weight</label>
+                        <input type="text" id="Weight" name="specifications[weight]" class="form-input"
+                            aria-label="Weight">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="DialType">Dial Type</label>
+                        <input type="text" id="DialType" name="specifications[dialType]" class="form-input"
+                            aria-label="Dial type">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="warrantyPeriod">Warranty Period</label>
+                        <input type="text" id="warrantyPeriod" name="specifications[warrantyPeriod]" class="form-input"
+                            aria-label="Warranty period">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="Durability">Durability</label>
+                        <input type="text" id="Durability" name="specifications[durability]" class="form-input"
+                            aria-label="Durability">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="AdditionalInformation">Additional Information</label>
+                        <textarea id="AdditionalInformation" name="specifications[additionalInformation]"
+                            class="form-input form-textarea" aria-label="Additional information"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button type="submit" class="custom-btn custom-btn-primary" aria-label="Add product">ADD
+                PRODUCT</button>
+            <button type="button" class="custom-btn custom-btn-secondary" onclick="window.history.back()"
+                aria-label="Cancel">CANCEL</button>
+        </div>
+    </form>
+</div>
+
+<!-- Image Cropping Modal -->
+<div id="cropModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Crop Image</h3>
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="crop-container">
+                <img id="cropImage" src="" alt="Image to crop">
+            </div>
+            <div class="crop-actions">
+                <button type="button" id="cancelCrop" class="custom-btn custom-btn-secondary">Cancel</button>
+                <button type="button" id="applyCrop" class="custom-btn custom-btn-primary">Apply Crop</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Cropper.js and other scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+<!-- Validation Script and form data to object -->
+<script src="/js/utils/formValidator.js"></script>
+<script src="/js/utils/formDataToObject.js"></script>
+<script>
+    // Global variables
+    var variantCount = 1;
+    const form = document.getElementById('add-product-form');
+    let currentCropper = null;
+    let currentUploadArea = null;
+
+    // Initialize the application
+    function init() {
+        setupFileInputs();
+        setupDragAndDrop();
+        setupFormSubmission();
+        setupCropModal();
+        setupDeleteButtons();
+    }
+
+    // Set up the cropping modal
+    function setupCropModal() {
+        const modal = document.getElementById('cropModal');
+        const closeBtn = document.querySelector('.close');
+        const cancelBtn = document.getElementById('cancelCrop');
+        const applyBtn = document.getElementById('applyCrop');
+
+        closeBtn.onclick = function () {
+            modal.style.display = 'none';
+            if (currentCropper) {
+                currentCropper.destroy();
+                currentCropper = null;
+            }
+        }
+
+        cancelBtn.onclick = function () {
+            modal.style.display = 'none';
+            if (currentCropper) {
+                currentCropper.destroy();
+                currentCropper = null;
+            }
+        }
+
+        applyBtn.onclick = function () {
+            if (currentCropper) {
+                // Get cropped canvas
+                const canvas = currentCropper.getCroppedCanvas({
+                    width: 800,
+                    height: 800,
+                    fillColor: '#fff',
+                    imageSmoothingEnabled: true,
+                    imageSmoothingQuality: 'high'
+                });
+
+                // Convert to data URL
+                const croppedImageData = canvas.toDataURL('image/jpeg');
+
+                // Update preview
+                const previewImg = currentUploadArea.querySelector('.image-preview');
+                previewImg.src = croppedImageData;
+
+                // Store cropped image data in hidden input
+                const hiddenInput = currentUploadArea.querySelector('.cropped-image-data');
+                hiddenInput.value = croppedImageData;
+
+                // Show preview and hide upload elements
+                currentUploadArea.querySelector('.image-preview-container').classList.remove('hidden');
+                currentUploadArea.querySelector('.upload-icon').classList.add('hidden');
+                currentUploadArea.querySelector('.upload-text').classList.add('hidden');
+
+                // Close modal and clean up
+                modal.style.display = 'none';
+                currentCropper.destroy();
+                currentCropper = null;
+                currentUploadArea = null;
+            }
+        }
+
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+                if (currentCropper) {
+                    currentCropper.destroy();
+                    currentCropper = null;
+                }
+            }
+        }
+    }
+
+    // Handle file input changes to show crop modal
+    function setupFileInputs() {
+        document.querySelectorAll('input[type="file"]').forEach(input => {
+            input.addEventListener('change', function (e) {
+                if (this.files && this.files[0]) {
+                    const file = this.files[0];
+                    if (!file.type.match('image.*')) {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Please select an image file.',
+                            icon: 'error',
+                            confirmButtonColor: '#000',
+                            customClass: {
+                                confirmButton: "swal-confirm-black"
+                            }
+                        });
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        // Store reference to the upload area
+                        currentUploadArea = input.parentElement;
+
+                        // Show modal with image
+                        const modal = document.getElementById('cropModal');
+                        const cropImage = document.getElementById('cropImage');
+                        cropImage.src = e.target.result;
+                        modal.style.display = 'block';
+
+                        // Initialize cropper
+                        setTimeout(() => {
+                            currentCropper = new Cropper(cropImage, {
+                                aspectRatio: 1,
+                                viewMode: 1,
+                                guides: true,
+                                background: false,
+                                autoCropArea: 0.8
+                            });
+                        }, 100);
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+    }
+
+    // Set up delete buttons for image previews
+    function setupDeleteButtons() {
+        // Use event delegation for dynamically added elements
+        document.addEventListener('click', function (e) {
+            if (e.target.closest('.delete-image-btn')) {
+                const deleteBtn = e.target.closest('.delete-image-btn');
+                const uploadArea = deleteBtn.closest('.image-upload');
+
+                // Reset the upload area
+                const fileInput = uploadArea.querySelector('input[type="file"]');
+                const hiddenInput = uploadArea.querySelector('.cropped-image-data');
+                const previewContainer = uploadArea.querySelector('.image-preview-container');
+                const uploadIcon = uploadArea.querySelector('.upload-icon');
+                const uploadText = uploadArea.querySelector('.upload-text');
+
+                fileInput.value = '';
+                hiddenInput.value = '';
+                previewContainer.classList.add('hidden');
+                uploadIcon.classList.remove('hidden');
+                uploadText.classList.remove('hidden');
+                uploadText.textContent = `Image ${uploadArea.dataset.image}`;
+            }
+        });
+    }
+
+    // Set up drag and drop functionality
+    function setupDragAndDrop(container = document) {
+        container.querySelectorAll('.image-upload').forEach(uploadArea => {
+            uploadArea.addEventListener('dragover', function (e) {
+                e.preventDefault();
+                this.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', function (e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', function (e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+
+                if (files.length > 0 && files[0].type.startsWith('image/')) {
+                    const fileInput = this.querySelector('input[type="file"]');
+                    if (fileInput) {
+                        // Create a new FileList-like object
+                        const dt = new DataTransfer();
+                        dt.items.add(files[0]);
+                        fileInput.files = dt.files;
+
+                        // Trigger change event manually
+                        const event = new Event('change');
+                        fileInput.dispatchEvent(event);
+                    }
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Please drop an image file.',
+                        icon: 'error',
+                        confirmButtonColor: '#000',
+                        customClass: {
+                            confirmButton: "swal-confirm-black"
+                        }
+                    });
+                }
+            });
+        });
+    }
+
+    // Add a new variant
+    function addVariant() {
+        if (variantCount >= 5) {
+            Swal.fire({
+                title: 'Limit Reached!',
+                text: 'You can only add up to 5 variants per product.',
+                icon: 'warning',
+                confirmButtonColor: '#000',
+                customClass: {
+                    confirmButton: "swal-confirm-black"
+                }
+            });
+            return;
+        }
+
+        const container = document.querySelector('.image-upload-section');
+        const variantHtml = `
+        <div class="variant-container" id="variant-${variantCount}">
+            <div class="variant-header">
+                <h4 class="variant-title">Variant ${variantCount + 1}</h4>
+                <div class="variant-controls">
+                    <input type="text" placeholder="Color name" name="variants[${variantCount}][color]" class="form-input"  aria-label="Color for variant ${variantCount + 1}">
+                    <button type="button" class="custom-btn custom-btn-secondary" onclick="removeVariant(${variantCount})" aria-label="Remove variant ${variantCount + 1}">Remove</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Product Images (3 images)</label>
+                <div class="variant-images">
+                    <div class="image-upload" data-variant="${variantCount}" data-image="0">
+                        <div class="upload-icon">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        <div class="upload-text">Image 1</div>
+                        <div class="image-preview-container hidden">
+                            <img class="image-preview" src="" alt="Preview">
+                            <button type="button" class="delete-image-btn" aria-label="Delete image">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <!-- CHANGED: Added [0] to the name -->
+                        <input type="file" name="variants[${variantCount}][images][0]" accept="image/*" style="display: none;" id="variantImage-${variantCount}-0"  aria-label="Image 1 for variant ${variantCount + 1}">
+                        <input type="hidden" name="variants[${variantCount}][croppedImages][0]" class="cropped-image-data">
+                        <button type="button" class="upload-btn" onclick="document.getElementById('variantImage-${variantCount}-0').click()" aria-label="Browse image 1 for variant ${variantCount + 1}">BROWSE IMAGE</button>
+                    </div>
+                    <div class="image-upload" data-variant="${variantCount}" data-image="1">
+                        <div class="upload-icon">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        <div class="upload-text">Image 2</div>
+                        <div class="image-preview-container hidden">
+                            <img class="image-preview" src="" alt="Preview">
+                            <button type="button" class="delete-image-btn" aria-label="Delete image">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <!-- CHANGED: Added [1] to the name -->
+                        <input type="file" name="variants[${variantCount}][images][1]" accept="image/*" style="display: none;" id="variantImage-${variantCount}-1" aria-label="Image 2 for variant ${variantCount + 1}">
+                        <input type="hidden" name="variants[${variantCount}][croppedImages][1]" class="cropped-image-data">
+                        <button type="button" class="upload-btn" onclick="document.getElementById('variantImage-${variantCount}-1').click()" aria-label="Browse image 2 for variant ${variantCount + 1}">BROWSE IMAGE</button>
+                    </div>
+                    <div class="image-upload" data-variant="${variantCount}" data-image="2">
+                        <div class="upload-icon">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        <div class="upload-text">Image 3</div>
+                        <div class="image-preview-container hidden">
+                            <img class="image-preview" src="" alt="Preview">
+                            <button type="button" class="delete-image-btn" aria-label="Delete image">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <!-- CHANGED: Added [2] to the name -->
+                        <input type="file" name="variants[${variantCount}][images][2]" accept="image/*" style="display: none;" id="variantImage-${variantCount}-2" aria-label="Image 3 for variant ${variantCount + 1}">
+                        <input type="hidden" name="variants[${variantCount}][croppedImages][2]" class="cropped-image-data">
+                        <button type="button" class="upload-btn" onclick="document.getElementById('variantImage-${variantCount}-2').click()" aria-label="Browse image 3 for variant ${variantCount + 1}">BROWSE IMAGE</button>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="stockQuantity-${variantCount}">Stock Quantity</label>
+                <input type="number" id="stockQuantity-${variantCount}" name="variants[${variantCount}][stock]" class="form-input" min="0"  aria-label="Stock quantity for variant ${variantCount + 1}">
+            </div>
+        </div>
+    `;
+
+        container.insertAdjacentHTML('beforeend', variantHtml);
+
+        // Add event listeners to new file inputs
+        const newVariant = document.getElementById(`variant-${variantCount}`);
+        if (newVariant) {
+            setupFileInputs();
+            setupDragAndDrop(newVariant);
+        }
+
+        variantCount++;
+
+        if (variantCount >= 5) {
+            document.getElementById('add-variant-button').style.display = 'none';
+        }
+    }
+
+    // Remove a variant
+    function removeVariant(variantId) {
+        const variant = document.getElementById(`variant-${variantId}`);
+        const totalVariants = document.querySelectorAll('.variant-container').length;
+
+        if (variant && totalVariants > 1) {
+            variant.remove();
+            reindexVariants();
+
+            if (variantCount < 5) {
+                document.getElementById('add-variant-button').style.display = 'block';
+            }
+        } else if (totalVariants === 1) {
+            Swal.fire({
+                title: 'Warning!',
+                text: 'At least one variant is required.',
+                icon: 'warning',
+                confirmButtonColor: '#000',
+                customClass: {
+                    confirmButton: "swal-confirm-black"
+                }
+            });
+        }
+    }
+
+    // Reindex all variants after removal
+    function reindexVariants() {
+        const variants = document.querySelectorAll('.variant-container');
+        variants.forEach((variant, index) => {
+            // Update container ID and title
+            variant.id = `variant-${index}`;
+            variant.querySelector('.variant-title').textContent = `Variant ${index + 1}`;
+
+            // Update all input names
+            const colorInput = variant.querySelector('input[name^="variants"]');
+            const stockInput = variant.querySelector('input[name$="[stock]"]');
+            const imageInputs = variant.querySelectorAll('input[type="file"]');
+            const croppedInputs = variant.querySelectorAll('.cropped-image-data');
+
+            if (colorInput) colorInput.name = `variants[${index}][color]`;
+            if (stockInput) stockInput.name = `variants[${index}][stock]`;
+
+            imageInputs.forEach((imgInput, imgIndex) => {
+                imgInput.name = `variants[${index}][images]`;
+                imgInput.id = `variantImage-${index}-${imgIndex + 1}`;
+
+                // Update the corresponding button onclick
+                const button = imgInput.parentElement.querySelector('.upload-btn');
+                if (button) {
+                    button.setAttribute('onclick', `document.getElementById('variantImage-${index}-${imgIndex + 1}').click()`);
+                    button.setAttribute('aria-label', `Browse image ${imgIndex + 1} for variant ${index + 1}`);
+                }
+            });
+
+            croppedInputs.forEach((croppedInput, imgIndex) => {
+                croppedInput.name = `variants[${index}][croppedImages]`;
+            });
+
+            // Update remove button onclick
+            const removeBtn = variant.querySelector('button[onclick^="removeVariant"]');
+            if (removeBtn) {
+                removeBtn.setAttribute('onclick', `removeVariant(${index})`);
+                removeBtn.setAttribute('aria-label', `Remove variant ${index + 1}`);
+            }
+        });
+
+        // Update variantCount to reflect current number
+        variantCount = variants.length;
+    }
+
+
+    // Set up form submission with Axios
+    function setupFormSubmission() {
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            // Convert form data to object
+            const productData = formDataToObject(form);
+
+            // Run validator with data (includes image validation)
+            const { isValid, messages } = validateProductForm(productData);
+
+            if (!isValid) {
+                Swal.fire({
+                    title: "Error!",
+                    html: messages.join("<br>"),
+                    icon: "error",
+                    customClass: {
+                        confirmButton: "swal-confirm-black"
+                    }
+                });
+                return;
+            }
+
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.classList.add('loading');
+
+            Swal.fire({
+                title: 'Adding Product...',
+                text: 'Please wait while we add your product.',
+                icon: 'info',
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+                customClass: {
+                    confirmButton: "swal-confirm-black"
+                }
+            });
+
+            try {
+                // Convert base64 images to blob for submission
+                const formData = new FormData(form);
+
+                // Process cropped images
+                let imageIndex = 0;
+                document.querySelectorAll('.cropped-image-data').forEach(input => {
+                    if (input.value) {
+                        // Convert base64 to blob
+                        const base64Data = input.value;
+                        const blob = dataURLtoBlob(base64Data);
+
+                        // Append to form data
+                        formData.append(`croppedImages[${imageIndex}]`, blob, `image-${imageIndex}.jpg`);
+                        imageIndex++;
+                    }
+                });
+
+                const response = await axios.post('/vendor/products/add-product', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Product added successfully.',
+                    icon: 'success',
+                    confirmButtonColor: '#000',
+                    customClass: {
+                        confirmButton: "swal-confirm-black"
+                    }
+                }).then(() => {
+                    window.location.href = '/vendor/products';
+                });
+
+            } catch (error) {
+                let errorMessage = 'An error occurred while adding the product.';
+                if (error.response) {
+                    errorMessage = error.response.data.message || errorMessage;
+                } else if (error.request) {
+                    errorMessage = 'No response from server. Please check your connection.';
+                }
+
+                Swal.fire({
+                    title: 'Error!',
+                    html: errorMessage,
+                    icon: 'error',
+                    confirmButtonColor: '#000',
+                    customClass: {
+                        confirmButton: "swal-confirm-black"
+                    }
+                });
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('loading');
+            }
+        });
+    }
+
+    // Helper function to convert data URL to blob
+    function dataURLtoBlob(dataurl) {
+        const arr = dataurl.split(',');
+        const mime = arr[0].match(/:(.*?);/)[1];
+        const bstr = atob(arr[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+
+        while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+
+        return new Blob([u8arr], { type: mime });
+    }
+
+    // Initialize the application when DOM is loaded
+    document.addEventListener('DOMContentLoaded', init);
+</script>

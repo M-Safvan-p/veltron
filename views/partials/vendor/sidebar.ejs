@@ -1,0 +1,89 @@
+<link rel="stylesheet" href="../../../styles/partials/vendor/sidebar.css">
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <div>
+        <div class="logo">Veltron</div>
+
+        <a href="/vendor/dashboard" class="nav-item <%= activePage === 'dashboard' ? 'active' : '' %>">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+        </a>
+
+        <a href="/vendor/products" class="nav-item <%= activePage === 'products' ? 'active' : '' %>">
+            <i class="fas fa-box"></i>
+            <span>Products</span>
+            <span class="arrow">›</span>
+        </a>
+
+        <a href="/vendor/orders" class="nav-item <%= activePage === 'orders' ? 'active' : '' %>">
+            <i class="fas fa-clipboard-list"></i>
+            <span>Orders</span>
+            <span class="arrow">›</span>
+        </a>
+
+        <a href="/vendor/category" class="nav-item <%= activePage === 'category' ? 'active' : '' %>">
+            <i class="fas fa-tags"></i>
+            <span>Category</span>
+            <span class="arrow">›</span>
+        </a>
+
+        <a href="/vendor/wallet" class="nav-item <%= activePage === 'wallet' ? 'active' : '' %>">
+            <i class="fas fa-wallet"></i>
+            <span>Wallet</span>
+            <span class="arrow">›</span>
+        </a>
+
+        <a href="/vendor/profile" class="nav-item <%= activePage === 'profile' ? 'active' : '' %>">
+            <i class="fas fa-user"></i>
+            <span>Profile</span>
+            <span class="arrow">›</span>
+        </a>
+    </div>
+
+    <!-- Bottom buttons -->
+    <div class="account-controls">
+        <a href="/vendor/account" class="account-btn">Account</a>
+        <a href="/vendor/logout" class="account-btn logout-btn">Logout</a>
+    </div>
+</div>
+<script>
+    document.querySelector('.logout-btn').addEventListener('click', function (e) {
+        e.preventDefault(); // prevent direct navigation
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You will be logged out of your account.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, logout',
+            cancelButtonText: 'Cancel'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const response = await axios.post('/vendor/logout');
+
+                    if (response.data.success) {
+                        Swal.fire({
+                            title: 'Logged Out!',
+                            text: 'You have been logged out successfully.',
+                            icon: 'success',
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => {
+                            window.location.replace('/vendor/'); // redirect to login page
+                        });
+                    } else {
+                        Swal.fire("Oops!", response.data.message || "Logout failed.", "error");
+                    }
+                } catch (error) {
+                    console.error("Logout failed:", error);
+                    const errMsg = error.response?.data?.message || "Something went wrong. Please try again.";
+                    Swal.fire("Error", errMsg, "error");
+                }
+            }
+        });
+    });
+</script>
