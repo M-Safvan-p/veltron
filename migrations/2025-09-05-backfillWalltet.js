@@ -4,7 +4,7 @@ const UserWallet = require("../src/models/user/userWalletSchema");
 const Vendor = require("../src/models/vendor/vendorSchema");
 const VendorWallet = require("../src/models/vendor/vendorWalletSchema");
 
-const MONGO_URI = "mongodb://127.0.0.1:27017/veltron"; 
+const MONGO_URI = "mongodb://127.0.0.1:27017/veltron";
 
 async function backfillUserWallets() {
   const users = await User.find({ wallet: { $exists: false } }); // or { wallet: null }
@@ -44,7 +44,10 @@ async function backfillVendorWallets() {
 
 async function run() {
   try {
-    await mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+    await mongoose.connect(MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
     console.log("Connected to DB");
 
     await backfillUserWallets();

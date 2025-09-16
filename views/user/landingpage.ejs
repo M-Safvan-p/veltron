@@ -66,7 +66,7 @@
             <h2 class="section-title">New Arrivals</h2>
             <div class="products-grid">
                 <% newArrivals.forEach(function(product) { %>
-                    <a href="/sale/<%= product._id %>" class="product-link">
+                    <a href="/product/<%= product._id %>" class="product-link">
                         <div class="product-card">
                             <img src="<%= product.variants[0].images[0].url %>" alt="<%= product.name %>" />
                             <h3 class="product-name">
@@ -100,7 +100,7 @@
             <h2 class="section-title">Trending</h2>
             <div class="products-grid">
                 <% trending.forEach(function(product) { %>
-                    <a href="/sale/<%= product._id %>" class="product-link">
+                    <a href="/product/<%= product._id %>" class="product-link">
                         <div class="product-card">
                             <img src="<%= product.variants[0].images[0].url %>" alt="<%= product.name %>" />
                             <h3 class="product-name">
@@ -126,7 +126,7 @@
             <h2 class="section-title">EXPLORE MORE</h2>
             <div class="explore-grid">
                 <% exploreMore.forEach(function(product) { %>
-                    <a href="/sale/<%= product._id %>" class="product-link">
+                    <a href="/product/<%= product._id %>" class="product-link">
                         <div class="product-card">
                             <img src="<%= product.variants[0].images[0].url %>" alt="<%= product.name %>" />
                             <h3 class="product-name">

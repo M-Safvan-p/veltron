@@ -1,7 +1,11 @@
-const multer = require('multer');
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const multer = require("multer");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("cloudinary").v2;
-const { CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } = require("../config/env")
+const {
+  CLOUDINARY_CLOUD_NAME,
+  CLOUDINARY_API_KEY,
+  CLOUDINARY_API_SECRET,
+} = require("../config/env");
 
 cloudinary.config({
   cloud_name: CLOUDINARY_CLOUD_NAME,
@@ -12,8 +16,8 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: 'veltron_uploads',
-    allowed_formats: ['jpg', 'png', 'jpeg', 'webp', 'heic', 'svg']
+    folder: "veltron_uploads",
+    allowed_formats: ["jpg", "png", "jpeg", "webp", "heic", "svg"],
   },
 });
 

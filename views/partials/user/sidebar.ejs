@@ -27,35 +27,35 @@
                 </a>
             </li>
             <li class="menu-item">
-                <a href="profile/address"
+                <a href="/profile/address"
                     class="menu-link <%= (typeof currentPage !== 'undefined' && currentPage === 'address') ? 'active' : '' %>">
                     <i class="fas fa-map-marker-alt menu-icon"></i>
                     <span class="menu-text">My Address</span>
                 </a>
             </li>
             <li class="menu-item">
-                <a href="/orders"
+                <a href="/profile/orders"
                     class="menu-link <%= (typeof currentPage !== 'undefined' && currentPage === 'orders') ? 'active' : '' %>">
                     <i class="fas fa-shopping-bag menu-icon"></i>
                     <span class="menu-text">My Order</span>
                 </a>
             </li>
             <li class="menu-item">
-                <a href="/wishlist"
+                <a href="/profile/wishlist"
                     class="menu-link <%= (typeof currentPage !== 'undefined' && currentPage === 'wishlist') ? 'active' : '' %>">
                     <i class="fas fa-heart menu-icon"></i>
                     <span class="menu-text">My Wishlist</span>
                 </a>
             </li>
             <li class="menu-item">
-                <a href="/wallet"
+                <a href="/profile/wallet"
                     class="menu-link <%= (typeof currentPage !== 'undefined' && currentPage === 'wallet') ? 'active' : '' %>">
                     <i class="fas fa-wallet menu-icon"></i>
                     <span class="menu-text">My Wallet</span>
                 </a>
             </li>
             <li class="menu-item">
-                <a href="/coupons"
+                <a href="/profile/coupons"
                     class="menu-link <%= (typeof currentPage !== 'undefined' && currentPage === 'coupons') ? 'active' : '' %>">
                     <i class="fas fa-ticket-alt menu-icon"></i>
                     <span class="menu-text">My Coupon</span>
@@ -78,7 +78,7 @@
                 </li>
                 <% } %>
                     <li class="menu-item">
-                        <a href="/referral"
+                        <a href="profile/referral"
                             class="menu-link <%= (typeof currentPage !== 'undefined' && currentPage === 'referral') ? 'active' : '' %>">
                             <i class="fas fa-users menu-icon"></i>
                             <span class="menu-text">Referral Code</span>
@@ -117,7 +117,6 @@ async function handleLogout(event) {
                         timer: 1500,
                         showConfirmButton: false
                     }).then(() => {
-                        // window.location.hre?f = "/"; // redirect to login or homepage
                         window.location.replace("/") // redirect to login or homepage
                     });
                 } 

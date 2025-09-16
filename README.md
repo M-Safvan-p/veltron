@@ -1,13 +1,14 @@
 # Veltron E-commerce 🛒
 
 Veltron is a full-stack **eCommerce web application** built using **Node.js, Express.js, EJS, and MongoDB**.  
-It provides **User, Vendor, and Admin roles** with powerful features like product management, cart, orders, vendor approval, and secure payment integration.  
+It provides **User, Vendor, and Admin roles** with powerful features like product management, cart, orders, vendor approval, and secure payment integration.
 
 ---
 
 ## 🚀 Features
 
 ### 👤 User
+
 - Signup / Login with authentication
 - Browse products with multiple color variants
 - Add to cart, wishlist, and checkout
@@ -15,12 +16,14 @@ It provides **User, Vendor, and Admin roles** with powerful features like produc
 - Wallet system with transaction history
 
 ### 🛍 Vendor
+
 - Vendor signup and login
 - Add and manage products (with color & stock)
 - Track orders and sales
 - Vendor approval by Admin
 
 ### 🛡 Admin
+
 - Dashboard with analytics (sales, orders, revenue)
 - Manage users, vendors, products, and orders
 - Approve/reject vendor requests
@@ -30,9 +33,10 @@ It provides **User, Vendor, and Admin roles** with powerful features like produc
 ---
 
 ## 🛠 Tech Stack
-- **Frontend:** EJS, CSS, JavaScript  
-- **Backend:** Node.js, Express.js  
-- **Database:** MongoDB  
-- **Architecture:** MVC  
+
+- **Frontend:** EJS, CSS, JavaScript
+- **Backend:** Node.js, Express.js
+- **Database:** MongoDB
+- **Architecture:** MVC
 
 ---

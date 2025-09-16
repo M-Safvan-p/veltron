@@ -1,4 +1,4 @@
-const sendEmail = require("../config/mailer"); 
+const sendEmail = require("../config/mailer");
 
 function generateOtp() {
   return Math.floor(1000 + Math.random() * 9000).toString();
@@ -8,7 +8,7 @@ function generateOtp() {
 async function sendVerificationEmail(email, otp) {
   const emailSent = await sendEmail({
     to: email,
-    subject: 'Verify your account',
+    subject: "Verify your account",
     text: `Your OTP is ${otp}`,
     html: `
     <div style="font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px;">
@@ -41,10 +41,9 @@ async function sendVerificationEmail(email, otp) {
 
 // otp for changing email
 async function sendChangeEmailOtp(newEmail, otp) {
-
   const emailSent = await sendEmail({
     to: newEmail,
-    subject: 'Verify your new email address',
+    subject: "Verify your new email address",
     text: `Your OTP for changing email is ${otp}`,
     html: `
       <div style="font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px;">

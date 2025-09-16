@@ -1,35 +1,47 @@
-const mongoose = require('mongoose');
-const Cart = require('../../models/user/cartSchema');
-const Product = require('../../models/common/productSchema');
+const mongoose = require("mongoose");
+const Cart = require("../../models/user/cartSchema");
+const Product = require("../../models/common/productSchema");
 
-const { success, error: errorResponse } = require('../../helpers/responseHelper');
-const Messages = require('../../constants/messages');
-const HttpStatus = require('../../constants/statusCodes');
+const { success, error: errorResponse } = require("../../helpers/responseHelper");
+const { filterValidCartItems } = require("../../helpers/cartUttils");
+const Messages = require("../../constants/messages");
+const HttpStatus = require("../../constants/statusCodes");
 
 const loadCart = async (req, res) => {
   try {
-    const cart = Cart.find({userId:req.session.user});
-    res.render("user/cart",{
-        cart,
-        layout:"layouts/userLayout",
-    })
+    const cart = await Cart.findOne({ userId: req.session.user }).populate("items.productId");
+    // remove blocked and out of stock
+    cart.items = filterValidCartItems(cart.items);
+
+    await cart.save();
+    console.log(cart);
+    res.render("user/cart", {
+      cart,
+      layout: "layouts/userLayout",
+    });
   } catch (error) {
-    
+    console.error("Load cart error:", error);
+    return res.redirect("/sale");
   }
 };
 
 const cartAdd = async (req, res) => {
   try {
     const { variantId, productId } = req.body;
-    if (!mongoose.Types.ObjectId.isValid(variantId)) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.CART_ADD_ERROR);
-    if (!mongoose.Types.ObjectId.isValid(productId)) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.CART_ADD_ERROR);
-    console.log('id..', variantId, productId);
+    if (!mongoose.Types.ObjectId.isValid(variantId))
+      return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.CART_ADD_FAILED);
+    if (!mongoose.Types.ObjectId.isValid(productId))
+      return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.CART_ADD_FAILED);
+    console.log("id..", variantId, productId);
 
     //product
     const product = await Product.findById(productId);
     const variant = product.variants.id(variantId);
-
-    console.log(product)
+    //check if blocked or out of stock
+    if (!product.isListed)
+      return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.PRODUCT_NOT_FOUND);
+    if (variant.stock < 1)
+      return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.PRODUCT_NOT_FOUND);
 
     //find cart
     let cart = await Cart.findOne({ userId: req.session.user });
@@ -38,30 +50,113 @@ const cartAdd = async (req, res) => {
     }
 
     //product index
-    const existingItem = cart.items.findIndex(item => item.productId.toString() === productId && item.selectedColor === variant.color);
+    const existingItem = cart.items.findIndex(
+      (item) => item.productId.toString() === productId && item.variantId.toString() === variantId
+    );
     if (existingItem != -1) {
-      existingItem.quantity += 1;
+      if (cart.items[existingItem].quantity > 4)
+        return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.CART_QUANTITY_LIMIT);
+      cart.items[existingItem].quantity += 1;
     } else {
       cart.items.push({
         productId,
-        ProductName:product.name,
+        productName: product.name,
         quantity: 1,
         price: product.price,
-        discountedPrice:product.discountedPrice,
-        image:variant.images[0].url,
+        discountedPrice: product.discountedPrice,
+        image: variant.images[0].url,
         selectedColor: variant.color,
+        variantId: variantId,
       });
     }
 
     await cart.save();
-    success(res, HttpStatus.OK, Messages.CART_ADD_SUCCESS);
+    console.log("item added in the cart", cart);
+    return success(res, HttpStatus.OK, Messages.CART_ADD_SUCCESS);
   } catch (error) {
-    console.log("Add address Error", error)
+    console.log("Add address Error", error);
     errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
+  }
+};
+
+const cartRemove = async (req, res) => {
+  try {
+    const id = req.params.id;
+    if (!mongoose.Types.ObjectId.isValid(id))
+      return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.CART_REMOVE_FAILED);
+    let cart = await Cart.findOne({ userId: req.session.user });
+    //find
+    cart.items = cart.items.filter((item) => item._id.toString() != id);
+    //save
+    await cart.save();
+    return success(res, HttpStatus.OK);
+  } catch (error) {
+    console.log("cart remove eroor", error);
+    errorResponse(res, HttpStatus.BAD_REQUEST, Messages.CART_REMOVE_FAILED);
+  }
+};
+
+const cartEmpty = async (req, res) => {
+  try {
+    const cart = await Cart.findOne({ userId: req.session.user });
+    cart.items = [];
+    await cart.save();
+    success(res, HttpStatus.OK);
+  } catch (error) {
+    console.log("cart remove eroor", error);
+    errorResponse(res, HttpStatus.BAD_REQUEST, Messages.CART_REMOVE_FAILED);
+  }
+};
+
+const cartIncrease = async (req, res) => {
+  try {
+    const id = req.params.id;
+    if (!mongoose.Types.ObjectId.isValid(id)) return errorResponse(res, HttpStatus.BAD_REQUEST);
+
+    const cart = await Cart.findOne({ userId: req.session.user }).populate("items.productId");
+    const item = cart.items.find((item) => item.variantId.toString() == id);
+
+    const product = item.productId;
+    const variant = product.variants.find((v) => v._id.toString() == id);
+    //limit
+    if (variant.stock <= item.quantity)
+      return errorResponse(res, HttpStatus.NOT_FOUND, Messages.CART_QUANTITY_LIMIT);
+    if (item.quantity >= 5)
+      return errorResponse(res, HttpStatus.NOT_FOUND, Messages.CART_QUANTITY_LIMIT);
+    item.quantity += 1;
+    //save
+    await cart.save();
+    success(res, HttpStatus.OK);
+  } catch (error) {
+    console.log("Quantity increase error", error);
+    errorResponse(res, HttpStatus.BAD_REQUEST);
+  }
+};
+
+const cartDecrease = async (req, res) => {
+  try {
+    const id = req.params.id;
+    if (!mongoose.Types.ObjectId.isValid(id)) return errorResponse(res, HttpStatus.BAD_REQUEST);
+
+    const cart = await Cart.findOne({ userId: req.session.user });
+    const item = cart.items.find((item) => item.variantId.toString() == id);
+    //limit
+    if (item.quantity <= 1) return errorResponse(res, HttpStatus.BAD_REQUEST);
+    item.quantity -= 1;
+    //save
+    await cart.save();
+    success(res, HttpStatus.OK);
+  } catch (error) {
+    console.log("Quantity decrese error", error);
+    errorResponse(res, HttpStatus.BAD_REQUEST);
   }
 };
 
 module.exports = {
   loadCart,
   cartAdd,
+  cartRemove,
+  cartEmpty,
+  cartIncrease,
+  cartDecrease,
 };

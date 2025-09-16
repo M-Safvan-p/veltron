@@ -34,6 +34,7 @@ const referralSchema = new mongoose.Schema(
       type: Date,
     },
   },
-  { timestamps: { createdAt: true, updatedAt: true } } );
+  { timestamps: { createdAt: true, updatedAt: true } }
+);
 
 module.exports = mongoose.model("Referral", referralSchema);

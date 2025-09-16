@@ -1,19 +1,15 @@
 // Navigation functionality
 document.querySelectorAll(".nav-item").forEach((item) => {
   item.addEventListener("click", function () {
-    document
-      .querySelectorAll(".nav-item")
-      .forEach((nav) => nav.classList.remove("active"));
+    document.querySelectorAll(".nav-item").forEach((nav) => nav.classList.remove("active"));
     this.classList.add("active");
   });
 });
 
 // Account button functionality
-document
-  .querySelector(".account-btn:not(.logout-btn)")
-  .addEventListener("click", function () {
-    alert("Account settings clicked!");
-  });
+document.querySelector(".account-btn:not(.logout-btn)").addEventListener("click", function () {
+  alert("Account settings clicked!");
+});
 
 // Logout button functionality
 document.querySelector(".logout-btn").addEventListener("click", function () {

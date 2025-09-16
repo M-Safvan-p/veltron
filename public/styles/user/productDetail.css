@@ -1,194 +1,197 @@
 /* Ensure main content has padding and margin to fit within layout */
 .main-content {
-    padding-top: 2rem;
-    padding-bottom: 3rem;
-    min-height: calc(100vh - 200px); /* Adjust based on header/footer height */
+  padding-top: 2rem;
+  padding-bottom: 3rem;
+  min-height: calc(100vh - 200px); /* Adjust based on header/footer height */
 }
 
 /* Container for product detail page */
 .product-detail-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 15px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
 }
 
 /* Product image styling */
 .product-image {
-    max-height: 450px;
-    width: 100%;
-    object-fit: cover;
-    border-radius: 12px;
-    transition: transform 0.3s ease;
+  max-height: 450px;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+  transition: transform 0.3s ease;
 }
 
 .product-image:hover {
-    transform: scale(1.02);
+  transform: scale(1.02);
 }
 
 /* Thumbnail images */
 .thumbnail-image {
-    width: 90px;
-    height: 90px;
-    object-fit: cover;
-    border-radius: 8px;
-    cursor: pointer;
-    border: 2px solid transparent;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .thumbnail-image:hover,
 .thumbnail-image.active {
-    border-color: #0d6efd;
-    transform: scale(1.08);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  border-color: #0d6efd;
+  transform: scale(1.08);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* Variant options */
 .variant-option {
-    padding: 12px 24px;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    cursor: pointer;
-    background: #ffffff;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    text-align: center;
+  padding: 12px 24px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #ffffff;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  text-align: center;
 }
 
 .variant-option:hover {
-    background-color: #f1f3f5 !important;
-    transform: translateY(-3px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #f1f3f5 !important;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .variant-option.active {
-    border-color: #0d6efd !important;
-    background-color: #e6f0fa !important;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  border-color: #0d6efd !important;
+  background-color: #e6f0fa !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* Product cards for related products */
 .product-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-    border: none;
-    border-radius: 12px;
-    overflow: hidden;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  cursor: pointer;
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 .product-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(-8px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 /* Price styling */
 .price {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #0d6efd;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0d6efd;
 }
 
 /* Quantity input */
 .quantity-input {
-    width: 100px;
-    border-radius: 8px;
-    border: 1px solid #ced4da;
-    padding: 8px;
-    font-size: 1rem;
+  width: 100px;
+  border-radius: 8px;
+  border: 1px solid #ced4da;
+  padding: 8px;
+  font-size: 1rem;
 }
 
 /* Buttons */
 .btn-primary {
-    background-color: #0d6efd;
-    border-color: #0d6efd;
-    border-radius: 8px;
-    padding: 12px 24px;
-    transition: all 0.3s ease;
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  border-radius: 8px;
+  padding: 12px 24px;
+  transition: all 0.3s ease;
 }
 
 .btn-primary:hover {
-    background-color: #005cbf;
-    border-color: #005cbf;
-    transform: translateY(-2px);
+  background-color: #005cbf;
+  border-color: #005cbf;
+  transform: translateY(-2px);
 }
 
 .btn-outline-danger {
-    border-radius: 8px;
-    padding: 12px 16px;
-    transition: all 0.3s ease;
+  border-radius: 8px;
+  padding: 12px 16px;
+  transition: all 0.3s ease;
 }
 
 .btn-outline-danger:hover {
-    background-color: #dc3545;
-    color: #fff;
-    transform: translateY(-2px);
+  background-color: #dc3545;
+  color: #fff;
+  transform: translateY(-2px);
 }
 
 /* Navigation tabs */
 .nav-tabs {
-    border-bottom: 2px solid #e0e0e0;
+  border-bottom: 2px solid #e0e0e0;
 }
 
 .nav-tabs .nav-link {
-    color: #495057;
-    font-weight: 500;
-    padding: 12px 24px;
-    border-radius: 8px 8px 0 0;
-    transition: all 0.3s ease;
+  color: #495057;
+  font-weight: 500;
+  padding: 12px 24px;
+  border-radius: 8px 8px 0 0;
+  transition: all 0.3s ease;
 }
 
 .nav-tabs .nav-link.active {
-    background-color: #0d6efd;
-    color: #fff;
-    border-color: #0d6efd;
+  background-color: #0d6efd;
+  color: #fff;
+  border-color: #0d6efd;
 }
 
 .tab-content {
-    border: 1px solid #e0e0e0;
-    border-radius: 0 8px 8px 8px;
-    padding: 1.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 0 8px 8px 8px;
+  padding: 1.5rem;
 }
 
 /* Breadcrumb */
 .breadcrumb-item a {
-    color: #0d6efd;
-    text-decoration: none;
-    transition: color 0.3s ease;
+  color: #0d6efd;
+  text-decoration: none;
+  transition: color 0.3s ease;
 }
 
 .breadcrumb-item a:hover {
-    color: #005cbf;
+  color: #005cbf;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    .product-detail-container {
-        padding: 0 10px;
-    }
+  .product-detail-container {
+    padding: 0 10px;
+  }
 
-    .product-image {
-        max-height: 350px;
-    }
+  .product-image {
+    max-height: 350px;
+  }
 
-    .thumbnail-image {
-        width: 70px;
-        height: 70px;
-    }
+  .thumbnail-image {
+    width: 70px;
+    height: 70px;
+  }
 
-    .variant-option {
-        padding: 10px 18px;
-    }
+  .variant-option {
+    padding: 10px 18px;
+  }
 
-    .btn-primary, .btn-outline-danger {
-        padding: 10px 16px;
-    }
+  .btn-primary,
+  .btn-outline-danger {
+    padding: 10px 16px;
+  }
 
-    .price {
-        font-size: 1.8rem;
-    }
+  .price {
+    font-size: 1.8rem;
+  }
 
-    .quantity-input {
-        width: 80px;
-    }
+  .quantity-input {
+    width: 80px;
+  }
 }

@@ -11,13 +11,13 @@ document.querySelectorAll(".toggle-switch").forEach((toggle) => {
 
     const statusBadge = this.closest("tr").querySelector(".status-badge");
     statusBadge.textContent = newStatus ? "Listed" : "Unlisted";
-    statusBadge.className = `status-badge ${
-      newStatus ? "status-listed" : "status-unlisted"
-    }`;
+    statusBadge.className = `status-badge ${newStatus ? "status-listed" : "status-unlisted"}`;
 
     // Persist to backend
     try {
-      await axios.patch(`/admin/category/${categoryId}`, { isListed: newStatus });
+      await axios.patch(`/admin/category/${categoryId}`, {
+        isListed: newStatus,
+      });
     } catch (error) {
       console.error("Failed to update status:", error);
       Swal.fire({
@@ -39,12 +39,12 @@ document.querySelectorAll(".toggle-switch").forEach((toggle) => {
 
           const statusBadge = this.closest("tr").querySelector(".status-badge");
           statusBadge.textContent = newStatus ? "Listed" : "Unlisted";
-          statusBadge.className = `status-badge ${
-            newStatus ? "status-listed" : "status-unlisted"
-          }`;
+          statusBadge.className = `status-badge ${newStatus ? "status-listed" : "status-unlisted"}`;
 
           try {
-            await axios.patch(`/admin/category/${categoryId}`, { isListed: newStatus});
+            await axios.patch(`/admin/category/${categoryId}`, {
+              isListed: newStatus,
+            });
           } catch (error) {
             Swal.fire({
               icon: "error",
@@ -74,9 +74,7 @@ document.querySelectorAll(".toggle-switch").forEach((toggle) => {
       this.classList.toggle("active", isActive);
       this.classList.toggle("inactive", !isActive);
       statusBadge.textContent = isActive ? "Listed" : "Unlisted";
-      statusBadge.className = `status-badge ${
-        isActive ? "status-listed" : "status-unlisted"
-      }`;
+      statusBadge.className = `status-badge ${isActive ? "status-listed" : "status-unlisted"}`;
     }
   });
 });
