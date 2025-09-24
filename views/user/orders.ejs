@@ -1,0 +1,750 @@
+<style>
+    .main-content {
+        background-color: white;
+        width: 100%;
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    .profile-page {
+        display: flex;
+        gap: 30px;
+        align-items: flex-start;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .sidebar {
+        flex-shrink: 0;
+    }
+
+    .profile-container {
+        flex: 1;
+        max-width: 800px;
+        width: 100%;
+        margin: 0;
+        padding: 18px;
+    }
+
+    .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 25px;
+        font-size: 14px;
+        color: #6c757d;
+    }
+
+    .breadcrumb a {
+        color: #6c757d;
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+
+    .breadcrumb a:hover {
+        color: #212529;
+    }
+
+    .breadcrumb-separator {
+        color: #adb5bd;
+    }
+
+    .welcome-section {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .welcome-title {
+        font-size: 22px;
+        color: #212529;
+        font-weight: 400;
+        letter-spacing: 0.5px;
+    }
+
+    .orders-section {
+        width: 100%;
+    }
+
+    .orders-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .order-card {
+        background: white;
+        border-radius: 14px;
+        padding: 25px;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e9ecef;
+        transition: all 0.2s ease;
+    }
+
+    .order-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 18px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #f1f3f4;
+    }
+
+    .order-info h3.order-id {
+        font-size: 18px;
+        color: #212529;
+        font-weight: 600;
+        margin: 0 0 5px 0;
+    }
+
+    .order-date {
+        font-size: 13px;
+        color: #6c757d;
+        margin: 0;
+    }
+
+    .order-status-section {
+        text-align: right;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Processing */
+    .status-processing {
+        background: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeeba;
+    }
+
+    /* Shipped */
+    .status-shipped {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    /* Completed */
+    .status-completed {
+        background: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+    }
+
+    .status-cancelled {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+
+    /* Failed */
+    .status-failed {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+
+    .order-details {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .order-summary {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        min-width: 200px;
+    }
+
+    .summary-label {
+        font-size: 14px;
+        color: #495057;
+        font-weight: 500;
+    }
+
+    .summary-value {
+        font-size: 14px;
+        color: #212529;
+        font-weight: 600;
+    }
+
+    .products-section {
+        margin-top: 8px;
+    }
+
+    .products-title {
+        font-size: 16px;
+        color: #495057;
+        font-weight: 600;
+        margin-bottom: 12px;
+    }
+
+    .products-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .product-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 12px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        border: 1px solid #e9ecef;
+    }
+
+    .product-image {
+        width: 50px;
+        height: 50px;
+        border-radius: 8px;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+
+    .product-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .product-details {
+        flex: 1;
+    }
+
+    .product-name {
+        font-size: 14px;
+        color: #212529;
+        font-weight: 500;
+        margin: 0 0 4px 0;
+    }
+
+    .product-meta {
+        font-size: 12px;
+        color: #6c757d;
+        margin: 0;
+    }
+
+    .product-total {
+        text-align: right;
+    }
+
+    .product-price {
+        font-size: 14px;
+        color: #212529;
+        font-weight: 600;
+    }
+
+    .order-actions {
+        margin-top: 18px;
+        padding-top: 15px;
+        border-top: 1px solid #f1f3f4;
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+    }
+
+    .invoice-button,
+    .view-details-button {
+        background: #212529;
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 7px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        text-decoration: none;
+        display: inline-block;
+        min-width: 140px;
+        text-align: center;
+    }
+
+    .view-details-button {
+        background: #6c757d;
+    }
+
+    .invoice-button:hover,
+    .view-details-button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(33, 37, 41, 0.2);
+    }
+
+    .invoice-button:hover {
+        background: #495057;
+    }
+
+    .view-details-button:hover {
+        background: #5c636a;
+    }
+
+    .invoice-button:active,
+    .view-details-button:active {
+        transform: translateY(0);
+    }
+
+    .empty-orders {
+        text-align: center;
+        padding: 60px 20px;
+        background: white;
+        border-radius: 14px;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e9ecef;
+    }
+
+    .empty-orders-icon {
+        font-size: 64px;
+        margin-bottom: 20px;
+    }
+
+    .empty-title {
+        font-size: 24px;
+        color: #212529;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .empty-message {
+        font-size: 16px;
+        color: #6c757d;
+        margin-bottom: 25px;
+        line-height: 1.5;
+    }
+
+    .shop-now-button {
+        background: #212529;
+        color: white;
+        border: none;
+        padding: 14px 35px;
+        border-radius: 7px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .shop-now-button:hover {
+        background: #495057;
+        transform: translateY(-1px);
+    }
+
+    .profile-page .profile-sidebar {
+        position: static !important;
+        left: auto !important;
+        width: 320px;
+        height: fit-content;
+        border-radius: 16px;
+        overflow: hidden;
+        transform: none !important;
+    }
+
+    /* Pagination Container - Fixed */
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 30px 0;
+        padding: 20px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border: 1px solid #f0f0f0;
+    }
+
+    .pagination {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .pagination-controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    /* Pagination Buttons - Fixed */
+    .pagination-btn {
+        margin-top: 15px;
+        width: 36px;
+        height: 36px;
+        border: 2px solid #ddd;
+        background: white;
+        border-radius: 6px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        color: #333;
+        transition: all 0.3s ease;
+        user-select: none;
+        font-weight: 500;
+        text-decoration: none;
+        box-sizing: border-box;
+    }
+
+    .pagination-btn:hover:not(:disabled) {
+        background-color: #f8f9fa;
+        border-color: #333;
+        transform: translateY(-1px);
+    }
+
+    .pagination-btn:focus {
+        outline: 2px solid #333;
+        outline-offset: 2px;
+    }
+
+    /* Active Page Button */
+    .pagination-btn.active {
+        background-color: #333;
+        color: white;
+        border-color: #333;
+    }
+
+    .pagination-btn.active:hover {
+        background-color: #555;
+        transform: translateY(-1px);
+    }
+
+    /* Disabled Buttons */
+    .pagination-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .pagination-btn:disabled:hover {
+        background-color: white;
+        border-color: #ddd;
+        transform: none;
+    }
+
+    /* Previous/Next Buttons */
+    .pagination-btn.prev,
+    .pagination-btn.next {
+        background-color: #333;
+        color: white;
+        border-color: #333;
+        padding: 0 16px;
+        width: auto;
+        font-weight: 500;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .pagination-btn.prev:hover:not(:disabled),
+    .pagination-btn.next:hover:not(:disabled) {
+        background-color: #555;
+    }
+
+    /* Ellipsis */
+    .pagination-ellipsis {
+        color: #999;
+        padding: 8px 4px;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        height: 36px;
+    }
+
+    @media (max-width: 768px) {
+        .order-summary {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .summary-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 4px;
+            padding: 6px 0;
+            min-width: auto;
+            width: 100%;
+        }
+
+        .order-header {
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .order-status-section {
+            text-align: left;
+            width: 100%;
+        }
+
+        .product-item {
+            flex-direction: column;
+            text-align: center;
+            gap: 10px;
+        }
+
+        .product-details {
+            text-align: center;
+        }
+
+        .order-actions {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .invoice-button,
+        .view-details-button {
+            width: 100%;
+        }
+
+        .pagination-container {
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .pagination-controls {
+            gap: 6px;
+        }
+
+        .pagination-btn {
+            width: 32px;
+            height: 32px;
+            font-size: 13px;
+        }
+
+        .pagination-btn.prev,
+        .pagination-btn.next {
+            padding: 0 12px;
+            font-size: 11px;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .profile-container {
+            padding: 12px;
+        }
+
+        .order-card {
+            padding: 20px;
+            border-radius: 11px;
+        }
+
+        .welcome-title {
+            font-size: 20px;
+        }
+
+        .profile-page {
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .sidebar .profile-sidebar {
+            width: 100%;
+        }
+
+        .breadcrumb {
+            font-size: 13px;
+        }
+
+        .order-info h3.order-id {
+            font-size: 16px;
+        }
+
+        .empty-orders {
+            padding: 40px 15px;
+        }
+
+        .empty-orders-icon {
+            font-size: 48px;
+        }
+
+        .empty-title {
+            font-size: 20px;
+        }
+
+        .empty-message {
+            font-size: 14px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .pagination-container {
+            padding: 10px;
+        }
+
+        .pagination-controls {
+            gap: 4px;
+        }
+
+        .pagination-btn {
+            width: 30px;
+            height: 30px;
+            font-size: 12px;
+        }
+
+        .pagination-btn.prev,
+        .pagination-btn.next {
+            padding: 0 10px;
+            font-size: 10px;
+        }
+    }
+</style>
+
+<div class="profile-page">
+    <aside class="sidebar">
+        <%- include('../partials/user/sidebar') %>
+    </aside>
+    <div class="profile-container">
+        <div class="breadcrumb">
+            <a href="/profile">profile</a>
+            <span class="breadcrumb-separator">></span>
+            <span>my orders</span>
+        </div>
+
+        <div class="welcome-section">
+            <h1 class="welcome-title">My Orders</h1>
+        </div>
+
+        <section class="orders-section">
+            <% if (orders && orders.length> 0) { %>
+                <div class="orders-container">
+                    <% orders.forEach(order=> { %>
+                        <div class="order-card">
+                            <div class="order-header">
+                                <div class="order-info">
+                                    <h3 class="order-id">Order #<%= order.orderId %>
+                                    </h3>
+                                    <p class="order-date">
+                                        <%= new Date(order.invoiceDate).toLocaleDateString('en-IN', { year: 'numeric' ,
+                                            month: 'long' , day: 'numeric' }) %>
+                                    </p>
+                                </div>
+                                <div class="order-status-section">
+                                    <span class="status-badge status-<%= order.orderStatus %>">
+                                        <%= order.orderStatus.charAt(0).toUpperCase() + order.orderStatus.slice(1) %>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="order-details">
+                                <div class="products-section">
+                                    <h4 class="products-title">Items Ordered</h4>
+                                    <div class="products-list">
+                                        <% order.products.forEach(product=> { %>
+                                            <div class="product-item">
+                                                <div class="product-image">
+                                                    <img src="<%= product.image %>" alt="<%= product.name %>"
+                                                        onerror="this.src='/images/default-product.jpg'">
+                                                </div>
+                                                <div class="product-details">
+                                                    <p class="product-name">
+                                                        <%= product.name %>
+                                                    </p>
+                                                    <p class="product-meta">Qty: <%= product.quantity %> × ₹<%=
+                                                                product.priceAtPurchase.toLocaleString('en-IN') %>
+                                                    </p>
+                                                </div>
+                                                <div class="product-total">
+                                                    <span class="product-price">₹<%= (product.quantity *
+                                                            product.priceAtPurchase).toLocaleString('en-IN') %></span>
+                                                </div>
+                                            </div>
+                                            <% }) %>
+                                    </div>
+                                </div>
+                                <div class="order-summary">
+                                    <div class="summary-item">
+                                        <span class="summary-label">Total Amount</span>
+                                        <span class="summary-value">₹<%= order.totalAmount.toLocaleString('en-IN') %>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="order-actions">
+                                <a href="/profile/orders/<%= order.orderId %>" class="view-details-button">
+                                    View Details
+                                </a>
+                                <a href="/profile/orders/invoice/<%= order.orderId %>" class="invoice-button"
+                                    target="_blank">
+                                    Download Invoice
+                                </a>
+                            </div>
+                        </div>
+                        <% }) %>
+                </div>
+                <% } else { %>
+                    <div class="empty-orders">
+                        <div class="empty-orders-icon">📦</div>
+                        <h3 class="empty-title">No Orders Yet</h3>
+                        <p class="empty-message">You haven't placed any orders yet. Start shopping to see your orders
+                            here!</p>
+                        <a href="/sale" class="shop-now-button">Start Shopping</a>
+                    </div>
+                    <% } %>
+        </section>
+        <!-- EJS Pagination Code - Add this after the closing </section> tag and before closing </div> -->
+        <% if (orders && orders.length> 0) { %>
+            <!-- Pagination -->
+            <div class="pagination">
+                <div class="pagination-controls">
+                    <button class="pagination-btn" <%=currentPage==1 ? 'disabled aria-disabled="true"' : '' %>
+                        onclick="changePage(<%= currentPage - 1 %>)" aria-label="Previous page">
+                            <i class="fas fa-chevron-left" aria-hidden="true"></i>
+                    </button>
+
+                    <% for (let i=1; i <=totalPages; i++) { %>
+                        <button class="pagination-btn <%= i === currentPage ? 'active' : '' %>"
+                            aria-current="<%= i === currentPage ? 'page' : 'false' %>" onclick="changePage(<%= i %>)"
+                            aria-label="Page <%= i %>">
+                            <%= i %>
+                        </button>
+                        <% } %>
+
+                            <button class="pagination-btn" <%=currentPage==totalPages ? 'disabled aria-disabled="true"'
+                                : '' %>
+                                onclick="changePage(<%= currentPage + 1 %>)" aria-label="Next page">
+                                    <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                            </button>
+                </div>
+            </div>
+            <% } %>
+
+    </div>
+</div>
+<script>
+    function changePage(page) {
+        const url = new URL(window.location);
+        url.searchParams.set('page', page);
+        window.location.href = url.toString();
+    }
+</script>
