@@ -27,21 +27,17 @@ const userSchema = new Schema(
     },
     profileImage: {
       type: String,
-      default:
-        "https://res.cloudinary.com/ddj9jtbof/image/upload/c_thumb,g_face,r_max,w_200,h_200/v1757400110/avatar_aogxki.jpg",
+      default: "https://res.cloudinary.com/ddj9jtbof/image/upload/c_thumb,g_face,r_max,w_200,h_200/v1757400110/avatar_aogxki.jpg",
     },
     isDeleted: { type: Boolean, default: false },
     isBlocked: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },
-
     isReferred: { type: Boolean, default: false },
     referralCode: { type: String, unique: true, sparse: true },
     referredUsers: [{ type: Schema.Types.ObjectId, ref: "User" }],
-
     googleId: { type: String, unique: true, sparse: true },
-
     wallet: { type: Schema.Types.ObjectId, ref: "UserWallet" },
-
+    authProvider: { type: String, enum: ["local", "google"], required: true },
     searchHistory: [
       {
         category: { type: Schema.Types.ObjectId, ref: "Category" },

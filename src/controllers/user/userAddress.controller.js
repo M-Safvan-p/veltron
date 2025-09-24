@@ -98,8 +98,7 @@ const loadEditAddress = async (req, res) => {
 const editAddress = async (req, res) => {
   try {
     const addressId = req.params.id;
-    if (!mongoose.Types.ObjectId.isValid(addressId))
-      return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.ADDRESS_NOT_FOUND);
+    if (!mongoose.Types.ObjectId.isValid(addressId)) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.ADDRESS_NOT_FOUND);
 
     const data = req.body;
 
@@ -110,7 +109,7 @@ const editAddress = async (req, res) => {
           "address.$.fullName": data.name,
           "address.$.email": data.email,
           "address.$.phone": data.phoneNumber,
-          "address.$.fullAddress": data.addressLine1,
+          "address.$.fullAddress": data.fullAddress,
           "address.$.district": data.district,
           "address.$.state": data.state,
           "address.$.city": data.city,
@@ -122,6 +121,28 @@ const editAddress = async (req, res) => {
     success(res, HttpStatus.OK, Messages.ADDRESS_UPDATED);
   } catch (error) {
     console.log("Error editing address", error);
+    errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
+  }
+};
+
+const setDefaultAddress = async (req, res) => {
+  try {
+    const addressId = req.params.id;
+    if (!mongoose.Types.ObjectId.isValid(addressId)) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.ADDRESS_NOT_FOUND);
+
+    const fullAddress = await Address.findOne({ userId: req.session.user });
+    const subAddress = fullAddress.address.id(addressId);
+    if (!subAddress) return res.redirect("/profile/address");
+    //reset all default false
+    fullAddress.address.forEach((addr) => {
+      addr.isDefault = false;
+    });
+    //set default
+    subAddress.isDefault = true;
+    fullAddress.save();
+    success(res, HttpStatus.OK);
+  } catch (error) {
+    console.log("Error default address", error);
     errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
   }
 };
@@ -150,5 +171,6 @@ module.exports = {
   addAddress,
   loadEditAddress,
   editAddress,
+  setDefaultAddress,
   deleteAddress,
 };

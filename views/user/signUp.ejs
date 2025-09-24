@@ -78,9 +78,12 @@
     <script src="/js/utils/formValidator.js"></script>
 
     <script>
-
         document.getElementById("signUpForm").addEventListener("submit", async function (e) {
             e.preventDefault();
+
+            const signUpButton = this.querySelector("button[type='submit']");
+            signUpButton.disabled = true;
+            signUpButton.innerText = "Signing up..."; 
 
             const fullName = document.getElementById("fullName").value;
             const email = document.getElementById("email").value;
@@ -96,10 +99,10 @@
                     icon: 'error',
                     title: 'Validation Error',
                     html: messages.join('<br>'),
-                    customClass: {
-                        confirmButton: "swal-confirm-black"
-                    }
+                    customClass: { confirmButton: "swal-confirm-black" }
                 });
+                signUpButton.disabled = false;
+                signUpButton.innerText = "Sign Up"; 
                 return;
             }
 
@@ -132,9 +135,13 @@
                     title: 'Error',
                     text: error.response?.data?.message || "Something went wrong"
                 });
+            } finally {
+                signUpButton.disabled = false;
+                signUpButton.innerText = "Sign Up";
             }
         });
     </script>
+
 </body>
 
 </html>

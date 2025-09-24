@@ -109,7 +109,7 @@
             Swal.fire({
                 icon: 'error',
                 title: 'Oops!',
-                text: 'Failed to increase quantity.'
+                text: error.response.data.message || 'Failed to increase quantity.'
             });
         }
     }

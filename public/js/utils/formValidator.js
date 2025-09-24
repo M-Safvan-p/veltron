@@ -60,9 +60,7 @@ function validateLogInForm(email, password) {
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
   if (!password || !passwordRegex.test(password)) {
     isValid = false;
-    messages.push(
-      "Password must be at least 8 characters long, include uppercase and lowercase letters, a number, and a special character."
-    );
+    messages.push("Password must be at least 8 characters long, include uppercase and lowercase letters, a number, and a special character.");
   }
 
   return { isValid, messages };
@@ -77,9 +75,7 @@ function validateCategory(categoryName, description, isListed) {
   const nameRegex = /^[A-Za-z ]{3,50}$/;
   if (!categoryName || !nameRegex.test(categoryName.trim())) {
     isValid = false;
-    messages.push(
-      "Category Name must be 3–50 characters long and contain only letters and spaces."
-    );
+    messages.push("Category Name must be 3–50 characters long and contain only letters and spaces.");
   }
 
   // Description: optional, but if given must be 5–200 chars
@@ -125,11 +121,7 @@ function validateProductForm(data) {
   }
 
   // Discounted Price (optional, but must be less than price if provided)
-  if (
-    data.discountedPrice !== undefined &&
-    data.discountedPrice !== null &&
-    data.discountedPrice !== ""
-  ) {
+  if (data.discountedPrice !== undefined && data.discountedPrice !== null && data.discountedPrice !== "") {
     const discountedPrice = parseFloat(data.discountedPrice);
     if (isNaN(discountedPrice) || discountedPrice < 0) {
       isValid = false;
@@ -163,9 +155,7 @@ function validateProductForm(data) {
         const normalizedColor = variant.color.trim().toLowerCase();
         if (variantColors.includes(normalizedColor)) {
           isValid = false;
-          messages.push(
-            `Variant ${index + 1}: Color "${variant.color}" already exists. Each variant must have a unique color.`
-          );
+          messages.push(`Variant ${index + 1}: Color "${variant.color}" already exists. Each variant must have a unique color.`);
         } else {
           variantColors.push(normalizedColor);
         }

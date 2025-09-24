@@ -93,7 +93,7 @@
 
     .address-header {
         display: flex;
-        justify-content: between;
+        justify-content: space-between;
         align-items: flex-start;
         margin-bottom: 12px;
     }
@@ -134,6 +134,25 @@
         text-transform: uppercase;
         letter-spacing: 0.5px;
         font-weight: 500;
+    }
+
+    .set-default-btn {
+        background: #e9ecef;
+        color: #495057;
+        border: none;
+        font-size: 10px;
+        padding: 6px 12px;
+        border-radius: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .set-default-btn:hover {
+        background: #dee2e6;
+        color: #212529;
     }
 
     .address-buttons {
@@ -297,7 +316,9 @@
                                     <% if (addr.isDefault) { %>
                                         <span class="default-badge">Default</span>
                                         <% } else { %>
-                                            <span></span>
+                                            <button class="set-default-btn"
+                                                onclick="setDefaultAddress('<%= doc._id %>', '<%= addr._id %>')">Set
+                                                Default</button>
                                             <% } %>
 
                                                 <div class="address-buttons">
@@ -323,9 +344,8 @@
                                         <% } %>
             </div>
 
-
             <div class="add-address-section">
-                <% if (addresses && addresses[0] && addresses[0].address.length < 4) { %>
+                <% if (!addresses || addresses.length===0 || (addresses[0] && addresses[0].address.length < 4)) { %>
                     <a href="/profile/address/add" class="add-address-btn">Add New Address</a>
                     <% } %>
             </div>
@@ -333,13 +353,31 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     function editAddress(docId, addrId) {
         window.location.href = `/profile/address/edit/${addrId}`;
     }
 
+    async function setDefaultAddress(docId, addrId) {
+        try {
+            await axios.patch(`/profile/address/${addrId}`);
+            window.location.reload();
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Failed to set default address',
+                text: 'Something went wrong. Please try again later.',
+                confirmButtonText: 'OK'
+            });
+            console.error('Error setting default address:', error);
+        }
+    }
+
+
     async function deleteAddress(docId, addrId) {
-        Swal.fire({
+        const result = await Swal.fire({
             title: 'Are you sure?',
             text: "This address will be deleted permanently.",
             icon: 'warning',
@@ -348,33 +386,39 @@
             cancelButtonColor: '#3085d6',
             confirmButtonText: 'Yes, delete it!',
             cancelButtonText: 'Cancel'
-        }).then(async (result) => {
-            if (result.isConfirmed) {
-                try {
-                    await axios.delete(`/profile/address/${addrId}`);
-
-                    Swal.fire({
-                        title: 'Deleted!',
-                        text: 'Your address has been deleted.',
-                        icon: 'success',
-                        timer: 1500,
-                        showConfirmButton: false
-                    });
-
-                    // Reload after short delay
-                    setTimeout(() => window.location.reload(), 1500);
-
-                } catch (error) {
-                    console.error('Error deleting address:', error);
-                    Swal.fire({
-                        title: 'Error!',
-                        text: 'Failed to delete address. Please try again.',
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
-                }
-            }
         });
-    }
 
+        if (result.isConfirmed) {
+            try {
+                await axios.delete(`/profile/address/${addrId}`);
+
+                Swal.fire({
+                    title: 'Deleted!',
+                    text: 'Your address has been deleted.',
+                    icon: 'success',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+
+                // Reload after short delay
+                setTimeout(() => window.location.reload(), 1500);
+
+            } catch (error) {
+                console.error('Error deleting address:', error);
+
+                let errorMessage = 'Failed to delete address. Please try again.';
+
+                if (error.response && error.response.data && error.response.data.message) {
+                    errorMessage = error.response.data.message;
+                }
+
+                Swal.fire({
+                    title: 'Error!',
+                    text: errorMessage,
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        }
+    }
 </script>

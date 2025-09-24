@@ -51,8 +51,7 @@ const addCategory = async (req, res) => {
     const normalised = name.trim().toLowerCase();
 
     const findCategory = await Category.findOne({ name: normalised });
-    if (findCategory)
-      return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.CATEGORY_ALREADY_EXISTS);
+    if (findCategory) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.CATEGORY_ALREADY_EXISTS);
 
     //validationn
     const errorMessage = formValidator.validateCategory(normalised, description, isListed);

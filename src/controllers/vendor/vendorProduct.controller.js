@@ -7,20 +7,26 @@ const Messages = require("../../constants/messages");
 const HttpStatus = require("../../constants/statusCodes");
 
 const loadProducts = async (req, res) => {
+  let vendorId = req.session.vendor;
   let page = parseInt(req.query.page) || 1;
   let limit = 5;
   let skip = (page - 1) * limit;
+  // sort
+  const sortOption = req.query.sort === "oldest" ? 1 : -1;
+  // filter
+  let matchStage = { vendorId: vendorId };
+  if (req.query.status) {
+    matchStage["products.orderStatus"] = req.query.status;
+  }
+  if (req.query.category) {
+    matchStage["category"] = req.query.category;
+  }
   // total products
-  const totalProducts = await Product.countDocuments({
-    vendorId: req.session.vendor,
-  });
+  const totalProducts = await Product.countDocuments(matchStage);
   // products
-  const products = await Product.find({ vendorId: req.session.vendor })
-    .sort({ createdAt: -1 })
-    .skip(skip)
-    .limit(limit)
-    .populate("category")
-    .lean();
+  const products = await Product.find(matchStage).sort({ createdAt: sortOption }).skip(skip).limit(limit).populate("category").lean();
+  // category
+  const categories = await Category.find().lean();
 
   res.render("vendor/loadProducts", {
     layout: "layouts/vendorLayout",
@@ -30,6 +36,9 @@ const loadProducts = async (req, res) => {
     currentPage: page,
     totalPages: Math.ceil(totalProducts / limit),
     totalProducts,
+    sort: req.query.sort || "newest",
+    status: req.query.status || "",
+    categories,
   });
 };
 
@@ -57,16 +66,7 @@ const loadAddProduct = async (req, res) => {
 
 const addProduct = async (req, res) => {
   try {
-    const {
-      name,
-      description,
-      price,
-      discountedPrice,
-      isListed,
-      category,
-      variants,
-      specifications,
-    } = req.body;
+    const { name, description, price, discountedPrice, isListed, category, variants, specifications } = req.body;
 
     // Validate product
     const find = await Product.findOne({ name });
@@ -77,11 +77,7 @@ const addProduct = async (req, res) => {
 
     // Normalize variants
     let normalizedVariants = variants;
-    if (
-      normalizedVariants &&
-      typeof normalizedVariants === "object" &&
-      !Array.isArray(normalizedVariants)
-    ) {
+    if (normalizedVariants && typeof normalizedVariants === "object" && !Array.isArray(normalizedVariants)) {
       normalizedVariants = Object.keys(normalizedVariants)
         .sort()
         .map((key) => normalizedVariants[key]);
@@ -133,6 +129,7 @@ const loadEditProduct = async (req, res) => {
       vendor: req.vendor,
       categories,
       product,
+      isEdit: true,
     });
   } catch (error) {
     console.error("Error loading product edit page:", error);
@@ -143,55 +140,49 @@ const loadEditProduct = async (req, res) => {
 const editProduct = async (req, res) => {
   try {
     const productId = req.params.id;
-    if (!mongoose.Types.ObjectId.isValid(productId))
+
+    // 1️⃣ Validate product ID
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
       return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.INVALID_PRODUCT_ID);
+    }
 
     const vendorId = req.session.vendor;
-    if (!vendorId) return errorResponse(res, HttpStatus.UNAUTHORIZED, Messages.VENDOR_NOT_FOUND);
+    if (!vendorId) {
+      return errorResponse(res, HttpStatus.UNAUTHORIZED, Messages.VENDOR_NOT_FOUND);
+    }
 
-    const {
-      name,
-      description,
-      price,
-      discountedPrice,
-      isListed,
-      category,
-      variants,
-      specifications,
-    } = req.body;
+    const { name, description, price, discountedPrice, isListed, category, variants, specifications } = req.body;
 
-    // Normalize variants
+    // 2️⃣ Check if product exists
+    const existingProduct = await Product.findOne({ _id: productId, vendorId });
+    if (!existingProduct) {
+      return errorResponse(res, HttpStatus.NOT_FOUND, Messages.PRODUCT_NOT_FOUND);
+    }
+
+    // 3️⃣ Check duplicate name
+    const duplicateProduct = await Product.findOne({ name: name.trim(), _id: { $ne: productId } });
+    if (duplicateProduct) {
+      return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.PRODUCT_ALREADY_EXISTS);
+    }
+
+    // 4️⃣ Normalize variants (ensure array)
     let normalizedVariants = variants;
-    if (
-      normalizedVariants &&
-      typeof normalizedVariants === "object" &&
-      !Array.isArray(normalizedVariants)
-    ) {
+    if (normalizedVariants && typeof normalizedVariants === "object" && !Array.isArray(normalizedVariants)) {
       normalizedVariants = Object.keys(normalizedVariants)
         .sort()
         .map((key) => normalizedVariants[key]);
     }
 
-    // Old product
-    const existingProduct = await Product.findOne({ _id: productId, vendorId });
-    if (!existingProduct)
-      return errorResponse(res, HttpStatus.NOT_FOUND, Messages.PRODUCT_NOT_FOUND);
+    // Validate variants exist
+    if (!normalizedVariants || normalizedVariants.length === 0) {
+      return errorResponse(res, HttpStatus.BAD_REQUEST, "At least one variant is required.");
+    }
 
-    // Check duplicate name
-    const duplicateProduct = await Product.findOne({ name: name.trim(), _id: { $ne: productId } });
-    if (duplicateProduct)
-      return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.PRODUCT_ALREADY_EXISTS);
+    // 5️⃣ Process variants + images using helper
+    const processedVariants = await processVariants(normalizedVariants, req.files, res, existingProduct);
+    if (!processedVariants) return; // error already sent by helper
 
-    // Use helper to process variants + images
-    const processedVariants = await processVariants(
-      normalizedVariants,
-      req.files,
-      res,
-      existingProduct
-    );
-    if (!processedVariants) return; // error already sent
-
-    // Update product
+    // 6️⃣ Update the product
     const updatedProduct = await Product.findOneAndUpdate(
       { _id: productId, vendorId },
       {
@@ -199,7 +190,7 @@ const editProduct = async (req, res) => {
         description: description.trim(),
         price: Number(price),
         discountedPrice: discountedPrice ? Number(discountedPrice) : undefined,
-        isListed: isListed == "true",
+        isListed: isListed === "true",
         category: category.trim(),
         specifications,
         variants: processedVariants,
@@ -207,13 +198,14 @@ const editProduct = async (req, res) => {
       { new: true, runValidators: true }
     );
 
-    if (!updatedProduct)
+    if (!updatedProduct) {
       return errorResponse(res, HttpStatus.NOT_FOUND, Messages.PRODUCT_NOT_FOUND);
+    }
 
     console.log("Product updated successfully:", updatedProduct._id);
     return success(res, HttpStatus.OK, Messages.PRODUCT_UPDATED);
   } catch (error) {
-    console.error("Error edit product:", error);
+    console.error("Error edit product:", error.stack);
     return errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
   }
 };

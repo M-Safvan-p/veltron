@@ -133,10 +133,7 @@ const getProducts = async (req, res) => {
     const sanitizedSearch = search ? search.replace(/[<>]/g, "").trim() : "";
     if (sanitizedSearch) {
       // Search in product name and description (case-insensitive)
-      query.$or = [
-        { name: { $regex: sanitizedSearch, $options: "i" } },
-        { description: { $regex: sanitizedSearch, $options: "i" } },
-      ];
+      query.$or = [{ name: { $regex: sanitizedSearch, $options: "i" } }, { description: { $regex: sanitizedSearch, $options: "i" } }];
     }
 
     // CATEGORY FILTERING

@@ -7,6 +7,7 @@ const vendorController = require("../controllers/admin/adminVendor.controller");
 const categoryController = require("../controllers/admin/adminCategory.controller");
 const customerController = require("../controllers/admin/adminCustomer.controller");
 const productController = require("../controllers/admin/adminProduct.controller");
+const orderController = require("../controllers/admin/adminOrder.controller");
 
 const { noCache } = require("../middleware/noCache");
 const adminAuth = require("../middleware/adminAuth");
@@ -38,11 +39,7 @@ router.post("/vendors/pendings/reject", adminAuth.checkSession, vendorController
 router.get("/products", adminAuth.checkSession, productController.loadProducts);
 router.patch("/products/:id", adminAuth.checkSession, productController.listAndUnlist);
 router.get("/products/pendings", adminAuth.checkSession, productController.loadProductsPendings);
-router.patch(
-  "/products/pendings/approve",
-  adminAuth.checkSession,
-  productController.approveProduct
-);
+router.patch("/products/pendings/approve", adminAuth.checkSession, productController.approveProduct);
 router.patch("/products/pendings/reject", adminAuth.checkSession, productController.rejectProduct);
 
 //customers
@@ -54,12 +51,12 @@ router.get("/category", adminAuth.checkSession, categoryController.loadCategory)
 router.patch("/category/:id", adminAuth.checkSession, categoryController.listAndUnlist);
 router.get("/category/add-category", adminAuth.checkSession, categoryController.loadAddCategory);
 router.post("/category/add-category", adminAuth.checkSession, categoryController.addCategory);
-router.get(
-  "/category/edit-category/:id",
-  adminAuth.checkSession,
-  categoryController.loadEditCategory
-);
+router.get("/category/edit-category/:id", adminAuth.checkSession, categoryController.loadEditCategory);
 router.put("/category/edit-category/:id", adminAuth.checkSession, categoryController.editCategory);
+
+//orders
+router.get("/orders", adminAuth.checkSession, orderController.loadOrders);
+// router.get("/orders/:id", adminAuth.checkSession, orderController.loadOrderDetails);
 
 //Page not found
 router.use((req, res) => res.status(404).render("errors/admin404"));

@@ -6,6 +6,7 @@ const formValidator = require("../../helpers/formValidator");
 const { success, error: errorResponse } = require("../../helpers/responseHelper");
 const HttpStatus = require("../../constants/statusCodes");
 const Messages = require("../../constants/messages");
+const userQuery = require("../../helpers/userQuery");
 
 function loadSignUp(req, res) {
   try {
@@ -18,7 +19,7 @@ function loadSignUp(req, res) {
 
 const signUp = async (req, res) => {
   try {
-    const { fullName, email, phoneNumber, password, confirmPassword, refferalCode } = req.body;
+    const { fullName, email, phoneNumber, password, confirmPassword } = req.body;
     console.log(req.body);
 
     // Validation
@@ -44,8 +45,7 @@ const signUp = async (req, res) => {
     const otp = otpControl.generateOtp();
     const emailSent = await otpControl.sendVerificationEmail(email, otp);
 
-    if (!emailSent)
-      return errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.OTP_SEND_FAILED);
+    if (!emailSent) return errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.OTP_SEND_FAILED);
     console.log("OTP sent", otp);
     // Hash password
     const passwordHash = await passwordControl.securePassword(password);
@@ -84,16 +84,13 @@ const verifyOtp = async (req, res) => {
     if (errorMessage) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.OTP_INVALID);
 
     // Check if OTP and user session exist
-    if (!req.session.userOtp || !req.session.userData)
-      return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.OTP_EXPIRED);
+    if (!req.session.userOtp || !req.session.userData) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.OTP_EXPIRED);
 
     // Check if OTP has expired
-    if (Date.now() > req.session.otpExpiry)
-      return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.OTP_EXPIRED);
+    if (Date.now() > req.session.otpExpiry) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.OTP_EXPIRED);
 
     // Compare OTP
-    if (fullOtp !== req.session.userOtp)
-      return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.OTP_INVALID);
+    if (fullOtp !== req.session.userOtp) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.OTP_INVALID);
 
     // Save user in DB
     const userData = req.session.userData;
@@ -102,6 +99,7 @@ const verifyOtp = async (req, res) => {
       email: userData.email,
       phoneNumber: userData.phoneNumber,
       password: userData.passwordHash,
+      authProvider: "local",
     });
     await saveUserData.save();
     //wallet sett
@@ -134,17 +132,12 @@ const verifyOtp = async (req, res) => {
 
 const resendOtp = async (req, res) => {
   try {
-    // Make sure we still have user data in session
-    if (!req.session.userData)
-      return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.SESSION_EXPIRED);
-
-    const { email } = req.session.userData;
+    const email = req.session?.userData?.email || req.session?.userEmail;
     const otp = otpControl.generateOtp();
     const emailSent = await otpControl.sendVerificationEmail(email, otp);
     console.log("resend otp", otp);
 
-    if (!emailSent)
-      return errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.EMAIL_SEND_FAILED);
+    if (!emailSent) return errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.EMAIL_SEND_FAILED);
 
     req.session.userOtp = otp;
     req.session.otpExpiry = Date.now() + 1 * 60 * 1000;
@@ -174,6 +167,8 @@ const logIn = async (req, res) => {
     // Find user
     const user = await User.findOne({ email });
     if (!user) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.LOGIN_USER_NOT_FOUND);
+    //check google auth
+    if (user.authProvider === "google") return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.GOOGLE_AUTH_USER);
     // Check password
     const isMatch = await passwordControl.comparePassword(password, user.password);
     if (!isMatch) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.INVALID_CREDENTIALS);
@@ -201,8 +196,101 @@ const loadForgotPassword = (req, res) => {
   }
 };
 
+const forgotPassword = async (req, res) => {
+  try {
+    const email = req.body.email;
+    const user = await userQuery.getUser({ email });
+    if (!user) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.INVALID_EMAIL);
+    // otp
+    const otp = otpControl.generateOtp();
+    const emailSent = await otpControl.sendForgotPasswordOtp(email, otp);
+    if (!emailSent) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.OTP_SEND_FAILED);
+
+    req.session.userOtp = otp;
+    req.session.userEmail = email;
+    console.log("otp :", otp);
+
+    success(res, HttpStatus.OK, Messages.OTP_SENT_SUCCESS);
+  } catch (error) {
+    console.log("verify email error ", error);
+    errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
+  }
+};
+
+const loadForgotOtp = async (req, res) => {
+  try {
+    const email = req.session.userEmail;
+    res.render("user/forgotOtp", {
+      email,
+      layout: false,
+    });
+  } catch (error) {
+    console.log("load otp page error", error);
+    res.redirect("/forgotPassword");
+  }
+};
+
+const forgotOtp = async (req, res) => {
+  try {
+    const { otp1, otp2, otp3, otp4 } = req.body;
+    const fullOtp = `${otp1}${otp2}${otp3}${otp4}`.trim();
+    console.log("User entered OTP:", fullOtp);
+    // validate otp
+    const errorMessage = formValidator.validateOtp(fullOtp);
+    if (errorMessage) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.OTP_INVALID);
+
+    const otp = req.session.userOtp;
+    if (otp != fullOtp) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.OTP_INVALID);
+    return success(res, HttpStatus.OK, "", { redirectUrl: "/forgotPassword/newPassword" });
+  } catch (error) {
+    console.log("forgot otp error:", error);
+    return errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
+  }
+};
+
+const loadNewPassword = async (req, res) => {
+  try {
+    res.render("user/newPassword", {
+      layout: false,
+    });
+  } catch (error) {
+    console.log("new pass load error", error);
+    res.redirect("/login");
+  }
+};
+
+const newPassword = async (req, res) => {
+  try {
+    const email = req.session.userEmail;
+    const { newPassword, confirmPassword } = req.body;
+    // validation
+    if (!newPassword || !confirmPassword) {
+      return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.VALIDATION_BOTH_FIELD_REQUIRED);
+    }
+    if (newPassword.length < 8) {
+      return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.VALIDATION_PASSWORD_LENGTH);
+    }
+    if (newPassword !== confirmPassword) {
+      return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.VALIDATION_PASSWORD_MISMATCH);
+    }
+    const strongPasswordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!strongPasswordRegex.test(newPassword)) {
+      return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.VALIDATION_PASSWORD_STRENGTH);
+    }
+
+    //update
+    const hashedPassword = await passwordControl.securePassword(newPassword);
+    await User.findOneAndUpdate({ email: email }, { password: hashedPassword });
+    success(res, HttpStatus.OK);
+  } catch (error) {
+    console.error("New password error:", error);
+    return errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
+  }
+};
+
 const logout = (req, res) => {
   try {
+    console.log("log req reached");
     req.session.user = null;
     delete req.session.user;
     res.clearCookie("connect.sid");
@@ -223,5 +311,10 @@ module.exports = {
   loadLogIn,
   logIn,
   loadForgotPassword,
+  forgotPassword,
+  loadForgotOtp,
+  forgotOtp,
+  loadNewPassword,
+  newPassword,
   logout,
 };

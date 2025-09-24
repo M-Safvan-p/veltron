@@ -1,677 +1,631 @@
 <link rel="stylesheet" href="/styles/vendor/loadEditProducts.css">
-<!-- Add Cropper.js CSS -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
 
 <div class="product-form-container">
-    <!-- Product Details Title -->
-    <h1 class="page-title">Product Details</h1>
+  <h1 class="page-title"><%= isEdit ? 'Edit Product' : 'Add Product' %></h1>
 
-    <!-- Breadcrumb -->
-    <nav class="breadcrumb">
-        <a href="/vendor/dashboard">Dashboard</a>
-        <span class="breadcrumb-separator">></span>
-        <a href="/vendor/products">Products</a>
-        <span class="breadcrumb-separator">></span>
-        <a href="/vendor/products/edit-product">Edit Product</a>
-    </nav>
+  <nav class="breadcrumb">
+    <a href="/vendor/dashboard">Dashboard</a>
+    <span class="breadcrumb-separator">></span>
+    <a href="/vendor/products">Products</a>
+    <span class="breadcrumb-separator">></span>
+    <a href="<%= isEdit ? `/vendor/products/edit-product/${product._id}` : '/vendor/products/add-product' %>">
+      <%= isEdit ? 'Edit Product' : 'Add Product' %>
+    </a>
+  </nav>
 
-    <!-- Product Details Card -->
-    <form id="add-product-form" enctype="multipart/form-data">
-        <!-- Product Details -->
-        <div class="narrow-content">
-            <div class="product-card">
-                <div class="form-group">
-                    <label class="form-label" for="name">Product Name</label>
-                    <input type="text" id="name" name="name" class="form-input" aria-label="Product name"
-                        value="<%= product?.name %>">
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="description">Description</label>
-                    <textarea id="description" name="description" class="form-input form-textarea"
-                        aria-label="Product description"><%= product?.description %></textarea>
-                </div>
-                <div class="price-row">
-                    <div class="form-group">
-                        <label class="form-label" for="price">Price</label>
-                        <input type="number" id="price" name="price" class="form-input" step="0.01" min="0"
-                            value="<%= product?.price %>" aria-label="Product price">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="discountedPrice">Discount Price</label>
-                        <input type="number" id="discountedPrice" name="discountedPrice" class="form-input" step="0.01"
-                            min="0" aria-label="Discounted price" value="<%= product?.discountedPrice %>">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Listing Status</label>
-                        <div class="radio-group">
-                            <label>
-                                <input type="radio" name="isListed" value="true" <%=product?.isListed===true ? 'checked'
-                                    : '' %> aria-label="List product">Listed
-                            </label>
-                            <label>
-                                <input type="radio" name="isListed" value="false"
-                                    <%=product?.isListed===false? 'checked' : '' %> aria-label="Unlist product">Unlisted
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="category">Select Category</label>
-                    <select id="category" name="category" class="form-select" aria-label="Product category">
-                        <option value="mechanical" disabled selected>Select a category</option>
-                        <% if (typeof categories !=='undefined' && categories.length> 0) { %>
-                            <% categories.forEach(category=> { %>
-                                <option value="<%= category._id %>"
-                                    <%=product?.category?.toString()===category._id.toString() ? 'selected' : '' %>>
-                                    <%= category.name %>
-                                </option>
-                                <% }); %>
-                                    <% } else { %>
-                                        <option value="electronics">Electronics</option>
-                                        <% } %>
-                    </select>
-                </div>
+  <!-- NOTE: we submit via axios (multipart/form-data). Keep enctype for consistency. -->
+  <form id="product-form" enctype="multipart/form-data">
+    <div class="narrow-content">
+      <div class="product-card">
+        <div class="form-group">
+          <label class="form-label" for="name">Product Name</label>
+          <input type="text" id="name" name="name" class="form-input" aria-label="Product name"
+                 value="<%= isEdit ? product?.name : '' %>">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="description">Description</label>
+          <textarea id="description" name="description" class="form-input form-textarea"
+                    aria-label="Product description"><%= isEdit ? product?.description : '' %></textarea>
+        </div>
+
+        <div class="price-row">
+          <div class="form-group">
+            <label class="form-label" for="price">Price</label>
+            <input type="number" id="price" name="price" class="form-input" step="0.01" min="0"
+                   value="<%= isEdit ? product?.price : '' %>" aria-label="Product price">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="discountedPrice">Discount Price</label>
+            <input type="number" id="discountedPrice" name="discountedPrice" class="form-input" step="0.01" min="0"
+                   value="<%= isEdit ? product?.discountedPrice : '' %>" aria-label="Discounted price">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Listing Status</label>
+            <div class="radio-group">
+              <label>
+                <input type="radio" name="isListed" value="true"
+                       <%= isEdit ? (product?.isListed ? 'checked' : '') : 'checked' %> aria-label="List product">Listed
+              </label>
+              <label>
+                <input type="radio" name="isListed" value="false"
+                       <%= isEdit && !product?.isListed ? 'checked' : '' %> aria-label="Unlist product">Unlisted
+              </label>
             </div>
+          </div>
         </div>
 
-        <!-- Variants -->
-        <div class="narrow-content">
-            <div class="product-card">
-                <h3 class="card-title">Variant Images</h3>
-                <div class="image-upload-section">
-                    <% product.variants.forEach((variant, vIndex)=> { %>
-                        <div class="variant-container" id="variant-<%= vIndex %>">
-                            <div class="variant-header">
-                                <h4 class="variant-title">Variant <%= vIndex + 1 %>
-                                </h4>
-                                <div class="variant-controls">
-                                    <input type="text" placeholder="Color name" name="variants[<%= vIndex %>][color]"
-                                        value="<%= variant.color %>" class="form-input"
-                                        aria-label="Color for variant <%= vIndex+1 %>">
-                                </div>
-                            </div>
+        <div class="form-group">
+          <label class="form-label" for="category">Select Category</label>
+          <select id="category" name="category" class="form-select" aria-label="Product category">
+            <!-- only show placeholder selected in add mode -->
+            <option value="" disabled <%= !isEdit ? 'selected' : '' %>>Select a category</option>
 
-                            <div class="variant-images">
-                                <% variant.images.forEach((img, imgIndex)=> { %>
-                                    <div class="image-upload" data-variant="<%= vIndex %>" data-image="<%= imgIndex %>">
-                                        <div class="image-preview-container">
-                                            <img class="image-preview" src="<%= img.url %>" alt="Preview">
-                                            <button type="button" class="delete-image-btn" aria-label="Delete image">
-                                                <i class="fas fa-times"></i>
-                                            </button>
-                                        </div>
-                                        <input type="file" name="variants[<%= vIndex %>][images][<%= imgIndex %>]"
-                                            accept="image/*" style="display:none;"
-                                            id="variantImage-<%= vIndex %>-<%= imgIndex %>">
-                                        <input type="hidden"
-                                            name="variants[<%= vIndex %>][croppedImages][<%= imgIndex %>]"
-                                            class="cropped-image-data" value="<%= img.url %>">
-                                    </div>
-                                    <% }) %>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label" for="stockQuantity-<%= vIndex %>">Stock Quantity</label>
-                                <input type="number" id="stockQuantity-<%= vIndex %>" name="variants[<%= vIndex %>][stock]" class="form-input" min="0"
-                                    value="<%= variant.stock %>" aria-label="Stock quantity for variant <%= vIndex+1 %>">
-                            </div>
-                        </div>
-                        <% }) %>
-                </div>
-                <div style="text-align: center;">
-                    <button id="add-variant-button" type="button" class="custom-btn custom-btn-secondary"
-                        onclick="addVariant()">+ ADD ANOTHER VARIANT</button>
-                </div>
-            </div>
+            <% if (Array.isArray(categories) && categories.length > 0) { %>
+              <% categories.forEach(cat => { %>
+                <option value="<%= cat._id %>"
+                  <%= isEdit && product?.category?._id?.toString() === cat._id.toString() ? 'selected' : '' %>>
+                  <%= cat.name %>
+                </option>
+              <% }) %>
+            <% } else { %>
+              <option value="electronics">Electronics</option>
+            <% } %>
+          </select>
         </div>
-
-        <!-- Specifications -->
-        <div class="narrow-content">
-            <div class="product-card">
-                <h3 class="card-title">Product Specifications</h3>
-                <div class="specifications-grid">
-                    <div class="form-group">
-                        <label class="form-label" for="StrapStyle">Strap Style</label>
-                        <input type="text" id="StrapStyle" name="specifications[strapStyle]" class="form-input"
-                            aria-label="Strap style" value="<%= product?.specifications?.strapStyle %>">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="Weight">Weight</label>
-                        <input type="text" id="Weight" name="specifications[weight]" class="form-input"
-                            aria-label="Weight" value="<%= product?.specifications?.weight %>">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="DialType">Dial Type</label>
-                        <input type="text" id="DialType" name="specifications[dialType]" class="form-input"
-                            aria-label="Dial type" value="<%= product?.specifications?.dialType %>">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="warrantyPeriod">Warranty Period</label>
-                        <input type="text" id="warrantyPeriod" name="specifications[warrantyPeriod]" class="form-input"
-                            aria-label="Warranty period" value="<%= product?.specifications?.warrantyPeriod %>">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="Durability">Durability</label>
-                        <input type="text" id="Durability" name="specifications[durability]" class="form-input"
-                            aria-label="Durability" value="<%= product?.specifications?.durability %>">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="AdditionalInformation">Additional Information</label>
-                        <textarea id="AdditionalInformation" name="specifications[additionalInformation]"
-                            class="form-input form-textarea" aria-label="Additional information"><%= product?.specifications?.additionalInformation %></textarea>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="action-buttons">
-            <button type="submit" class="custom-btn custom-btn-primary" aria-label="Add product">UPDATE
-                PRODUCT</button>
-            <button type="button" class="custom-btn custom-btn-secondary" onclick="window.history.back()"
-                aria-label="Cancel">CANCEL</button>
-        </div>
-    </form>
-</div>
-
-<!-- Image Cropping Modal -->
-<div id="cropModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>Crop Image</h3>
-            <span class="close">&times;</span>
-        </div>
-        <div class="modal-body">
-            <div class="crop-container">
-                <img id="cropImage" src="" alt="Image to crop">
-            </div>
-            <div class="crop-actions">
-                <button type="button" id="cancelCrop" class="custom-btn custom-btn-secondary">Cancel</button>
-                <button type="button" id="applyCrop" class="custom-btn custom-btn-primary">Apply Crop</button>
-            </div>
-        </div>
+      </div>
     </div>
+
+    <!-- VARIANTS -->
+    <div class="narrow-content">
+      <div class="product-card">
+        <h3 class="card-title">Variant Images</h3>
+
+        <div class="image-upload-section">
+          <% 
+            // Prepare variants array for rendering: if edit use product.variants, otherwise single empty variant
+            const renderVariants = (isEdit && Array.isArray(product?.variants)) ? product.variants : [{ images: [{}, {}, {}], color: '', stock: '' }];
+            renderVariants.forEach((variant, vIndex) => { 
+          %>
+            <div class="variant-container" id="variant-<%= vIndex %>">
+              <div class="variant-header">
+                <h4 class="variant-title">Variant <%= vIndex + 1 %></h4>
+                <div class="variant-controls">
+                  <input type="text" placeholder="Color name" name="variants[<%= vIndex %>][color]"
+                         value="<%= variant.color || '' %>" class="form-input"
+                         aria-label="Color for variant <%= vIndex + 1 %>">
+                  <!-- include variant _id when editing so backend can match by _id -->
+                  <% if (isEdit && variant._id) { %>
+                    <input type="hidden" name="variants[<%= vIndex %>][_id]" value="<%= variant._id %>">
+                  <% } %>
+                  <button type="button" class="custom-btn custom-btn-secondary"
+                          onclick="removeVariant(<%= vIndex %>)"
+                          aria-label="Remove variant <%= vIndex + 1 %>">Remove</button>
+                </div>
+              </div>
+
+              <div class="variant-images">
+                <% (variant.images || [{}, {}, {}]).forEach((img, imgIndex) => { %>
+                  <div class="image-upload" data-variant="<%= vIndex %>" data-image="<%= imgIndex %>">
+                    <div class="image-preview-container <%= img?.url ? '' : 'hidden' %>">
+                      <img class="image-preview" src="<%= img?.url || '' %>" alt="Preview">
+                      <button type="button" class="delete-image-btn" aria-label="Delete image">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+
+                    <div class="upload-icon <%= img?.url ? 'hidden' : '' %>">
+                      <i class="fas fa-image"></i>
+                    </div>
+
+                    <div class="upload-text <%= img?.url ? 'hidden' : '' %>"
+                         aria-label="Image <%= imgIndex + 1 %> for variant <%= vIndex + 1 %>">
+                      Image <%= imgIndex + 1 %>
+                    </div>
+
+                    <!-- file input names match backend parsing: variants[i][images][j] -->
+                    <input type="file" name="variants[<%= vIndex %>][images][<%= imgIndex %>]"
+                           accept="image/*" style="display:none;"
+                           id="variantImage-<%= vIndex %>-<%= imgIndex %>"
+                           aria-label="Image <%= imgIndex + 1 %> for variant <%= vIndex + 1 %>">
+
+                    <!-- existing image URL (if editing). data-public-id holds Cloudinary public_id (if available) -->
+                    <input type="hidden" name="variants[<%= vIndex %>][existingImages][<%= imgIndex %>]"
+                           class="existing-image-data" value="<%= img?.url || '' %>"
+                           data-public-id="<%= img?.public_id || '' %>">
+
+                    <button type="button" class="upload-btn"
+                            onclick="document.getElementById('variantImage-<%= vIndex %>-<%= imgIndex %>').click()"
+                            aria-label="Browse image <%= imgIndex + 1 %> for variant <%= vIndex + 1 %>">
+                      BROWSE IMAGE
+                    </button>
+                  </div>
+                <% }) %>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="stockQuantity-<%= vIndex %>">Stock Quantity</label>
+                <input type="number" id="stockQuantity-<%= vIndex %>" name="variants[<%= vIndex %>][stock]"
+                       class="form-input" min="0" value="<%= variant.stock || '' %>"
+                       aria-label="Stock quantity for variant <%= vIndex + 1 %>">
+              </div>
+            </div>
+          <% }) %>
+        </div>
+
+        <div style="text-align: center;">
+          <button id="add-variant-button" type="button" class="custom-btn custom-btn-secondary"
+                  onclick="addVariant()">+ ADD ANOTHER VARIANT</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPECIFICATIONS -->
+    <div class="narrow-content">
+      <div class="product-card">
+        <h3 class="card-title">Product Specifications</h3>
+        <div class="specifications-grid">
+          <div class="form-group">
+            <label class="form-label" for="StrapStyle">Strap Style</label>
+            <input type="text" id="StrapStyle" name="specifications[strapStyle]" class="form-input"
+                   aria-label="Strap style" value="<%= isEdit ? product?.specifications?.strapStyle : '' %>">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="Weight">Weight</label>
+            <input type="text" id="Weight" name="specifications[weight]" class="form-input"
+                   aria-label="Weight" value="<%= isEdit ? product?.specifications?.weight : '' %>">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="DialType">Dial Type</label>
+            <input type="text" id="DialType" name="specifications[dialType]" class="form-input"
+                   aria-label="Dial type" value="<%= isEdit ? product?.specifications?.dialType : '' %>">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="warrantyPeriod">Warranty Period</label>
+            <input type="text" id="warrantyPeriod" name="specifications[warrantyPeriod]" class="form-input"
+                   aria-label="Warranty period" value="<%= isEdit ? product?.specifications?.warrantyPeriod : '' %>">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="Durability">Durability</label>
+            <input type="text" id="Durability" name="specifications[durability]" class="form-input"
+                   aria-label="Durability" value="<%= isEdit ? product?.specifications?.durability : '' %>">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="AdditionalInformation">Additional Information</label>
+            <textarea id="AdditionalInformation" name="specifications[additionalInformation]" class="form-input form-textarea"
+                      aria-label="Additional information"><%= isEdit ? product?.specifications?.additionalInformation : '' %></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="action-buttons">
+      <button type="submit" class="custom-btn custom-btn-primary"
+              aria-label="<%= isEdit ? 'Update product' : 'Add product' %>">
+        <%= isEdit ? 'UPDATE PRODUCT' : 'ADD PRODUCT' %>
+      </button>
+      <button type="button" class="custom-btn custom-btn-secondary" onclick="window.history.back()" aria-label="Cancel">
+        CANCEL
+      </button>
+    </div>
+  </form>
 </div>
 
-<!-- Add Cropper.js and other scripts -->
+<!-- CROP MODAL (unchanged) -->
+<div id="cropModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Crop Image</h3>
+      <span class="close">&times;</span>
+    </div>
+    <div class="modal-body">
+      <div class="crop-container">
+        <img id="cropImage" src="" alt="Image to crop">
+      </div>
+      <div class="crop-actions">
+        <button type="button" id="cancelCrop" class="custom-btn custom-btn-secondary">Cancel</button>
+        <button type="button" id="applyCrop" class="custom-btn custom-btn-primary">Apply Crop</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCRIPTS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    // Global variables
-    var variantCount = <%- product.variants.length %>;
-    const form = document.getElementById('add-product-form');
-    let currentCropper = null;
-    let currentUploadArea = null;
+  // variantCount initialised from rendered variants length
+  var variantCount = <%= renderVariants.length %>;
+  const form = document.getElementById('product-form');
+  let currentCropper = null;
+  let currentUploadArea = null;
 
-    // Initialize the application
-    function init() {
-        setupFileInputs();
-        setupDragAndDrop();
-        setupFormSubmission();
-        setupCropModal();
-        setupDeleteButtons();
-    }
+  // Use delegation and attach listeners only once
+  function init() {
+    setupFileInputDelegation();
+    setupDragAndDropDelegation();
+    setupFormSubmission();
+    setupCropModal();
+    setupDeleteDelegation();
+  }
 
-    // Set up the cropping modal
-    function setupCropModal() {
-        const modal = document.getElementById('cropModal');
-        const closeBtn = document.querySelector('.close');
-        const cancelBtn = document.getElementById('cancelCrop');
-        const applyBtn = document.getElementById('applyCrop');
+  // Crop modal handlers (kept same logic)
+  function setupCropModal() {
+    const modal = document.getElementById('cropModal');
+    const closeBtn = document.querySelector('.close');
+    const cancelBtn = document.getElementById('cancelCrop');
+    const applyBtn = document.getElementById('applyCrop');
 
-        closeBtn.onclick = function () {
-            modal.style.display = 'none';
-            if (currentCropper) {
-                currentCropper.destroy();
-                currentCropper = null;
-            }
-        }
+    const closeModal = () => {
+      modal.style.display = 'none';
+      if (currentCropper) {
+        currentCropper.destroy();
+        currentCropper = null;
+        currentUploadArea = null;
+      }
+    };
 
-        cancelBtn.onclick = function () {
-            modal.style.display = 'none';
-            if (currentCropper) {
-                currentCropper.destroy();
-                currentCropper = null;
-            }
-        }
+    closeBtn.onclick = cancelBtn.onclick = closeModal;
 
-        applyBtn.onclick = function () {
-            if (currentCropper) {
-                // Get cropped canvas
-                const canvas = currentCropper.getCroppedCanvas({
-                    width: 800,
-                    height: 800,
-                    fillColor: '#fff',
-                    imageSmoothingEnabled: true,
-                    imageSmoothingQuality: 'high'
-                });
-
-                // Convert to data URL
-                const croppedImageData = canvas.toDataURL('image/jpeg');
-
-                // Update preview
-                const previewImg = currentUploadArea.querySelector('.image-preview');
-                previewImg.src = croppedImageData;
-
-                // Store cropped image data in hidden input
-                const hiddenInput = currentUploadArea.querySelector('.cropped-image-data');
-                hiddenInput.value = croppedImageData;
-
-                // Show preview and hide upload elements
-                currentUploadArea.querySelector('.image-preview-container').classList.remove('hidden');
-                currentUploadArea.querySelector('.upload-icon').classList.add('hidden');
-                currentUploadArea.querySelector('.upload-text').classList.add('hidden');
-
-                // Close modal and clean up
-                modal.style.display = 'none';
-                currentCropper.destroy();
-                currentCropper = null;
-                currentUploadArea = null;
-            }
-        }
-
-        window.onclick = function (event) {
-            if (event.target == modal) {
-                modal.style.display = 'none';
-                if (currentCropper) {
-                    currentCropper.destroy();
-                    currentCropper = null;
-                }
-            }
-        }
-    }
-
-    // Handle file input changes to show crop modal
-    function setupFileInputs() {
-        document.querySelectorAll('input[type="file"]').forEach(input => {
-            input.addEventListener('change', function (e) {
-                if (this.files && this.files[0]) {
-                    const file = this.files[0];
-                    if (!file.type.match('image.*')) {
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'Please select an image file.',
-                            icon: 'error',
-                            confirmButtonColor: '#000',
-                            customClass: {
-                                confirmButton: "swal-confirm-black"
-                            }
-                        });
-                        return;
-                    }
-
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        // Store reference to the upload area
-                        currentUploadArea = input.parentElement;
-
-                        // Show modal with image
-                        const modal = document.getElementById('cropModal');
-                        const cropImage = document.getElementById('cropImage');
-                        cropImage.src = e.target.result;
-                        modal.style.display = 'block';
-
-                        // Initialize cropper
-                        setTimeout(() => {
-                            currentCropper = new Cropper(cropImage, {
-                                aspectRatio: 1,
-                                viewMode: 1,
-                                guides: true,
-                                background: false,
-                                autoCropArea: 0.8
-                            });
-                        }, 100);
-                    }
-                    reader.readAsDataURL(file);
-                }
-            });
+    applyBtn.onclick = function () {
+      if (currentCropper && currentUploadArea) {
+        const canvas = currentCropper.getCroppedCanvas({
+          width: 800, height: 800, fillColor: '#fff',
+          imageSmoothingEnabled: true, imageSmoothingQuality: 'high'
         });
-    }
 
-    // Set up delete buttons for image previews
-    function setupDeleteButtons() {
-        // Use event delegation for dynamically added elements
-        document.addEventListener('click', function (e) {
-            if (e.target.closest('.delete-image-btn')) {
-                const deleteBtn = e.target.closest('.delete-image-btn');
-                const uploadArea = deleteBtn.closest('.image-upload');
+        canvas.toBlob((blob) => {
+          const fileInput = currentUploadArea.querySelector('input[type="file"]');
+          const existingInput = currentUploadArea.querySelector('.existing-image-data');
+          const previewImg = currentUploadArea.querySelector('.image-preview');
 
-                // Reset the upload area
-                const fileInput = uploadArea.querySelector('input[type="file"]');
-                const hiddenInput = uploadArea.querySelector('.cropped-image-data');
-                const previewContainer = uploadArea.querySelector('.image-preview-container');
-                const uploadIcon = uploadArea.querySelector('.upload-icon');
-                const uploadText = uploadArea.querySelector('.upload-text');
+          // update preview
+          const reader = new FileReader();
+          reader.onload = () => previewImg.src = reader.result;
+          reader.readAsDataURL(blob);
 
-                fileInput.value = '';
-                hiddenInput.value = '';
-                previewContainer.classList.add('hidden');
-                uploadIcon.classList.remove('hidden');
-                uploadText.classList.remove('hidden');
-                uploadText.textContent = `Image ${uploadArea.dataset.image}`;
-            }
+          // set blob to file input
+          const file = new File([blob], `cropped-${Date.now()}.jpg`, { type: 'image/jpeg' });
+          const dt = new DataTransfer();
+          dt.items.add(file);
+          fileInput.files = dt.files;
+
+          // clear existing image placeholder if replacing
+          if (existingInput) existingInput.value = '';
+
+          // update UI
+          currentUploadArea.querySelector('.image-preview-container').classList.remove('hidden');
+          currentUploadArea.querySelector('.upload-icon').classList.add('hidden');
+          currentUploadArea.querySelector('.upload-text').classList.add('hidden');
+
+          // close modal
+          closeModal();
+        }, 'image/jpeg', 0.9);
+      }
+    };
+
+    window.onclick = function (event) {
+      if (event.target == modal) closeModal();
+    };
+  }
+
+  // Single delegated change listener for file inputs (prevents duplicates)
+  function setupFileInputDelegation() {
+    document.addEventListener('change', function (e) {
+      const input = e.target;
+      if (!input || input.tagName !== 'INPUT' || input.type !== 'file') return;
+
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        if (!file.type.match('image.*')) {
+          Swal.fire({
+            title: 'Error!', text: 'Please select an image file.', icon: 'error',
+            confirmButtonColor: '#000', customClass: { confirmButton: 'swal-confirm-black' }
+          });
+          input.value = '';
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (ev) {
+          currentUploadArea = input.closest('.image-upload');
+          const modal = document.getElementById('cropModal');
+          const cropImage = document.getElementById('cropImage');
+          cropImage.src = ev.target.result;
+          modal.style.display = 'block';
+
+          setTimeout(() => {
+            if (currentCropper) currentCropper.destroy();
+            currentCropper = new Cropper(cropImage, {
+              aspectRatio: 1, viewMode: 1, guides: true, background: false, autoCropArea: 0.8
+            });
+          }, 100);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
+  // Delegated drag/drop for .image-upload areas
+  function setupDragAndDropDelegation() {
+    document.addEventListener('dragover', function (e) {
+      const uploadArea = e.target.closest('.image-upload');
+      if (!uploadArea) return;
+      e.preventDefault();
+      uploadArea.classList.add('dragover');
+    });
+
+    document.addEventListener('dragleave', function (e) {
+      const uploadArea = e.target.closest('.image-upload');
+      if (!uploadArea) return;
+      e.preventDefault();
+      uploadArea.classList.remove('dragover');
+    });
+
+    document.addEventListener('drop', function (e) {
+      const uploadArea = e.target.closest('.image-upload');
+      if (!uploadArea) return;
+      e.preventDefault();
+      uploadArea.classList.remove('dragover');
+
+      const files = e.dataTransfer.files;
+      if (files.length > 0 && files[0].type.startsWith('image/')) {
+        const fileInput = uploadArea.querySelector('input[type="file"]');
+        const dt = new DataTransfer();
+        dt.items.add(files[0]);
+        fileInput.files = dt.files;
+        fileInput.dispatchEvent(new Event('change'));
+      } else {
+        Swal.fire({
+          title: 'Error!', text: 'Please drop an image file.', icon: 'error',
+          confirmButtonColor: '#000', customClass: { confirmButton: 'swal-confirm-black' }
         });
-    }
+      }
+    });
+  }
 
-    // Set up drag and drop functionality
-    function setupDragAndDrop(container = document) {
-        container.querySelectorAll('.image-upload').forEach(uploadArea => {
-            uploadArea.addEventListener('dragover', function (e) {
-                e.preventDefault();
-                this.classList.add('dragover');
-            });
+  // Delegated delete button listener
+  function setupDeleteDelegation() {
+    document.addEventListener('click', function (e) {
+      const deleteBtn = e.target.closest('.delete-image-btn');
+      if (!deleteBtn) return;
 
-            uploadArea.addEventListener('dragleave', function (e) {
-                e.preventDefault();
-                this.classList.remove('dragover');
-            });
+      const uploadArea = deleteBtn.closest('.image-upload');
+      const fileInput = uploadArea.querySelector('input[type="file"]');
+      const existingInput = uploadArea.querySelector('.existing-image-data');
+      const previewContainer = uploadArea.querySelector('.image-preview-container');
+      const uploadIcon = uploadArea.querySelector('.upload-icon');
+      const uploadText = uploadArea.querySelector('.upload-text');
 
-            uploadArea.addEventListener('drop', function (e) {
-                e.preventDefault();
-                this.classList.remove('dragover');
-                const files = e.dataTransfer.files;
+      // clear inputs and ui
+      if (fileInput) fileInput.value = '';
+      if (existingInput) existingInput.value = '';
+      previewContainer.classList.add('hidden');
+      uploadIcon.classList.remove('hidden');
+      uploadText.classList.remove('hidden');
+      const previewImg = previewContainer.querySelector('.image-preview');
+      if (previewImg) previewImg.src = '';
+    });
+  }
 
-                if (files.length > 0 && files[0].type.startsWith('image/')) {
-                    const fileInput = this.querySelector('input[type="file"]');
-                    if (fileInput) {
-                        // Create a new FileList-like object
-                        const dt = new DataTransfer();
-                        dt.items.add(files[0]);
-                        fileInput.files = dt.files;
-
-                        // Trigger change event manually
-                        const event = new Event('change');
-                        fileInput.dispatchEvent(event);
-                    }
-                } else {
-                    Swal.fire({
-                        title: 'Error!',
-                        text: 'Please drop an image file.',
-                        icon: 'error',
-                        confirmButtonColor: '#000',
-                        customClass: {
-                            confirmButton: "swal-confirm-black"
-                        }
-                    });
-                }
-            });
-        });
-    }
-
-    // Add a new variant
-    function addVariant() {
-        const container = document.querySelector('.image-upload-section');
-        const variantHtml = `
-        <div class="variant-container" id="variant-${variantCount}">
-            <div class="variant-header">
-                <h4 class="variant-title">Variant ${variantCount + 1}</h4>
-                <div class="variant-controls">
-                    <input type="text" placeholder="Color name" name="variants[${variantCount}][color]" class="form-input"  aria-label="Color for variant ${variantCount + 1}">
-                    <button type="button" class="custom-btn custom-btn-secondary" onclick="removeVariant(${variantCount})" aria-label="Remove variant ${variantCount + 1}">Remove</button>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Product Images (3 images)</label>
-                <div class="variant-images">
-                    <div class="image-upload" data-variant="${variantCount}" data-image="0">
-                        <div class="upload-icon">
-                            <i class="fas fa-image"></i>
-                        </div>
-                        <div class="upload-text">Image 1</div>
-                        <div class="image-preview-container hidden">
-                            <img class="image-preview" src="" alt="Preview">
-                            <button type="button" class="delete-image-btn" aria-label="Delete image">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                        <!-- CHANGED: Added [0] to the name -->
-                        <input type="file" name="variants[${variantCount}][images][0]" accept="image/*" style="display: none;" id="variantImage-${variantCount}-0"  aria-label="Image 1 for variant ${variantCount + 1}">
-                        <input type="hidden" name="variants[${variantCount}][croppedImages][0]" class="cropped-image-data">
-                        <button type="button" class="upload-btn" onclick="document.getElementById('variantImage-${variantCount}-0').click()" aria-label="Browse image 1 for variant ${variantCount + 1}">BROWSE IMAGE</button>
-                    </div>
-                    <div class="image-upload" data-variant="${variantCount}" data-image="1">
-                        <div class="upload-icon">
-                            <i class="fas fa-image"></i>
-                        </div>
-                        <div class="upload-text">Image 2</div>
-                        <div class="image-preview-container hidden">
-                            <img class="image-preview" src="" alt="Preview">
-                            <button type="button" class="delete-image-btn" aria-label="Delete image">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                        <!-- CHANGED: Added [1] to the name -->
-                        <input type="file" name="variants[${variantCount}][images][1]" accept="image/*" style="display: none;" id="variantImage-${variantCount}-1" aria-label="Image 2 for variant ${variantCount + 1}">
-                        <input type="hidden" name="variants[${variantCount}][croppedImages][1]" class="cropped-image-data">
-                        <button type="button" class="upload-btn" onclick="document.getElementById('variantImage-${variantCount}-1').click()" aria-label="Browse image 2 for variant ${variantCount + 1}">BROWSE IMAGE</button>
-                    </div>
-                    <div class="image-upload" data-variant="${variantCount}" data-image="2">
-                        <div class="upload-icon">
-                            <i class="fas fa-image"></i>
-                        </div>
-                        <div class="upload-text">Image 3</div>
-                        <div class="image-preview-container hidden">
-                            <img class="image-preview" src="" alt="Preview">
-                            <button type="button" class="delete-image-btn" aria-label="Delete image">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                        <!-- CHANGED: Added [2] to the name -->
-                        <input type="file" name="variants[${variantCount}][images][2]" accept="image/*" style="display: none;" id="variantImage-${variantCount}-2" aria-label="Image 3 for variant ${variantCount + 1}">
-                        <input type="hidden" name="variants[${variantCount}][croppedImages][2]" class="cropped-image-data">
-                        <button type="button" class="upload-btn" onclick="document.getElementById('variantImage-${variantCount}-2').click()" aria-label="Browse image 3 for variant ${variantCount + 1}">BROWSE IMAGE</button>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="form-label" for="stockQuantity-${variantCount}">Stock Quantity</label>
-                <input type="number" id="stockQuantity-${variantCount}" name="variants[${variantCount}][stock]" class="form-input" min="0"  aria-label="Stock quantity for variant ${variantCount + 1}">
-            </div>
+  // Add new variant (keeps naming consistent)
+  function addVariant() {
+    const container = document.querySelector('.image-upload-section');
+    const idx = variantCount;
+    const variantHtml = `
+      <div class="variant-container" id="variant-${idx}">
+        <div class="variant-header">
+          <h4 class="variant-title">Variant ${idx + 1}</h4>
+          <div class="variant-controls">
+            <input type="text" placeholder="Color name" name="variants[${idx}][color]" class="form-input" aria-label="Color for variant ${idx + 1}">
+            <button type="button" class="custom-btn custom-btn-secondary" onclick="removeVariant(${idx})" aria-label="Remove variant ${idx + 1}">Remove</button>
+          </div>
         </div>
+
+        <div class="form-group">
+          <label class="form-label">Product Images (3 images)</label>
+          <div class="variant-images">
+            ${[0,1,2].map(imgIndex => `
+              <div class="image-upload" data-variant="${idx}" data-image="${imgIndex}">
+                <div class="upload-icon"><i class="fas fa-image"></i></div>
+                <div class="upload-text" aria-label="Image ${imgIndex + 1} for variant ${idx + 1}">Image ${imgIndex + 1}</div>
+                <div class="image-preview-container hidden">
+                  <img class="image-preview" src="" alt="Preview">
+                  <button type="button" class="delete-image-btn" aria-label="Delete image"><i class="fas fa-times"></i></button>
+                </div>
+
+                <input type="file" name="variants[${idx}][images][${imgIndex}]" accept="image/*" style="display:none;" id="variantImage-${idx}-${imgIndex}" aria-label="Image ${imgIndex + 1} for variant ${idx + 1}">
+                <input type="hidden" name="variants[${idx}][existingImages][${imgIndex}]" class="existing-image-data" value="">
+                <button type="button" class="upload-btn" onclick="document.getElementById('variantImage-${idx}-${imgIndex}').click()" aria-label="Browse image ${imgIndex + 1} for variant ${idx + 1}">BROWSE IMAGE</button>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="stockQuantity-${idx}">Stock Quantity</label>
+          <input type="number" id="stockQuantity-${idx}" name="variants[${idx}][stock]" class="form-input" min="0" aria-label="Stock quantity for variant ${idx + 1}">
+        </div>
+      </div>
     `;
 
-        container.insertAdjacentHTML('beforeend', variantHtml);
+    container.insertAdjacentHTML('beforeend', variantHtml);
+    variantCount++;
+  }
 
-        // Add event listeners to new file inputs
-        const newVariant = document.getElementById(`variant-${variantCount}`);
-        if (newVariant) {
-            setupFileInputs();
-            setupDragAndDrop(newVariant);
+  // Remove variant and reindex names/ids so backend expects 0..N-1 indexes
+  function removeVariant(variantId) {
+    const variant = document.getElementById(`variant-${variantId}`);
+    const totalVariants = document.querySelectorAll('.variant-container').length;
+
+    if (!variant) return;
+
+    if (totalVariants > 1) {
+      variant.remove();
+      reindexVariants();
+    } else {
+      Swal.fire({
+        title: 'Warning!', text: 'At least one variant is required.', icon: 'warning',
+        confirmButtonColor: '#000', customClass: { confirmButton: 'swal-confirm-black' }
+      });
+    }
+  }
+
+  // Reindex all variant DOM elements (names and ids)
+  function reindexVariants() {
+    const variants = document.querySelectorAll('.variant-container');
+    variants.forEach((variant, index) => {
+      variant.id = `variant-${index}`;
+      const title = variant.querySelector('.variant-title');
+      if (title) title.textContent = `Variant ${index + 1}`;
+
+      const colorInput = variant.querySelector('input[ name$="[color]"]') || variant.querySelector('input[name*="[color]"]');
+      const stockInput = variant.querySelector('input[ name$="[stock]"]') || variant.querySelector('input[name*="[stock]"]');
+      if (colorInput) colorInput.name = `variants[${index}][color]`;
+      if (stockInput) {
+        stockInput.name = `variants[${index}][stock]`;
+        stockInput.id = `stockQuantity-${index}`;
+      }
+
+      // update image inputs and existing hidden inputs
+      const imageUploads = variant.querySelectorAll('.image-upload');
+      imageUploads.forEach((uploadArea, imgIndex) => {
+        uploadArea.setAttribute('data-variant', index);
+        uploadArea.setAttribute('data-image', imgIndex);
+
+        const fileInput = uploadArea.querySelector('input[type="file"]');
+        if (fileInput) {
+          fileInput.name = `variants[${index}][images][${imgIndex}]`;
+          fileInput.id = `variantImage-${index}-${imgIndex}`;
         }
 
-        variantCount++;
+        const existingInput = uploadArea.querySelector('.existing-image-data');
+        if (existingInput) existingInput.name = `variants[${index}][existingImages][${imgIndex}]`;
+
+        const browseBtn = uploadArea.querySelector('.upload-btn');
+        if (browseBtn) browseBtn.setAttribute('onclick', `document.getElementById('variantImage-${index}-${imgIndex}').click()`);
+
+        const deleteBtn = uploadArea.querySelector('.delete-image-btn');
+        if (deleteBtn) deleteBtn.setAttribute('aria-label', `Delete image ${imgIndex + 1} for variant ${index + 1}`);
+      });
+
+      // update remove button onclick
+      const removeBtn = variant.querySelector('.variant-controls button');
+      if (removeBtn) removeBtn.setAttribute('onclick', `removeVariant(${index})`);
+    });
+
+    variantCount = variants.length;
+  }
+
+  // Client-side validation to give user immediate feedback before sending to server
+  function validateForm() {
+    const name = document.getElementById('name').value.trim();
+    const price = Number(document.getElementById('price').value);
+    const category = document.getElementById('category').value;
+    let isValid = true;
+    let errorMessage = '';
+
+    if (!name) {
+      isValid = false;
+      errorMessage = 'Product name is required.';
+    } else if (!price || price <= 0) {
+      isValid = false;
+      errorMessage = 'Price must be greater than 0.';
+    } else if (!category) {
+      isValid = false;
+      errorMessage = 'Please select a category.';
     }
 
-    // Remove a variant
-    function removeVariant(variantId) {
-        const variant = document.getElementById(`variant-${variantId}`);
-        const totalVariants = document.querySelectorAll('.variant-container').length;
+    document.querySelectorAll('.variant-container').forEach((variant, index) => {
+      const colorInput = variant.querySelector('input[name*="[color]"]');
+      const stockInput = variant.querySelector('input[name*="[stock]"]');
+      const imageInputs = variant.querySelectorAll('input[type="file"]');
+      const existingInputs = variant.querySelectorAll('.existing-image-data');
 
-        if (variant && totalVariants > 1) {
-            variant.remove();
-            reindexVariants();
-        } else if (totalVariants === 1) {
-            Swal.fire({
-                title: 'Warning!',
-                text: 'At least one variant is required.',
-                icon: 'warning',
-                confirmButtonColor: '#000',
-                customClass: {
-                    confirmButton: "swal-confirm-black"
-                }
-            });
+      const color = colorInput ? colorInput.value.trim() : '';
+      const stock = stockInput ? Number(stockInput.value) : NaN;
+
+      let imageCount = 0;
+      imageInputs.forEach((fileInput, i) => {
+        if (fileInput.files.length > 0 || (existingInputs[i] && existingInputs[i].value.trim())) {
+          imageCount++;
         }
-    }
+      });
 
-    // Reindex all variants after removal
-    function reindexVariants() {
-        const variants = document.querySelectorAll('.variant-container');
-        variants.forEach((variant, index) => {
-            // Update container ID and title
-            variant.id = `variant-${index}`;
-            variant.querySelector('.variant-title').textContent = `Variant ${index + 1}`;
+      if (!color) {
+        isValid = false;
+        errorMessage = `Color is required for Variant ${index + 1}.`;
+      } else if (Number.isNaN(stock) || stock < 0) {
+        isValid = false;
+        errorMessage = `Stock quantity must be non-negative for Variant ${index + 1}.`;
+      } else if (imageCount !== 3) {
+        isValid = false;
+        errorMessage = `Variant ${index + 1} must have exactly 3 images.`;
+      }
+    });
 
-            // Update all input names
-            const colorInput = variant.querySelector('input[name^="variants"]');
-            const stockInput = variant.querySelector('input[name$="[stock]"]');
-            const imageInputs = variant.querySelectorAll('input[type="file"]');
-            const croppedInputs = variant.querySelectorAll('.cropped-image-data');
+    return { isValid, errorMessage };
+  }
 
-            if (colorInput) colorInput.name = `variants[${index}][color]`;
-            if (stockInput) stockInput.name = `variants[${index}][stock]`;
+  // Form submission using axios (multipart)
+  function setupFormSubmission() {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
 
-            imageInputs.forEach((imgInput, imgIndex) => {
-                imgInput.name = `variants[${index}][images]`;
-                imgInput.id = `variantImage-${index}-${imgIndex + 1}`;
+      const { isValid, errorMessage } = validateForm();
+      if (!isValid) {
+        Swal.fire({
+          title: 'Error!', text: errorMessage, icon: 'error',
+          confirmButtonColor: '#000', customClass: { confirmButton: 'swal-confirm-black' }
+        });
+        return;
+      }
 
-                // Update the corresponding button onclick
-                const button = imgInput.parentElement.querySelector('.upload-btn');
-                if (button) {
-                    button.setAttribute('onclick', `document.getElementById('variantImage-${index}-${imgIndex + 1}').click()`);
-                    button.setAttribute('aria-label', `Browse image ${imgIndex + 1} for variant ${index + 1}`);
-                }
-            });
+      const submitBtn = form.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.classList.add('loading');
 
-            croppedInputs.forEach((croppedInput, imgIndex) => {
-                croppedInput.name = `variants[${index}][croppedImages]`;
-            });
+      Swal.fire({
+        title: '<%= isEdit ? "Updating" : "Adding" %> Product...',
+        text: 'Please wait while we process your product.',
+        icon: 'info', showConfirmButton: false, allowOutsideClick: false, didOpen: () => Swal.showLoading(),
+        customClass: { confirmButton: 'swal-confirm-black' }
+      });
 
-            // Update remove button onclick
-            const removeBtn = variant.querySelector('button[onclick^="removeVariant"]');
-            if (removeBtn) {
-                removeBtn.setAttribute('onclick', `removeVariant(${index})`);
-                removeBtn.setAttribute('aria-label', `Remove variant ${index + 1}`);
-            }
+      try {
+        const formData = new FormData(form);
+        const url = "<%= isEdit ? `/vendor/products/edit-product/${product._id}` : '/vendor/products/add-product' %>";
+        const method = "<%= isEdit ? 'put' : 'post' %>";
+
+        const response = await axios({
+          method,
+          url,
+          data: formData,
+          headers: { 'Content-Type': 'multipart/form-data' }
         });
 
-        // Update variantCount to reflect current number
-        variantCount = variants.length;
-    }
-
-
-    // Set up form submission with Axios
-    function setupFormSubmission() {
-        form.addEventListener('submit', async function (e) {
-            e.preventDefault();
-
-            // Frontend validation
-            let isValid = true;
-            let errorMessage = '';
-
-            // Check if at least one image is uploaded for each variant
-            document.querySelectorAll('.variant-container').forEach((variant, variantIndex) => {
-                const croppedImages = variant.querySelectorAll('.cropped-image-data');
-                let imageCount = 0;
-
-                croppedImages.forEach(input => {
-                    if (input.value) imageCount++;
-                });
-
-                if (imageCount < 3) {
-                    isValid = false;
-                    errorMessage = `Please upload at least 3 images for Variant ${variantIndex + 1}`;
-                }
-            });
-
-            if (!isValid) {
-                Swal.fire({
-                    title: 'Error!',
-                    text: errorMessage,
-                    icon: 'error',
-                    confirmButtonColor: '#000',
-                    customClass: {
-                        confirmButton: "swal-confirm-black"
-                    }
-                });
-                return;
-            }
-
-            const submitBtn = form.querySelector('button[type="submit"]');
-            submitBtn.disabled = true;
-            submitBtn.classList.add('loading');
-
-            Swal.fire({
-                title: 'Updating Product...',
-                text: 'Please wait while we update your product.',
-                icon: 'info',
-                showConfirmButton: false,
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                },
-                customClass: {
-                    confirmButton: "swal-confirm-black"
-                }
-            });
-
-            try {
-                // Convert base64 images to blob for submission
-                const formData = new FormData(form);
-
-                // Process cropped images
-                let imageIndex = 0;
-                document.querySelectorAll('.cropped-image-data').forEach(input => {
-                    if (input.value) {
-                        // Convert base64 to blob
-                        const base64Data = input.value;
-                        const blob = dataURLtoBlob(base64Data);
-
-                        // Append to form data
-                        formData.append(`croppedImages[${imageIndex}]`, blob, `image-${imageIndex}.jpg`);
-                        imageIndex++;
-                    }
-                });
-
-                const response = await axios.put('/vendor/products/edit-product', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                });
-
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Product updated successfully.',
-                    icon: 'success',
-                    confirmButtonColor: '#000',
-                    customClass: {
-                        confirmButton: "swal-confirm-black"
-                    }
-                }).then(() => {
-                    window.location.href = '/vendor/products';
-                });
-
-            } catch (error) {
-                let errorMessage = error.response.data.message || 'An error occurred while updating the product.';
-                Swal.fire({
-                    title: 'Error!',
-                    html: errorMessage,
-                    icon: 'error',
-                    confirmButtonColor: '#000',
-                    customClass: {
-                        confirmButton: "swal-confirm-black"
-                    }
-                });
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.classList.remove('loading');
-            }
+        Swal.fire({
+          title: 'Success!', text: `Product <%= isEdit ? 'updated' : 'added' %> successfully.`, icon: 'success',
+          confirmButtonColor: '#000', customClass: { confirmButton: 'swal-confirm-black' }
+        }).then(() => window.location.href = '/vendor/products');
+      } catch (err) {
+        Swal.fire({
+          title: 'Error!',
+          text: err.response?.data?.message || `An error occurred while <%= isEdit ? 'updating' : 'adding' %> the product.`,
+          icon: 'error',
+          confirmButtonColor: '#000',
+          customClass: { confirmButton: 'swal-confirm-black' }
         });
-    }
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('loading');
+      }
+    });
+  }
 
-    // Helper function to convert data URL to blob
-    function dataURLtoBlob(dataurl) {
-        const arr = dataurl.split(',');
-        const mime = arr[0].match(/:(.*?);/)[1];
-        const bstr = atob(arr[1]);
-        let n = bstr.length;
-        const u8arr = new Uint8Array(n);
-
-        while (n--) {
-            u8arr[n] = bstr.charCodeAt(n);
-        }
-
-        return new Blob([u8arr], { type: mime });
-    }
-
-    // Initialize the application when DOM is loaded
-    document.addEventListener('DOMContentLoaded', init);
+  document.addEventListener('DOMContentLoaded', init);
 </script>

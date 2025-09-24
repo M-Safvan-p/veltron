@@ -34,16 +34,14 @@ const signup = async (req, res) => {
     if (errorMessage) return errorResponse(res, HttpStatus.BAD_REQUEST, errorMessage);
     // brand email already exists
     const findEmail = await Vendor.findOne({ brandEmail: brandEmail });
-    if (findEmail)
-      return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.VENDOR_EMAIL_ALREADY_EXISTS);
+    if (findEmail) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.VENDOR_EMAIL_ALREADY_EXISTS);
     // phone number already exists
     const findPhone = await Vendor.findOne({ phoneNumber: phoneNumber });
     if (findPhone) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.PHONE_ALREADY_EXISTS);
     // Generate OTP
     const otp = otpControl.generateOtp();
     const emailSent = await otpControl.sendVerificationEmail(brandEmail, otp);
-    if (!emailSent)
-      return errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.OTP_SEND_FAILED);
+    if (!emailSent) return errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.OTP_SEND_FAILED);
     console.log("OTP sent", otp);
     //Pass word hash
     const hashedPassword = await passwordControl.securePassword(password);
@@ -85,16 +83,13 @@ const verifyOtp = async (req, res) => {
     if (errorMessage) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.INVALID_OTP);
 
     // Check if OTP and user session exist
-    if (!req.session.vendorOtp || !req.session.vendorData)
-      return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.SESSION_EXPIRED);
+    if (!req.session.vendorOtp || !req.session.vendorData) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.SESSION_EXPIRED);
 
     // Check if OTP has expired
-    if (Date.now() > req.session.otpExpires)
-      return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.OTP_EXPIRED);
+    if (Date.now() > req.session.otpExpires) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.OTP_EXPIRED);
 
     //compare OTP
-    if (fullOtp !== req.session.vendorOtp)
-      return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.OTP_INVALID);
+    if (fullOtp !== req.session.vendorOtp) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.OTP_INVALID);
 
     // Create new vendor
     const { brandName, brandEmail, phoneNumber, hashedPassword } = req.session.vendorData;
@@ -148,10 +143,8 @@ const login = async (req, res) => {
     const isMatch = await passwordControl.comparePassword(password, vendor.password);
     if (!isMatch) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.INVALID_CREDENTIALS);
     //check permission status
-    if (vendor.permissionStatus == PermissionStatus.PENDING)
-      return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.REGISTRATION_PENDING);
-    if (vendor.permissionStatus == PermissionStatus.REJECTED)
-      return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.REGISTRATION_REJECTED);
+    if (vendor.permissionStatus == PermissionStatus.PENDING) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.REGISTRATION_PENDING);
+    if (vendor.permissionStatus == PermissionStatus.REJECTED) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.REGISTRATION_REJECTED);
     // check block
     if (vendor.isBlocked) return errorResponse(res, HttpStatus.FORBIDDEN, Messages.VENDOR_BLOCKED);
 

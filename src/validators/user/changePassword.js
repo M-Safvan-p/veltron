@@ -16,8 +16,7 @@ const passwordSchema = Joi.object({
     .invalid(Joi.ref("currentPassword")) // prevent new password being same as current
     .messages({
       "string.empty": "New password cannot be empty.",
-      "string.pattern.base":
-        "Password must have at least 8 characters, including uppercase, lowercase, number, and special character.",
+      "string.pattern.base": "Password must have at least 8 characters, including uppercase, lowercase, number, and special character.",
       "any.invalid": "New password cannot be the same as current password.", // custom message
     }),
 

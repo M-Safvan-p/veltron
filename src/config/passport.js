@@ -10,40 +10,51 @@ passport.use(
       clientSecret: GOOGLE_CLIENT_SECRET,
       callbackURL: GOOGLE_CALLBACK_URL,
     },
-
     async (accessToken, refreshToken, profile, done) => {
       try {
+        const email = profile.emails[0].value;
+
         let user = await User.findOne({ googleId: profile.id });
+        if (user) return done(null, user);
+        user = await User.findOne({ email });
         if (user) {
-          return done(null, user);
-        } else {
-          user = new User({
-            fullName: profile.displayName,
-            email: profile.emails[0].value,
-            googleId: profile.id,
-          });
-          await user.save();
-          return done(null, user);
+          if (user.authProvider === "google") {
+            if (!user.googleId) {
+              user.googleId = profile.id;
+              await user.save();
+            }
+            return done(null, user);
+          }
+
+          if (user.authProvider === "local") {
+            return done(null, false, {
+              message: "This email is already registered with password. Please login using email & password.",
+            });
+          }
         }
+
+        const newUser = await User.create({
+          fullName: profile.displayName,
+          email,
+          googleId: profile.id,
+          authProvider: "google",
+        });
+
+        return done(null, newUser);
       } catch (error) {
-        return done(error, null);
+        console.error("Google Auth Error:", error);
+        return done(null, false, { message: "Server error in Google authentication" });
       }
     }
   )
 );
 
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
-
+// Serialize & Deserialize
+passport.serializeUser((user, done) => done(null, user.id));
 passport.deserializeUser((id, done) => {
   User.findById(id)
-    .then((user) => {
-      done(null, user);
-    })
-    .catch((err) => {
-      done(err, null);
-    });
+    .then((user) => done(null, user))
+    .catch((err) => done(err, null));
 });
 
 module.exports = passport;

@@ -59,9 +59,7 @@ document.querySelectorAll(".toggle-switch").forEach((toggle) => {
             this.classList.toggle("active", isActive);
             this.classList.toggle("inactive", !isActive);
             statusBadge.textContent = isActive ? "Listed" : "Unlisted";
-            statusBadge.className = `status-badge ${
-              isActive ? "status-listed" : "status-unlisted"
-            }`;
+            statusBadge.className = `status-badge ${isActive ? "status-listed" : "status-unlisted"}`;
           }
         });
       });

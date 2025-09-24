@@ -38,7 +38,7 @@
 
         .main-content {
             flex-grow: 1;
-            margin-top: 50px;
+            margin-top: 10px;
             margin-left: 250px;
             display: flex;
             flex-direction: column;
@@ -56,7 +56,7 @@
     <div class="layout-container">
         <!-- Sidebar -->
         <aside class="sidebar">
-            <%- include('../partials/vendor/sidebar.ejs') %>
+            <%- include('../partials/vendor/sidebar.ejs', { activePage: activePage }) %>
         </aside>
         <!-- Main Content -->
         <div class="main-content">

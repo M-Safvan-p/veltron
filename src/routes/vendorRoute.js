@@ -36,30 +36,14 @@ router.get("/dashboard", vendorAuth.checkSession, pageController.loadDashboard);
 router.get("/products", vendorAuth.checkSession, productController.loadProducts);
 router.patch("/products/:id", vendorAuth.checkSession, productController.listAndUnlist);
 router.get("/products/add-product", vendorAuth.checkSession, productController.loadAddProduct);
-router.post(
-  "/products/add-product",
-  vendorAuth.checkSession,
-  upload.any(),
-  validate(productSchema),
-  productController.addProduct
-);
-router.get(
-  "/products/edit-product/:id",
-  vendorAuth.checkSession,
-  productController.loadEditProduct
-);
-router.put(
-  "/products/edit-product/:id",
-  vendorAuth.checkSession,
-  upload.any(),
-  validate(productSchema),
-  productController.editProduct
-);
+router.post("/products/add-product",vendorAuth.checkSession,validate(productSchema),upload.any(),productController.addProduct);
+router.get("/products/edit-product/:id",vendorAuth.checkSession,productController.loadEditProduct);
+router.put("/products/edit-product/:id",vendorAuth.checkSession,validate(productSchema),upload.any(),productController.editProduct);
 
 //orders
 router.get("/orders", vendorAuth.checkSession, orderController.loadOrders);
 router.get("/orders/:id", vendorAuth.checkSession, orderController.loadOrderDetails);
-router.post("/vendor/orders/:id/status", vendorAuth.checkSession, orderController.handleStatus);
+router.put("/orders/:id/status", vendorAuth.checkSession, orderController.handleStatus);
 
 // Add this after your routes
 router.use((error, req, res, next) => {

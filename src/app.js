@@ -6,6 +6,7 @@ const connectDB = require("./config/connectDB");
 const passport = require("./config/passport");
 const expressLayouts = require("express-ejs-layouts");
 const { PORT, SESSION_SECRET } = require("./config/env");
+const errorHandler = require("./middleware/errorHandler");
 
 // Connect DB
 connectDB();
@@ -40,6 +41,9 @@ app.set("layout", false);
 app.use("/admin", require("./routes/adminRoutes"));
 app.use("/vendor", require("./routes/vendorRoute"));
 app.use("/", require("./routes/userRoute"));
+
+// error handling
+app.use(errorHandler);
 
 // Start Server
 app.listen(PORT, () => {

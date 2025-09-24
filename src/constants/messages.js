@@ -12,6 +12,7 @@ const Messages = {
   EMAIL_SEND_FAILED: "Could not send verification email.",
   OTP_RESENT_SUCCESS: "A new OTP has been sent to your email.",
   OTP_RESEND_FAILED: "Could not resend OTP. Please try again later.",
+  GOOGLE_AUTH_USER: "This account was created using Google. Please continue with Google login.",
 
   // Login
   LOGIN_SUCCESS: "Login successful",
@@ -56,13 +57,14 @@ const Messages = {
   CART_ADD_FAILED: "Failed to add item to cart. Please try again.",
   CART_REMOVE_FAILED: "Failed to remove item from cart. Please try again.",
   CART_QUANTITY_LIMIT: "You have reached the maximum quantity for this item.",
+  CART_EMPTY: "Your cart is currently empty.",
+  NO_VALID_ITEMS_IN_CART: "No valid items in cart.",
 
   // Variant
   VARIANT_COLOR_REQUIRED: (i) => `Variant ${i + 1} requires a color (please enter a color name).`,
   VARIANT_IMAGE_REQUIRED: (i) => `Variant ${i + 1} must have at least 3 images.`,
   VARIANT_IMAGE_PROCESS_FAILED: (index) => `Failed to process images for variant ${index}.`,
-  VARIANT_IMAGE_UPLOAD_FAILED: (index) =>
-    `Failed to upload image for variant ${index} to Cloudinary.`,
+  VARIANT_IMAGE_UPLOAD_FAILED: (index) => `Failed to upload image for variant ${index} to Cloudinary.`,
 
   // Password
   WRONG_CURRENT_PASSWORD: "Current password is incorrect.",
@@ -78,8 +80,36 @@ const Messages = {
   ADDRESS_DELETED: "Address deleted successfully",
   ADDRESS_NOT_FOUND: "Address not found",
 
+  // Payment
   PAYMENT_METHOD_NOT_FOUND: "Payment method not found.",
-  NO_VALID_ITEMS_IN_CART: "No valid items in cart.",
+  PAYMENT_VERIFIED_SUCCESS: "Payment verified successfully.",
+  PAYMENT_VERIFIED_FAILED: "Payment verification failed.",
+
+  // Orders
+  // ORDER_PLACED_SUCCESS: "Your order has been placed successfully.",
+  // ORDER_PROCESSING: "We are processing your order.",
+  // ORDER_SHIPPED: "Your order has been shipped.",
+  // ORDER_OUT_FOR_DELIVERY: "Your order is out for delivery.",
+  // ORDER_DELIVERED: "Your order has been delivered successfully.",
+  // ORDER_FAILED: "We were unable to process your order. Please try again.",
+  ORDER_CANCELLED: "Your order has been cancelled.",
+  ORDER_NOT_FOUND: "Order not found. Please check your order ID.",
+  ORDER_STATUS_UPDATED: "Order status updated.",
+  ORDER_ITEM_NOT_FOUND: (productId, variantId) => `Product ${productId} with variant ${variantId} not found in this order.`,
+  ORDER_RETURN_QUANTITY_EXCEEDS: (productId) => `Return quantity for product ${productId} exceeds purchased quantity.`,
+  // razorpay
+  RAZORPAY_ORDER_CREAT: "Razorpay order created",
+  // ORDER_UPDATE_FAILED: "Your order could not be updated at this time. Please try later.",
+  // ORDER_PAYMENT_RECEIVED: "We’ve received your payment. Your order is confirmed.",
+  // ORDER_ID_REQUIRED: "Order ID is required.",
+  // ORDER_ALREADY_EXISTS: "This order already exists.",
+
+  // password validationn
+  VALIDATION_BOTH_FIELD_REQUIRED: "Both new password and confirm password are required.",
+  VALIDATION_PASSWORD_LENGTH: "Password must be at least 8 characters long.",
+  VALIDATION_PASSWORD_MISMATCH: "Passwords do not match.",
+  VALIDATION_PASSWORD_STRENGTH: "Password must include at least 1 uppercase letter, 1 number, and 1 special character.",
+
   // Server errors
   SERVER_ERROR: "An error occurred. Please try again later.",
 };
