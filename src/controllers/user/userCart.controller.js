@@ -34,7 +34,6 @@ const cartAdd = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(variantId)) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.CART_ADD_FAILED);
     if (!mongoose.Types.ObjectId.isValid(productId)) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.CART_ADD_FAILED);
 
-    console.log("id..", variantId, productId);
 
     // Find product
     const product = await Product.findById(productId);
@@ -45,7 +44,7 @@ const cartAdd = async (req, res) => {
     if (!product.isListed) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.PRODUCT_NOT_FOUND);
     if (product.productStatus !== "Available") return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.PRODUCT_NOT_FOUND);
     if (!variant) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.PRODUCT_NOT_FOUND);
-    if (variant.stock < 1) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.PRODUCT_NOT_FOUND);
+    if (variant.stock < 1) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.PRODUCT_OUT_OF_STOCK);
 
     // Find or create cart
     let cart = await Cart.findOne({ userId: req.session.user });

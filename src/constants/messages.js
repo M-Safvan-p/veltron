@@ -51,6 +51,7 @@ const Messages = {
   PRODUCT_ALREADY_EXISTS: "Product already exists.",
   PRODUCT_ADDED: "Product has been added successfully.",
   PRODUCT_UPDATED: "Product has been updated successfully.",
+  PRODUCT_OUT_OF_STOCK: "Product is out of stock.",
 
   // Cart
   CART_ADD_SUCCESS: "Item added to cart successfully.",
@@ -84,7 +85,8 @@ const Messages = {
   PAYMENT_METHOD_NOT_FOUND: "Payment method not found.",
   PAYMENT_VERIFIED_SUCCESS: "Payment verified successfully.",
   PAYMENT_VERIFIED_FAILED: "Payment verification failed.",
-
+  INVALID_AMOUNT:"Invalid amount. Please enter a positive number.",
+  INSUFFICIENT_BALANCE: "Insufficient balance. Please add money to the wallet to continue.",
   // Orders
   // ORDER_PLACED_SUCCESS: "Your order has been placed successfully.",
   // ORDER_PROCESSING: "We are processing your order.",
@@ -110,6 +112,7 @@ const Messages = {
   VALIDATION_PASSWORD_MISMATCH: "Passwords do not match.",
   VALIDATION_PASSWORD_STRENGTH: "Password must include at least 1 uppercase letter, 1 number, and 1 special character.",
 
+  
   // Server errors
   SERVER_ERROR: "An error occurred. Please try again later.",
 };

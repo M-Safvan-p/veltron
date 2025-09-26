@@ -10,7 +10,8 @@ async function filterValidCartItems(items) {
   const validItems = [];
 
   for (const item of items) {
-    const product = productMap.get(String(item.productId._id || item.productId));
+    const productId = item.productId?._id || item.productId;
+    const product = productMap.get(String(productId));
     if (!product) continue;
 
     if (!product.isListed || product.productStatus !== "Available") continue;
