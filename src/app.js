@@ -7,9 +7,14 @@ const passport = require("./config/passport");
 const expressLayouts = require("express-ejs-layouts");
 const { PORT, SESSION_SECRET } = require("./config/env");
 const errorHandler = require("./middleware/errorHandler");
+const logger = require("./middleware/logger");
 
 // Connect DB
 connectDB();
+
+// Logger
+app.use(logger);
+
 
 // Middleware
 app.use(express.json());
