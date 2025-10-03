@@ -198,7 +198,7 @@ const placeOrder = async (req, res) => {
       wallet.transactionHistory.push({
         amount: total,
         type: "debit",
-        message: `Payment for your order has been successfully deducted.`,
+        message: `Payment deducted for your order.`,
       });
       await wallet.save();
     }
@@ -255,8 +255,9 @@ const loadorders = async (req, res) => {
     res.render("user/orders", {
       user: req.user,
       totalPages: Math.ceil(totalOrders / limit),
-      currentPage: page,
+      currentPage: "orders",
       orders,
+      pagee: page,
       layout: "layouts/userLayout",
     });
   } catch (error) {
@@ -277,6 +278,7 @@ const loadOrderDetails = async (req, res) => {
       user: req.user,
       returnData,
       order,
+      currentPage: "orders",
       razorpayKey: RAZORPAY_KEY_ID,
       layout: "layouts/userLayout",
     });

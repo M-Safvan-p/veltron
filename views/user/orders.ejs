@@ -723,22 +723,22 @@
             <!-- Pagination -->
             <div class="pagination">
                 <div class="pagination-controls">
-                    <button class="pagination-btn" <%=currentPage==1 ? 'disabled aria-disabled="true"' : '' %>
-                        onclick="changePage(<%= currentPage - 1 %>)" aria-label="Previous page">
+                    <button class="pagination-btn" <%=pagee==1 ? 'disabled aria-disabled="true"' : '' %>
+                        onclick="changePage(<%= pagee - 1 %>)" aria-label="Previous page">
                             <i class="fas fa-chevron-left" aria-hidden="true"></i>
                     </button>
 
                     <% for (let i=1; i <=totalPages; i++) { %>
-                        <button class="pagination-btn <%= i === currentPage ? 'active' : '' %>"
-                            aria-current="<%= i === currentPage ? 'page' : 'false' %>" onclick="changePage(<%= i %>)"
+                        <button class="pagination-btn <%= i === pagee ? 'active' : '' %>"
+                            aria-current="<%= i === pagee ? 'page' : 'false' %>" onclick="changePage(<%= i %>)"
                             aria-label="Page <%= i %>">
                             <%= i %>
                         </button>
                         <% } %>
 
-                            <button class="pagination-btn" <%=currentPage==totalPages ? 'disabled aria-disabled="true"'
+                            <button class="pagination-btn" <%=pagee==totalPages ? 'disabled aria-disabled="true"'
                                 : '' %>
-                                onclick="changePage(<%= currentPage + 1 %>)" aria-label="Next page">
+                                onclick="changePage(<%= pagee + 1 %>)" aria-label="Next page">
                                     <i class="fas fa-chevron-right" aria-hidden="true"></i>
                             </button>
                 </div>
