@@ -1,4 +1,4 @@
-const sendEmail = require("../config/mailer"); 
+const sendEmail = require("../config/mailer");
 
 function generateOtp() {
   return Math.floor(1000 + Math.random() * 9000).toString();
@@ -8,7 +8,7 @@ function generateOtp() {
 async function sendVerificationEmail(email, otp) {
   const emailSent = await sendEmail({
     to: email,
-    subject: 'Verify your account',
+    subject: "Verify your account",
     text: `Your OTP is ${otp}`,
     html: `
     <div style="font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px;">
@@ -41,10 +41,9 @@ async function sendVerificationEmail(email, otp) {
 
 // otp for changing email
 async function sendChangeEmailOtp(newEmail, otp) {
-
   const emailSent = await sendEmail({
     to: newEmail,
-    subject: 'Verify your new email address',
+    subject: "Verify your new email address",
     text: `Your OTP for changing email is ${otp}`,
     html: `
       <div style="font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px;">
@@ -71,8 +70,42 @@ async function sendChangeEmailOtp(newEmail, otp) {
   return emailSent;
 }
 
+// forgot password otp
+async function sendForgotPasswordOtp(userEmail, otp) {
+  const emailSent = await sendEmail({
+    to: userEmail,
+    subject: "Reset Your Password - OTP Verification",
+    text: `Your OTP for resetting your password is ${otp}`,
+    html: `
+      <div style="font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px;">
+        <div style="max-width: 500px; margin: auto; background: #ffffff; border-radius: 10px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+          <h2 style="color: #333; text-align: center;">🔑 Reset Password</h2>
+          <p style="color: #555; font-size: 16px;">Hello,</p>
+          <p style="color: #555; font-size: 16px;">
+            You requested to reset your password. Please use the following OTP to proceed:
+          </p>
+          <div style="text-align: center; margin: 20px 0;">
+            <span style="display: inline-block; background: #007BFF; color: #fff; font-size: 22px; letter-spacing: 5px; padding: 12px 24px; border-radius: 8px;">
+              ${otp}
+            </span>
+          </div>
+          <p style="color: #555; font-size: 14px;">This OTP will expire in <b>5 minutes</b>. Do not share it with anyone.</p>
+          <p style="color: #555; font-size: 14px;">If you didn’t request a password reset, you can safely ignore this email.</p>
+          <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
+          <p style="color: #999; font-size: 12px; text-align: center;">
+            © ${new Date().getFullYear()} Veltron. All rights reserved.
+          </p>
+        </div>
+      </div>
+    `,
+  });
+
+  return emailSent;
+}
+
 module.exports = {
   generateOtp,
   sendVerificationEmail,
   sendChangeEmailOtp,
+  sendForgotPasswordOtp,
 };

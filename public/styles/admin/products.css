@@ -1,431 +1,431 @@
 /* Page Header */
 .page-header {
-    margin-bottom: 30px;
+  margin-bottom: 30px;
 }
 
 .page-title {
-    font-size: 32px;
-    font-weight: bold;
-    color: #000;
-    margin-bottom: 5px;
+  font-size: 32px;
+  font-weight: bold;
+  color: #000;
+  margin-bottom: 5px;
 }
 
 .breadcrumb {
-    color: #000;
-    font-size: 14px;
+  color: #000;
+  font-size: 14px;
 }
 
 .breadcrumb a {
-    color: #000;
-    text-decoration: none;
+  color: #000;
+  text-decoration: none;
 }
 
 .breadcrumb-separator {
-    margin: 0 8px;
-    color: #999;
+  margin: 0 8px;
+  color: #999;
 }
 
 /* Controls */
 .controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    gap: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 20px;
 }
 
 .left-controls {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 1;
 }
 
 .search-box {
-    display: flex;
-    align-items: center;
-    background: #f8f9fa;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    padding: 8px 12px;
-    width: 250px;
+  display: flex;
+  align-items: center;
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 8px 12px;
+  width: 250px;
 }
 
 .search-box i {
-    color: #666;
-    margin-right: 8px;
+  color: #666;
+  margin-right: 8px;
 }
 
 .search-box input {
-    border: none;
-    outline: none;
-    background: transparent;
-    flex: 1;
-    padding: 4px;
-    font-size: 14px;
+  border: none;
+  outline: none;
+  background: transparent;
+  flex: 1;
+  padding: 4px;
+  font-size: 14px;
 }
 
 .search-box input::placeholder {
-    color: #999;
+  color: #999;
 }
 
 /* Filter Section */
 .filter-section {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .filter-label {
-    font-size: 14px;
-    font-weight: 500;
-    color: #333;
-    white-space: nowrap;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  white-space: nowrap;
 }
 
 .filter-controls {
-    display: flex;
-    gap: 10px;
+  display: flex;
+  gap: 10px;
 }
 
 .filter-select {
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background: white;
-    font-size: 14px;
-    color: #333;
-    min-width: 120px;
-    cursor: pointer;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: white;
+  font-size: 14px;
+  color: #333;
+  min-width: 120px;
+  cursor: pointer;
 }
 
 .filter-select:focus {
-    outline: none;
-    border-color: #000;
+  outline: none;
+  border-color: #000;
 }
 
 /* Sort Section */
 .sort-section {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .sort-label {
-    font-size: 14px;
-    font-weight: 500;
-    color: #333;
-    white-space: nowrap;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  white-space: nowrap;
 }
 
 .sort-controls {
-    display: flex;
-    gap: 5px;
+  display: flex;
+  gap: 5px;
 }
 
 .sort-btn {
-    padding: 6px 12px;
-    border: 1px solid #ddd;
-    background: white;
-    border-radius: 4px;
-    font-size: 12px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.2s;
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
 }
 
 .sort-btn:hover {
-    background: #f8f9fa;
+  background: #f8f9fa;
 }
 
 .sort-btn.active {
-    background: #000;
-    color: white;
-    border-color: #000;
+  background: #000;
+  color: white;
+  border-color: #000;
 }
 
 .product-pending-btn {
-    background: #000;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    padding: 10px 20px;
-    cursor: pointer;
-    font-weight: 500;
-    font-size: 14px;
-    text-decoration: none;
-    display: inline-block;
-    white-space: nowrap;
+  background: #000;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+  text-decoration: none;
+  display: inline-block;
+  white-space: nowrap;
 }
 
 .product-pending-btn:hover {
-    background: #333;
+  background: #333;
 }
 
 /* Table */
 .products-table {
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
+  width: 100%;
+  border-collapse: collapse;
 }
 
 .table-header {
-    background: #000;
-    color: white;
+  background: #000;
+  color: white;
 }
 
 .table-header th {
-    padding: 15px;
-    text-align: left;
-    font-weight: 600;
-    font-size: 14px;
+  padding: 15px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
 }
 
 .table-row {
-    border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .table-row:hover {
-    background-color: #f8f9fa;
+  background-color: #f8f9fa;
 }
 
 .table-row td {
-    padding: 15px;
-    vertical-align: middle;
-    font-size: 14px;
+  padding: 15px;
+  vertical-align: middle;
+  font-size: 14px;
 }
 
 .product-image {
-    width: 50px;
-    height: 50px;
-    border-radius: 8px;
-    overflow: hidden;
-    background: #f8f9fa;
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f8f9fa;
 }
 
 .product-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .product-name {
-    font-weight: 500;
-    color: #333;
+  font-weight: 500;
+  color: #333;
 }
 
 .product-category {
-    color: #666;
-    text-transform: capitalize;
+  color: #666;
+  text-transform: capitalize;
 }
 
 .product-price {
-    font-weight: 600;
-    color: #333;
+  font-weight: 600;
+  color: #333;
 }
 
 .product-stock {
-    color: #666;
+  color: #666;
 }
 
 .brand-name {
-    color: #333;
+  color: #333;
 }
 
 .no-data {
-    text-align: center;
-    color: #999;
-    font-style: italic;
-    padding: 40px;
+  text-align: center;
+  color: #999;
+  font-style: italic;
+  padding: 40px;
 }
 
 /* List Toggle */
 .list-toggle {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
 }
 
 .toggle-text {
-    font-size: 12px;
-    font-weight: 600;
-    min-width: 70px; /* Increased to accommodate "APPROVED/REJECTED" */
+  font-size: 12px;
+  font-weight: 600;
+  min-width: 70px; /* Increased to accommodate "APPROVED/REJECTED" */
 }
 
 /* Active/Listed products - Green text */
 .list-toggle.listed .toggle-text {
-    color: #28a745; /* Green color for listed products */
+  color: #28a745; /* Green color for listed products */
 }
 
 /* Inactive/Unlisted products - Red text */
 .list-toggle.unlisted .toggle-text {
-    color: #dc3545; /* Red color for unlisted products */
+  color: #dc3545; /* Red color for unlisted products */
 }
 
 /* Toggle Switch */
 .toggle-switch {
-    position: relative;
-    width: 40px;
-    height: 20px;
-    border-radius: 20px;
-    transition: background 0.3s;
+  position: relative;
+  width: 40px;
+  height: 20px;
+  border-radius: 20px;
+  transition: background 0.3s;
 }
 
 /* Listed/Active products - Green background (ON position) */
 .list-toggle.listed .toggle-switch {
-    background: #28a745; /* Green color for listed products */
+  background: #28a745; /* Green color for listed products */
 }
 
 /* Unlisted/Inactive products - Red background (OFF position) */
 .list-toggle.unlisted .toggle-switch {
-    background: #dc3545; /* Red color for unlisted products */
+  background: #dc3545; /* Red color for unlisted products */
 }
 
 .toggle-switch .slider {
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 16px;
-    height: 16px;
-    background: white;
-    border-radius: 50%;
-    transition: transform 0.3s;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.3s;
 }
 
 /* Listed products - Slider to the right (ON position) */
 .list-toggle.listed .toggle-switch .slider {
-    transform: translateX(20px);
+  transform: translateX(20px);
 }
 
 /* Unlisted products - Slider to the left (OFF position) */
 .list-toggle.unlisted .toggle-switch .slider {
-    transform: translateX(0px);
+  transform: translateX(0px);
 }
 
 /* Pagination */
-.pagination {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
+/* .pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  /* background: white; */
+  /* border-radius: 8px; */
+  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); */
+} */
+/* 
 .pagination-info {
-    color: #666;
-    font-size: 14px;
+  color: #666;
+  font-size: 14px;
 }
 
 .pagination-controls {
-    display: flex;
-    align-items: center;
-    gap: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .pagination-btn {
-    width: 32px;
-    height: 32px;
-    border: 1px solid #ddd;
-    background: white;
-    border-radius: 4px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    color: #333;
-    transition: all 0.2s;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #333;
+  transition: all 0.2s;
 }
 
 .pagination-btn.active {
-    background: #000;
-    color: white;
-    border-color: #000;
+  background: #000;
+  color: white;
+  border-color: #000;
 }
 
 .pagination-btn:hover:not(.active):not(:disabled) {
-    background: #f8f9fa;
+  background: #f8f9fa;
 }
 
 .pagination-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .pagination-dots {
-    padding: 0 5px;
-    color: #666;
-}
+  padding: 0 5px;
+  color: #666;
+} */
 
 /* Responsive Design */
 @media (max-width: 1200px) {
-    .left-controls {
-        flex-wrap: wrap;
-        gap: 15px;
-    }
-    
-    .filter-controls,
-    .sort-controls {
-        gap: 5px;
-    }
-    
-    .sort-btn {
-        font-size: 11px;
-        padding: 5px 8px;
-    }
+  .left-controls {
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .filter-controls,
+  .sort-controls {
+    gap: 5px;
+  }
+
+  .sort-btn {
+    font-size: 11px;
+    padding: 5px 8px;
+  }
 }
 
 @media (max-width: 768px) {
-    .controls {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 15px;
-    }
-    
-    .left-controls {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .filter-section,
-    .sort-section {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-    }
-    
-    .filter-controls,
-    .sort-controls {
-        width: 100%;
-        justify-content: flex-start;
-        flex-wrap: wrap;
-    }
-    
-    .search-box {
-        width: 100%;
-    }
-    
-    .products-table {
-        overflow-x: auto;
-    }
-    
-    table {
-        min-width: 800px;
-    }
-    
-    .pagination {
-        flex-direction: column;
-        gap: 15px;
-        text-align: center;
-    }
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+
+  .left-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-section,
+  .sort-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .filter-controls,
+  .sort-controls {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .search-box {
+    width: 100%;
+  }
+
+  .products-table {
+    overflow-x: auto;
+  }
+
+  table {
+    min-width: 800px;
+  }
+
+  .pagination {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
 }

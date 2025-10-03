@@ -19,45 +19,43 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Submit form using Axios
-  document
-    .getElementById("categoryForm")
-    .addEventListener("submit", async (e) => {
-      e.preventDefault();
+  document.getElementById("categoryForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-      const categoryId = document.getElementById("categoryId").value;
-      const categoryName = document.getElementById("categoryName").value.trim();
-      const description = document.getElementById("description").value.trim();
-      const isListed = document.getElementById("isListed").value;
+    const categoryId = document.getElementById("categoryId").value;
+    const categoryName = document.getElementById("categoryName").value.trim();
+    const description = document.getElementById("description").value.trim();
+    const isListed = document.getElementById("isListed").value;
 
-      try {
-        const response = await axios.put(`/admin/category/edit-category/${categoryId}`, {
-          name: categoryName,
-          description: description,
-          isListed: isListed,
-        });
+    try {
+      const response = await axios.put(`/admin/category/edit-category/${categoryId}`, {
+        name: categoryName,
+        description: description,
+        isListed: isListed,
+      });
 
-        Swal.fire({
-          icon: "success",
-          title: "Updated!",
-          text: "Category updated successfully",
-          timer: 1500,
-          showConfirmButton: false,
-          customClass: {
-            confirmButton: "swal-confirm-black",
-          },
-        }).then(() => {
-          window.location.href = response.data.redirectUrl;
-        });
-      } catch (error) {
-        console.error("Update failed:", error);
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: error?.response?.data?.message || "Failed to update category",
-          customClass: {
-            confirmButton: "swal-confirm-black",
-          },
-        });
-      }
-    });
+      Swal.fire({
+        icon: "success",
+        title: "Updated!",
+        text: "Category updated successfully",
+        timer: 1500,
+        showConfirmButton: false,
+        customClass: {
+          confirmButton: "swal-confirm-black",
+        },
+      }).then(() => {
+        window.location.href = response.data.redirectUrl;
+      });
+    } catch (error) {
+      console.error("Update failed:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error?.response?.data?.message || "Failed to update category",
+        customClass: {
+          confirmButton: "swal-confirm-black",
+        },
+      });
+    }
+  });
 });

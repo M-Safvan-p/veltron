@@ -7,21 +7,34 @@ const returnSchema = new mongoose.Schema(
       ref: "Order",
       required: true,
     },
-    vendorId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Vendor",
-      required: true,
-    },
-    productId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Product",
-      required: true,
-    },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
+    items: [
+      {
+        productId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
+          required: true,
+        },
+        vendorId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Vendor",
+          required: true,
+        },
+        variantId: {
+          type: String,
+          required: true,
+        },
+        name: { type: String, required: true },
+        quantity: { type: Number, required: true },
+        priceAtPurchase: { type: Number, required: true },
+        vendorEarning: { type: Number, required: true },
+        commissionAmount: { type: Number, required: true },
+      },
+    ],
     reason: {
       type: String,
       required: true,
@@ -50,11 +63,11 @@ const returnSchema = new mongoose.Schema(
     },
     returnDate: {
       type: Date,
-      required: false,
+      default: Date.now,
     },
   },
   {
-    timestamps: { createdAt: false, updatedAt: true },
+    timestamps: { createdAt: true, updatedAt: true },
   }
 );
 

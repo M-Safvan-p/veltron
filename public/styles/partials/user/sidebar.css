@@ -1,300 +1,306 @@
 /* Profile Sidebar Overlay */
 .profile-sidebar-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(4px);
-    z-index: 998;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 998;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .profile-sidebar-overlay.active {
-    opacity: 1;
-    visibility: visible;
+  opacity: 1;
+  visibility: visible;
 }
 
 /* Main Sidebar */
 .profile-sidebar {
-    position: fixed;
-    top: 0;
-    left: -320px;
-    width: 320px;
-    height: 100vh;
-    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
-    z-index: 999;
-    transition: left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-    overflow: hidden;
-    border-right: 1px solid #e9ecef;
+  position: fixed;
+  top: 0;
+  left: -320px;
+  width: 320px;
+  height: 100vh;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+  z-index: 999;
+  transition: left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  overflow: hidden;
+  border-right: 1px solid #e9ecef;
 }
 
 .profile-sidebar.active {
-    left: 0;
+  left: 0;
 }
 
 .profile-sidebar-content {
-    background: transparent;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    position: relative;
+  background: transparent;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
 }
 
 /* Elegant Header - Softer Dark Theme */
 .profile-header {
-    padding: 30px 25px;
-    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    color: #fff;
-    flex-shrink: 0;
-    position: relative;
-    overflow: hidden;
+  padding: 30px 25px;
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  color: #fff;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
 }
 
 .profile-header::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(23, 23, 23, 0.723) 0%, transparent 70%);
-    animation: subtle-glow 6s ease-in-out infinite alternate;
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(23, 23, 23, 0.723) 0%, transparent 70%);
+  animation: subtle-glow 6s ease-in-out infinite alternate;
 }
 
 @keyframes subtle-glow {
-    0% { opacity: 0.4; transform: scale(1); }
-    100% { opacity: 0.2; transform: scale(1.1); }
+  0% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0.2;
+    transform: scale(1.1);
+  }
 }
 
 /* Avatar */
 .profile-avatar {
-    width: 60px;
-    height: 60px;
-    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #100f0f;
-    font-size: 24px;
-    font-weight: 600;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
-    transition: all 0.3s ease;
-    z-index: 10;
-    position: relative;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #100f0f;
+  font-size: 24px;
+  font-weight: 600;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s ease;
+  z-index: 10;
+  position: relative;
 }
 
 .profile-avatar:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  transform: scale(1.05);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
 .profile-image {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-    object-position: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
 }
 
 /* Profile Name */
 .profile-name {
-    font-size: 18px;
-    font-weight: 600;
-    color: #ffffff;
-    letter-spacing: 0.5px;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    z-index: 10;
-    position: relative;
+  font-size: 18px;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+  position: relative;
 }
 
 /* Menu */
 .profile-menu {
-    list-style: none;
-    padding: 20px 0;
-    margin: 0;
-    flex: 1;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: #e0e0e0 transparent;
+  list-style: none;
+  padding: 20px 0;
+  margin: 0;
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #e0e0e0 transparent;
 }
 
 .profile-menu::-webkit-scrollbar {
-    width: 6px;
+  width: 6px;
 }
 
 .profile-menu::-webkit-scrollbar-track {
-    background: transparent;
+  background: transparent;
 }
 
 .profile-menu::-webkit-scrollbar-thumb {
-    background: #e0e0e0;
-    border-radius: 3px;
+  background: #e0e0e0;
+  border-radius: 3px;
 }
 
 .profile-menu::-webkit-scrollbar-thumb:hover {
-    background: #d0d0d0;
+  background: #d0d0d0;
 }
 
 /* Menu Items */
 .menu-item {
-    margin: 0 15px 8px;
+  margin: 0 15px 8px;
 }
 
 .menu-link {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 15px 20px;
-    text-decoration: none;
-    color: #333;
-    border-radius: 12px;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    position: relative;
-    overflow: hidden;
-    font-weight: 500;
-    letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px 20px;
+  text-decoration: none;
+  color: #333;
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+  overflow: hidden;
+  font-weight: 500;
+  letter-spacing: 0.3px;
 }
 
 .menu-link::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-    width: 4px;
-    background: linear-gradient(180deg, #000 0%, #333 100%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 4px;
+  background: linear-gradient(180deg, #000 0%, #333 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .menu-link:hover {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    transform: translateX(5px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  transform: translateX(5px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .menu-link:hover::before {
-    opacity: 1;
+  opacity: 1;
 }
 
 .menu-link.active {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    color: #2c3e50;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-    transform: translateX(8px);
-    border-left: 5px solid #2c3e50;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  color: #2c3e50;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  transform: translateX(8px);
+  border-left: 5px solid #2c3e50;
 }
 
 .menu-link.active::before {
-    opacity: 1;
-    background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
-    width: 5px;
+  opacity: 1;
+  background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+  width: 5px;
 }
 
 .menu-link.active .menu-icon {
-    color: #2c3e50;
-    transform: scale(1.1);
+  color: #2c3e50;
+  transform: scale(1.1);
 }
 
 .menu-link:hover .menu-icon {
-    color: #333;
-    transform: scale(1.1);
+  color: #333;
+  transform: scale(1.1);
 }
 
 .menu-link.active .menu-icon {
-    transform: scale(1.1);
+  transform: scale(1.1);
 }
 
 /* Menu Text */
 .menu-text {
-    font-size: 15px;
-    font-weight: 500;
-    line-height: 1.4;
-    transition: all 0.3s ease;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.4;
+  transition: all 0.3s ease;
 }
 
 /* Logout Link Styling */
 .logout-link {
-    color: #666;
-    border: 1px solid #e9ecef;
-    margin-top: 10px;
+  color: #666;
+  border: 1px solid #e9ecef;
+  margin-top: 10px;
 }
 
 .logout-link:hover {
-    background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
-    border-color: #ffcccc;
-    color: #cc0000;
+  background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
+  border-color: #ffcccc;
+  color: #cc0000;
 }
 
 .logout-link:hover .menu-icon {
-    color: #cc0000;
+  color: #cc0000;
 }
 
 .logout-link .menu-icon {
-    color: #666;
+  color: #666;
 }
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
-    .profile-sidebar {
-        width: 280px;
-        left: -300px;
-    }
+  .profile-sidebar {
+    width: 280px;
+    left: -300px;
+  }
 
-    .profile-header {
-        padding: 25px 20px;
-    }
+  .profile-header {
+    padding: 25px 20px;
+  }
 
-    .profile-avatar {
-        width: 50px;
-        height: 50px;
-        font-size: 20px;
-    }
+  .profile-avatar {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+  }
 
-    .profile-name {
-        font-size: 16px;
-    }
+  .profile-name {
+    font-size: 16px;
+  }
 
-    .menu-link {
-        padding: 12px 15px;
-        gap: 12px;
-    }
+  .menu-link {
+    padding: 12px 15px;
+    gap: 12px;
+  }
 
-    .menu-text {
-        font-size: 14px;
-    }
+  .menu-text {
+    font-size: 14px;
+  }
 
-    .menu-icon {
-        width: 20px;
-        height: 20px;
-        font-size: 16px;
-    }
+  .menu-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 16px;
+  }
 }
 
 @media (max-width: 480px) {
-    .profile-sidebar {
-        width: 260px;
-        left: -280px;
-    }
+  .profile-sidebar {
+    width: 260px;
+    left: -280px;
+  }
 
-    .profile-header {
-        padding: 20px 15px;
-    }
+  .profile-header {
+    padding: 20px 15px;
+  }
 
-    .menu-item {
-        margin: 0 10px 6px;
-    }
+  .menu-item {
+    margin: 0 10px 6px;
+  }
 
-    .menu-link {
-        padding: 10px 12px;
-    }
+  .menu-link {
+    padding: 10px 12px;
+  }
 }

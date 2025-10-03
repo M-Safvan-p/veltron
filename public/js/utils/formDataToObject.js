@@ -4,7 +4,7 @@ function formDataToObject(form) {
 
   formData.forEach((value, key) => {
     // Trim string values to avoid whitespace issues
-    const trimmedValue = typeof value === 'string' ? value.trim() : value;
+    const trimmedValue = typeof value === "string" ? value.trim() : value;
 
     // Handle nested keys like variants[0][color]
     if (key.includes("[")) {
@@ -25,15 +25,15 @@ function formDataToObject(form) {
 
   // Convert object with numeric keys to arrays
   function convertToArrays(obj) {
-    if (typeof obj !== 'object' || obj === null) return obj;
+    if (typeof obj !== "object" || obj === null) return obj;
     if (Array.isArray(obj)) {
       return obj.map(convertToArrays);
     }
     const keys = Object.keys(obj);
-    const numericKeys = keys.filter(k => !isNaN(k));
+    const numericKeys = keys.filter((k) => !isNaN(k));
     if (numericKeys.length > 0) {
       const arr = [];
-      numericKeys.forEach(k => {
+      numericKeys.forEach((k) => {
         arr[parseInt(k)] = convertToArrays(obj[k]);
       });
       // Fill in any missing indices with undefined
@@ -43,7 +43,7 @@ function formDataToObject(form) {
       return arr;
     } else {
       const result = {};
-      keys.forEach(k => {
+      keys.forEach((k) => {
         result[k] = convertToArrays(obj[k]);
       });
       return result;

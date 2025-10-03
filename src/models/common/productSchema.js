@@ -14,7 +14,7 @@ const productSchema = new mongoose.Schema(
     },
     productStatus: {
       type: String,
-      enum: ["Available", "out-of-stock", "Discountinued"],
+      enum: ["Available", "out-of-stock", "Discontinued"],
       default: "Available",
     },
     name: {
@@ -50,12 +50,12 @@ const productSchema = new mongoose.Schema(
           {
             url: { type: String, required: true },
             public_id: { type: String, required: true },
-            filename: { type: String }
+            filename: { type: String },
           },
         ],
       },
     ],
-    specifications: { 
+    specifications: {
       strapStyle: { type: String, required: true },
       weight: { type: String },
       dialType: { type: String },

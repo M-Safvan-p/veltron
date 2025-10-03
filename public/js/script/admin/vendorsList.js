@@ -26,7 +26,4 @@ document.addEventListener("DOMContentLoaded", function () {
     // Implement view vendor logic - redirect to vendor details page
     window.location.href = `/admin/vendors/${vendorId}`;
   }
-
-
-
 });

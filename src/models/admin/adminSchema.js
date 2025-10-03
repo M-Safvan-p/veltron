@@ -13,11 +13,11 @@ const adminSchema = new Schema({
   },
   password: {
     type: String,
-    required: true
+    required: true,
   },
   role: {
-    type: String
-  }
+    type: String,
+  },
 });
 
 module.exports = mongoose.model("Admin", adminSchema);

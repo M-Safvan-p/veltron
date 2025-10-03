@@ -14,17 +14,26 @@ const orderSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    status: {
+    orderStatus: {
       type: String,
-      enum: ["pending", "processed", "failed", "completed"],
+      enum: ["pending","processing", "shipped", "completed", "cancelled", "failed"],
+      default: "processing",
+      required: true,
+    },
+    paymentMethod: {
+      type: String,
+      enum: ["COD", "WALLET", "RAZORPAY"],
+      required: true,
+    },
+    paymentStatus: {
+      type: String,
+      enum: ["pending", "paid", "failed"],
       default: "pending",
       required: true,
     },
-    paymentMethodId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "PaymentMethod",
-      required: true,
-    },
+    razorpayOrderId: { type: String },
+    razorpayPaymentId: { type: String },
+    razorpaySignature: { type: String },
     couponApplied: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Coupon",
@@ -51,13 +60,14 @@ const orderSchema = new mongoose.Schema(
     },
     shippingAddress: {
       fullName: { type: String, required: true },
+      email: { type: String, required: true },
       phone: { type: String, required: true },
       fullAddress: { type: String, required: true },
-      landmark: { type: String },
       district: { type: String, required: true },
-      city: { type: String, required: true },
       state: { type: String, required: true },
+      city: { type: String, required: true },
       pincode: { type: Number, required: true },
+      type: { type: String, enum: ["Home", "Work", "Other"] },
     },
     products: [
       {
@@ -71,13 +81,21 @@ const orderSchema = new mongoose.Schema(
           ref: "Vendor",
           required: true,
         },
+        orderStatus: {
+          type: String,
+          enum: ["processing", "shipped", "cancelled", "completed"],
+          default: "processing",
+          required: true,
+        },
         name: { type: String, required: true },
         quantity: { type: Number, required: true },
-        selectedColor: { type: String },
+        image: { type: String, required: true },
+        selectedColor: { type: String, required: true },
         priceAtPurchase: { type: Number, required: true },
         productTotal: { type: Number, required: true },
         commissionAmount: { type: Number, required: true },
         vendorEarning: { type: Number, required: true },
+        variantId: { type: String, required: true },
       },
     ],
     invoiceDate: {

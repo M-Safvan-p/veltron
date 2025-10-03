@@ -5,36 +5,36 @@
     <div>
         <div class="logo">Veltron</div>
 
-        <a href="/vendor/dashboard" class="nav-item <%= activePage === 'dashboard' ? 'active' : '' %>">
+        <a href="/vendor/dashboard" class="nav-item <%= (activePage || '') === 'dashboard' ? 'active' : '' %>">
             <i class="fas fa-tachometer-alt"></i>
             <span>Dashboard</span>
         </a>
 
-        <a href="/vendor/products" class="nav-item <%= activePage === 'products' ? 'active' : '' %>">
+        <a href="/vendor/products" class="nav-item <%= (activePage || '') === 'products' ? 'active' : '' %>">
             <i class="fas fa-box"></i>
             <span>Products</span>
             <span class="arrow">›</span>
         </a>
 
-        <a href="/vendor/orders" class="nav-item <%= activePage === 'orders' ? 'active' : '' %>">
+        <a href="/vendor/orders" class="nav-item <%= (activePage || '') === 'orders' ? 'active' : '' %>">
             <i class="fas fa-clipboard-list"></i>
             <span>Orders</span>
             <span class="arrow">›</span>
         </a>
 
-        <a href="/vendor/category" class="nav-item <%= activePage === 'category' ? 'active' : '' %>">
+        <a href="/vendor/category" class="nav-item <%= (activePage || '') === 'category' ? 'active' : '' %>">
             <i class="fas fa-tags"></i>
             <span>Category</span>
             <span class="arrow">›</span>
         </a>
 
-        <a href="/vendor/wallet" class="nav-item <%= activePage === 'wallet' ? 'active' : '' %>">
+        <a href="/vendor/wallet" class="nav-item <%= (activePage || '') === 'wallet' ? 'active' : '' %>">
             <i class="fas fa-wallet"></i>
             <span>Wallet</span>
             <span class="arrow">›</span>
         </a>
 
-        <a href="/vendor/profile" class="nav-item <%= activePage === 'profile' ? 'active' : '' %>">
+        <a href="/vendor/profile" class="nav-item <%= (activePage || '') === 'profile' ? 'active' : '' %>">
             <i class="fas fa-user"></i>
             <span>Profile</span>
             <span class="arrow">›</span>

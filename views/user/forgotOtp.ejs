@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verify OTP</title>
+    <link rel="stylesheet" href="../../styles/user/verifyOtp.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+    <div class="otp-container">
+        <h2>Verify OTP</h2>
+        <p>
+            We’ve sent an email with an activation code to your email:
+            <strong>
+                <%= email %>         
+            </strong>
+        </p>
+
+        <form id="otpForm" onsubmit="validateOtpForm(event)">
+            <div class="otp-inputs d-flex justify-content-center mb-3">
+                <input type="text" name="otp1" maxlength="1" class="form-control text-center mx-1" />
+                <input type="text" name="otp2" maxlength="1" class="form-control text-center mx-1" />
+                <input type="text" name="otp3" maxlength="1" class="form-control text-center mx-1" />
+                <input type="text" name="otp4" maxlength="1" class="form-control text-center mx-1" />
+            </div>
+
+            <div class="timer mb-2 text-center">
+                Send code again in <span id="timer">00:60</span>
+            </div>
+
+            <div class="resend-section mt-2 text-center">
+                I didn’t receive a code
+                <a href="#" id="resendBtn" onclick="resendOTP(event)">Resend</a>
+            </div>
+
+            <div class="text-center mt-3">
+                <button type="submit" class="btn btn-primary px-4" id="submitBtn"
+                    style="background-color: black; border-color: black;">Verify</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const inputs = document.querySelectorAll('.otp-inputs input');
+        const submitBtn = document.getElementById('submitBtn');
+        const timerDisplay = document.getElementById('timer');
+        let timerSeconds = 60;
+        let countdown;
+
+        // OTP auto-focus and only numbers
+        inputs.forEach((input, index) => {
+            input.addEventListener('input', () => {
+                input.value = input.value.replace(/\D/g, ''); // Only digits
+                if (input.value.length === 1 && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+            });
+        });
+
+        // Countdown Timer
+        function startTimer() {
+            timerSeconds = 60;
+            timerDisplay.textContent = '00:60';
+            clearInterval(countdown);
+            countdown = setInterval(() => {
+                if (timerSeconds > 0) {
+                    timerSeconds--;
+                    timerDisplay.textContent = `00:${timerSeconds < 10 ? '0' : ''}${timerSeconds}`;
+                } else {
+                    clearInterval(countdown);
+                    timerDisplay.textContent = '00:00';
+                }
+            }, 1000);
+        }
+        startTimer();
+
+        // Validate and submit OTP
+        async function validateOtpForm(event) {
+            event.preventDefault();
+            submitBtn.disabled = true;
+
+            const otpValues = Array.from(inputs).map(input => input.value.trim());
+
+            if (otpValues.some(val => val === "")) {
+                Swal.fire({
+                    icon: "warning",
+                    title: "Incomplete OTP",
+                    text: "Please enter the complete OTP.",
+                    confirmButtonText: "OK",
+                    customClass: {
+                        confirmButton: "swal-confirm-black"
+                    }
+                });
+                submitBtn.disabled = false;
+                return;
+            }
+
+            const data = {
+                otp1: otpValues[0],
+                otp2: otpValues[1],
+                otp3: otpValues[2],
+                otp4: otpValues[3],
+            };
+
+            try {
+                const response = await axios.post("/forgotPassword/verify", data);
+                const result = response.data;
+
+                if (result.success) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Success!",
+                        text: result.message || "OTP verified successfully!",
+                        showConfirmButton: false,
+                        timer: 1500,
+                        customClass: {
+                            confirmButton: "swal-confirm-black"
+                        }
+                    }).then(() => {
+                        if (result.redirectUrl) {
+                            window.location.href = result.redirectUrl;
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: result.message || "Invalid OTP. Please try again.",
+                        confirmButtonText: "OK",
+                        customClass: {
+                            confirmButton: "swal-confirm-black"
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error("OTP verify error:", error);
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: error.response?.data?.message || "Something went wrong. Please try again.",
+                    confirmButtonText: "OK",
+                    customClass: {
+                        confirmButton: "swal-confirm-black"
+                    }
+                });
+            } finally {
+                submitBtn.disabled = false;
+            }
+        }
+
+        //Resend OTP
+        async function resendOTP(e) {
+            e.preventDefault();
+            const btn = document.getElementById("resendBtn");
+
+            // if already disabled, ignore click
+            if (btn.classList.contains("disabled")) return;
+
+            try {
+                startResendCooldown(60);
+                startTimer();
+
+                btn.classList.add("disabled"); // style as disabled
+
+                const response = await axios.post("/resendOtp");
+                const result = response.data;
+
+                Swal.fire({
+                    icon: result.success ? "success" : "error",
+                    title: result.success ? "Success!" : "Error",
+                    text: result.message,
+                    confirmButtonText: "OK",
+                    customClass: { confirmButton: "swal-confirm-black" }
+                });
+
+            } catch (error) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: error.response?.data?.message || "Something went wrong. Please try again.",
+                    confirmButtonText: "OK",
+                    customClass: { confirmButton: "swal-confirm-black" }
+                });
+            }
+        }
+
+        //resend buttton cooldown
+        function startResendCooldown(seconds) {
+            const btn = document.getElementById("resendBtn");
+            btn.classList.add("disabled");
+            let remaining = seconds;
+
+            const interval = setInterval(() => {
+                btn.textContent = `Resend OTP (${remaining--}s)`;
+                if (remaining < 0) {
+                    clearInterval(interval);
+                    btn.classList.remove("disabled");
+                    btn.textContent = "Resend OTP";
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+
+</html>

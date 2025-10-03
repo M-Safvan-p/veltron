@@ -1,5 +1,5 @@
 const validateSignUp = ({ name, email, phoneNumber, password, confirmPassword }) => {
-  console.log("backend validation reached")
+  console.log("backend validation reached");
   // name validation
   const nameRegex = /^[A-Za-z\s]{3,}$/;
   if (!name || !nameRegex.test(name)) {
@@ -19,8 +19,7 @@ const validateSignUp = ({ name, email, phoneNumber, password, confirmPassword })
   }
 
   // Password validation (strong password rule)
-  const passwordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
   if (!password || !passwordRegex.test(password)) {
     return "Password must be at least 8 characters, include upper and lower case letters, a number, and a special character.";
   }
@@ -30,11 +29,11 @@ const validateSignUp = ({ name, email, phoneNumber, password, confirmPassword })
     return "Passwords do not match.";
   }
 
-  return null; 
+  return null;
 };
 
 const validateLogIn = (email, password) => {
-  console.log("backend validation reached")
+  console.log("backend validation reached");
   // Email validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!email || !emailRegex.test(email)) {
@@ -42,12 +41,12 @@ const validateLogIn = (email, password) => {
   }
 
   // Password validation (at least 8 characters, upper, lower, number, special char)
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/ ;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
   if (!password || !passwordRegex.test(password)) {
     return "Password must be at least 8 characters long and include upper & lowercase letters, a number, and a special character.";
   }
 
-  return null; 
+  return null;
 };
 
 const validateOtp = (otp) => {
@@ -56,7 +55,7 @@ const validateOtp = (otp) => {
   if (!otp || typeof otp !== "string" || !regex.test(otp.trim())) {
     return "Invalid OTP";
   }
-  return null; 
+  return null;
 };
 
 const validateCategory = (categoryName, description, isListed) => {
@@ -75,11 +74,10 @@ const validateCategory = (categoryName, description, isListed) => {
     return "Category status must be either 'true' (listed) or 'false' (unlisted).";
   }
 
-  return null; 
+  return null;
 };
 
-
-module.exports = { 
+module.exports = {
   validateSignUp,
   validateLogIn,
   validateOtp,

@@ -24,7 +24,8 @@
       <!-- Email -->
       <div class="mb-3">
         <label for="email" class="form-label">Email address</label>
-        <input type="text" class="form-control" id="email" value="muhammedsafvanp96@gmail.com" name="email" placeholder="you@example.com" />
+        <input type="text" class="form-control" id="email" value="muhammedsafvanp96@gmail.com" name="email"
+          placeholder="you@example.com" />
       </div>
 
       <!-- Password -->
@@ -69,58 +70,59 @@
   <!-- Validation Script -->
   <script src="/js/utils/formValidator.js"></script>
   <script>
-    document.getElementById("logInForm").addEventListener("submit", async (e)=> {
-      e.preventDefault(); // Prevent normal form submission
+    document.addEventListener("DOMContentLoaded", () => {
+      const params = new URLSearchParams(window.location.search);
+      const error = params.get("error");
 
+      if (error === "google") {
+        Swal.fire({
+          icon: 'error',
+          title: 'Login Failed',
+          text: 'This email is already registered with password. Please login using email & password.',
+          confirmButtonText: 'OK',
+          customClass: {
+            confirmButton: "swal-confirm-black"
+          }
+        });
+      }
+    });
+
+
+    document.getElementById("logInForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
-      //forntend validation
+
       const { isValid, messages } = validateLogInForm(email, password);
       if (!isValid) {
         Swal.fire({
-          icon: 'error',
-          title: 'Validation Error',
-          html: messages.join('<br>'),
-          customClass: {
+          icon: 'error', title: 'Validation Error', html: messages.join('<br>'), customClass: {
             confirmButton: "swal-confirm-black"
           }
         });
         return;
       }
-      //data send
+
       try {
         const response = await axios.post("/logIn", { email, password });
 
-        Swal.fire({
-          icon: 'success',
-          title: 'Login Successful',
-          text: 'Redirecting...',
-          timer: 1500,
-          showConfirmButton: false,
-          customClass: { confirmButton: "swal-confirm-black" }
-        }).then(() => window.location.replace(response.data.redirectUrl));
-
+        Swal.fire({ icon: 'success', title: 'Login Successful', timer: 1500, showConfirmButton: false })
+          .then(() => window.location.replace(response.data.redirectUrl));
       } catch (error) {
-
         Swal.fire({
           icon: 'error',
           title: 'Login Failed',
           text: error?.response?.data?.message || 'Invalid credentials',
-          confirmButtonText: 'OK',
-          customClass: { confirmButton: "swal-confirm-black" }
+          customClass: {
+            confirmButton: "swal-confirm-black"
+          }
         });
       }
     });
 
+
     function loginWithGoogle() {
-
       window.location.href = "/auth/google";
-
-      // Swal.fire({
-      //   icon: 'info',
-      //   title: 'Google Login',
-      //   text: 'Google login feature coming soon!'
-      // });
     }
   </script>
 </body>

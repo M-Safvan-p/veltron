@@ -249,6 +249,8 @@
     document.getElementById('emailForm').addEventListener('submit', async (e) => {
         e.preventDefault();
 
+        const originalText = otpSent ? 'Verify OTP' : 'Update Email';
+
         // disable button immediately
         updateButton.disabled = true;
         updateButton.textContent = otpSent ? 'Verifying...' : 'Sending...';
@@ -261,23 +263,13 @@
         if (!otpSent) {
             //validate
             if (!newEmail) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'New email is required',
-                    confirmButtonText: 'Retry',
-                    customClass: { confirmButton: 'swal-confirm-black' }
-                });
+                showNotification("New email is required", "error");
+                resetButton(originalText);
                 return;
             }
             if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Please enter a valid email address',
-                    confirmButtonText: 'Retry',
-                    customClass: { confirmButton: 'swal-confirm-black' }
-                });
+                showNotification("Please enter a valid email address", "error");
+                resetButton(originalText);
                 return;
             }
 
@@ -285,42 +277,26 @@
                 await axios.post('/profile/change-email', { newEmail });
 
                 document.getElementById('otpGroup').style.display = 'block';
-                document.getElementById('updateButton').textContent = 'Verify OTP';
+                updateButton.textContent = 'Verify OTP';
                 otpSent = true;
-                // show message
+
+                // show success notification
                 showNotification("OTP sent to your new email!");
+                updateButton.disabled = false; // re-enable for OTP input
             } catch (error) {
-                updateButton.disabled = false; 
-                updateButton.textContent = 'Update Email';
-                
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: error.response?.data?.message || 'Failed to send OTP. Try again.',
-                    confirmButtonText: 'Retry',
-                    customClass: { confirmButton: 'swal-confirm-black' }
-                });
+                resetButton(originalText);
+                showNotification(error.response?.data?.message || "Failed to send OTP. Try again.", "error");
             }
         } else {
             // validate OTP
             if (!otp) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'OTP is required',
-                    confirmButtonText: 'Retry',
-                    customClass: { confirmButton: 'swal-confirm-black' }
-                });
+                showNotification("OTP is required", "error");
+                resetButton(originalText);
                 return;
             }
-            if (!/^\d{4}$/.test(otp)) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Please enter a valid 6-digit OTP',
-                    confirmButtonText: 'Retry',
-                    customClass: { confirmButton: 'swal-confirm-black' }
-                });
+            if (!/^\d{4}$/.test(otp)) { // ✅ keep 4-digit validation
+                showNotification("Please enter a valid 4-digit OTP", "error");
+                resetButton(originalText);
                 return;
             }
 
@@ -336,19 +312,17 @@
                     window.location.href = '/profile/change-email';
                 });
             } catch (error) {
-                updateButton.disabled = false; 
-                updateButton.textContent = 'Verify Otp';
-
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: error.response?.data?.message || 'Invalid OTP. Try again.',
-                    confirmButtonText: 'Retry',
-                    customClass: { confirmButton: 'swal-confirm-black' }
-                });
+                resetButton(originalText);
+                showNotification(error.response?.data?.message || "Invalid OTP. Try again.", "error");
             }
         }
     });
+
+    function resetButton(text) {
+        updateButton.disabled = false;
+        updateButton.textContent = text;
+    }
+
     function showNotification(message, type = "success") {
         const notif = document.getElementById("notification");
         notif.style.display = "block";
@@ -358,7 +332,6 @@
 
         setTimeout(() => {
             notif.style.display = "none";
-        }, 5000); // auto hide after 4s
+        }, 5000); // auto hide after 5s
     }
-
 </script>

@@ -105,7 +105,6 @@
                 return;
             }
 
-            // Prepare data to send as JSON
             const data = {
                 otp1: otpValues[0],
                 otp2: otpValues[1],
@@ -114,100 +113,98 @@
             };
 
             try {
-                // Send OTP to backend using Axios
                 const response = await axios.post("/verifyOtp", data);
                 const result = response.data;
+
                 if (result.success) {
                     Swal.fire({
                         icon: "success",
                         title: "Success!",
-                        text: "OTP verified successfully!",
-                        confirmButtonText: "Continue",
+                        text: result.message || "OTP verified successfully!",
+                        showConfirmButton: false,
+                        timer: 1500,
                         customClass: {
                             confirmButton: "swal-confirm-black"
                         }
                     }).then(() => {
-                        window.location.href = result.redirectUrl;
+                        if (result.redirectUrl) {
+                            window.location.href = result.redirectUrl;
+                        }
                     });
                 } else {
                     Swal.fire({
                         icon: "error",
                         title: "Error",
-                        text: result.message,
+                        text: result.message || "Invalid OTP. Please try again.",
                         confirmButtonText: "OK",
                         customClass: {
                             confirmButton: "swal-confirm-black"
                         }
                     });
-                    submitBtn.disabled = false;
                 }
             } catch (error) {
+                console.error("OTP verify error:", error);
                 Swal.fire({
                     icon: "error",
                     title: "Error",
-                    text: "Something went wrong. Please try again.",
+                    text: error.response?.data?.message || "Something went wrong. Please try again.",
                     confirmButtonText: "OK",
                     customClass: {
                         confirmButton: "swal-confirm-black"
                     }
                 });
-
+            } finally {
                 submitBtn.disabled = false;
             }
         }
+
         //Resend OTP
         async function resendOTP(e) {
             e.preventDefault();
-            startResendCooldown(60);
-            startTimer();
+            const btn = document.getElementById("resendBtn");
+
+            // if already disabled, ignore click
+            if (btn.classList.contains("disabled")) return;
+
             try {
+                startResendCooldown(60);
+                startTimer();
+
+                btn.classList.add("disabled"); // style as disabled
+
                 const response = await axios.post("/resendOtp");
                 const result = response.data;
 
-                if (result.success) {
-                    Swal.fire({
-                        icon: "success",
-                        title: "Success!",
-                        text: result.message,
-                        confirmButtonText: "OK",
-                        customClass: {
-                            confirmButton: "swal-confirm-black"
-                        }
-                    });
-                } else {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Error",
-                        text: result.message,
-                        confirmButtonText: "OK",
-                        customClass: {
-                            confirmButton: "swal-confirm-black"
-                        }
-                    });
-                }
+                Swal.fire({
+                    icon: result.success ? "success" : "error",
+                    title: result.success ? "Success!" : "Error",
+                    text: result.message,
+                    confirmButtonText: "OK",
+                    customClass: { confirmButton: "swal-confirm-black" }
+                });
+
             } catch (error) {
                 Swal.fire({
                     icon: "error",
                     title: "Error",
-                    text: "Something went wrong. Please try again.",
+                    text: error.response?.data?.message || "Something went wrong. Please try again.",
                     confirmButtonText: "OK",
-                    customClass: {
-                        confirmButton: "swal-confirm-black"
-                    }
+                    customClass: { confirmButton: "swal-confirm-black" }
                 });
             }
         }
+
         //resend buttton cooldown
         function startResendCooldown(seconds) {
             const btn = document.getElementById("resendBtn");
-            btn.disabled = true;
+            btn.classList.add("disabled");
             let remaining = seconds;
 
             const interval = setInterval(() => {
                 btn.textContent = `Resend OTP (${remaining--}s)`;
                 if (remaining < 0) {
                     clearInterval(interval);
-                    btn.disabled = false;
+                    btn.classList.remove("disabled");
                     btn.textContent = "Resend OTP";
                 }
             }, 1000);

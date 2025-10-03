@@ -1,95 +1,95 @@
 /* Main Content */
 .main-content {
-    min-height: 70vh;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 40px 20px;
-    background-color: #f5f5f5;
-    color: #000;
+  min-height: 70vh;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 40px 20px;
+  background-color: #f5f5f5;
+  color: #000;
 }
 
 .error-code {
-    font-size: 120px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #000;
+  font-size: 120px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #000;
 }
 
 .error-message {
-    font-size: 18px;
-    margin-bottom: 30px;
-    color: #666;
+  font-size: 18px;
+  margin-bottom: 30px;
+  color: #666;
 }
 
 .back-button {
-    background-color: #000;
-    color: #fff;
-    padding: 12px 30px;
-    text-decoration: none;
-    border-radius: 4px;
-    font-size: 16px;
-    transition: background-color 0.3s;
+  background-color: #000;
+  color: #fff;
+  padding: 12px 30px;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: background-color 0.3s;
 }
 
 .back-button:hover {
-    background-color: #333;
+  background-color: #333;
 }
 /* Main Content Responsive Styles */
 
 /* Tablet (<= 992px) */
 @media (max-width: 992px) {
-    .error-code {
-        font-size: 100px;
-    }
+  .error-code {
+    font-size: 100px;
+  }
 
-    .error-message {
-        font-size: 16px;
-    }
+  .error-message {
+    font-size: 16px;
+  }
 
-    .back-button {
-        padding: 10px 25px;
-        font-size: 15px;
-    }
+  .back-button {
+    padding: 10px 25px;
+    font-size: 15px;
+  }
 }
 
 /* Mobile (<= 768px) */
 @media (max-width: 768px) {
-    .error-code {
-        font-size: 80px;
-    }
+  .error-code {
+    font-size: 80px;
+  }
 
-    .error-message {
-        font-size: 15px;
-        margin-bottom: 25px;
-    }
+  .error-message {
+    font-size: 15px;
+    margin-bottom: 25px;
+  }
 
-    .back-button {
-        font-size: 14px;
-        padding: 10px 20px;
-    }
+  .back-button {
+    font-size: 14px;
+    padding: 10px 20px;
+  }
 }
 
 /* Very Small Phones (<= 480px) */
 @media (max-width: 480px) {
-    .main-content {
-        padding: 30px 15px;
-    }
+  .main-content {
+    padding: 30px 15px;
+  }
 
-    .error-code {
-        font-size: 60px;
-    }
+  .error-code {
+    font-size: 60px;
+  }
 
-    .error-message {
-        font-size: 14px;
-    }
+  .error-message {
+    font-size: 14px;
+  }
 
-    .back-button {
-        width: 100%;
-        padding: 12px;
-        font-size: 14px;
-    }
+  .back-button {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+  }
 }
