@@ -111,8 +111,10 @@ const Messages = {
   VALIDATION_PASSWORD_LENGTH: "Password must be at least 8 characters long.",
   VALIDATION_PASSWORD_MISMATCH: "Passwords do not match.",
   VALIDATION_PASSWORD_STRENGTH: "Password must include at least 1 uppercase letter, 1 number, and 1 special character.",
+  // wishlist
+  PRODUCT_ALREADY_EXISTS_IN_WISHLIST: "This product is already in your wishlist.",
+  PRODUCT_ADDED_IN_WISHLIST: "Product has been added to your wishlist.",
 
-  
   // Server errors
   SERVER_ERROR: "An error occurred. Please try again later.",
 };

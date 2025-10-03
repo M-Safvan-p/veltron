@@ -23,6 +23,7 @@ const orderController = require("../controllers/user/userOrder.controller");
 const returnController = require("../controllers/user/userReturn.controller");
 const invoiceController = require("../controllers/user/userInvoice.controller");
 const walletController = require("../controllers/user/userWallet.controller");
+const wishlistController = require("../controllers/user/userWishlist.controller");
 
 // Apply user layout to all user routes
 router.use((req, res, next) => { 
@@ -105,6 +106,11 @@ router.post("/profile/orders/:id/return", userAuth.checkSession, returnControlle
 //walllet
 router.get("/profile/wallet", userAuth.checkSession, walletController.loadWallet);
 router.post("/profile/wallet/add-money", userAuth.checkSession, walletController.addMoney);
+
+// wishlist 
+router.get("/profile/wishlist", userAuth.checkSession, wishlistController.loadWishlist);
+router.post("/wishlist/add", cartAuth.cartSession, wishlistController.addToWishlist);
+router.delete("/wishlist/remove/:productId/:variantId", userAuth.checkSession, wishlistController.removeFromWishlist);
 
 //  404 Page 
 router.use((req, res) => res.status(404).render("errors/404"));

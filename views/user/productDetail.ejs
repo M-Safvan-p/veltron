@@ -2,445 +2,541 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <div class="container product-detail-container">
-    <div class="row">
-        <!-- Product Images Section -->
-        <div class="col-md-6">
-            <div class="mb-4 shadow-sm rounded overflow-hidden">
-                <% if (product?.variants?.length > 0 && product.variants[0]?.images?.length > 0) { %>
-                    <img src="<%= product.variants[0].images[0].url %>" alt="<%= product.name ? product.name.replace(/"/g, '&quot;') : 'Product' %>" class="product-image img-fluid" id="mainProductImage">
-                <% } else { %>
-                    <img src="/images/no-image.jpg" alt="No image available" class="product-image img-fluid" id="mainProductImage">
-                <% } %>
-            </div>
+  <div class="row">
+    <!-- Product Images Section -->
+    <div class="col-md-6">
+      <div class="mb-4 shadow-sm rounded overflow-hidden">
+        <% if (product?.variants?.length > 0 && product.variants[0]?.images?.length > 0) { %>
+        <img src="<%= product.variants[0].images[0].url %>" alt="<%= product.name ? product.name.replace(/"/g, '&quot;') : 'Product' %>" class="product-image img-fluid" id="mainProductImage">
+        <% } else { %>
+        <img src="/images/no-image.jpg" alt="No image available" class="product-image img-fluid" id="mainProductImage">
+        <% } %>
+      </div>
 
-            <!-- Variant Images (Thumbnails) -->
-            <div class="d-flex flex-wrap gap-3" id="productThumbnails" data-selected-variant="0">
-                <% if (product?.variants?.length > 0) { %>
-                    <% const firstVariant = product.variants[0]; %>
-                    <% if (firstVariant?.images?.length > 0) { %>
-                        <% firstVariant.images.forEach((image, imageIndex) => { %>
-                            <img src="<%= image.url %>" alt="<%= (product.name ? product.name.replace(/"/g, '&quot;') : 'Product') + ' - ' + (firstVariant.color ? firstVariant.color.replace(/"/g, '&quot;') : '') %>" class="thumbnail-image <%= imageIndex === 0 ? 'active' : '' %>" onclick="changeMainImage('<%= image.url %>', this)" data-variant="0" data-image="<%= imageIndex %>">
-                        <% }) %>
-                    <% } %>
-                <% } %>
-            </div>
+      <!-- Variant Images (Thumbnails) -->
+      <div class="d-flex flex-wrap gap-3" id="productThumbnails" data-selected-variant="0">
+        <% if (product?.variants?.length > 0) { %>
+        <% const firstVariant = product.variants[0]; %>
+        <% if (firstVariant?.images?.length > 0) { %>
+        <% firstVariant.images.forEach((image, imageIndex) => { %>
+        <img src="<%= image.url %>" alt="<%= (product.name ? product.name.replace(/"/g, '&quot;') : 'Product') + ' - ' + (firstVariant.color ? firstVariant.color.replace(/"/g, '&quot;') : '') %>" class="thumbnail-image <%= imageIndex === 0 ? 'active' : '' %>" onclick="changeMainImage('<%= image.url %>', this)" data-variant="0" data-image="<%= imageIndex %>">
+        <% }) %>
+        <% } %>
+        <% } %>
+      </div>
 
-            <!-- Product Details Box -->
-            <div class="mt-4 p-4 bg-light rounded shadow-sm">
-                <h5 class="fw-bold text-dark">Product Details</h5>
-                <p class="mb-2"><strong>Category:</strong> <%= typeof product.category === 'object' && product.category ? product.category.name : product.category || 'N/A' %></p>
+      <!-- Product Details Box -->
+      <div class="mt-4 p-4 bg-light rounded shadow-sm">
+        <h5 class="fw-bold text-dark">Product Details</h5>
+        <p class="mb-2"><strong>Category:</strong> <%= typeof product.category === 'object' && product.category ? product.category.name : product.category || 'N/A' %></p>
+        <% if (product?.specifications) { %>
+        <% if (product.specifications.strapStyle) { %>
+        <p class="mb-2"><strong>Strap Style:</strong> <%= product.specifications.strapStyle %></p>
+        <% } %>
+        <% if (product.specifications.dialType) { %>
+        <p class="mb-2"><strong>Dial Type:</strong> <%= product.specifications.dialType %></p>
+        <% } %>
+        <% if (product.specifications.weight) { %>
+        <p class="mb-2"><strong>Weight:</strong> <%= product.specifications.weight %></p>
+        <% } %>
+        <% if (product.specifications.warrantyPeriod) { %>
+        <p class="mb-2"><strong>Warranty:</strong> <%= product.specifications.warrantyPeriod %></p>
+        <% } %>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- Product Details Section -->
+    <div class="col-md-6">
+      <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb bg-transparent p-0">
+          <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Home</a></li>
+          <li class="breadcrumb-item"><a href="/sale" class="text-decoration-none">Watches</a></li>
+          <li class="breadcrumb-item active" aria-current="page">
+            <%= typeof product.category === 'object' && product.category ? product.category.name : product.category || 'N/A' %>
+          </li>
+        </ol>
+      </nav>
+
+      <h1 class="h2 mb-3 fw-bold text-dark"><%= product.name ? product.name.replace(/"/g, '&quot;') : 'Product' %></h1>
+
+      <!-- Product Status -->
+      <div class="mb-3">
+        <% if (product.approvalStatus === 'approved' && product.productStatus === 'Available') { %>
+        <span class="badge bg-success px-3 py-2">Available</span>
+        <% } else if (product.productStatus === 'out-of-stock') { %>
+        <span class="badge bg-warning px-3 py-2">Out of Stock</span>
+        <% } else if (product.productStatus === 'Discontinued') { %>
+        <span class="badge bg-danger px-3 py-2">Discontinued</span>
+        <% } else if (product.approvalStatus === 'pending') { %>
+        <span class="badge bg-secondary px-3 py-2">Pending Approval</span>
+        <% } else if (product.approvalStatus === 'rejected') { %>
+        <span class="badge bg-danger px-3 py-2">Not Available</span>
+        <% } %>
+      </div>
+
+      <!-- Price -->
+      <div class="price mb-4">
+        <% if (product.discountedPrice && product.discountedPrice < product.price) { %>
+        <span class="text-decoration-line-through text-muted me-2" style="font-size: 1.6rem;">₹<%= product.price %></span>
+        <span class="text-primary" style="font-size: 2.2rem; font-weight: bold;">₹<%= product.discountedPrice %></span>
+        <span class="badge bg-danger ms-2 px-3 py-2"><%= Math.round(((product.price - product.discountedPrice) / product.price) * 100) %>% OFF</span>
+        <% } else { %>
+        <span class="text-primary" style="font-size: 2.2rem; font-weight: bold;">₹<%= product.price || 'N/A' %></span>
+        <% } %>
+      </div>
+
+      <!-- Color/Variant Options -->
+      <% if (product?.variants?.length > 0) { %>
+      <div class="mb-4">
+        <h6 class="fw-bold text-dark">Color Options:</h6>
+        <div class="d-flex align-items-center flex-wrap gap-3">
+          <% product.variants.forEach((variant, index) => { %>
+          <div class="variant-option <%= index === 0 ? 'active' : '' %>" onclick="selectVariant(this, <%= index %>, '<%= variant.color ? variant.color.replace(/"/g, '&quot;') : '' %>')" data-variant="<%= index %>">
+            <span><%= variant.color || 'N/A' %></span>
+            <% if (variant.stock > 0) { %>
+            <small class="text-success d-block">(<%= variant.stock %> in stock)</small>
+            <% } else { %>
+            <small class="text-danger d-block">(Out of stock)</small>
+            <% } %>
+          </div>
+          <% }) %>
+        </div>
+        <input type="hidden" id="selectedVariant" value="0">
+      </div>
+      <% } %>
+
+      <!-- Add to Cart and Wishlist -->
+      <div class="mb-4">
+        <% let canAddToCart = product?.approvalStatus === 'approved' && product?.productStatus === 'Available' && product?.isListed && product?.variants?.length > 0 && product.variants.some(v => v.stock > 0); %>
+        <button class="btn btn-primary btn-lg me-2 shadow-sm" onclick="addToCart(event)" <%= !canAddToCart ? 'disabled' : '' %>>
+          <i class="fas fa-shopping-cart me-2"></i><%= canAddToCart ? 'Add to Cart' : 'Not Available' %>
+        </button>
+        <button class="btn btn-outline-danger shadow-sm" id="wishlistBtn">
+          <i class="far fa-heart"></i>
+        </button>
+      </div>
+
+      <!-- Stock Status for Selected Variant -->
+      <div class="mb-4" id="stockStatus">
+        <% if (product?.variants?.length > 0) { %>
+        <% const firstVariant = product.variants[0]; %>
+        <% if (firstVariant.stock > 10) { %>
+        <span class="badge bg-success px-3 py-2">In Stock</span>
+        <% } else if (firstVariant.stock > 0) { %>
+        <span class="badge bg-warning px-3 py-2">Only <%= firstVariant.stock %> left</span>
+        <% } else { %>
+        <span class="badge bg-danger px-3 py-2">Out of Stock</span>
+        <% } %>
+        <% } %>
+      </div>
+
+      <!-- Specifications Preview -->
+      <% if (product?.specifications) { %>
+      <div class="mb-4">
+        <h6 class="fw-bold text-dark">Key Features:</h6>
+        <ul class="list-unstyled">
+          <% if (product.specifications.strapStyle) { %>
+          <li><i class="fas fa-check text-success me-2"></i><%= product.specifications.strapStyle %> Strap</li>
+          <% } %>
+          <% if (product.specifications.dialType) { %>
+          <li><i class="fas fa-check text-success me-2"></i><%= product.specifications.dialType %> Dial</li>
+          <% } %>
+          <% if (product.specifications.durability) { %>
+          <li><i class="fas fa-check text-success me-2"></i><%= product.specifications.durability %></li>
+          <% } %>
+          <% if (product.specifications.warrantyPeriod) { %>
+          <li><i class="fas fa-check text-success me-2"></i><%= product.specifications.warrantyPeriod %> Warranty</li>
+          <% } %>
+        </ul>
+      </div>
+      <% } %>
+
+      <!-- Shipping Info -->
+      <div class="border p-4 rounded shadow-sm">
+        <h6 class="fw-bold text-dark"><i class="fas fa-shipping-fast me-2"></i>Shipping Information</h6>
+        <p class="mb-2"><small>Free shipping on orders over ₹100</small></p>
+        <p class="mb-0"><small>Estimated delivery: 3-5 business days</small></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Tabs -->
+  <div class="row mt-5">
+    <div class="col-12">
+      <ul class="nav nav-tabs" id="productTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab">Description</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="specifications-tab" data-bs-toggle="tab" data-bs-target="#specifications" type="button" role="tab">Specifications</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="variants-tab" data-bs-toggle="tab" data-bs-target="#variants" type="button" role="tab">Variants & Stock</button>
+        </li>
+      </ul>
+
+      <div class="tab-content mt-4 p-4 bg-light rounded shadow-sm" id="productTabsContent">
+        <!-- Description Tab -->
+        <div class="tab-pane fade show active" id="description" role="tabpanel">
+          <% if (product?.description) { %>
+          <p class="text-dark"><%= product.description %></p>
+          <% } else { %>
+          <p class="text-muted">No description available for this product.</p>
+          <% } %>
+        </div>
+
+        <!-- Specifications Tab -->
+        <div class="tab-pane fade" id="specifications" role="tabpanel">
+          <div class="row">
+            <div class="col-md-8">
+              <table class="table table-borderless">
                 <% if (product?.specifications) { %>
-                    <% if (product.specifications.strapStyle) { %>
-                        <p class="mb-2"><strong>Strap Style:</strong> <%= product.specifications.strapStyle %></p>
-                    <% } %>
-                    <% if (product.specifications.dialType) { %>
-                        <p class="mb-2"><strong>Dial Type:</strong> <%= product.specifications.dialType %></p>
-                    <% } %>
-                    <% if (product.specifications.weight) { %>
-                        <p class="mb-2"><strong>Weight:</strong> <%= product.specifications.weight %></p>
-                    <% } %>
-                    <% if (product.specifications.warrantyPeriod) { %>
-                        <p class="mb-2"><strong>Warranty:</strong> <%= product.specifications.warrantyPeriod %></p>
-                    <% } %>
+                <% if (product.specifications.strapStyle) { %>
+                <tr>
+                  <td><strong>Strap Style:</strong></td>
+                  <td><%= product.specifications.strapStyle %></td>
+                </tr>
                 <% } %>
-            </div>
-        </div>
-
-        <!-- Product Details Section -->
-        <div class="col-md-6">
-            <nav aria-label="breadcrumb" class="mb-3">
-                <ol class="breadcrumb bg-transparent p-0">
-                    <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Home</a></li>
-                    <li class="breadcrumb-item"><a href="/sale" class="text-decoration-none">Watches</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">
-                        <%= typeof product.category === 'object' && product.category ? product.category.name : product.category || 'N/A' %>
-                    </li>
-                </ol>
-            </nav>
-
-            <h1 class="h2 mb-3 fw-bold text-dark"><%= product.name ? product.name.replace(/"/g, '&quot;') : 'Product' %></h1>
-
-            <!-- Product Status -->
-            <div class="mb-3">
-                <% if (product.approvalStatus === 'approved' && product.productStatus === 'Available') { %>
-                    <span class="badge bg-success px-3 py-2">Available</span>
-                <% } else if (product.productStatus === 'out-of-stock') { %>
-                    <span class="badge bg-warning px-3 py-2">Out of Stock</span>
-                <% } else if (product.productStatus === 'Discontinued') { %>
-                    <span class="badge bg-danger px-3 py-2">Discontinued</span>
-                <% } else if (product.approvalStatus === 'pending') { %>
-                    <span class="badge bg-secondary px-3 py-2">Pending Approval</span>
-                <% } else if (product.approvalStatus === 'rejected') { %>
-                    <span class="badge bg-danger px-3 py-2">Not Available</span>
+                <% if (product.specifications.weight) { %>
+                <tr>
+                  <td><strong>Weight:</strong></td>
+                  <td><%= product.specifications.weight %></td>
+                </tr>
                 <% } %>
-            </div>
-
-            <!-- Price -->
-            <div class="price mb-4">
-                <% if (product.discountedPrice && product.discountedPrice < product.price) { %>
-                    <span class="text-decoration-line-through text-muted me-2" style="font-size: 1.6rem;">₹<%= product.price %></span>
-                    <span class="text-primary" style="font-size: 2.2rem; font-weight: bold;">₹<%= product.discountedPrice %></span>
-                    <span class="badge bg-danger ms-2 px-3 py-2"><%= Math.round(((product.price - product.discountedPrice) / product.price) * 100) %>% OFF</span>
+                <% if (product.specifications.dialType) { %>
+                <tr>
+                  <td><strong>Dial Type:</strong></td>
+                  <td><%= product.specifications.dialType %></td>
+                </tr>
+                <% } %>
+                <% if (product.specifications.durability) { %>
+                <tr>
+                  <td><strong>Durability:</strong></td>
+                  <td><%= product.specifications.durability %></td>
+                </tr>
+                <% } %>
+                <% if (product.specifications.warrantyPeriod) { %>
+                <tr>
+                  <td><strong>Warranty Period:</strong></td>
+                  <td><%= product.specifications.warrantyPeriod %></td>
+                </tr>
+                <% } %>
+                <% if (product.specifications.additionalInformation) { %>
+                <tr>
+                  <td><strong>Additional Information:</strong></td>
+                  <td><%= product.specifications.additionalInformation %></td>
+                </tr>
+                <% } %>
                 <% } else { %>
-                    <span class="text-primary" style="font-size: 2.2rem; font-weight: bold;">₹<%= product.price || 'N/A' %></span>
+                <tr>
+                  <td colspan="2">No specifications available.</td>
+                </tr>
                 <% } %>
+              </table>
             </div>
+          </div>
+        </div>
 
-            <!-- Color/Variant Options -->
-            <% if (product?.variants?.length > 0) { %>
-                <div class="mb-4">
-                    <h6 class="fw-bold text-dark">Color Options:</h6>
-                    <div class="d-flex align-items-center flex-wrap gap-3">
-                        <% product.variants.forEach((variant, index) => { %>
-                            <div class="variant-option <%= index === 0 ? 'active' : '' %>" onclick="selectVariant(this, <%= index %>, '<%= variant.color ? variant.color.replace(/"/g, '&quot;') : '' %>')" data-variant="<%= index %>">
-                                <span><%= variant.color || 'N/A' %></span>
-                                <% if (variant.stock > 0) { %>
-                                    <small class="text-success d-block">(<%= variant.stock %> in stock)</small>
-                                <% } else { %>
-                                    <small class="text-danger d-block">(Out of stock)</small>
-                                <% } %>
-                            </div>
-                        <% }) %>
-                    </div>
-                    <input type="hidden" id="selectedVariant" value="0">
-                </div>
-            <% } %>
-
-            <!-- Add to Cart and Wishlist -->
-            <div class="mb-4">
-                <% let canAddToCart = product?.approvalStatus === 'approved' && product?.productStatus === 'Available' && product?.isListed && product?.variants?.length > 0 && product.variants.some(v => v.stock > 0); %>
-                <button class="btn btn-primary btn-lg me-2 shadow-sm" onclick="addToCart(event)" <%= !canAddToCart ? 'disabled' : '' %>>
-                    <i class="fas fa-shopping-cart me-2"></i><%= canAddToCart ? 'Add to Cart' : 'Not Available' %>
-                </button>
-                <button class="btn btn-outline-danger shadow-sm" onclick="addToWishlist()">
-                    <i class="far fa-heart"></i>
-                </button>
-            </div>
-
-            <!-- Stock Status for Selected Variant -->
-            <div class="mb-4" id="stockStatus">
-                <% if (product?.variants?.length > 0) { %>
-                    <% const firstVariant = product.variants[0]; %>
-                    <% if (firstVariant.stock > 10) { %>
-                        <span class="badge bg-success px-3 py-2">In Stock</span>
-                    <% } else if (firstVariant.stock > 0) { %>
-                        <span class="badge bg-warning px-3 py-2">Only <%= firstVariant.stock %> left</span>
-                    <% } else { %>
-                        <span class="badge bg-danger px-3 py-2">Out of Stock</span>
-                    <% } %>
+        <!-- Variants Tab -->
+        <div class="tab-pane fade" id="variants" role="tabpanel">
+          <% if (product?.variants?.length > 0) { %>
+          <div class="row">
+            <% product.variants.forEach((variant, index) => { %>
+            <div class="col-md-4 col-sm-6 mb-4">
+              <div class="card shadow-sm">
+                <% if (variant?.images?.length > 0) { %>
+                <img src="<%= variant.images[0].url %>" class="card-img-top" alt="<%= (product.name ? product.name.replace(/"/g, '&quot;') : 'Product') + ' - ' + (variant.color ? variant.color.replace(/"/g, '&quot;') : '') %>" style="height: 200px; object-fit: cover;">
                 <% } %>
-            </div>
-
-            <!-- Specifications Preview -->
-            <% if (product?.specifications) { %>
-                <div class="mb-4">
-                    <h6 class="fw-bold text-dark">Key Features:</h6>
-                    <ul class="list-unstyled">
-                        <% if (product.specifications.strapStyle) { %>
-                            <li><i class="fas fa-check text-success me-2"></i><%= product.specifications.strapStyle %> Strap</li>
-                        <% } %>
-                        <% if (product.specifications.dialType) { %>
-                            <li><i class="fas fa-check text-success me-2"></i><%= product.specifications.dialType %> Dial</li>
-                        <% } %>
-                        <% if (product.specifications.durability) { %>
-                            <li><i class="fas fa-check text-success me-2"></i><%= product.specifications.durability %></li>
-                        <% } %>
-                        <% if (product.specifications.warrantyPeriod) { %>
-                            <li><i class="fas fa-check text-success me-2"></i><%= product.specifications.warrantyPeriod %> Warranty</li>
-                        <% } %>
-                    </ul>
+                <div class="card-body">
+                  <h6 class="card-title fw-bold"><%= variant.color || 'N/A' %></h6>
+                  <p class="card-text">
+                    <strong>Stock: </strong>
+                    <% if (variant.stock > 0) { %>
+                    <span class="text-success"><%= variant.stock %> available</span>
+                    <% } else { %>
+                    <span class="text-danger">Out of stock</span>
+                    <% } %>
+                  </p>
+                  <% if (variant?.images?.length > 1) { %>
+                  <small class="text-muted"><%= variant.images.length %> images available</small>
+                  <% } %>
                 </div>
+              </div>
+            </div>
+            <% }) %>
+          </div>
+          <% } else { %>
+          <p class="text-muted">No variants available for this product.</p>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Related Products -->
+  <% if (relatedProducts?.length > 0) { %>
+  <div class="row mt-5">
+    <div class="col-12">
+      <h3 class="mb-4 fw-bold text-dark">You May Also Like</h3>
+      <div class="row">
+        <% relatedProducts.forEach(relatedProduct => { %>
+        <div class="col-md-3 col-sm-6 mb-4">
+          <div class="card h-100 product-card shadow-sm">
+            <% if (relatedProduct?.variants?.length > 0 && relatedProduct.variants[0]?.images?.length > 0) { %>
+            <img src="<%= relatedProduct.variants[0].images[0].url %>" class="card-img-top" alt="<%= relatedProduct.name ? relatedProduct.name.replace(/"/g, '&quot;') : 'Product' %>" style="height: 200px; object-fit: cover;">
+            <% } else { %>
+            <img src="/images/no-image.jpg" class="card-img-top" alt="No image" style="height: 200px; object-fit: cover;">
             <% } %>
-
-            <!-- Shipping Info -->
-            <div class="border p-4 rounded shadow-sm">
-                <h6 class="fw-bold text-dark"><i class="fas fa-shipping-fast me-2"></i>Shipping Information</h6>
-                <p class="mb-2"><small>Free shipping on orders over ₹100</small></p>
-                <p class="mb-0"><small>Estimated delivery: 3-5 business days</small></p>
+            <div class="card-body d-flex flex-column">
+              <h6 class="card-title fw-bold"><%= relatedProduct.name ? relatedProduct.name.replace(/"/g, '&quot;') : 'Product' %></h6>
+              <p class="card-text text-primary font-weight-bold mt-auto">
+                <% if (relatedProduct.discountedPrice && relatedProduct.discountedPrice < relatedProduct.price) { %>
+                <span class="text-muted text-decoration-line-through me-2">₹<%= relatedProduct.price %></span>
+                ₹<%= relatedProduct.discountedPrice %>
+                <% } else { %>
+                ₹<%= relatedProduct.price || 'N/A' %>
+                <% } %>
+              </p>
             </div>
+          </div>
         </div>
+        <% }) %>
+      </div>
     </div>
-
-    <!-- Product Tabs -->
-    <div class="row mt-5">
-        <div class="col-12">
-            <ul class="nav nav-tabs" id="productTabs" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab">Description</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="specifications-tab" data-bs-toggle="tab" data-bs-target="#specifications" type="button" role="tab">Specifications</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="variants-tab" data-bs-toggle="tab" data-bs-target="#variants" type="button" role="tab">Variants & Stock</button>
-                </li>
-            </ul>
-
-            <div class="tab-content mt-4 p-4 bg-light rounded shadow-sm" id="productTabsContent">
-                <!-- Description Tab -->
-                <div class="tab-pane fade show active" id="description" role="tabpanel">
-                    <% if (product?.description) { %>
-                        <p class="text-dark"><%= product.description %></p>
-                    <% } else { %>
-                        <p class="text-muted">No description available for this product.</p>
-                    <% } %>
-                </div>
-
-                <!-- Specifications Tab -->
-                <div class="tab-pane fade" id="specifications" role="tabpanel">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <table class="table table-borderless">
-                                <% if (product?.specifications) { %>
-                                    <% if (product.specifications.strapStyle) { %>
-                                        <tr><td><strong>Strap Style:</strong></td><td><%= product.specifications.strapStyle %></td></tr>
-                                    <% } %>
-                                    <% if (product.specifications.weight) { %>
-                                        <tr><td><strong>Weight:</strong></td><td><%= product.specifications.weight %></td></tr>
-                                    <% } %>
-                                    <% if (product.specifications.dialType) { %>
-                                        <tr><td><strong>Dial Type:</strong></td><td><%= product.specifications.dialType %></td></tr>
-                                    <% } %>
-                                    <% if (product.specifications.durability) { %>
-                                        <tr><td><strong>Durability:</strong></td><td><%= product.specifications.durability %></td></tr>
-                                    <% } %>
-                                    <% if (product.specifications.warrantyPeriod) { %>
-                                        <tr><td><strong>Warranty Period:</strong></td><td><%= product.specifications.warrantyPeriod %></td></tr>
-                                    <% } %>
-                                    <% if (product.specifications.additionalInformation) { %>
-                                        <tr><td><strong>Additional Information:</strong></td><td><%= product.specifications.additionalInformation %></td></tr>
-                                    <% } %>
-                                <% } else { %>
-                                    <tr><td colspan="2">No specifications available.</td></tr>
-                                <% } %>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Variants Tab -->
-                <div class="tab-pane fade" id="variants" role="tabpanel">
-                    <% if (product?.variants?.length > 0) { %>
-                        <div class="row">
-                            <% product.variants.forEach((variant, index) => { %>
-                                <div class="col-md-4 col-sm-6 mb-4">
-                                    <div class="card shadow-sm">
-                                        <% if (variant?.images?.length > 0) { %>
-                                            <img src="<%= variant.images[0].url %>" class="card-img-top" alt="<%= (product.name ? product.name.replace(/"/g, '&quot;') : 'Product') + ' - ' + (variant.color ? variant.color.replace(/"/g, '&quot;') : '') %>" style="height: 200px; object-fit: cover;">
-                                        <% } %>
-                                        <div class="card-body">
-                                            <h6 class="card-title fw-bold"><%= variant.color || 'N/A' %></h6>
-                                            <p class="card-text">
-                                                <strong>Stock: </strong>
-                                                <% if (variant.stock > 0) { %>
-                                                    <span class="text-success"><%= variant.stock %> available</span>
-                                                <% } else { %>
-                                                    <span class="text-danger">Out of stock</span>
-                                                <% } %>
-                                            </p>
-                                            <% if (variant?.images?.length > 1) { %>
-                                                <small class="text-muted"><%= variant.images.length %> images available</small>
-                                            <% } %>
-                                        </div>
-                                    </div>
-                                </div>
-                            <% }) %>
-                        </div>
-                    <% } else { %>
-                        <p class="text-muted">No variants available for this product.</p>
-                    <% } %>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Related Products -->
-    <% if (relatedProducts?.length > 0) { %>
-        <div class="row mt-5">
-            <div class="col-12">
-                <h3 class="mb-4 fw-bold text-dark">You May Also Like</h3>
-                <div class="row">
-                    <% relatedProducts.forEach(relatedProduct => { %>
-                        <div class="col-md-3 col-sm-6 mb-4">
-                            <div class="card h-100 product-card shadow-sm">
-                                <% if (relatedProduct?.variants?.length > 0 && relatedProduct.variants[0]?.images?.length > 0) { %>
-                                    <img src="<%= relatedProduct.variants[0].images[0].url %>" class="card-img-top" alt="<%= relatedProduct.name ? relatedProduct.name.replace(/"/g, '&quot;') : 'Product' %>" style="height: 200px; object-fit: cover;">
-                                <% } else { %>
-                                    <img src="/images/no-image.jpg" class="card-img-top" alt="No image" style="height: 200px; object-fit: cover;">
-                                <% } %>
-                                <div class="card-body d-flex flex-column">
-                                    <h6 class="card-title fw-bold"><%= relatedProduct.name ? relatedProduct.name.replace(/"/g, '&quot;') : 'Product' %></h6>
-                                    <p class="card-text text-primary font-weight-bold mt-auto">
-                                        <% if (relatedProduct.discountedPrice && relatedProduct.discountedPrice < relatedProduct.price) { %>
-                                            <span class="text-muted text-decoration-line-through me-2">₹<%= relatedProduct.price %></span>
-                                            ₹<%= relatedProduct.discountedPrice %>
-                                        <% } else { %>
-                                            ₹<%= relatedProduct.price || 'N/A' %>
-                                        <% } %>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    <% }) %>
-                </div>
-            </div>
-        </div>
-    <% } %>
+  </div>
+  <% } %>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    function changeMainImage(imageUrl, element) {
-        const mainImage = document.getElementById('mainProductImage');
-        if (mainImage) mainImage.src = imageUrl;
-        
-        document.querySelectorAll('.thumbnail-image').forEach(img => img.classList.remove('active'));
-        element.classList.add('active');
+  function changeMainImage(imageUrl, element) {
+    const mainImage = document.getElementById('mainProductImage');
+    if (mainImage) mainImage.src = imageUrl;
+
+    document.querySelectorAll('.thumbnail-image').forEach(img => img.classList.remove('active'));
+    element.classList.add('active');
+  }
+
+  function selectVariant(element, variantIndex, color) {
+    try {
+      document.querySelectorAll('.variant-option').forEach(opt => opt.classList.remove('active'));
+      element.classList.add('active');
+
+      const selectedVariantInput = document.getElementById('selectedVariant');
+      if (selectedVariantInput) selectedVariantInput.value = variantIndex;
+
+      const product = <%- JSON.stringify(product) %>;
+      const thumbnailsContainer = document.getElementById('productThumbnails');
+      if (!thumbnailsContainer || !product?.variants?.[variantIndex]) return;
+
+      thumbnailsContainer.setAttribute('data-selected-variant', variantIndex);
+      thumbnailsContainer.innerHTML = '';
+
+      if (product.variants[variantIndex].images?.length > 0) {
+        product.variants[variantIndex].images.forEach((image, imageIndex) => {
+          const imgElement = document.createElement('img');
+          imgElement.src = image.url;
+          imgElement.alt = `${product.name || 'Product'} - ${color || ''}`;
+          imgElement.className = `thumbnail-image ${imageIndex === 0 ? 'active' : ''}`;
+          imgElement.setAttribute('data-variant', variantIndex);
+          imgElement.setAttribute('data-image', imageIndex);
+          imgElement.onclick = () => changeMainImage(image.url, imgElement);
+          thumbnailsContainer.appendChild(imgElement);
+        });
+
+        changeMainImage(product.variants[variantIndex].images[0].url,
+          thumbnailsContainer.querySelector(`[data-variant="${variantIndex}"][data-image="0"]`));
+      }
+
+      const variant = product.variants[variantIndex];
+      const stockElement = document.getElementById('stockStatus');
+      if (stockElement) {
+        if (variant.stock > 10) {
+          stockElement.innerHTML = '<span class="badge bg-success px-3 py-2">In Stock</span>';
+        } else if (variant.stock > 0) {
+          stockElement.innerHTML = `<span class="badge bg-warning px-3 py-2">Only ${variant.stock} left</span>`;
+        } else {
+          stockElement.innerHTML = '<span class="badge bg-danger px-3 py-2">Out of Stock</span>';
+        }
+      }
+    } catch (error) {
+      console.error('Error selecting variant:', error);
+    }
+  }
+
+  function addToCart(event) {
+    try {
+      const addToCartBtn = event.currentTarget;
+      addToCartBtn.disabled = true;
+      addToCartBtn.textContent = "Adding...";
+
+      const selectedVariantIndex = document.getElementById('selectedVariant')?.value;
+      const product = <%- JSON.stringify(product) %>;
+      const variant = product?.variants?.[selectedVariantIndex];
+
+      if (!variant || !product) {
+        throw new Error('Invalid product or variant data');
+      }
+
+      axios.post('/cart/add', {
+        productId: product._id,
+        variantId: variant._id,
+      }).then(response => {
+        if (response.status === 200) {
+          addToCartBtn.textContent = "Added!";
+          Swal.fire({
+            title: "✅ Added to Cart",
+            text: `${product.name || 'Product'} (${variant.color || ''}) has been added.`,
+            icon: "success",
+            showCancelButton: true,
+            confirmButtonText: "Go to Cart",
+            cancelButtonText: "Continue Shopping"
+          }).then(result => {
+            if (result.isConfirmed) {
+              window.location.href = "/cart";
+            } else {
+              addToCartBtn.textContent = "Add to Cart";
+              addToCartBtn.disabled = false;
+            }
+          });
+        }
+      }).catch(error => {
+        addToCartBtn.textContent = "Add to Cart";
+        addToCartBtn.disabled = false;
+
+        if (error.response?.status === 401) {
+          Swal.fire({
+            title: "⚠️ Not Logged In",
+            icon: "warning",
+            confirmButtonText: "Login"
+          }).then(() => {
+            window.location.href = "/login";
+          });
+          return;
+        }
+
+        Swal.fire({
+          title: "Error",
+          text: error?.response?.data?.message || "Something went wrong. Please try again.",
+          icon: "error"
+        });
+      });
+    } catch (error) {
+      console.error("Add to cart failed:", error);
+      addToCartBtn.textContent = "Add to Cart";
+      addToCartBtn.disabled = false;
+      Swal.fire({
+        title: "Error",
+        text: "Failed to add to cart. Please try again.",
+        icon: "error"
+      });
+    }
+  }
+
+  function addToWishlist() {
+    try { 
+      const wishlistBtn = document.getElementById('wishlistBtn');
+      wishlistBtn.disabled = true;
+      wishlistBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+      const selectedVariantIndex = document.getElementById('selectedVariant')?.value;
+      const product = <%- JSON.stringify(product) %>;
+      const variant = product?.variants?.[selectedVariantIndex];
+
+      if (!product || !variant) {
+        throw new Error('Invalid product or variant data');
+      }
+
+      axios.post('/wishlist/add', {
+        productId: product._id,
+        variantId: variant._id,
+      }).then(response => {
+        wishlistBtn.disabled = false;
+        wishlistBtn.innerHTML = '<i class="fas fa-heart"></i>'; 
+        if (response.status === 200) {
+          toastMixin.fire({
+            animation: true,
+            icon: 'success',
+            title: response.data.message,
+            iconColor: "#16a34a",
+          });
+        }
+      }).catch(error => {
+        wishlistBtn.disabled = false; 
+        wishlistBtn.innerHTML = '<i class="far fa-heart"></i>'; 
+        if (error.response?.status === 401) {
+          Swal.fire({
+            title: "⚠️ Not Logged In",
+            icon: "warning",
+            confirmButtonText: "Login"
+          }).then(() => {
+            window.location.href = "/login";
+          });
+          return;
+        }
+
+        toastMixin.fire({
+            animation: true,
+            icon: 'error',
+            title: error.response.data.message,
+             iconColor: "#dc2626" 
+          });
+      });
+    } catch (error) {
+      console.error('Error adding to wishlist:', error);
+      const wishlistBtn = document.getElementById('wishlistBtn');
+      wishlistBtn.disabled = false;
+      wishlistBtn.innerHTML = '<i class="far fa-heart"></i>'; 
+      Swal.fire({
+        title: "Error",
+        text: "Failed to add to wishlist. Please try again.",
+        icon: "error"
+      });
+    }
+  }
+
+  // SWAL TOST
+var toastMixin = Swal.mixin({
+  toast: true,
+  icon: 'success',
+  title: 'General Title',
+  animation: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  background: '#ffffff', // white card background
+  color: '#333333',      // text color
+  didOpen: (toast) => {
+    toast.style.borderRadius = "12px";   // rounded corners
+    toast.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)"; // subtle shadow
+    toast.style.padding = "10px 16px";   // better spacing
+    toast.style.fontSize = "14px";       // modern readable font size
+
+    // Pause on hover
+    toast.addEventListener("mouseenter", Swal.stopTimer);
+    toast.addEventListener("mouseleave", Swal.resumeTimer);
+  }
+});
+
+
+
+ document.addEventListener('DOMContentLoaded', function () {
+  try {
+    const firstVariantOption = document.querySelector('.variant-option');
+    if (firstVariantOption) {
+      selectVariant(firstVariantOption, 0, firstVariantOption.textContent.trim());
     }
 
-    function selectVariant(element, variantIndex, color) {
-        try {
-            document.querySelectorAll('.variant-option').forEach(opt => opt.classList.remove('active'));
-            element.classList.add('active');
-
-            const selectedVariantInput = document.getElementById('selectedVariant');
-            if (selectedVariantInput) selectedVariantInput.value = variantIndex;
-
-            const product = <%- JSON.stringify(product) %>;
-            const thumbnailsContainer = document.getElementById('productThumbnails');
-            if (!thumbnailsContainer || !product?.variants?.[variantIndex]) return;
-
-            thumbnailsContainer.setAttribute('data-selected-variant', variantIndex);
-            thumbnailsContainer.innerHTML = '';
-
-            if (product.variants[variantIndex].images?.length > 0) {
-                product.variants[variantIndex].images.forEach((image, imageIndex) => {
-                    const imgElement = document.createElement('img');
-                    imgElement.src = image.url;
-                    imgElement.alt = `${product.name || 'Product'} - ${color || ''}`;
-                    imgElement.className = `thumbnail-image ${imageIndex === 0 ? 'active' : ''}`;
-                    imgElement.setAttribute('data-variant', variantIndex);
-                    imgElement.setAttribute('data-image', imageIndex);
-                    imgElement.onclick = () => changeMainImage(image.url, imgElement);
-                    thumbnailsContainer.appendChild(imgElement);
-                });
-
-                changeMainImage(product.variants[variantIndex].images[0].url, 
-                    thumbnailsContainer.querySelector(`[data-variant="${variantIndex}"][data-image="0"]`));
-            }
-
-            const variant = product.variants[variantIndex];
-            const stockElement = document.getElementById('stockStatus');
-            if (stockElement) {
-                if (variant.stock > 10) {
-                    stockElement.innerHTML = '<span class="badge bg-success px-3 py-2">In Stock</span>';
-                } else if (variant.stock > 0) {
-                    stockElement.innerHTML = `<span class="badge bg-warning px-3 py-2">Only ${variant.stock} left</span>`;
-                } else {
-                    stockElement.innerHTML = '<span class="badge bg-danger px-3 py-2">Out of Stock</span>';
-                }
-            }
-        } catch (error) {
-            console.error('Error selecting variant:', error);
-        }
+    const wishlistBtn = document.getElementById('wishlistBtn');
+    if (wishlistBtn) {
+      wishlistBtn.addEventListener('click', addToWishlist);
     }
+  } catch (error) {
+    console.error('Error initializing page:', error);
+  }
+});
 
-    function addToCart(event) {
-        try {
-            const addToCartBtn = event.currentTarget;
-            addToCartBtn.disabled = true;
-            addToCartBtn.textContent = "Adding...";
-
-            const selectedVariantIndex = document.getElementById('selectedVariant')?.value;
-            const product = <%- JSON.stringify(product) %>;
-            const variant = product?.variants?.[selectedVariantIndex];
-
-            if (!variant || !product) {
-                throw new Error('Invalid product or variant data');
-            }
-
-            axios.post('/cart/add', {
-                productId: product._id,
-                variantId: variant._id,
-            }).then(response => {
-                if (response.status === 200) {
-                    addToCartBtn.textContent = "Added!";
-                    Swal.fire({
-                        title: "✅ Added to Cart",
-                        text: `${product.name || 'Product'} (${variant.color || ''}) has been added.`,
-                        icon: "success",
-                        showCancelButton: true,
-                        confirmButtonText: "Go to Cart",
-                        cancelButtonText: "Continue Shopping"
-                    }).then(result => {
-                        if (result.isConfirmed) {
-                            window.location.href = "/cart";
-                        } else {
-                            addToCartBtn.textContent = "Add to Cart";
-                            addToCartBtn.disabled = false;
-                        }
-                    });
-                }
-            }).catch(error => {
-                addToCartBtn.textContent = "Add to Cart";
-                addToCartBtn.disabled = false;
-
-                if (error.response?.status === 401) {
-                    Swal.fire({
-                        title: "⚠️ Not Logged In",
-                        icon: "warning",
-                        confirmButtonText: "Login"
-                    }).then(() => {
-                        window.location.href = "/login";
-                    });
-                    return;
-                }
-
-                Swal.fire({
-                    title: "Error",
-                    text: error?.response?.data?.message || "Something went wrong. Please try again.",
-                    icon: "error"
-                });
-            });
-        } catch (error) {
-            console.error("Add to cart failed:", error);
-            addToCartBtn.textContent = "Add to Cart";
-            addToCartBtn.disabled = false;
-            Swal.fire({
-                title: "Error",
-                text: "Failed to add to cart. Please try again.",
-                icon: "error"
-            });
-        }
-    }
-
-    function addToWishlist() {
-        try {
-            Swal.fire({
-                title: "Added to Wishlist",
-                text: "Product has been added to your wishlist",
-                icon: "success",
-                timer: 1500
-            });
-        } catch (error) {
-            console.error('Error adding to wishlist:', error);
-            Swal.fire({
-                title: "Error",
-                text: "Failed to add to wishlist. Please try again.",
-                icon: "error"
-            });
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        try {
-            const firstVariantOption = document.querySelector('.variant-option');
-            if (firstVariantOption) {
-                selectVariant(firstVariantOption, 0, firstVariantOption.textContent.trim());
-            }
-        } catch (error) {
-            console.error('Error initializing variant selection:', error);
-        }
-    });
 </script>
