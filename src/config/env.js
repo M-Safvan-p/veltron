@@ -4,7 +4,6 @@ dotenv.config();
 module.exports = {
   PORT: process.env.PORT || 5000,
   MONGO_URI: process.env.MONGO_URI,
-  JWT_SECRET: process.env.JWT_SECRET,
   SESSION_SECRET: process.env.SESSION_SECRET,
   NODEMAILER_PASSWORD: process.env.NODEMAILER_PASSWORD,
   NODEMAILER_EMAIL: process.env.NODEMAILER_EMAIL,
