@@ -46,7 +46,7 @@ const loadAddCategory = (req, res) => {
 
 const addCategory = async (req, res) => {
   try {
-    const { name, description, isListed } = req.body;
+    const { name, description, offer, isListed } = req.body;
     //for case sensitive
     const normalised = name.trim().toLowerCase();
 
@@ -54,12 +54,13 @@ const addCategory = async (req, res) => {
     if (findCategory) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.CATEGORY_ALREADY_EXISTS);
 
     //validationn
-    const errorMessage = formValidator.validateCategory(normalised, description, isListed);
+    const errorMessage = formValidator.validateCategory(normalised, description, offer, isListed);
     if (errorMessage) return errorResponse(res, HttpStatus.BAD_REQUEST, errorMessage);
 
     const saveCategory = new Category({
       name: normalised,
       description,
+      offer,
       isListed: isListed == "true",
     });
 
@@ -95,9 +96,9 @@ const editCategory = async (req, res) => {
   try {
     const id = req.params.id;
     if (!mongoose.Types.ObjectId.isValid(id)) return res.redirect("/admin/category");
-    const { name, description, isListed } = req.body;
+    const { name, description, offer, isListed } = req.body;
     //validation
-    const errorMessage = formValidator.validateCategory(name, description, isListed);
+    const errorMessage = formValidator.validateCategory(name, description, offer, isListed);
     if (errorMessage) return errorResponse(res, HttpStatus.BAD_REQUEST, errorMessage);
 
     //for case sensitive
@@ -106,6 +107,7 @@ const editCategory = async (req, res) => {
     await Category.findByIdAndUpdate(id, {
       name: normalised,
       description,
+      offer,
       isListed: isListed == "true",
     });
     return success(res, HttpStatus.OK, Messages.CATEGORY_UPDATED, {
