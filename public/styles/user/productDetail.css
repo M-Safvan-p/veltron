@@ -136,7 +136,7 @@
 }
 
 .product-details-box h5::before {
-  content: '';
+  content: "";
   width: 3px;
   height: 18px;
   background: var(--primary);
@@ -564,7 +564,7 @@
 }
 
 .related-products h3::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;

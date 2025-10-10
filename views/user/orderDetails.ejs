@@ -1,4 +1,52 @@
 <style>
+  .payment-failed-alert {
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: slideIn 0.3s ease;
+  }
+
+  .alert-icon {
+    font-size: 21px;
+    flex-shrink: 0;
+  }
+
+  .alert-content {
+    flex: 1;
+  }
+
+  .alert-content strong {
+    display: block;
+    color: #856404;
+    font-size: 14px;
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+
+  .alert-content p {
+    color: #856404;
+    font-size: 13px;
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   .main-content {
     background-color: white;
     width: 100%;
@@ -1274,8 +1322,8 @@
             <div class="order-id-section">
               <h2 class="order-id">Order #<%= order.orderId %>
               </h2>
-              <p class="order-date">Placed on <%= new Date(order.invoiceDate).toLocaleDateString('en-IN',
-                                    { year: 'numeric' , month: 'long' , day: 'numeric' }) %>
+              <p class="order-date">Placed on <%= new Date(order.invoiceDate).toLocaleDateString('en-IN', {
+                  year: 'numeric' , month: 'long' , day: 'numeric' }) %>
               </p>
             </div>
             <div class="order-status-section">
@@ -1289,159 +1337,171 @@
           <h3 style="margin-top: 25px" class="card-title">Items Ordered</h3>
           <div class="products-list">
             <% order.products.forEach(product=> { %>
-            <div class="product-item">
-              <div class="product-image">
-                <img src="<%= product.image %>" alt="<%= product.name %>" onerror="this.src='/images/default-product.jpg'" />
+              <div class="product-item">
+                <div class="product-image">
+                  <img src="<%= product.image %>" alt="<%= product.name %>"
+                    onerror="this.src='/images/default-product.jpg'" />
+                </div>
+                <div class="product-details">
+                  <h4 class="product-name">
+                    <%= product.name %>
+                  </h4>
+                  <p class="product-meta">Price: ₹<%= product.priceAtPurchase.toLocaleString('en-IN') %> × <%=
+                        product.quantity %>
+                  </p>
+                </div>
+                <div class="product-total">
+                  <span class="product-price">₹<%= (product.quantity * product.priceAtPurchase).toLocaleString('en-IN')
+                      %></span>
+                </div>
               </div>
-              <div class="product-details">
-                <h4 class="product-name">
-                  <%= product.name %>
-                </h4>
-                <p class="product-meta">Price: ₹<%= product.priceAtPurchase.toLocaleString('en-IN')
-                                            %> × <%= product.quantity %>
-                </p>
-              </div>
-              <div class="product-total">
-                <span class="product-price">₹<%= (product.quantity *
-                                            product.priceAtPurchase).toLocaleString('en-IN') %></span>
-              </div>
-            </div>
-            <% }) %>
+              <% }) %>
           </div>
         </article>
 
         <!-- Other Details -->
         <article class="other-details-card">
           <h3 class="card-title">Payment & Other Details</h3>
-          <div class="other-details-grid">
-            <div class="detail-item">
-              <span class="detail-label">Payment Method</span>
-              <span class="detail-value">
-                <%= order.paymentMethod %>
-              </span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">Payment Status</span>
-              <span class="payment-status payment-<%= order.paymentStatus %>">
-                <%= order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1) %>
-              </span>
-            </div>
-            <% if (order.couponCode) { %>
-            <div class="detail-item">
-              <span class="detail-label">Coupon Applied</span>
-              <span class="detail-value">
-                <%= order.couponCode %>
-              </span>
-            </div>
-            <% } %>
-            <% if (order.paymentMethod=="RAZORPAY" && order.paymentStatus=="failed" ) { %>
-            <div class="detail-item">
-              <span class="detail-label">Retry Payment</span>
-              <button class="retry-btn" onclick="retryPayment( '<%= order.razorpayOrderId %>', '<%= order.totalAmount %>', '<%= order.orderId %>')">
-                Pay Now
-              </button>
-            </div>
-            <% } %>
-          </div>
-
-          <div class="two-column-layout">
-            <!-- Shipping Address -->
-            <div class="column-card">
-              <h4 class="column-title">Shipping Address</h4>
-              <div class="address-details">
-                <p class="address-name">
-                  <%= order.shippingAddress.type %>
-                </p>
-                <p class="address-phone">
-                  <%= order.shippingAddress.phone %>
-                </p>
-                <p class="address-line">
-                  <%= order.shippingAddress.fullAddress %>
-                </p>
-                <p class="address-line">
-                  <%= order.shippingAddress.district %>
-                </p>
-                <p class="address-line">
-                  <%= order.shippingAddress.city %>, <%= order.shippingAddress.state %> - <%=
-                                                order.shippingAddress.pincode %>
-                </p>
+          <% if(order.paymentStatus==='failed' ) { %>
+            <div class="payment-failed-alert">
+              <div class="alert-icon">⚠️</div>
+              <div class="alert-content">
+                <strong>Payment Failed</strong>
+                <p>Your payment was unsuccessful. Please retry to complete your order.</p>
               </div>
             </div>
-
-            <!-- Order Summary -->
-            <div class="column-card">
-              <h4 class="column-title">Order Summary</h4>
-              <div class="summary-list">
-                <% const subtotal=order.products.reduce((total, product)=> total + (product.quantity *
-                                    product.priceAtPurchase), 0);
-                                    const totalItems = order.products.reduce((total, product) => total +
-                                    product.quantity, 0);
-                                    const gst = Math.round(subtotal * 0.18); // 18% GST
-                                    const discountedSubtotal = order.couponDiscount ? (subtotal - order.couponDiscount)
-                                    : subtotal;
-                                    const finalTotal = discountedSubtotal + gst; // shipping is free
-                                    %>
-
-                <div class="summary-item">
-                  <span class="summary-label">Total Items</span>
-                  <span class="summary-value">
-                    <%= totalItems %>
+            <% } %>
+              <div class="other-details-grid">
+                <div class="detail-item">
+                  <span class="detail-label">Payment Method</span>
+                  <span class="detail-value">
+                    <%= order.paymentMethod %>
                   </span>
                 </div>
+                <div class="detail-item">
+                  <span class="detail-label">Payment Status</span>
+                  <span class="payment-status payment-<%= order.paymentStatus %>">
+                    <%= order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1) %>
+                  </span>
+                </div>
+                <% if (order.couponApplied && order.couponDetails && order.couponDetails.code) { %>
+                  <div class="detail-item">
+                    <span class="detail-label">Coupon Applied</span>
+                    <span class="detail-value">
+                      <%= order.couponDetails.code %>
+                    </span>
+                  </div>
+                  <% } %>
+                    <% if (order.paymentMethod=="RAZORPAY" && order.paymentStatus=="failed" ) { %>
+                      <div class="detail-item">
+                        <span class="detail-label">Retry Payment</span>
+                        <button class="retry-btn"
+                          onclick="retryPayment( '<%= order.razorpayOrderId %>', '<%= order.totalAmount %>', '<%= order.orderId %>')">
+                          Pay Now
+                        </button>
+                      </div>
+                      <% } %>
+              </div>
 
-                <div class="summary-item">
-                  <span class="summary-label">Subtotal</span>
-                  <span class="summary-value">₹<%= subtotal.toLocaleString('en-IN') %></span>
+              <div class="two-column-layout">
+                <!-- Shipping Address -->
+                <div class="column-card">
+                  <h4 class="column-title">Shipping Address</h4>
+                  <div class="address-details">
+                    <p class="address-name">
+                      <%= order.shippingAddress.type %>
+                    </p>
+                    <p class="address-phone">
+                      <%= order.shippingAddress.phone %>
+                    </p>
+                    <p class="address-line">
+                      <%= order.shippingAddress.fullAddress %>
+                    </p>
+                    <p class="address-line">
+                      <%= order.shippingAddress.district %>
+                    </p>
+                    <p class="address-line">
+                      <%= order.shippingAddress.city %>, <%= order.shippingAddress.state %> - <%=
+                            order.shippingAddress.pincode %>
+                    </p>
+                  </div>
                 </div>
 
-                <% if (order.couponCode && order.couponDiscount) { %>
-                <div class="summary-item">
-                  <span class="summary-label">Coupon Discount</span>
-                  <span class="summary-value discount">-₹<%=
-                                                    order.couponDiscount.toLocaleString('en-IN') %></span>
-                </div>
-                <% } %>
+                <!-- Order Summary -->
+                <div class="column-card">
+                  <h4 class="column-title">Order Summary</h4>
+                  <div class="summary-list">
+                    <% const subtotal=order.products.reduce((total, product)=> total + (product.quantity *
+                      product.priceAtPurchase), 0);
+                      const totalItems = order.products.reduce((total, product) => total +
+                      product.quantity, 0);
+                      const gst = Math.round(subtotal * 0.18); // 18% GST
+                      const discountedSubtotal = (order.couponDetails && order.couponDetails.discount) ? (subtotal - order.couponDetails.discount) : subtotal;
+                      const finalTotal = discountedSubtotal + gst; // shipping is free
+                      %>
 
-                <div class="summary-item">
-                  <span class="summary-label">GST (18%)</span>
-                  <span class="summary-value">₹<%= gst.toLocaleString('en-IN') %></span>
-                </div>
+                      <div class="summary-item">
+                        <span class="summary-label">Total Items</span>
+                        <span class="summary-value">
+                          <%= totalItems %>
+                        </span>
+                      </div>
 
-                <div class="summary-item">
-                  <span class="summary-label">Shipping</span>
-                  <span class="summary-value">Free</span>
-                </div>
+                      <div class="summary-item">
+                        <span class="summary-label">Subtotal</span>
+                        <span class="summary-value">₹<%= subtotal.toLocaleString('en-IN') %></span>
+                      </div>
 
-                <hr style="border: none; border-top: 1px solid #dee2e6; margin: 10px 0;" />
+                      <% if (order.couponDetails && order.couponDetails.discount) { %>
+                        <div class="summary-item">
+                          <span class="summary-label">Coupon Discount</span>
+                          <span class="summary-value discount">-₹<%= order.couponDetails.discount.toLocaleString('en-IN') %>
+                              </span>
+                        </div>
+                        <% } %>
 
-                <div class="summary-item">
-                  <span class="summary-label">Final Total</span>
-                  <span class="summary-value total">₹<%=
-                                                        finalTotal.toLocaleString('en-IN') %></span>
+                          <div class="summary-item">
+                            <span class="summary-label">GST (18%)</span>
+                            <span class="summary-value">₹<%= gst.toLocaleString('en-IN') %></span>
+                          </div>
+
+                          <div class="summary-item">
+                            <span class="summary-label">Shipping</span>
+                            <span class="summary-value">Free</span>
+                          </div>
+
+                          <hr style="border: none; border-top: 1px solid #dee2e6; margin: 10px 0;" />
+
+                          <div class="summary-item">
+                            <span class="summary-label">Final Total</span>
+                            <span class="summary-value total">₹<%= finalTotal.toLocaleString('en-IN') %></span>
+                          </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
         </article>
         <!-- Order Tracking -->
         <article class="order-tracking-card">
           <h3 class="card-title">Order Tracking</h3>
           <div class="tracking-timeline">
-            <div class="timeline-step <%= order.orderStatus === 'pending' || order.orderStatus === 'processing' || order.orderStatus === 'shipped' || order.orderStatus === 'completed' ? 'active' : '' %>">
+            <div
+              class="timeline-step <%= order.orderStatus === 'pending' || order.orderStatus === 'processing' || order.orderStatus === 'shipped' || order.orderStatus === 'completed' ? 'active' : '' %>">
               <div class="step-icon">1</div>
               <div class="step-info">
                 <p class="step-title">Pending</p>
                 <p class="step-desc">Order Not placed</p>
               </div>
             </div>
-            <div class="timeline-step <%= order.orderStatus === 'processing' || order.orderStatus === 'shipped' || order.orderStatus === 'completed' ? 'active' : '' %>">
+            <div
+              class="timeline-step <%= order.orderStatus === 'processing' || order.orderStatus === 'shipped' || order.orderStatus === 'completed' ? 'active' : '' %>">
               <div class="step-icon">2</div>
               <div class="step-info">
                 <p class="step-title">Processed</p>
                 <p class="step-desc">Order confirmed</p>
               </div>
             </div>
-            <div class="timeline-step <%= order.orderStatus === 'shipped' || order.orderStatus === 'completed' ? 'active' : '' %>">
+            <div
+              class="timeline-step <%= order.orderStatus === 'shipped' || order.orderStatus === 'completed' ? 'active' : '' %>">
               <div class="step-icon">3</div>
               <div class="step-info">
                 <p class="step-title">Shipped</p>
@@ -1461,202 +1521,208 @@
           <br>
           <div class="action-buttons">
             <% if (order.orderStatus==='pending' || order.orderStatus==='processing' ) { %>
-            <button class="cancel-button" onclick="cancelOrder('<%= order.orderId %>')">Cancel
-              Order</button>
-            <% } %>
-            <% if (order.orderStatus==='completed' && typeof returnData==='undefined' ) { %>
-            <button class="return-button" onclick="openReturnModal()">Return Order</button>
-            <% } %>
-            <a href="/profile/orders/invoice/<%= order.orderId %>" class="invoice-button">Download Invoice</a>
-            <a href="/profile/orders" class="back-button">Back to Orders</a>
+              <button class="cancel-button" onclick="cancelOrder('<%= order.orderId %>')">Cancel
+                Order</button>
+              <% } %>
+                <% if (order.orderStatus==='completed' && typeof returnData==='undefined' ) { %>
+                  <button class="return-button" onclick="openReturnModal()">Return Order</button>
+                  <% } %>
+                    <a href="/profile/orders/invoice/<%= order.orderId %>" class="invoice-button">Download Invoice</a>
+                    <a href="/profile/orders" class="back-button">Back to Orders</a>
           </div>
         </article>
 
         <!-- Return Details Section (Show if return data exists) -->
         <% if (typeof returnData !=='undefined' && returnData) { %>
-        <div class="welcome-section">
-          <h1 class="welcome-title">Return Details</h1>
-        </div>
-        <article class="return-details-card">
-          <!-- Return Header Info -->
-          <div class="return-header">
-            <div class="return-main-info">
-              <div class="return-id-section">
-                <h4 class="return-id">Return ID: #<%=
-                                            returnData._id.toString().slice(-8).toUpperCase() %>
-                </h4>
-                <p class="return-date">Requested on <%= new
-                                            Date(returnData.returnDate).toLocaleDateString('en-IN', { year: 'numeric'
-                                            ,month: 'long' , day: 'numeric' }) %>
+          <div class="welcome-section">
+            <h1 class="welcome-title">Return Details</h1>
+          </div>
+          <article class="return-details-card">
+            <!-- Return Header Info -->
+            <div class="return-header">
+              <div class="return-main-info">
+                <div class="return-id-section">
+                  <h4 class="return-id">Return ID: #<%= returnData._id.toString().slice(-8).toUpperCase() %>
+                  </h4>
+                  <p class="return-date">Requested on <%= new Date(returnData.returnDate).toLocaleDateString('en-IN', {
+                      year: 'numeric' ,month: 'long' , day: 'numeric' }) %>
+                  </p>
+                </div>
+                <div class="return-status-section">
+                  <span class="return-status-badge return-status-<%= returnData.status %>">
+                    <%= returnData.status.charAt(0).toUpperCase() + returnData.status.slice(1) %>
+                  </span>
+                </div>
+              </div>
+
+              <div class="return-reason">
+                <h5 class="return-reason-title">Return Reason</h5>
+                <p class="return-reason-text">
+                  <%= returnData.reason %>
                 </p>
               </div>
-              <div class="return-status-section">
-                <span class="return-status-badge return-status-<%= returnData.status %>">
-                  <%= returnData.status.charAt(0).toUpperCase() + returnData.status.slice(1) %>
-                </span>
+            </div>
+
+            <!-- Return Timeline -->
+            <div class="return-timeline-section">
+              <h5 class="timeline-section-title">Return Progress</h5>
+              <div class="return-timeline">
+                <div
+                  class="return-timeline-step <%= returnData.status === 'pending' || returnData.status === 'approved' || returnData.status === 'rejected' || returnData.status === 'completed' ? 'active' : '' %>">
+                  <div class="return-step-icon">1</div>
+                  <div class="return-step-info">
+                    <p class="return-step-title">Request Submitted</p>
+                    <p class="return-step-desc">Return request received</p>
+                  </div>
+                </div>
+                <div
+                  class="return-timeline-step <%= returnData.status === 'approved' || returnData.status === 'completed' ? 'active' : '' %> <%= returnData.status === 'rejected' ? 'rejected' : '' %>">
+                  <div class="return-step-icon">2</div>
+                  <div class="return-step-info">
+                    <p class="return-step-title">
+                      <%= returnData.status==='rejected' ? 'Rejected' : 'Approved' %>
+                    </p>
+                    <p class="return-step-desc">
+                      <%= returnData.status==='rejected' ? 'Return declined' : 'Return approved' %>
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="return-timeline-step <%= returnData.status === 'completed' && returnData.refundStatus === 'processed' ? 'active' : '' %>">
+                  <div class="return-step-icon">3</div>
+                  <div class="return-step-info">
+                    <p class="return-step-title">Refund Processed</p>
+                    <p class="return-step-desc">Payment initiated</p>
+                  </div>
+                </div>
+                <div
+                  class="return-timeline-step <%= returnData.status === 'completed' && returnData.refundStatus === 'completed' ? 'active' : '' %>">
+                  <div class="return-step-icon">4</div>
+                  <div class="return-step-info">
+                    <p class="return-step-title">Completed</p>
+                    <p class="return-step-desc">Refund received</p>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div class="return-reason">
-              <h5 class="return-reason-title">Return Reason</h5>
-              <p class="return-reason-text">
-                <%= returnData.reason %>
-              </p>
-            </div>
-          </div>
-
-          <!-- Return Timeline -->
-          <div class="return-timeline-section">
-            <h5 class="timeline-section-title">Return Progress</h5>
-            <div class="return-timeline">
-              <div class="return-timeline-step <%= returnData.status === 'pending' || returnData.status === 'approved' || returnData.status === 'rejected' || returnData.status === 'completed' ? 'active' : '' %>">
-                <div class="return-step-icon">1</div>
-                <div class="return-step-info">
-                  <p class="return-step-title">Request Submitted</p>
-                  <p class="return-step-desc">Return request received</p>
-                </div>
-              </div>
-              <div class="return-timeline-step <%= returnData.status === 'approved' || returnData.status === 'completed' ? 'active' : '' %> <%= returnData.status === 'rejected' ? 'rejected' : '' %>">
-                <div class="return-step-icon">2</div>
-                <div class="return-step-info">
-                  <p class="return-step-title">
-                    <%= returnData.status==='rejected' ? 'Rejected' : 'Approved' %>
-                  </p>
-                  <p class="return-step-desc">
-                    <%= returnData.status==='rejected' ? 'Return declined' : 'Return approved'
-                                                %>
-                  </p>
-                </div>
-              </div>
-              <div class="return-timeline-step <%= returnData.status === 'completed' && returnData.refundStatus === 'processed' ? 'active' : '' %>">
-                <div class="return-step-icon">3</div>
-                <div class="return-step-info">
-                  <p class="return-step-title">Refund Processed</p>
-                  <p class="return-step-desc">Payment initiated</p>
-                </div>
-              </div>
-              <div class="return-timeline-step <%= returnData.status === 'completed' && returnData.refundStatus === 'completed' ? 'active' : '' %>">
-                <div class="return-step-icon">4</div>
-                <div class="return-step-info">
-                  <p class="return-step-title">Completed</p>
-                  <p class="return-step-desc">Refund received</p>
-                </div>
+            <!-- Returned Items -->
+            <div class="returned-items-section">
+              <h5 class="returned-items-title">Returned Items</h5>
+              <div class="returned-items-list">
+                <% returnData.items.forEach(item=> { %>
+                  <div class="returned-item">
+                    <div class="returned-item-details">
+                      <img src=" <%= item.image %>" alt="">
+                      <h6 class="returned-item-name">
+                        <%= item.name %>
+                      </h6>
+                      <p class="returned-item-meta">Quantity: <%= item.quantity %> ×
+                          ₹<%=item.priceAtPurchase.toLocaleString('en-IN') %>
+                      </p>
+                    </div>
+                    <div class="returned-item-total">
+                      <span class="returned-item-price">₹<%= (item.quantity *
+                          item.priceAtPurchase).toLocaleString('en-IN') %></span>
+                    </div>
+                  </div>
+                  <% }) %>
               </div>
             </div>
-          </div>
 
-          <!-- Returned Items -->
-          <div class="returned-items-section">
-            <h5 class="returned-items-title">Returned Items</h5>
-            <div class="returned-items-list">
-              <% returnData.items.forEach(item=> { %>
-              <div class="returned-item">
-                <div class="returned-item-details">
-                  <img src=" <%= item.image %>" alt="">
-                  <h6 class="returned-item-name">
-                    <%= item.name %>
-                  </h6>
-                  <p class="returned-item-meta">Quantity: <%= item.quantity %> ×
-                    ₹<%=item.priceAtPurchase.toLocaleString('en-IN') %>
-                  </p>
+            <!-- Refund Information -->
+            <% if (returnData.refundAmount || returnData.refundMethod) { %>
+              <div class="refund-info-section">
+                <h5 class="refund-info-title">Refund Information</h5>
+                <div class="refund-details-grid">
+                  <% if (returnData.refundAmount) { %>
+                    <div class="refund-detail-item">
+                      <span class="refund-detail-label">Refund Amount</span>
+                      <span class="refund-detail-value">₹<%=returnData.refundAmount.toLocaleString('en-IN') %></span>
+                    </div>
+                    <% } %>
+                      <% if (returnData.refundMethod) { %>
+                        <div class="refund-detail-item">
+                          <span class="refund-detail-label">Refund Method</span>
+                          <span class="refund-detail-value">
+                            <%= returnData.refundMethod %>
+                          </span>
+                        </div>
+                        <% } %>
+                          <% if (returnData.refundDate) { %>
+                            <div class="refund-detail-item">
+                              <span class="refund-detail-label">Refund Date</span>
+                              <span class="refund-detail-value">
+                                <%= new Date(returnData.refundDate).toLocaleDateString('en-IN',{ year: 'numeric' ,
+                                  month: 'short' , day: 'numeric' }) %>
+                              </span>
+                            </div>
+                            <% } %>
+                              <div class="refund-detail-item">
+                                <span class="refund-detail-label">Refund Status</span>
+                                <span class="refund-status-badge refund-status-<%= returnData.refundStatus %>">
+                                  <%= returnData.refundStatus.charAt(0).toUpperCase()+ returnData.refundStatus.slice(1)
+                                    %>
+                                </span>
+                              </div>
                 </div>
-                <div class="returned-item-total">
-                  <span class="returned-item-price">₹<%= (item.quantity *
-                                                    item.priceAtPurchase).toLocaleString('en-IN') %></span>
-                </div>
-              </div>
-              <% }) %>
-            </div>
-          </div>
-
-          <!-- Refund Information -->
-          <% if (returnData.refundAmount || returnData.refundMethod) { %>
-          <div class="refund-info-section">
-            <h5 class="refund-info-title">Refund Information</h5>
-            <div class="refund-details-grid">
-              <% if (returnData.refundAmount) { %>
-              <div class="refund-detail-item">
-                <span class="refund-detail-label">Refund Amount</span>
-                <span class="refund-detail-value">₹<%=returnData.refundAmount.toLocaleString('en-IN')
-                                                    %></span>
               </div>
               <% } %>
-              <% if (returnData.refundMethod) { %>
-              <div class="refund-detail-item">
-                <span class="refund-detail-label">Refund Method</span>
-                <span class="refund-detail-value">
-                  <%= returnData.refundMethod %>
-                </span>
-              </div>
-              <% } %>
-              <% if (returnData.refundDate) { %>
-              <div class="refund-detail-item">
-                <span class="refund-detail-label">Refund Date</span>
-                <span class="refund-detail-value">
-                  <%= new
-                                                                    Date(returnData.refundDate).toLocaleDateString('en-IN',{
-                                                                    year: 'numeric' , month: 'short' , day: 'numeric' })
-                                                                    %>
-                </span>
-              </div>
-              <% } %>
-              <div class="refund-detail-item">
-                <span class="refund-detail-label">Refund Status</span>
-                <span class="refund-status-badge refund-status-<%= returnData.refundStatus %>">
-                  <%= returnData.refundStatus.charAt(0).toUpperCase()+
-                                                                        returnData.refundStatus.slice(1) %>
-                </span>
-              </div>
-            </div>
-          </div>
+          </article>
           <% } %>
-        </article>
-        <% } %>
       </div>
     </section>
 
     <!-- Return Modal -->
     <% if (order.orderStatus==='completed' ) { %>
-    <div id="returnModal" class="modal-overlay">
-      <div class="return-modal">
-        <div class="modal-header">
-          <h3 class="modal-title">Return Items</h3>
-          <button class="modal-close" onclick="closeReturnModal()">&times;</button>
-        </div>
-        <div class="modal-body">
-          <form id="returnForm">
-            <div class="return-items-list">
-              <% order.products.forEach((product, index)=> { %>
-              <div class="return-item">
-                <input type="checkbox" class="return-checkbox" id="item-<%= index %>" name="returnItems" value="<%= product.productId %>" data-name="<%= product.name %>" data-quantity="<%= product.quantity %>" data-variant-id="<%= product.variantId %>" data-vendor-id="<%= product.vendorId %>" data-vendor-earning="<%= product.vendorEarning %>" data-commission-amount="<%= product.commissionAmount %>" data-price-at-purchase="<%= product.priceAtPurchase %>">
-                <div class="return-item-image">
-                  <img src="<%= product.image %>" alt="<%= product.name %>" onerror="this.src='/images/default-product.jpg'" />
-                </div>
-                <div class="return-item-details">
-                  <h4 class="return-item-name">
-                    <%= product.name %>
-                  </h4>
-                  <p class="return-item-quantity">Quantity: <%= product.quantity %>
-                  </p>
-                </div>
+      <div id="returnModal" class="modal-overlay">
+        <div class="return-modal">
+          <div class="modal-header">
+            <h3 class="modal-title">Return Items</h3>
+            <button class="modal-close" onclick="closeReturnModal()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <form id="returnForm">
+              <div class="return-items-list">
+                <% order.products.forEach((product, index)=> { %>
+                  <div class="return-item">
+                    <input type="checkbox" class="return-checkbox" id="item-<%= index %>" name="returnItems"
+                      value="<%= product.productId %>" data-name="<%= product.name %>"
+                      data-quantity="<%= product.quantity %>" data-variant-id="<%= product.variantId %>"
+                      data-vendor-id="<%= product.vendorId %>" data-vendor-earning="<%= product.vendorEarning %>"
+                      data-commission-amount="<%= product.commissionAmount %>"
+                      data-price-at-purchase="<%= product.priceAtPurchase %>">
+                    <div class="return-item-image">
+                      <img src="<%= product.image %>" alt="<%= product.name %>"
+                        onerror="this.src='/images/default-product.jpg'" />
+                    </div>
+                    <div class="return-item-details">
+                      <h4 class="return-item-name">
+                        <%= product.name %>
+                      </h4>
+                      <p class="return-item-quantity">Quantity: <%= product.quantity %>
+                      </p>
+                    </div>
+                  </div>
+                  <% }) %>
               </div>
-              <% }) %>
-            </div>
 
-            <div class="return-reason-group">
-              <label class="return-label" for="returnReason">Reason for Return *</label>
-              <textarea id="returnReason" class="return-textarea" name="returnReason" rows="4" placeholder="Please provide a detailed reason for returning the selected items..." required></textarea>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="modal-btn modal-btn-secondary" onclick="closeReturnModal()">Cancel</button>
-          <button type="button" class="modal-btn modal-btn-primary" onclick="submitReturn()">Submit
-            Return</button>
+              <div class="return-reason-group">
+                <label class="return-label" for="returnReason">Reason for Return *</label>
+                <textarea id="returnReason" class="return-textarea" name="returnReason" rows="4"
+                  placeholder="Please provide a detailed reason for returning the selected items..."
+                  required></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="modal-btn modal-btn-secondary" onclick="closeReturnModal()">Cancel</button>
+            <button type="button" class="modal-btn modal-btn-primary" onclick="submitReturn()">Submit
+              Return</button>
+          </div>
         </div>
       </div>
-    </div>
-    <% } %>
+      <% } %>
   </div>
 </div>
 <script>
@@ -1666,7 +1732,7 @@
       amount: totalAmount * 100,
       currency: "INR",
       order_id: razorpayId,
-      handler: async function(razorpayResponse) {
+      handler: async function (razorpayResponse) {
         try {
           const verifyRes = await axios.post("/checkout/place-order/razorpay-verify", razorpayResponse);
           if (verifyRes.data.success) {
@@ -1771,7 +1837,7 @@
         }
       },
       modal: {
-        ondismiss: function() {
+        ondismiss: function () {
           Swal.fire({
             icon: 'error',
             title: '<i class="fas fa-times-circle"></i> Payment Failed',
@@ -1977,19 +2043,19 @@
     }
 
     // Close modal when clicking outside
-    document.getElementById('returnModal').addEventListener('click', function(e) {
+    document.getElementById('returnModal').addEventListener('click', function (e) {
       if (e.target === this) {
         closeReturnModal();
       }
     });
 
     // Prevent modal close when clicking inside modal content
-    document.querySelector('.return-modal').addEventListener('click', function(e) {
+    document.querySelector('.return-modal').addEventListener('click', function (e) {
       e.stopPropagation();
     });
 
     // ESC key to close modal
-    document.addEventListener('keydown', function(e) {
+    document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') {
         const modal = document.getElementById('returnModal');
         if (modal.classList.contains('show')) {

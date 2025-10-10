@@ -85,7 +85,7 @@ const Messages = {
   PAYMENT_METHOD_NOT_FOUND: "Payment method not found.",
   PAYMENT_VERIFIED_SUCCESS: "Payment verified successfully.",
   PAYMENT_VERIFIED_FAILED: "Payment verification failed.",
-  INVALID_AMOUNT:"Invalid amount. Please enter a positive number.",
+  INVALID_AMOUNT: "Invalid amount. Please enter a positive number.",
   INSUFFICIENT_BALANCE: "Insufficient balance. Please add money to the wallet to continue.",
   // Orders
   // ORDER_PLACED_SUCCESS: "Your order has been placed successfully.",
@@ -115,6 +115,8 @@ const Messages = {
   PRODUCT_ALREADY_EXISTS_IN_WISHLIST: "This product is already in your wishlist.",
   PRODUCT_ADDED_IN_WISHLIST: "Product has been added to your wishlist.",
 
+  // coupon
+  COUPON_ALREADY_EXIST: "Coupon already exist",
   // Server errors
   SERVER_ERROR: "An error occurred. Please try again later.",
 };

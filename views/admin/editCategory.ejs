@@ -31,7 +31,18 @@
                     placeholder="Enter category description..."><%= category.description %></textarea>
             </div>
         </div>
-
+        <!-- NEW OFFER FIELD -->
+<div class="form-group">
+    <label class="form-label" for="offer">Offer Percentage (Optional)</label>
+    <div class="input-with-suffix">
+        <input type="number" id="offer" name="offer" class="form-input offer-input"
+            placeholder="Enter offer percentage (e.g., 10)" min="0" max="100" step="1"
+            value="<%= category.offer || '' %>">
+        <span class="input-suffix">%</span>
+    </div>
+    <small class="form-hint">Enter a discount percentage between 0 and 100. Leave empty for no offer.</small>
+    <div class="error-message" id="offerError"></div>
+</div>
         <!-- Category Status -->
         <div class="form-section">
             <h3>Category Status</h3>

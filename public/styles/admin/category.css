@@ -328,3 +328,19 @@ table {
     font-size: 12px;
   }
 }
+/* Offer Column Styles */
+.offer-text {
+  font-weight: 600;
+  color: #28a745;
+  font-size: 14px;
+  background: #d4edda;
+  padding: 4px 10px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.no-offer-text {
+  color: #999;
+  font-size: 13px;
+  font-style: italic;
+}

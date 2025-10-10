@@ -58,24 +58,37 @@ const validateOtp = (otp) => {
   return null;
 };
 
-const validateCategory = (categoryName, description, isListed) => {
+const validateCategory = (categoryName, description, offer, isListed) => {
   // Category Name: only letters and spaces, min 3 chars, max 50
   const nameRegex = /^[A-Za-z ]{3,50}$/;
   if (!categoryName || !nameRegex.test(categoryName)) {
     return "Category Name must be 3-50 characters long and contain only letters and spaces.";
   }
+
   // Description: optional, but if given must be 5–200 chars
   const descRegex = /^.{5,200}$/;
   if (description && !descRegex.test(description)) {
     return "Description must be between 5 and 200 characters (if provided).";
   }
+
   // isListed: must be "true" or "false"
   if (isListed !== "true" && isListed !== "false") {
     return "Category status must be either 'true' (listed) or 'false' (unlisted).";
   }
 
-  return null;
+  // Offer: optional, but if given must be a number 1–100
+  if (offer !== undefined && offer !== null && offer !== "") {
+    const offerNumber = Number(offer);
+    if (
+      isNaN(offerNumber) ||offerNumber < 1 ||offerNumber > 100 ||!Number.isInteger(offerNumber)
+    ) {
+      return "Offer must be an integer between 1 and 100 (if provided).";
+    }
+  }
+
+  return null; // no validation errors
 };
+
 
 module.exports = {
   validateSignUp,

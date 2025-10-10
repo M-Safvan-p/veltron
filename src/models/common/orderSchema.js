@@ -16,7 +16,7 @@ const orderSchema = new mongoose.Schema(
     },
     orderStatus: {
       type: String,
-      enum: ["pending","processing", "shipped", "completed", "cancelled", "failed"],
+      enum: ["pending", "processing", "shipped", "completed", "cancelled", "failed"],
       default: "processing",
       required: true,
     },
@@ -42,9 +42,6 @@ const orderSchema = new mongoose.Schema(
     couponDetails: {
       code: { type: String },
       discount: { type: Number },
-      discountType: { type: String },
-      maxDiscount: { type: Number },
-      minPurchase: { type: Number },
     },
     totalAmount: {
       type: Number,

@@ -2,91 +2,104 @@
 
 <!-- Page Header -->
 <div class="page-header">
-    <h1 class="page-title">CATEGORY LIST</h1>
-    <div class="breadcrumb">
-        <a href="/admin/dashboard">Dashboard</a>
-        <span class="breadcrumb-separator">></span>
-        <a href="/admin/category">Categories</a>
-    </div>
+  <h1 class="page-title">CATEGORY LIST</h1>
+  <div class="breadcrumb">
+    <a href="/admin/dashboard">Dashboard</a>
+    <span class="breadcrumb-separator">></span>
+    <a href="/admin/category">Categories</a>
+  </div>
 </div>
 
 <!-- Controls -->
 <div class="controls">
-    <a href="/admin/category/add-category" class="add-category-btn">Add Category</a>
+  <a href="/admin/category/add-category" class="add-category-btn">Add Category</a>
 </div>
 
 <!-- Categories Table -->
 <div class="categories-table">
-    <table>
-        <thead class="table-header">
-            <tr>
-                <th>Category Name</th>
-                <th>Description</th>
-                <th>Status</th>
-                <th>LIST/UNLIST</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% if (category && category.length > 0) { %>
-                <% category.forEach((category) => { %>
-                    <tr class="table-row">
-                        <td><%= category.name.charAt(0).toUpperCase() + category.name.slice(1) %></td>
-                        <td>
-                            <div class="description-text" title="<%= category.description %>">
-                                <%= category.description || 'No description available' %>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="status-badge <%= category.isListed ? 'status-listed' : 'status-unlisted' %>">
-                                <%= category.isListed ? "Listed" : "Unlisted" %>
-                            </span>
-                        </td>
-                        <td>
-                            <div class="toggle-switch <%= category.isListed ? 'active' : 'inactive' %>"
-                                 data-category-id="<%= category._id %>">
-                                <div class="slider"></div>
-                            </div>
-                        </td>
-                        <td>
-                            <button class="action-btn edit-btn" onclick="editCategory('<%= category._id %>')" aria-label="Edit Category">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                        </td>
-                    </tr>
-                <% }) %>
-            <% } else { %>
-                <tr>
-                    <td colspan="5" style="text-align:center;">No categories available</td>
-                </tr>
-            <% } %>
-        </tbody>
-    </table>
+  <table>
+    <thead class="table-header">
+      <tr>
+        <th>Category Name</th>
+        <th>Description</th>
+        <th>Offer</th>
+        <th>Status</th>
+        <th>LIST/UNLIST</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (category && category.length> 0) { %>
+      <% category.forEach((category)=> { %>
+      <tr class="table-row">
+        <td>
+          <%= category.name.charAt(0).toUpperCase() + category.name.slice(1) %>
+        </td>
+        <td>
+          <div class="description-text" title="<%= category.description %>">
+            <%= category.description || 'No description available' %>
+          </div>
+        </td>
+        <td>
+          <% if (category.offer && category.offer> 0) { %>
+          <span class="offer-text">
+            <%= category.offer %>%
+          </span>
+          <% } else { %>
+          <span class="no-offer-text">No offer</span>
+          <% } %>
+        </td>
+        <td>
+          <span class="status-badge <%= category.isListed ? 'status-listed' : 'status-unlisted' %>">
+            <%= category.isListed ? "Listed" : "Unlisted" %>
+          </span>
+        </td>
+        <td>
+          <div class="toggle-switch <%= category.isListed ? 'active' : 'inactive' %>" data-category-id="<%= category._id %>">
+            <div class="slider"></div>
+          </div>
+        </td>
+        <td>
+          <button class="action-btn edit-btn" onclick="editCategory('<%= category._id %>')" aria-label="Edit Category">
+            <i class="fas fa-edit"></i>
+          </button>
+        </td>
+      </tr>
+      <% }) %>
+      <% } else { %>
+      <tr>
+        <td colspan="6" style="text-align:center;">No categories available</td>
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
 </div>
 <!-- Pagination -->
 <div class="pagination">
-    <div class="pagination-info">
-        Showing 1-<%= category.length %> of <%= totalCategories  %> categories
-    </div>
-    <div class="pagination-controls">
-        <button class="pagination-btn" <%= currentPage == 1 ? 'disabled' : '' %> onclick="changePage(<%= currentPage - 1 %>)" aria-label="Previous page">
-            <i class="fas fa-chevron-left" aria-hidden="true"></i>
-        </button>
-        <% for (let i = 1; i <= totalPages; i++) { %>
-            <button class="pagination-btn <%= i === currentPage ? 'active' : '' %>" onclick="changePage(<%= i %>)" aria-label="Page <%= i %>">
-                <%= i %>
-            </button>
-        <% } %>
-        <button class="pagination-btn" <%= currentPage == totalPages ? 'disabled' : '' %> onclick="changePage(<%= currentPage + 1 %>)" aria-label="Next page">
-            <i class="fas fa-chevron-right" aria-hidden="true"></i>
-        </button>
-    </div>
+  <div class="pagination-info">
+    Showing 1-<%= category.length %> of <%= totalCategories %> categories
+  </div>
+  <div class="pagination-controls">
+    <button class="pagination-btn" <%=currentPage==1 ? 'disabled' : '' %> onclick="changePage(<%= currentPage - 1 %>
+                )" aria-label="Previous page">
+      <i class="fas fa-chevron-left" aria-hidden="true"></i>
+    </button>
+    <% for (let i=1; i <=totalPages; i++) { %>
+    <button class="pagination-btn <%= i === currentPage ? 'active' : '' %>" onclick="changePage(<%= i %>)" aria-label="Page <%= i %>">
+      <%= i %>
+    </button>
+    <% } %>
+    <button class="pagination-btn" <%=currentPage==totalPages ? 'disabled' : '' %> onclick="changePage(<%=
+                        currentPage + 1 %>)" aria-label="Next page">
+      <i class="fas fa-chevron-right" aria-hidden="true"></i>
+    </button>
+  </div>
 </div>
 <script>
-    function changePage(page) {
-        const url = new URL(window.location);
-        url.searchParams.set('page', page);
-        window.location.href = url.href;
-    }
+  function changePage(page) {
+    const url = new URL(window.location);
+    url.searchParams.set('page', page);
+    window.location.href = url.href;
+  }
 </script>
 <script src="../../js/script/admin/category.js"></script>

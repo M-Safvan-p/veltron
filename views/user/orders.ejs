@@ -1,4 +1,71 @@
 <style>
+    .payment-failed-alert {
+        background: #fff3cd;
+        border: 2px solid #ffc107;
+        border-radius: 10px;
+        padding: 7px;
+        margin-top: 7px;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        animation: slideIn 0.3s ease;
+    }
+
+    .alert-icon {
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+
+    .alert-content {
+        flex: 1;
+    }
+
+    .alert-content strong {
+        display: block;
+        color: #856404;
+        font-size: 13px;
+        margin-bottom: 2px;
+        font-weight: 600;
+    }
+
+    .alert-content p {
+        color: #856404;
+        font-size: 12px;
+        margin: 0;
+        line-height: 1.4;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 640px) {
+        .payment-failed-alert {
+            padding: 12px;
+            gap: 10px;
+        }
+
+        .alert-icon {
+            font-size: 20px;
+        }
+
+        .alert-content strong {
+            font-size: 13px;
+        }
+
+        .alert-content p {
+            font-size: 12px;
+        }
+    }
+
     .main-content {
         background-color: white;
         width: 100%;
@@ -660,6 +727,15 @@
                                     </span>
                                 </div>
                             </div>
+                            <% if(order.paymentStatus==='failed' ) { %>
+                                <div class="payment-failed-alert">
+                                    <div class="alert-icon">⚠️</div>
+                                    <div class="alert-content">
+                                        <strong>Payment Failed</strong>
+                                        <p>Your payment was unsuccessful. Please retry to complete your order.</p>
+                                    </div>
+                                </div>
+                                <% } %>
 
                             <div class="order-details">
                                 <div class="products-section">
@@ -736,8 +812,8 @@
                         </button>
                         <% } %>
 
-                            <button class="pagination-btn" <%=pagee==totalPages ? 'disabled aria-disabled="true"'
-                                : '' %>
+                            <button class="pagination-btn" <%=pagee==totalPages ? 'disabled aria-disabled="true"' : ''
+                                %>
                                 onclick="changePage(<%= pagee + 1 %>)" aria-label="Next page">
                                     <i class="fas fa-chevron-right" aria-hidden="true"></i>
                             </button>

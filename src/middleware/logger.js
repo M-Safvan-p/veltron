@@ -1,5 +1,5 @@
-const morgan = require('morgan');
-const chalk = require('chalk');
+const morgan = require("morgan");
+const chalk = require("chalk");
 
 const logger = morgan((tokens, req, res) => {
   const method = tokens.method(req, res);
@@ -14,12 +14,23 @@ const logger = morgan((tokens, req, res) => {
   // Color HTTP method
   let coloredMethod;
   switch (method) {
-    case 'GET': coloredMethod = chalk.blue(method); break;
-    case 'POST': coloredMethod = chalk.green(method); break;
-    case 'PUT': coloredMethod = chalk.yellow(method); break;
-    case 'DELETE': coloredMethod = chalk.red(method); break;
-    case 'PATCH': coloredMethod = chalk.magenta(method); break;
-    default: coloredMethod = chalk.white(method);
+    case "GET":
+      coloredMethod = chalk.blue(method);
+      break;
+    case "POST":
+      coloredMethod = chalk.green(method);
+      break;
+    case "PUT":
+      coloredMethod = chalk.yellow(method);
+      break;
+    case "DELETE":
+      coloredMethod = chalk.red(method);
+      break;
+    case "PATCH":
+      coloredMethod = chalk.magenta(method);
+      break;
+    default:
+      coloredMethod = chalk.white(method);
   }
 
   // Color status code

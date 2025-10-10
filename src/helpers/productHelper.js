@@ -8,7 +8,7 @@ async function processVariants(variants, files, res, existingProduct = null) {
   const fileMap = {};
   const keptPublicIds = new Set();
 
-  // ✅ Group files by variant index and image index
+  // Group files by variant index and image index
   files.forEach((file) => {
     const match = file.fieldname.match(/variants\[(\d+)\]\[images\]\[(\d+)\]/);
     if (match) {
@@ -28,9 +28,13 @@ async function processVariants(variants, files, res, existingProduct = null) {
 
     const images = [];
     const isEdit = Boolean(existingProduct);
-    const existingVariant = isEdit ? existingProduct.variants.find((v) => v._id?.toString() === variant._id) : null;
 
-    // ✅ Process exactly 3 image slots
+    // ✅ Preserve _id for existing variant
+    let existingVariant = null;
+    if (isEdit && variant._id) {
+      existingVariant = existingProduct.variants.find((v) => v._id.toString() === variant._id.toString());
+    }
+
     for (let j = 0; j < 3; j++) {
       let image = null;
 
@@ -72,13 +76,14 @@ async function processVariants(variants, files, res, existingProduct = null) {
     }
 
     processedVariants.push({
+      _id: existingVariant?._id, // ✅ preserve _id for existing variant
       color,
       stock,
       images,
     });
   }
 
-  // ✅ Delete orphaned Cloudinary images for edits
+  // Delete orphaned Cloudinary images
   if (existingProduct) {
     for (const v of existingProduct.variants) {
       for (const img of v.images) {

@@ -1,32 +1,8 @@
 const User = require("../models/user/userSchema");
 
 const checkSession = async (req, res, next) => {
-  
-
-
-
-
-
-
-    /*
-      fixed session 
-    */
-
-
-
-
-   req.session.user = "68cbc01f40bb1d2e2d25788d";
-
-
-
-
-
-
-
-
-
-
-
+  // skip loging when developing
+  req.session.user = "68cbc01f40bb1d2e2d25788d";
 
   try {
     if (req.session.user) {
@@ -56,33 +32,8 @@ const checkSession = async (req, res, next) => {
 
 const isLogin = async (req, res, next) => {
   try {
-
-
-
-
-
-
-    
-    /*
-      fixed session 
-    */
-   req.session.user = "68cbc01f40bb1d2e2d25788d";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    // skip loging when developing
+    req.session.user = "68cbc01f40bb1d2e2d25788d";
 
     if (req.session.user) {
       const user = await User.findById(req.session.user).lean();

@@ -10,7 +10,7 @@ function calculateTotalAmount(cart, taxRate = 0.18) {
   const tax = Math.round(subtotal * taxRate);
   const total = subtotal + tax;
 
-  return { subtotal, tax, total };
+  return { subtotal, total, tax };
 }
 
 function calculateCommission(total) {
