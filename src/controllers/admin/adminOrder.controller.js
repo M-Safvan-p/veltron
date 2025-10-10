@@ -37,7 +37,7 @@ const loadOrders = async (req, res) => {
       .populate("products.vendorId", "brandName name")
       .lean();
 
-    const vendors = await Vendor.find({}).select("brandName _id").lean();
+    const vendors = await Vendor.find({ isBlocked: false }).select("brandName _id").lean();
 
     res.render("admin/orders", {
       layout: "layouts/adminLayout",
