@@ -130,6 +130,10 @@ const forgotPassword = async (req, res) => {
     //save
     req.session.otp = null;
     await updatedUser.save();
+    req.session.user = null;
+    delete req.session.user;
+    res.clearCookie("connect.sid");
+    res.setHeader("Cache-Control", "no-store");
     success(res, HttpStatus.OK);
   } catch (error) {
     ("password update error:", error);

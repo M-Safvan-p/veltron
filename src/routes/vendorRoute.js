@@ -36,9 +36,9 @@ router.get("/dashboard", vendorAuth.checkSession, pageController.loadDashboard);
 router.get("/products", vendorAuth.checkSession, productController.loadProducts);
 router.patch("/products/:id", vendorAuth.checkSession, productController.listAndUnlist);
 router.get("/products/add-product", vendorAuth.checkSession, productController.loadAddProduct);
-router.post("/products/add-product",vendorAuth.checkSession,validate(productSchema),upload.any(),productController.addProduct);
+router.post("/products/add-product",vendorAuth.checkSession,upload.any(),validate(productSchema),productController.addProduct);
 router.get("/products/edit-product/:id",vendorAuth.checkSession,productController.loadEditProduct);
-router.put("/products/edit-product/:id",vendorAuth.checkSession,validate(productSchema),upload.any(),productController.editProduct);
+router.put("/products/edit-product/:id",vendorAuth.checkSession,upload.any(),validate(productSchema),productController.editProduct);
 
 //orders
 router.get("/orders", vendorAuth.checkSession, orderController.loadOrders);

@@ -141,7 +141,6 @@ const editProduct = async (req, res) => {
   try {
     const productId = req.params.id;
 
-    // 1️⃣ Validate product ID
     if (!mongoose.Types.ObjectId.isValid(productId)) {
       return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.INVALID_PRODUCT_ID);
     }
@@ -153,19 +152,17 @@ const editProduct = async (req, res) => {
 
     const { name, description, price, discountedPrice, isListed, category, variants, specifications } = req.body;
 
-    // 2️⃣ Check if product exists
     const existingProduct = await Product.findOne({ _id: productId, vendorId });
     if (!existingProduct) {
       return errorResponse(res, HttpStatus.NOT_FOUND, Messages.PRODUCT_NOT_FOUND);
     }
 
-    // 3️⃣ Check duplicate name
+    // Check duplicate name
     const duplicateProduct = await Product.findOne({ name: name.trim(), _id: { $ne: productId } });
     if (duplicateProduct) {
       return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.PRODUCT_ALREADY_EXISTS);
     }
 
-    // 4️⃣ Normalize variants (ensure array)
     let normalizedVariants = variants;
     if (normalizedVariants && typeof normalizedVariants === "object" && !Array.isArray(normalizedVariants)) {
       normalizedVariants = Object.keys(normalizedVariants)
@@ -173,16 +170,14 @@ const editProduct = async (req, res) => {
         .map((key) => normalizedVariants[key]);
     }
 
-    // Validate variants exist
     if (!normalizedVariants || normalizedVariants.length === 0) {
       return errorResponse(res, HttpStatus.BAD_REQUEST, "At least one variant is required.");
     }
 
-    // 5️⃣ Process variants + images using helper
     const processedVariants = await processVariants(normalizedVariants, req.files, res, existingProduct);
-    if (!processedVariants) return; // error already sent by helper
+    if (!processedVariants) return;
 
-    // 6️⃣ Update the product
+    // Update the product
     const updatedProduct = await Product.findOneAndUpdate(
       { _id: productId, vendorId },
       {

@@ -5,16 +5,17 @@ const Messages = require("../../constants/messages");
 const HttpStatus = require("../../constants/statusCodes");
 
 const Wallet = require("../../models/user/userWalletSchema");
+const { date } = require("joi");
 
 const loadWallet = async (req, res) => {
   try {
     let page = parseInt(req.query.page) || 1;
-    let limit = 10; 
+    let limit = 10;
     let skip = (page - 1) * limit;
     const userId = req.session.user;
     const wallet = await Wallet.findOne({ userId }).lean();
-    const paginatedTransactions = wallet.transactionHistory.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(skip, skip + limit);
-    console.log("wallet", wallet);
+    const paginatedTransactions = [...wallet.transactionHistory].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(skip, skip + limit);
+
     const totalTransactions = wallet.transactionHistory.length;
     res.render("user/wallet", {
       user: req.user,
@@ -22,7 +23,7 @@ const loadWallet = async (req, res) => {
       currentPage: "wallet",
       layout: "layouts/userLayout",
       page,
-      transactions:paginatedTransactions,
+      transactions: paginatedTransactions,
       totalTransactions,
       totalPages: Math.ceil(totalTransactions / limit),
     });

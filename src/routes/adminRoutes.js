@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 
+const validate = require("../middleware/validate");
+const couponSchema = require("../validators/admin/coupon");
+
 const authController = require("../controllers/admin/adminAuth.controller");
 const dashboardController = require("../controllers/admin/adminDashboard.controller");
 const vendorController = require("../controllers/admin/adminVendor.controller");
@@ -8,6 +11,7 @@ const categoryController = require("../controllers/admin/adminCategory.controlle
 const customerController = require("../controllers/admin/adminCustomer.controller");
 const productController = require("../controllers/admin/adminProduct.controller");
 const orderController = require("../controllers/admin/adminOrder.controller");
+const couponController = require("../controllers/admin/adminCoupon.controller");
 
 const { noCache } = require("../middleware/noCache");
 const adminAuth = require("../middleware/adminAuth");
@@ -57,6 +61,12 @@ router.put("/category/edit-category/:id", adminAuth.checkSession, categoryContro
 //orders
 router.get("/orders", adminAuth.checkSession, orderController.loadOrders);
 // router.get("/orders/:id", adminAuth.checkSession, orderController.loadOrderDetails);
+
+//coupon
+router.get("/coupons", adminAuth.checkSession, couponController.loadCoupons);
+router.post("/coupons", adminAuth.checkSession, validate(couponSchema), couponController.addCoupon);
+router.put("/coupons/:id", adminAuth.checkSession, validate(couponSchema), couponController.editCoupon);
+router.patch("/coupons/:id", adminAuth.checkSession, couponController.listAndUnlist);
 
 //Page not found
 router.use((req, res) => res.status(404).render("errors/admin404"));

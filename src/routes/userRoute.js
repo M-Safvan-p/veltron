@@ -95,6 +95,7 @@ router.post("/cart/decrease/:id", cartAuth.cartSession, cartController.cartDecre
 //  Orders 
 router.get("/checkout", userAuth.checkSession, orderController.loadCheckout);
 router.post("/checkout/place-order", userAuth.checkSession, orderController.placeOrder);
+router.post("/checkout/apply-coupon", userAuth.checkSession, orderController.applyCoupon);
 router.post("/checkout/place-order/razorpay-verify", userAuth.checkSession, orderController.razorpayVerify );
 router.get("/profile/orders", userAuth.checkSession, orderController.loadorders);
 router.get("/profile/orders/invoice/:id", userAuth.checkSession, invoiceController.generateInvoice);

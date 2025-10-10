@@ -290,7 +290,6 @@ const newPassword = async (req, res) => {
 
 const logout = (req, res) => {
   try {
-    console.log("log req reached");
     req.session.user = null;
     delete req.session.user;
     res.clearCookie("connect.sid");
