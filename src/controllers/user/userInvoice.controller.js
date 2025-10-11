@@ -161,35 +161,76 @@ const generateInvoice = async (req, res) => {
     const addBillingDetails = (startY) => {
       const leftCol = CONFIG.MARGINS.left + 15;
       const rightCol = 300;
-      drawCard(CONFIG.MARGINS.left, startY, 510, 120);
-
+      
+      // Set font for height calculations
+      doc.fontSize(CONFIG.SIZES.REGULAR).font(CONFIG.FONTS.REGULAR);
+      
+      // Define bill lines
+      const billLines = [
+        order.customerId.fullName || "N/A",
+        order.customerId.email || "N/A",
+        order.customerId.phoneNumber || "N/A"
+      ].filter(line => line !== "N/A");
+      
+      // Define ship lines - FIXED TEMPLATE LITERALS
+      const shipLines = [
+        order.shippingAddress.fullName || "N/A",
+        order.shippingAddress.fullAddress || "N/A",
+        `${order.shippingAddress.city || "N/A"}, ${order.shippingAddress.district || "N/A"}`,
+        `${order.shippingAddress.state || "N/A"} - ${order.shippingAddress.pincode || "N/A"}`,
+        order.shippingAddress.phone || "N/A"
+      ].filter(line => line !== "N/A");
+      
+      // Calculate heights for bill section
+      let billHeight = 0;
+      billLines.forEach(line => {
+        billHeight += doc.heightOfString(line, { width: 200 }) + 5;
+      });
+      if (billLines.length > 0) billHeight -= 5;
+      
+      // Calculate heights for ship section
+      let shipHeight = 0;
+      shipLines.forEach(line => {
+        shipHeight += doc.heightOfString(line, { width: 200 }) + 5;
+      });
+      if (shipLines.length > 0) shipHeight -= 5;
+      
+      // Determine card height: max of bill/ship heights + header (15 + 20 padding)
+      const cardHeight = Math.max(billHeight, shipHeight) + 35;
+      
+      // Draw the card with dynamic height
+      drawCard(CONFIG.MARGINS.left, startY, 510, cardHeight);
+      
+      // Render headers
       doc
         .fillColor(CONFIG.COLORS.PRIMARY)
         .fontSize(CONFIG.SIZES.SUBTITLE)
         .font(CONFIG.FONTS.BOLD)
         .text("BILL TO:", leftCol, startY + 15)
         .text("SHIP TO:", rightCol, startY + 15);
-
+      
       doc.fontSize(CONFIG.SIZES.REGULAR).font(CONFIG.FONTS.REGULAR).fillColor(CONFIG.COLORS.SECONDARY);
-
-      // Customer details
-      doc
-        .text(order.customerId.fullName || "N/A", leftCol, startY + 35)
-        .text(order.customerId.email || "N/A", leftCol, startY + 50)
-        .text(order.customerId.phoneNumber || "N/A", leftCol, startY + 65);
-
-      // Shipping address
-      const address = order.shippingAddress;
-      doc
-        .text(address.fullName || "N/A", rightCol, startY + 35)
-        .text(address.fullAddress || "N/A", rightCol, startY + 50, {
-          width: 200,
-        })
-        .text(`${address.city || "N/A"}, ${address.district || "N/A"}`, rightCol, startY + 65)
-        .text(`${address.state || "N/A"} - ${address.pincode || "N/A"}`, rightCol, startY + 80)
-        .text(address.phone || "N/A", rightCol, startY + 95);
-
-      return startY + 140;
+      
+      // Render bill lines with dynamic positioning
+      let billY = startY + 35;
+      billLines.forEach(line => {
+        const options = { width: 200, align: "left" };
+        const height = doc.heightOfString(line, options);
+        doc.text(line, leftCol, billY, options);
+        billY += height + 5;
+      });
+      
+      // Render ship lines with dynamic positioning
+      let shipY = startY + 35;
+      shipLines.forEach(line => {
+        const options = { width: 200, align: "left" };
+        const height = doc.heightOfString(line, options);
+        doc.text(line, rightCol, shipY, options);
+        shipY += height + 5;
+      });
+      
+      // Return the next startY based on dynamic card height
+      return startY + cardHeight + 20;
     };
 
     // Add products table
