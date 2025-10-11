@@ -66,7 +66,7 @@ const loadAddProduct = async (req, res) => {
 
 const addProduct = async (req, res) => {
   try {
-    const { name, description, price, discountedPrice, isListed, category, variants, specifications } = req.body;
+    const { name, description, price, offer, isListed, category, variants, specifications } = req.body;
 
     // Validate product
     const find = await Product.findOne({ name });
@@ -87,13 +87,30 @@ const addProduct = async (req, res) => {
     const processedVariants = await processVariants(normalizedVariants, req.files, res);
     if (!processedVariants) return; // error already sent in helper
 
+    // discounted price
+    let discountedPrice = 0;
+    const checkCategory = await Category.findOne({ _id: category }).lean();
+    
+    if (checkCategory && offer !== null && offer !== undefined && offer !== '') {
+      const productOffer = Number(offer);
+      const categoryOffer = checkCategory.offer || 0;
+      
+      if (productOffer > categoryOffer) {
+        discountedPrice = price - (price * productOffer / 100);
+      } else {
+        discountedPrice = price - (price * categoryOffer / 100);
+      }
+    } else if (checkCategory && checkCategory.offer) {
+      discountedPrice = price - (price * checkCategory.offer / 100);
+    }
     // Create and save product
     const newProduct = new Product({
       vendorId,
       name: name.trim(),
       description: description.trim(),
       price: Number(price),
-      discountedPrice: discountedPrice ? Number(discountedPrice) : undefined,
+      discountedPrice,
+      offer: (offer !== null && offer !== undefined && offer !== '') ? Number(offer) : undefined,
       isListed: isListed === "true",
       category: category.trim(),
       specifications,
@@ -150,7 +167,7 @@ const editProduct = async (req, res) => {
       return errorResponse(res, HttpStatus.UNAUTHORIZED, Messages.VENDOR_NOT_FOUND);
     }
 
-    const { name, description, price, discountedPrice, isListed, category, variants, specifications } = req.body;
+    const { name, description, price, offer, isListed, category, variants, specifications } = req.body;
 
     const existingProduct = await Product.findOne({ _id: productId, vendorId });
     if (!existingProduct) {
@@ -177,6 +194,23 @@ const editProduct = async (req, res) => {
     const processedVariants = await processVariants(normalizedVariants, req.files, res, existingProduct);
     if (!processedVariants) return;
 
+    // discounted price
+    let discountedPrice = 0;
+    const checkCategory = await Category.findOne({ _id: category }).lean();
+    
+    if (checkCategory && offer !== null && offer !== undefined && offer !== '') {
+      const productOffer = Number(offer);
+      const categoryOffer = checkCategory.offer || 0;
+      
+      if (productOffer > categoryOffer) {
+        discountedPrice = price - (price * productOffer / 100);
+      } else {
+        discountedPrice = price - (price * categoryOffer / 100);
+      }
+    } else if (checkCategory && checkCategory.offer) {
+      discountedPrice = price - (price * checkCategory.offer / 100);
+    }
+    
     // Update the product
     const updatedProduct = await Product.findOneAndUpdate(
       { _id: productId, vendorId },
@@ -184,7 +218,8 @@ const editProduct = async (req, res) => {
         name: name.trim(),
         description: description.trim(),
         price: Number(price),
-        discountedPrice: discountedPrice ? Number(discountedPrice) : undefined,
+        discountedPrice,
+        offer: (offer !== null && offer !== undefined && offer !== '') ? Number(offer) : undefined,
         isListed: isListed === "true",
         category: category.trim(),
         specifications,
