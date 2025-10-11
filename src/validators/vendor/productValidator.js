@@ -48,9 +48,11 @@ const productSchema = Joi.object({
     "number.positive": "Price must be greater than 0",
   }),
 
-  discountedPrice: Joi.number().min(0).max(Joi.ref("price")).optional().messages({
-    "number.max": "Discounted price cannot exceed the original price",
-  }),
+  offer: Joi.number().integer().min(1).max(100).required().messages({
+      "number.base": "offer must be a valid number.",
+      "number.min": "offer must be at least 1%.",
+      "number.max": "offer cannot exceed 100%.",
+    }),
 
   isListed: Joi.boolean().required().messages({
     "any.required": "Listing status is required",

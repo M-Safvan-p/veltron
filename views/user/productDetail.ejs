@@ -99,11 +99,11 @@
         <div class="price-section">
           <div class="price">
             <% if (product.discountedPrice && product.discountedPrice < product.price) { %>
-              <span class="original-price">₹<%= product.price %></span>
-              <span>₹<%= product.discountedPrice %></span>
+              <span class="original-price">₹<%= product.price.toLocaleString('en-IN') %></span>
+              <span>₹<%= product.discountedPrice.toLocaleString('en-IN') %></span>
               <span class="discount-badge"><%= Math.round(((product.price - product.discountedPrice) / product.price) * 100) %>% OFF</span>
             <% } else { %>
-              <span>₹<%= product.price || 'N/A' %></span>
+              <span>₹<%= product.price.toLocaleString('en-IN') || 'N/A' %></span>
             <% } %>
           </div>
         </div>
@@ -354,10 +354,10 @@
                 </h6>
                 <p class="card-text mt-auto">
                   <% if (relatedProduct.discountedPrice && relatedProduct.discountedPrice < relatedProduct.price) { %>
-                    <span class="text-muted text-decoration-line-through me-2">₹<%= relatedProduct.price %></span>
-                    <span class="fw-bold">₹<%= relatedProduct.discountedPrice %></span>
+                    <span class="text-muted text-decoration-line-through me-2">₹<%= relatedProduct.price.toLocaleString('en-IN') %></span>
+                    <span class="fw-bold">₹<%= relatedProduct.discountedPrice.toLocaleString('en-IN') %></span>
                   <% } else { %>
-                    <span class="fw-bold">₹<%= relatedProduct.price || 'N/A' %></span>
+                    <span class="fw-bold">₹<%= relatedProduct.price.toLocaleString('en-IN') || 'N/A' %></span>
                   <% } %>
                 </p>
               </div>
@@ -369,9 +369,6 @@
   <% } %>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
 function changeMainImage(imageUrl, element) {

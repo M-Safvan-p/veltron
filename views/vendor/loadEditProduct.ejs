@@ -20,39 +20,32 @@
       <div class="product-card">
         <div class="form-group">
           <label class="form-label" for="name">Product Name</label>
-          <input type="text" id="name" name="name" class="form-input" aria-label="Product name"
-                 value="<%= isEdit ? product?.name : '' %>">
+          <input type="text" id="name" name="name" class="form-input" aria-label="Product name" value="<%= isEdit ? product?.name : '' %>">
         </div>
 
         <div class="form-group">
           <label class="form-label" for="description">Description</label>
-          <textarea id="description" name="description" class="form-input form-textarea"
-                    aria-label="Product description"><%= isEdit ? product?.description : '' %></textarea>
+          <textarea id="description" name="description" class="form-input form-textarea" aria-label="Product description"><%= isEdit ? product?.description : '' %></textarea>
         </div>
 
         <div class="price-row">
           <div class="form-group">
             <label class="form-label" for="price">Price</label>
-            <input type="number" id="price" name="price" class="form-input" step="0.01" min="0"
-                   value="<%= isEdit ? product?.price : '' %>" aria-label="Product price">
+            <input type="number" id="price" name="price" class="form-input" step="0.01" min="0" value="<%= isEdit ? product?.price : '' %>" aria-label="Product price">
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="discountedPrice">Discount Price</label>
-            <input type="number" id="discountedPrice" name="discountedPrice" class="form-input" step="0.01" min="0"
-                   value="<%= isEdit ? product?.discountedPrice : '' %>" aria-label="Discounted price">
+            <label class="form-label" for="offer">Offer (%)</label>
+            <input type="number" id="offer" name="offer" class="form-input" value="<%= isEdit ? product?.offer : '' %>" aria-label="Offer percentage">
           </div>
-
           <div class="form-group">
             <label class="form-label">Listing Status</label>
             <div class="radio-group">
               <label>
-                <input type="radio" name="isListed" value="true"
-                       <%= isEdit ? (product?.isListed ? 'checked' : '') : 'checked' %> aria-label="List product">Listed
+                <input type="radio" name="isListed" value="true" <%= isEdit ? (product?.isListed ? 'checked' : '') : 'checked' %> aria-label="List product">Listed
               </label>
               <label>
-                <input type="radio" name="isListed" value="false"
-                       <%= isEdit && !product?.isListed ? 'checked' : '' %> aria-label="Unlist product">Unlisted
+                <input type="radio" name="isListed" value="false" <%= isEdit && !product?.isListed ? 'checked' : '' %> aria-label="Unlist product">Unlisted
               </label>
             </div>
           </div>
@@ -65,14 +58,13 @@
             <option value="" disabled <%= !isEdit ? 'selected' : '' %>>Select a category</option>
 
             <% if (Array.isArray(categories) && categories.length > 0) { %>
-              <% categories.forEach(cat => { %>
-                <option value="<%= cat._id %>"
-                  <%= isEdit && product?.category?._id?.toString() === cat._id.toString() ? 'selected' : '' %>>
-                  <%= cat.name %>
-                </option>
-              <% }) %>
+            <% categories.forEach(cat => { %>
+            <option value="<%= cat._id %>" <%= isEdit && product?.category?._id?.toString() === cat._id.toString() ? 'selected' : '' %>>
+              <%= cat.name %>
+            </option>
+            <% }) %>
             <% } else { %>
-              <option value="electronics">Electronics</option>
+            <option value="electronics">Electronics</option>
             <% } %>
           </select>
         </div>
@@ -90,75 +82,60 @@
             const renderVariants = (isEdit && Array.isArray(product?.variants)) ? product.variants : [{ images: [{}, {}, {}], color: '', stock: '' }];
             renderVariants.forEach((variant, vIndex) => { 
           %>
-            <div class="variant-container" id="variant-<%= vIndex %>">
-              <div class="variant-header">
-                <h4 class="variant-title">Variant <%= vIndex + 1 %></h4>
-                <div class="variant-controls">
-                  <input type="text" placeholder="Color name" name="variants[<%= vIndex %>][color]"
-                         value="<%= variant.color || '' %>" class="form-input"
-                         aria-label="Color for variant <%= vIndex + 1 %>">
-                  <!-- include variant _id when editing so backend can match by _id -->
-                  <% if (isEdit && variant._id) { %>
-                    <input type="hidden" name="variants[<%= vIndex %>][_id]" value="<%= variant._id %>">
-                  <% } %>
-                  <button type="button" class="custom-btn custom-btn-secondary"
-                          onclick="removeVariant(<%= vIndex %>)"
-                          aria-label="Remove variant <%= vIndex + 1 %>">Remove</button>
-                </div>
-              </div>
-
-              <div class="variant-images">
-                <% (variant.images || [{}, {}, {}]).forEach((img, imgIndex) => { %>
-                  <div class="image-upload" data-variant="<%= vIndex %>" data-image="<%= imgIndex %>">
-                    <div class="image-preview-container <%= img?.url ? '' : 'hidden' %>">
-                      <img class="image-preview" src="<%= img?.url || '' %>" alt="Preview">
-                      <button type="button" class="delete-image-btn" aria-label="Delete image">
-                        <i class="fas fa-times"></i>
-                      </button>
-                    </div>
-
-                    <div class="upload-icon <%= img?.url ? 'hidden' : '' %>">
-                      <i class="fas fa-image"></i>
-                    </div>
-
-                    <div class="upload-text <%= img?.url ? 'hidden' : '' %>"
-                         aria-label="Image <%= imgIndex + 1 %> for variant <%= vIndex + 1 %>">
-                      Image <%= imgIndex + 1 %>
-                    </div>
-
-                    <!-- file input names match backend parsing: variants[i][images][j] -->
-                    <input type="file" name="variants[<%= vIndex %>][images][<%= imgIndex %>]"
-                           accept="image/*" style="display:none;"
-                           id="variantImage-<%= vIndex %>-<%= imgIndex %>"
-                           aria-label="Image <%= imgIndex + 1 %> for variant <%= vIndex + 1 %>">
-
-                    <!-- existing image URL (if editing). data-public-id holds Cloudinary public_id (if available) -->
-                    <input type="hidden" name="variants[<%= vIndex %>][existingImages][<%= imgIndex %>]"
-                           class="existing-image-data" value="<%= img?.url || '' %>"
-                           data-public-id="<%= img?.public_id || '' %>">
-
-                    <button type="button" class="upload-btn"
-                            onclick="document.getElementById('variantImage-<%= vIndex %>-<%= imgIndex %>').click()"
-                            aria-label="Browse image <%= imgIndex + 1 %> for variant <%= vIndex + 1 %>">
-                      BROWSE IMAGE
-                    </button>
-                  </div>
-                <% }) %>
-              </div>
-
-              <div class="form-group">
-                <label class="form-label" for="stockQuantity-<%= vIndex %>">Stock Quantity</label>
-                <input type="number" id="stockQuantity-<%= vIndex %>" name="variants[<%= vIndex %>][stock]"
-                       class="form-input" min="0" value="<%= variant.stock || '' %>"
-                       aria-label="Stock quantity for variant <%= vIndex + 1 %>">
+          <div class="variant-container" id="variant-<%= vIndex %>">
+            <div class="variant-header">
+              <h4 class="variant-title">Variant <%= vIndex + 1 %></h4>
+              <div class="variant-controls">
+                <input type="text" placeholder="Color name" name="variants[<%= vIndex %>][color]" value="<%= variant.color || '' %>" class="form-input" aria-label="Color for variant <%= vIndex + 1 %>">
+                <!-- include variant _id when editing so backend can match by _id -->
+                <% if (isEdit && variant._id) { %>
+                <input type="hidden" name="variants[<%= vIndex %>][_id]" value="<%= variant._id %>">
+                <% } %>
+                <button type="button" class="custom-btn custom-btn-secondary" onclick="removeVariant(<%= vIndex %>)" aria-label="Remove variant <%= vIndex + 1 %>">Remove</button>
               </div>
             </div>
+
+            <div class="variant-images">
+              <% (variant.images || [{}, {}, {}]).forEach((img, imgIndex) => { %>
+              <div class="image-upload" data-variant="<%= vIndex %>" data-image="<%= imgIndex %>">
+                <div class="image-preview-container <%= img?.url ? '' : 'hidden' %>">
+                  <img class="image-preview" src="<%= img?.url || '' %>" alt="Preview">
+                  <button type="button" class="delete-image-btn" aria-label="Delete image">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+
+                <div class="upload-icon <%= img?.url ? 'hidden' : '' %>">
+                  <i class="fas fa-image"></i>
+                </div>
+
+                <div class="upload-text <%= img?.url ? 'hidden' : '' %>" aria-label="Image <%= imgIndex + 1 %> for variant <%= vIndex + 1 %>">
+                  Image <%= imgIndex + 1 %>
+                </div>
+
+                <!-- file input names match backend parsing: variants[i][images][j] -->
+                <input type="file" name="variants[<%= vIndex %>][images][<%= imgIndex %>]" accept="image/*" style="display:none;" id="variantImage-<%= vIndex %>-<%= imgIndex %>" aria-label="Image <%= imgIndex + 1 %> for variant <%= vIndex + 1 %>">
+
+                <!-- existing image URL (if editing). data-public-id holds Cloudinary public_id (if available) -->
+                <input type="hidden" name="variants[<%= vIndex %>][existingImages][<%= imgIndex %>]" class="existing-image-data" value="<%= img?.url || '' %>" data-public-id="<%= img?.public_id || '' %>">
+
+                <button type="button" class="upload-btn" onclick="document.getElementById('variantImage-<%= vIndex %>-<%= imgIndex %>').click()" aria-label="Browse image <%= imgIndex + 1 %> for variant <%= vIndex + 1 %>">
+                  BROWSE IMAGE
+                </button>
+              </div>
+              <% }) %>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="stockQuantity-<%= vIndex %>">Stock Quantity</label>
+              <input type="number" id="stockQuantity-<%= vIndex %>" name="variants[<%= vIndex %>][stock]" class="form-input" min="0" value="<%= variant.stock || '' %>" aria-label="Stock quantity for variant <%= vIndex + 1 %>">
+            </div>
+          </div>
           <% }) %>
         </div>
 
         <div style="text-align: center;">
-          <button id="add-variant-button" type="button" class="custom-btn custom-btn-secondary"
-                  onclick="addVariant()">+ ADD ANOTHER VARIANT</button>
+          <button id="add-variant-button" type="button" class="custom-btn custom-btn-secondary" onclick="addVariant()">+ ADD ANOTHER VARIANT</button>
         </div>
       </div>
     </div>
@@ -170,41 +147,34 @@
         <div class="specifications-grid">
           <div class="form-group">
             <label class="form-label" for="StrapStyle">Strap Style</label>
-            <input type="text" id="StrapStyle" name="specifications[strapStyle]" class="form-input"
-                   aria-label="Strap style" value="<%= isEdit ? product?.specifications?.strapStyle : '' %>">
+            <input type="text" id="StrapStyle" name="specifications[strapStyle]" class="form-input" aria-label="Strap style" value="<%= isEdit ? product?.specifications?.strapStyle : '' %>">
           </div>
           <div class="form-group">
             <label class="form-label" for="Weight">Weight</label>
-            <input type="text" id="Weight" name="specifications[weight]" class="form-input"
-                   aria-label="Weight" value="<%= isEdit ? product?.specifications?.weight : '' %>">
+            <input type="text" id="Weight" name="specifications[weight]" class="form-input" aria-label="Weight" value="<%= isEdit ? product?.specifications?.weight : '' %>">
           </div>
           <div class="form-group">
             <label class="form-label" for="DialType">Dial Type</label>
-            <input type="text" id="DialType" name="specifications[dialType]" class="form-input"
-                   aria-label="Dial type" value="<%= isEdit ? product?.specifications?.dialType : '' %>">
+            <input type="text" id="DialType" name="specifications[dialType]" class="form-input" aria-label="Dial type" value="<%= isEdit ? product?.specifications?.dialType : '' %>">
           </div>
           <div class="form-group">
             <label class="form-label" for="warrantyPeriod">Warranty Period</label>
-            <input type="text" id="warrantyPeriod" name="specifications[warrantyPeriod]" class="form-input"
-                   aria-label="Warranty period" value="<%= isEdit ? product?.specifications?.warrantyPeriod : '' %>">
+            <input type="text" id="warrantyPeriod" name="specifications[warrantyPeriod]" class="form-input" aria-label="Warranty period" value="<%= isEdit ? product?.specifications?.warrantyPeriod : '' %>">
           </div>
           <div class="form-group">
             <label class="form-label" for="Durability">Durability</label>
-            <input type="text" id="Durability" name="specifications[durability]" class="form-input"
-                   aria-label="Durability" value="<%= isEdit ? product?.specifications?.durability : '' %>">
+            <input type="text" id="Durability" name="specifications[durability]" class="form-input" aria-label="Durability" value="<%= isEdit ? product?.specifications?.durability : '' %>">
           </div>
           <div class="form-group">
             <label class="form-label" for="AdditionalInformation">Additional Information</label>
-            <textarea id="AdditionalInformation" name="specifications[additionalInformation]" class="form-input form-textarea"
-                      aria-label="Additional information"><%= isEdit ? product?.specifications?.additionalInformation : '' %></textarea>
+            <textarea id="AdditionalInformation" name="specifications[additionalInformation]" class="form-input form-textarea" aria-label="Additional information"><%= isEdit ? product?.specifications?.additionalInformation : '' %></textarea>
           </div>
         </div>
       </div>
     </div>
 
     <div class="action-buttons">
-      <button type="submit" class="custom-btn custom-btn-primary"
-              aria-label="<%= isEdit ? 'Update product' : 'Add product' %>">
+      <button type="submit" class="custom-btn custom-btn-primary" aria-label="<%= isEdit ? 'Update product' : 'Add product' %>">
         <%= isEdit ? 'UPDATE PRODUCT' : 'ADD PRODUCT' %>
       </button>
       <button type="button" class="custom-btn custom-btn-secondary" onclick="window.history.back()" aria-label="Cancel">
@@ -237,6 +207,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- Validation Scripts -->
+<script src="/js/utils/formValidator.js"></script>
+<script src="/js/utils/formDataToObject.js"></script>
 <script>
   // variantCount initialised from rendered variants length
   var variantCount = <%= renderVariants.length %>;
@@ -251,6 +224,7 @@
     setupFormSubmission();
     setupCropModal();
     setupDeleteDelegation();
+    setupFieldValidation();
   }
 
   // Crop modal handlers (kept same logic)
@@ -271,11 +245,14 @@
 
     closeBtn.onclick = cancelBtn.onclick = closeModal;
 
-    applyBtn.onclick = function () {
+    applyBtn.onclick = function() {
       if (currentCropper && currentUploadArea) {
         const canvas = currentCropper.getCroppedCanvas({
-          width: 800, height: 800, fillColor: '#fff',
-          imageSmoothingEnabled: true, imageSmoothingQuality: 'high'
+          width: 800,
+          height: 800,
+          fillColor: '#fff',
+          imageSmoothingEnabled: true,
+          imageSmoothingQuality: 'high'
         });
 
         canvas.toBlob((blob) => {
@@ -289,7 +266,9 @@
           reader.readAsDataURL(blob);
 
           // set blob to file input
-          const file = new File([blob], `cropped-${Date.now()}.jpg`, { type: 'image/jpeg' });
+          const file = new File([blob], `cropped-${Date.now()}.jpg`, {
+            type: 'image/jpeg'
+          });
           const dt = new DataTransfer();
           dt.items.add(file);
           fileInput.files = dt.files;
@@ -308,14 +287,14 @@
       }
     };
 
-    window.onclick = function (event) {
+    window.onclick = function(event) {
       if (event.target == modal) closeModal();
     };
   }
 
   // Single delegated change listener for file inputs (prevents duplicates)
   function setupFileInputDelegation() {
-    document.addEventListener('change', function (e) {
+    document.addEventListener('change', function(e) {
       const input = e.target;
       if (!input || input.tagName !== 'INPUT' || input.type !== 'file') return;
 
@@ -323,15 +302,20 @@
         const file = input.files[0];
         if (!file.type.match('image.*')) {
           Swal.fire({
-            title: 'Error!', text: 'Please select an image file.', icon: 'error',
-            confirmButtonColor: '#000', customClass: { confirmButton: 'swal-confirm-black' }
+            title: 'Error!',
+            text: 'Please select an image file.',
+            icon: 'error',
+            confirmButtonColor: '#000',
+            customClass: {
+              confirmButton: 'swal-confirm-black'
+            }
           });
           input.value = '';
           return;
         }
 
         const reader = new FileReader();
-        reader.onload = function (ev) {
+        reader.onload = function(ev) {
           currentUploadArea = input.closest('.image-upload');
           const modal = document.getElementById('cropModal');
           const cropImage = document.getElementById('cropImage');
@@ -341,7 +325,11 @@
           setTimeout(() => {
             if (currentCropper) currentCropper.destroy();
             currentCropper = new Cropper(cropImage, {
-              aspectRatio: 1, viewMode: 1, guides: true, background: false, autoCropArea: 0.8
+              aspectRatio: 1,
+              viewMode: 1,
+              guides: true,
+              background: false,
+              autoCropArea: 0.8
             });
           }, 100);
         };
@@ -352,21 +340,21 @@
 
   // Delegated drag/drop for .image-upload areas
   function setupDragAndDropDelegation() {
-    document.addEventListener('dragover', function (e) {
+    document.addEventListener('dragover', function(e) {
       const uploadArea = e.target.closest('.image-upload');
       if (!uploadArea) return;
       e.preventDefault();
       uploadArea.classList.add('dragover');
     });
 
-    document.addEventListener('dragleave', function (e) {
+    document.addEventListener('dragleave', function(e) {
       const uploadArea = e.target.closest('.image-upload');
       if (!uploadArea) return;
       e.preventDefault();
       uploadArea.classList.remove('dragover');
     });
 
-    document.addEventListener('drop', function (e) {
+    document.addEventListener('drop', function(e) {
       const uploadArea = e.target.closest('.image-upload');
       if (!uploadArea) return;
       e.preventDefault();
@@ -381,8 +369,13 @@
         fileInput.dispatchEvent(new Event('change'));
       } else {
         Swal.fire({
-          title: 'Error!', text: 'Please drop an image file.', icon: 'error',
-          confirmButtonColor: '#000', customClass: { confirmButton: 'swal-confirm-black' }
+          title: 'Error!',
+          text: 'Please drop an image file.',
+          icon: 'error',
+          confirmButtonColor: '#000',
+          customClass: {
+            confirmButton: 'swal-confirm-black'
+          }
         });
       }
     });
@@ -390,7 +383,7 @@
 
   // Delegated delete button listener
   function setupDeleteDelegation() {
-    document.addEventListener('click', function (e) {
+    document.addEventListener('click', function(e) {
       const deleteBtn = e.target.closest('.delete-image-btn');
       if (!deleteBtn) return;
 
@@ -454,6 +447,13 @@
     `;
 
     container.insertAdjacentHTML('beforeend', variantHtml);
+    
+    // Set up validation for the new variant
+    const newVariant = document.getElementById(`variant-${idx}`);
+    if (newVariant) {
+      setupVariantValidation(newVariant, idx);
+    }
+    
     variantCount++;
   }
 
@@ -469,8 +469,13 @@
       reindexVariants();
     } else {
       Swal.fire({
-        title: 'Warning!', text: 'At least one variant is required.', icon: 'warning',
-        confirmButtonColor: '#000', customClass: { confirmButton: 'swal-confirm-black' }
+        title: 'Warning!',
+        text: 'At least one variant is required.',
+        icon: 'warning',
+        confirmButtonColor: '#000',
+        customClass: {
+          confirmButton: 'swal-confirm-black'
+        }
       });
     }
   }
@@ -519,6 +524,264 @@
     });
 
     variantCount = variants.length;
+
+    // Re-setup validation for all variants
+    variants.forEach((variant, index) => {
+      setupVariantValidation(variant, index);
+    });
+  }
+
+  // Set up real-time field validation
+  function setupFieldValidation() {
+    // Product name validation
+    const nameInput = document.getElementById('name');
+    if (nameInput) {
+      nameInput.addEventListener('blur', function() {
+        validateProductName(this);
+      });
+    }
+
+    // Description validation
+    const descriptionInput = document.getElementById('description');
+    if (descriptionInput) {
+      descriptionInput.addEventListener('blur', function() {
+        validateDescription(this);
+      });
+    }
+
+    // Price validation
+    const priceInput = document.getElementById('price');
+    if (priceInput) {
+      priceInput.addEventListener('blur', function() {
+        validatePrice(this);
+      });
+    }
+
+    // Offer validation
+    const offerInput = document.getElementById('offer');
+    if (offerInput) {
+      offerInput.addEventListener('blur', function() {
+        validateOffer(this);
+      });
+    }
+
+    // Category validation
+    const categorySelect = document.getElementById('category');
+    if (categorySelect) {
+      categorySelect.addEventListener('change', function() {
+        validateCategory(this);
+      });
+    }
+
+    // Specification fields validation
+    const specFields = ['StrapStyle', 'Weight', 'DialType', 'warrantyPeriod', 'Durability', 'AdditionalInformation'];
+    specFields.forEach(fieldId => {
+      const field = document.getElementById(fieldId);
+      if (field) {
+        field.addEventListener('blur', function() {
+          validateSpecificationField(this, fieldId);
+        });
+      }
+    });
+
+    // Set up validation for existing variants
+    document.querySelectorAll('.variant-container').forEach((variant, index) => {
+      setupVariantValidation(variant, index);
+    });
+  }
+
+  // Set up validation for variant fields
+  function setupVariantValidation(variantContainer, variantIndex) {
+    // Color validation
+    const colorInput = variantContainer.querySelector(`input[name*="[color]"]`);
+    if (colorInput) {
+      colorInput.addEventListener('blur', function() {
+        validateVariantColor(this, variantIndex);
+      });
+    }
+
+    // Stock validation
+    const stockInput = variantContainer.querySelector(`input[name*="[stock]"]`);
+    if (stockInput) {
+      stockInput.addEventListener('blur', function() {
+        validateVariantStock(this, variantIndex);
+      });
+    }
+  }
+
+  // Individual field validation functions
+  function validateProductName(input) {
+    const value = input.value.trim();
+    const errorMsg = document.getElementById('name-error') || createErrorElement(input, 'name-error');
+    
+    if (!value) {
+      showFieldError(errorMsg, 'Product name is required.');
+      return false;
+    } else if (value.length < 3) {
+      showFieldError(errorMsg, 'Product name must be at least 3 characters long.');
+      return false;
+    } else if (value.length > 100) {
+      showFieldError(errorMsg, 'Product name must not exceed 100 characters.');
+      return false;
+    } else {
+      hideFieldError(errorMsg);
+      return true;
+    }
+  }
+
+  function validateDescription(input) {
+    const value = input.value.trim();
+    const errorMsg = document.getElementById('description-error') || createErrorElement(input, 'description-error');
+    
+    if (!value) {
+      showFieldError(errorMsg, 'Description is required.');
+      return false;
+    } else if (value.length < 10) {
+      showFieldError(errorMsg, 'Description must be at least 10 characters long.');
+      return false;
+    } else if (value.length > 1000) {
+      showFieldError(errorMsg, 'Description must not exceed 1000 characters.');
+      return false;
+    } else {
+      hideFieldError(errorMsg);
+      return true;
+    }
+  }
+
+  function validatePrice(input) {
+    const value = parseFloat(input.value);
+    const errorMsg = document.getElementById('price-error') || createErrorElement(input, 'price-error');
+    
+    if (isNaN(value) || value <= 0) {
+      showFieldError(errorMsg, 'Price must be greater than 0.');
+      return false;
+    } else if (value > 999999) {
+      showFieldError(errorMsg, 'Price must not exceed ₹9,99,999.');
+      return false;
+    } else {
+      hideFieldError(errorMsg);
+      return true;
+    }
+  }
+
+  function validateOffer(input) {
+    const value = parseFloat(input.value);
+    const errorMsg = document.getElementById('offer-error') || createErrorElement(input, 'offer-error');
+    
+    if (input.value !== '' && (isNaN(value) || value < 0)) {
+      showFieldError(errorMsg, 'Offer percentage must be 0 or more.');
+      return false;
+    } else if (input.value !== '' && value > 100) {
+      showFieldError(errorMsg, 'Offer percentage cannot exceed 100%.');
+      return false;
+    } else {
+      hideFieldError(errorMsg);
+      return true;
+    }
+  }
+
+  function validateCategory(select) {
+    const value = select.value;
+    const errorMsg = document.getElementById('category-error') || createErrorElement(select, 'category-error');
+    
+    if (!value) {
+      showFieldError(errorMsg, 'Please select a valid category.');
+      return false;
+    } else {
+      hideFieldError(errorMsg);
+      return true;
+    }
+  }
+
+  function validateSpecificationField(input, fieldId) {
+    const value = input.value.trim();
+    const errorMsg = document.getElementById(`${fieldId}-error`) || createErrorElement(input, `${fieldId}-error`);
+    const fieldName = fieldId === 'AdditionalInformation' ? 'Additional Information' : fieldId;
+    
+    // Additional Information is optional
+    if (fieldId === 'AdditionalInformation') {
+      if (value && value.length > 500) {
+        showFieldError(errorMsg, 'Additional Information must not exceed 500 characters.');
+        return false;
+      } else {
+        hideFieldError(errorMsg);
+        return true;
+      }
+    }
+    
+    // Other fields are required
+    if (!value) {
+      showFieldError(errorMsg, `${fieldName} is required.`);
+      return false;
+    } else if (value.length < 2) {
+      showFieldError(errorMsg, `${fieldName} must be at least 2 characters long.`);
+      return false;
+    } else if (value.length > 50) {
+      showFieldError(errorMsg, `${fieldName} must not exceed 50 characters.`);
+      return false;
+    } else {
+      hideFieldError(errorMsg);
+      return true;
+    }
+  }
+
+  // Variant validation functions
+  function validateVariantColor(input, variantIndex) {
+    const value = input.value.trim();
+    const errorMsg = document.getElementById(`variant-${variantIndex}-color-error`) || createErrorElement(input, `variant-${variantIndex}-color-error`);
+    
+    if (!value) {
+      showFieldError(errorMsg, 'Color is required for this variant.');
+      return false;
+    } else if (value.length < 2) {
+      showFieldError(errorMsg, 'Color must be at least 2 characters long.');
+      return false;
+    } else if (value.length > 30) {
+      showFieldError(errorMsg, 'Color must not exceed 30 characters.');
+      return false;
+    } else {
+      hideFieldError(errorMsg);
+      return true;
+    }
+  }
+
+  function validateVariantStock(input, variantIndex) {
+    const value = parseInt(input.value);
+    const errorMsg = document.getElementById(`variant-${variantIndex}-stock-error`) || createErrorElement(input, `variant-${variantIndex}-stock-error`);
+    
+    if (isNaN(value) || value < 0) {
+      showFieldError(errorMsg, 'Stock must be 0 or more.');
+      return false;
+    } else if (value > 9999) {
+      showFieldError(errorMsg, 'Stock must not exceed 9999.');
+      return false;
+    } else {
+      hideFieldError(errorMsg);
+      return true;
+    }
+  }
+
+  // Helper functions for error display
+  function createErrorElement(input, id) {
+    const errorDiv = document.createElement('div');
+    errorDiv.id = id;
+    errorDiv.className = 'field-error';
+    errorDiv.style.color = '#dc3545';
+    errorDiv.style.fontSize = '0.875rem';
+    errorDiv.style.marginTop = '0.25rem';
+    errorDiv.style.display = 'none';
+    
+    input.parentNode.insertBefore(errorDiv, input.nextSibling);
+    return errorDiv;
+  }
+
+  function showFieldError(errorElement, message) {
+    errorElement.textContent = message;
+    errorElement.style.display = 'block';
+  }
+
+  function hideFieldError(errorElement) {
+    errorElement.style.display = 'none';
   }
 
   // Client-side validation to give user immediate feedback before sending to server
@@ -568,19 +831,32 @@
       }
     });
 
-    return { isValid, errorMessage };
+    return {
+      isValid,
+      errorMessage
+    };
   }
 
   // Form submission using axios (multipart)
   function setupFormSubmission() {
-    form.addEventListener('submit', async function (e) {
+    form.addEventListener('submit', async function(e) {
       e.preventDefault();
 
-      const { isValid, errorMessage } = validateForm();
-      if (!isValid) {
+      // Convert form data to object for comprehensive validation
+      const productData = formDataToObject(form);
+      
+      // Use comprehensive validation from formValidator.js
+      const validationResult = validateProductForm(productData);
+      
+      if (!validationResult.isValid) {
         Swal.fire({
-          title: 'Error!', text: errorMessage, icon: 'error',
-          confirmButtonColor: '#000', customClass: { confirmButton: 'swal-confirm-black' }
+          title: 'Validation Error!',
+          html: validationResult.messages.join('<br>'),
+          icon: 'error',
+          confirmButtonColor: '#000',
+          customClass: {
+            confirmButton: 'swal-confirm-black'
+          }
         });
         return;
       }
@@ -592,8 +868,13 @@
       Swal.fire({
         title: '<%= isEdit ? "Updating" : "Adding" %> Product...',
         text: 'Please wait while we process your product.',
-        icon: 'info', showConfirmButton: false, allowOutsideClick: false, didOpen: () => Swal.showLoading(),
-        customClass: { confirmButton: 'swal-confirm-black' }
+        icon: 'info',
+        showConfirmButton: false,
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading(),
+        customClass: {
+          confirmButton: 'swal-confirm-black'
+        }
       });
 
       try {
@@ -605,12 +886,19 @@
           method,
           url,
           data: formData,
-          headers: { 'Content-Type': 'multipart/form-data' }
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
         });
 
         Swal.fire({
-          title: 'Success!', text: `Product <%= isEdit ? 'updated' : 'added' %> successfully.`, icon: 'success',
-          confirmButtonColor: '#000', customClass: { confirmButton: 'swal-confirm-black' }
+          title: 'Success!',
+          text: `Product <%= isEdit ? 'updated' : 'added' %> successfully.`,
+          icon: 'success',
+          confirmButtonColor: '#000',
+          customClass: {
+            confirmButton: 'swal-confirm-black'
+          }
         }).then(() => window.location.href = '/vendor/products');
       } catch (err) {
         Swal.fire({
@@ -618,7 +906,9 @@
           text: err.response?.data?.message || `An error occurred while <%= isEdit ? 'updating' : 'adding' %> the product.`,
           icon: 'error',
           confirmButtonColor: '#000',
-          customClass: { confirmButton: 'swal-confirm-black' }
+          customClass: {
+            confirmButton: 'swal-confirm-black'
+          }
         });
       } finally {
         submitBtn.disabled = false;
