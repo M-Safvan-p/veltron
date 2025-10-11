@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Category = require("../../models/common/categorySchema");
+const Product = require("../../models/common/productSchema");
 const formValidator = require("../../helpers/formValidator");
 const HttpStatus = require("../../constants//statusCodes");
 const Messages = require("../../constants/messages");
@@ -110,6 +111,15 @@ const editCategory = async (req, res) => {
       offer,
       isListed: isListed == "true",
     });
+
+    // discount price re calculate
+    const products = await Product.find({category:id});
+    for(const product of products){
+      if(offer > product.offer){
+        product.discountedPrice = product.price - (product.price * offer)/ 100;
+        await product.save()
+      }
+    }
     return success(res, HttpStatus.OK, Messages.CATEGORY_UPDATED, {
       redirectUrl: "/admin/category",
     });
