@@ -520,7 +520,8 @@
           discountValue: response.data.discountValue
         };
 
-        updatePricing();
+        // Update pricing with backend data
+        updatePricingFromBackend(response.data);
         showAppliedCoupon(couponCode);
         showCouponMessage(`Coupon applied! You saved ₹${response.data.discount.toLocaleString()}`, 'success');
         couponInput.value = '';
@@ -538,29 +539,43 @@
 
   function removeCoupon() {
     appliedCouponData = null;
-    updatePricing();
+    resetPricingToOriginal();
     hideAppliedCoupon();
     showCouponMessage('Coupon removed', 'info');
   }
 
-  function updatePricing() {
-    let discount = appliedCouponData ? appliedCouponData.discount : 0;
-    const newTotal = originalTotal - discount;
-
-    document.getElementById('couponDiscountValue').textContent = `-₹${discount.toLocaleString()}`;
-    document.getElementById('totalValue').textContent = `₹${newTotal.toLocaleString()}`;
-    document.getElementById('placeOrderTotal').textContent = `₹${newTotal.toLocaleString()}`;
+  function updatePricingFromBackend(backendData) {
+    // Update all values from backend response
+    document.getElementById('subtotalValue').textContent = `₹${backendData.subtotal.toLocaleString()}`;
+    document.getElementById('taxValue').textContent = `₹${backendData.tax.toLocaleString()}`;
+    document.getElementById('couponDiscountValue').textContent = `-₹${backendData.discount.toLocaleString()}`;
+    document.getElementById('totalValue').textContent = `₹${backendData.total.toLocaleString()}`;
+    document.getElementById('placeOrderTotal').textContent = `₹${backendData.total.toLocaleString()}`;
 
     const discountRow = document.getElementById('couponDiscountRow');
     const savingsInfo = document.getElementById('savingsInfo');
-    if (discount > 0) {
+    
+    if (backendData.discount > 0) {
       discountRow.style.display = 'flex';
-      document.getElementById('savingsAmount').textContent = `₹${discount.toLocaleString()}`;
+      document.getElementById('savingsAmount').textContent = `₹${backendData.discount.toLocaleString()}`;
       savingsInfo.style.display = 'flex';
     } else {
       discountRow.style.display = 'none';
       savingsInfo.style.display = 'none';
     }
+  }
+
+  function resetPricingToOriginal() {
+    // Reset to original values when coupon is removed
+    document.getElementById('subtotalValue').textContent = `₹${originalSubtotal.toLocaleString()}`;
+    document.getElementById('taxValue').textContent = `₹${originalTax.toLocaleString()}`;
+    document.getElementById('totalValue').textContent = `₹${originalTotal.toLocaleString()}`;
+    document.getElementById('placeOrderTotal').textContent = `₹${originalTotal.toLocaleString()}`;
+
+    const discountRow = document.getElementById('couponDiscountRow');
+    const savingsInfo = document.getElementById('savingsInfo');
+    discountRow.style.display = 'none';
+    savingsInfo.style.display = 'none';
   }
 
   function showCouponMessage(message, type) {

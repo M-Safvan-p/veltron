@@ -759,6 +759,11 @@
                                                     <span class="product-price">₹<%= (product.quantity *
                                                             product.priceAtPurchase).toLocaleString('en-IN') %></span>
                                                 </div>
+                                                <% if (product.orderStatus === 'failed' || product.orderStatus === 'cancelled') { %>
+                                                    <span class="status-badge status-<%= product.orderStatus %>">
+                                                      <%= product.orderStatus.charAt(0).toUpperCase() + product.orderStatus.slice(1) %>
+                                                    </span>
+                                                  <% } %>
                                             </div>
                                             <% }) %>
                                     </div>

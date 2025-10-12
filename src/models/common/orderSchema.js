@@ -47,6 +47,17 @@ const orderSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    subTotal: {
+      type: Number,
+      required: true,
+    },
+    tax: {
+      type: Number,
+      required: true,
+    },
+    discount: {
+      type: Number,
+    },
     totalCommissionAmount: {
       type: Number,
       required: true,
@@ -80,7 +91,7 @@ const orderSchema = new mongoose.Schema(
         },
         orderStatus: {
           type: String,
-          enum: ["processing", "shipped", "cancelled", "completed"],
+          enum: ["processing", "shipped", "cancelled", "completed", "failed", "returned"],
           default: "processing",
           required: true,
         },
@@ -90,9 +101,19 @@ const orderSchema = new mongoose.Schema(
         selectedColor: { type: String, required: true },
         priceAtPurchase: { type: Number, required: true },
         productTotal: { type: Number, required: true },
+        subTotal: { type: Number, required: true },
+        tax: { type: Number, required: true},
+        discount: { type: Number },
         commissionAmount: { type: Number, required: true },
         vendorEarning: { type: Number, required: true },
         variantId: { type: String, required: true },
+        //return 
+        returnRequested: { type: Boolean, default: false },
+        returnStatus: {
+          type: String,
+          enum: ["none", "requested", "approved", "rejected", "completed"],
+          default: "none",
+        },
       },
     ],
     invoiceDate: {

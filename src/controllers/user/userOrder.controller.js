@@ -5,6 +5,7 @@ const razorpay = require("../../config/razorpayConfig");
 const { RAZORPAY_KEY_SECRET, RAZORPAY_KEY_ID } = require("../../config/env");
 
 const Cart = require("../../models/user/cartSchema");
+const Product = require("../../models/common/productSchema");
 
 const Address = require("../../models/user/addressSchema");
 const Order = require("../../models/common/orderSchema");
@@ -47,7 +48,7 @@ const loadCheckout = async (req, res) => {
     }
 
     // Calculate all amount
-    const { subtotal, total, tax } = calculator.calculateTotalAmount(cart);
+    const { total, subtotal, tax } = calculator.calculateTotalAmount(cart);
 
     res.render("user/checkout", {
       cart,
@@ -73,22 +74,25 @@ const applyCoupon = async (req, res) => {
     let cart = await Cart.findOne({ userId: req.session.user }).populate("items.productId");
     cart.items = await filterValidCartItems(cart.items);
 
-    const { subtotal, tax } = calculator.calculateTotalAmount(cart);
-
     const coupon = await Coupon.findOne({ code: couponCode.toUpperCase() });
     if (!coupon) return errorResponse(res, HttpStatus.BAD_REQUEST, "Invalid coupon code");
-    if (coupon.expiryDate < new Date()) return errorResponse(res, HttpStatus.BAD_REQUEST, "Coupon has expired");
-    if (coupon.minPurchase && subtotal < coupon.minPurchase)
-      return errorResponse(res, HttpStatus.BAD_REQUEST, `Minimum purchase amount is ₹${coupon.minPurchase.toLocaleString()}`);
 
-    // calculate discount
-    let discount = (subtotal * coupon.discount) / 100;
-    const total = subtotal + tax - discount;
+    if (coupon.expiryDate < new Date()) return errorResponse(res, HttpStatus.BAD_REQUEST, "Coupon has expired");
+
+    if (coupon.minPurchase && cart.total < coupon.minPurchase) {
+      return errorResponse(res, HttpStatus.BAD_REQUEST, `Minimum purchase amount is ₹${coupon.minPurchase.toLocaleString()}`);
+    }
+    // check usage
+    const couponUsedTimes = (coupon.couponUsers || []).filter((user) => user.toString() === req.session.user.toString()).length;
+    if (couponUsedTimes >= coupon.maxUsage) {
+      return errorResponse(res, HttpStatus.BAD_REQUEST, "Coupon has reached its maximum usage limit");
+    }
+
+    // calculation
+    const { total, subtotal, tax, discount } = calculator.calculateTotalAmount(cart, coupon.discount);
 
     success(res, HttpStatus.OK, "coupon applied successfully", {
-      discount: Math.round(discount),
-      discountType: "percentage",
-      discountValue: coupon.discount,
+      discount,
       subtotal,
       tax,
       total,
@@ -102,7 +106,7 @@ const applyCoupon = async (req, res) => {
 const placeOrder = async (req, res) => {
   try {
     const { paymentMethod, address: addressId, couponCode } = req.body;
-
+    // validations
     if (!mongoose.Types.ObjectId.isValid(addressId)) {
       return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.ADDRESS_NOT_FOUND);
     }
@@ -110,6 +114,7 @@ const placeOrder = async (req, res) => {
       return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.PAYMENT_METHOD_NOT_FOUND);
     }
 
+    // cart
     const cart = await Cart.findOne({ userId: req.session.user }).populate("items.productId");
     if (!cart || !cart.items.length) {
       return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.CART_EMPTY);
@@ -118,39 +123,43 @@ const placeOrder = async (req, res) => {
     if (!filtered.length) {
       return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.CART_EMPTY);
     }
-    // coupon
+
+    // Coupon
     let appliedDiscount = 0;
     let couponUsed = null;
-    const { subtotal, total: baseTotal } = calculator.calculateTotalAmount({ items: filtered });
-
     if (couponCode) {
-      const foundCoupon = await Coupon.findOne({
-        code: String(couponCode).toUpperCase(),
-        isActive: true,
-        isDeleted: false,
-      }).lean();
+      const foundCoupon = await Coupon.findOne({ code: String(couponCode).toUpperCase(), isActive: true, isDeleted: false });
       if (!foundCoupon) {
         return errorResponse(res, HttpStatus.BAD_REQUEST, "Invalid coupon code");
       }
       if (foundCoupon.expiryDate < new Date()) {
         return errorResponse(res, HttpStatus.BAD_REQUEST, "Coupon has expired");
       }
-      if (foundCoupon.minPurchase && subtotal < foundCoupon.minPurchase) {
+
+      const couponUsedTimes = (foundCoupon.couponUsers || []).filter((user) => user.toString() === req.session.user.toString()).length;
+
+      if (couponUsedTimes >= foundCoupon.maxUsage) {
+        return errorResponse(res, HttpStatus.BAD_REQUEST, "Coupon has reached its maximum usage limit");
+      }
+
+      if (foundCoupon.minPurchase && cart.total < foundCoupon.minPurchase) {
         return errorResponse(res, HttpStatus.BAD_REQUEST, `Minimum purchase amount is ₹${foundCoupon.minPurchase.toLocaleString()}`);
       }
 
-      appliedDiscount = Math.round((subtotal * Number(foundCoupon.discount)) / 100);
       couponUsed = foundCoupon;
+      appliedDiscount = foundCoupon.discount;
     }
 
-    const total = Math.max(0, baseTotal - appliedDiscount);
+    // Calculate final totals
+    const { total, subtotal, tax, discount } = calculator.calculateTotalAmount({ items: filtered }, couponUsed ? couponUsed.discount : 0);
     const { commission, vendorEarnings } = calculator.calculateCommission(total);
 
-    // PRODUCT DETAILS 
+    // Prepare product details
     const products = filtered.map((item) => {
-      const productTotal = item.discountedPrice * item.quantity;
-      const { commission: productCommission, vendorEarnings: productVendorEarnings } = calculator.calculateCommission(productTotal);
-
+      
+      const { total, subtotal, tax, discount } = calculator.calculateProductTotal(item, couponUsed ? couponUsed.discount : 0);
+      const { commission: productCommission, vendorEarnings: productVendorEarnings } = calculator.calculateCommission(total);
+      console.log("product total:", total, subtotal, tax, discount, );
       return {
         productId: item.productId,
         vendorId: item.vendorId,
@@ -159,14 +168,17 @@ const placeOrder = async (req, res) => {
         selectedColor: item.selectedColor,
         image: item.image,
         priceAtPurchase: item.discountedPrice,
-        productTotal,
+        productTotal: total,
+        subTotal:subtotal,
+        tax:tax, 
+        discount,
         commissionAmount: productCommission,
         vendorEarning: productVendorEarnings,
         variantId: item.variantId,
       };
     });
 
-    //  ADDRESS VALIDATION 
+    // Address
     const addressDoc = await Address.findOne({
       userId: req.session.user,
       "address._id": addressId,
@@ -175,9 +187,27 @@ const placeOrder = async (req, res) => {
       return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.ADDRESS_NOT_FOUND);
     }
     const shippingAddress = { ...addressDoc.address.id(addressId).toObject() };
+
+    // Stock validation
+    for (const item of filtered) {
+      const product = await Product.findById(item.productId);
+      if (!product) {
+        return errorResponse(res, HttpStatus.BAD_REQUEST, `Product ${item.productName} not found`);
+      }
+
+      const variant = product.variants.id(item.variantId);
+      if (!variant) {
+        return errorResponse(res, HttpStatus.BAD_REQUEST, `Variant not found for ${item.productName}`);
+      }
+
+      if (variant.stock < item.quantity) {
+        return errorResponse(res, HttpStatus.BAD_REQUEST, `Insufficient stock for ${item.productName}. Available: ${variant.stock}`);
+      }
+    }
+
     let orderPlace;
 
-    // RAZORPAY
+    // Razorpay payment
     if (paymentMethod === "RAZORPAY") {
       orderPlace = await Order.findOne(
         {
@@ -204,6 +234,9 @@ const placeOrder = async (req, res) => {
           customerId: req.session.user,
           paymentMethod,
           totalAmount: total,
+          subTotal: subtotal,
+          discount: discount,
+          tax,
           totalCommissionAmount: commission,
           totalVendorEarnings: vendorEarnings,
           shippingAddress,
@@ -225,12 +258,15 @@ const placeOrder = async (req, res) => {
       });
     }
 
-    // COD
+    // COD payment
     if (paymentMethod === "COD") {
       orderPlace = new Order({
         customerId: req.session.user,
         paymentMethod,
         totalAmount: total,
+        subTotal: subtotal,
+        discount: discount,
+        tax,
         totalCommissionAmount: commission,
         totalVendorEarnings: vendorEarnings,
         shippingAddress,
@@ -242,7 +278,7 @@ const placeOrder = async (req, res) => {
       await orderPlace.save();
     }
 
-    // WALLET
+    // Wallet payment
     if (paymentMethod === "WALLET") {
       const wallet = await Wallet.findOne({ userId: req.session.user });
 
@@ -258,6 +294,9 @@ const placeOrder = async (req, res) => {
         customerId: req.session.user,
         paymentMethod,
         totalAmount: total,
+        subTotal: subtotal,
+        discount: discount,
+        tax,
         totalCommissionAmount: commission,
         totalVendorEarnings: vendorEarnings,
         shippingAddress,
@@ -268,7 +307,7 @@ const placeOrder = async (req, res) => {
       });
       await orderPlace.save();
 
-      // Deduct from wallet
+      // Deduct wallet balance
       wallet.balance -= total;
       wallet.transactionHistory.push({
         amount: total,
@@ -278,7 +317,18 @@ const placeOrder = async (req, res) => {
       await wallet.save();
     }
 
-    //  AFTER ORDER PLACEMENT 
+    // Update coupon usage
+    if (couponUsed) {
+      await Coupon.findByIdAndUpdate(couponUsed._id, {
+        $addToSet: { couponUsers: req.session.user },
+      });
+    }
+
+    // Reduce stock
+    for (const item of filtered) {
+      await Product.findOneAndUpdate({ _id: item.productId, "variants._id": item.variantId }, { $inc: { "variants.$.stock": -item.quantity } });
+    }
+
     // Clear cart
     cart.items = [];
     await cart.save();
@@ -323,8 +373,6 @@ const razorpayVerify = async (req, res) => {
     errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
   }
 };
-
-
 
 module.exports = {
   loadCheckout,
