@@ -20,10 +20,11 @@ const profileController = require("../controllers/user/userProfile.controller");
 const addressController = require("../controllers/user/userAddress.controller");
 const cartController = require("../controllers/user/userCart.controller");
 const orderController = require("../controllers/user/userOrder.controller");
-const returnController = require("../controllers/user/userReturn.controller");
 const invoiceController = require("../controllers/user/userInvoice.controller");
 const walletController = require("../controllers/user/userWallet.controller");
 const wishlistController = require("../controllers/user/userWishlist.controller");
+const cancelAndReturnController = require("../controllers/user/cancelAndReturn.controller");
+
 
 // Apply user layout to all user routes
 router.use((req, res, next) => { 
@@ -92,17 +93,18 @@ router.post("/cart/empty", userAuth.checkSession, cartController.cartEmpty);
 router.post("/cart/increase/:id", cartAuth.cartSession, cartController.cartIncrease);
 router.post("/cart/decrease/:id", cartAuth.cartSession, cartController.cartDecrease);
 
-//  Orders 
+//  place Order 
 router.get("/checkout", userAuth.checkSession, orderController.loadCheckout);
 router.post("/checkout/place-order", userAuth.checkSession, orderController.placeOrder);
 router.post("/checkout/apply-coupon", userAuth.checkSession, orderController.applyCoupon);
 router.post("/checkout/place-order/razorpay-verify", userAuth.checkSession, orderController.razorpayVerify );
-router.get("/profile/orders", userAuth.checkSession, orderController.loadorders);
+// view order
+router.get("/profile/orders", userAuth.checkSession, cancelAndReturnController.loadorders);
 router.get("/profile/orders/invoice/:id", userAuth.checkSession, invoiceController.generateInvoice);
-router.get("/profile/orders/:id", userAuth.checkSession, orderController.loadOrderDetails);
-router.put("/profile/orders/:id/cancel", userAuth.checkSession, orderController.cancelOrder);
+router.get("/profile/orders/:id", userAuth.checkSession, cancelAndReturnController.loadOrderDetails);
+router.put("/profile/orders/:id/cancel-items", userAuth.checkSession, cancelAndReturnController.cancelOrder);
 //return 
-router.post("/profile/orders/:id/return", userAuth.checkSession, returnController.returnRequest);
+router.post("/profile/orders/:id/return-items", userAuth.checkSession, cancelAndReturnController.returnRequest);
 
 //walllet
 router.get("/profile/wallet", userAuth.checkSession, walletController.loadWallet);

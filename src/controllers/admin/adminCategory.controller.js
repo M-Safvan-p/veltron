@@ -116,7 +116,7 @@ const editCategory = async (req, res) => {
     const products = await Product.find({category:id});
     for(const product of products){
       if(offer > product.offer){
-        product.discountedPrice = product.price - (product.price * offer)/ 100;
+        product.discountedPrice = Math.round(product.price - (product.price * offer)/ 100);
         await product.save()
       }
     }

@@ -13,6 +13,7 @@ const authController = require("../controllers/vendor/vendorAuth.controller");
 const pageController = require("../controllers/vendor/vendorPage.controller");
 const productController = require("../controllers/vendor/vendorProduct.controller");
 const orderController = require("../controllers/vendor/vendorOrder.controller");
+const returnController = require("../controllers/vendor/vendorReturn.controller");
 
 // Middleware to set vendor layout
 router.use((req, res, next) => {
@@ -44,6 +45,10 @@ router.put("/products/edit-product/:id",vendorAuth.checkSession,upload.any(),val
 router.get("/orders", vendorAuth.checkSession, orderController.loadOrders);
 router.get("/orders/:id", vendorAuth.checkSession, orderController.loadOrderDetails);
 router.put("/orders/:id/status", vendorAuth.checkSession, orderController.handleStatus);
+
+// returns
+router.get("/returns", vendorAuth.checkSession, returnController.loadReturns);
+router.put("/returns/:id/status", vendorAuth.checkSession, returnController.updateReturnStatus);
 
 // Add this after your routes
 router.use((error, req, res, next) => {
