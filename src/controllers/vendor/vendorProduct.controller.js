@@ -96,9 +96,9 @@ const addProduct = async (req, res) => {
       const categoryOffer = checkCategory.offer || 0;
       
       if (productOffer > categoryOffer) {
-        discountedPrice = price - (price * productOffer / 100);
+        discountedPrice = Math.round(price - (price * productOffer / 100));
       } else {
-        discountedPrice = price - (price * categoryOffer / 100);
+        discountedPrice = Math.round(price - (price * categoryOffer / 100));
       }
     } else if (checkCategory && checkCategory.offer) {
       discountedPrice = price - (price * checkCategory.offer / 100);
@@ -203,9 +203,9 @@ const editProduct = async (req, res) => {
       const categoryOffer = checkCategory.offer || 0;
       
       if (productOffer > categoryOffer) {
-        discountedPrice = price - (price * productOffer / 100);
+        discountedPrice = Math.round(price - (price * productOffer / 100));
       } else {
-        discountedPrice = price - (price * categoryOffer / 100);
+        discountedPrice = Math.round(price - (price * categoryOffer / 100));
       }
     } else if (checkCategory && checkCategory.offer) {
       discountedPrice = price - (price * checkCategory.offer / 100);

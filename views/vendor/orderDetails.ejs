@@ -1,997 +1,1054 @@
 <style>
-    .profile-page {
-        margin-top: 20px;
-        display: flex;
-        gap: 30px;
-        align-items: flex-start;
-        max-width: 1200px;
+  .profile-page {
+    margin-top: 20px;
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    max-width: 1200px;
+  }
+
+  .profile-container {
+    flex: 1;
+    max-width: 800px;
+    width: 100%;
+    margin: 0;
+    padding: 18px;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 25px;
+    font-size: 14px;
+    color: #6c757d;
+  }
+
+  .breadcrumb a {
+    color: #6c757d;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .breadcrumb a:hover {
+    color: #212529;
+  }
+
+  .breadcrumb-separator {
+    color: #adb5bd;
+  }
+
+  .welcome-section {
+    text-align: center;
+    margin-bottom: 25px;
+  }
+
+  .welcome-title {
+    font-size: 22px;
+    color: #212529;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+  }
+
+  .order-details-section {
+    width: 100%;
+  }
+
+  .order-details-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* Card Base Styles */
+  .order-header-card,
+  .order-tracking-card,
+  .other-details-card,
+  .order-actions-card,
+  .vendor-controls-card {
+    background: white;
+    border-radius: 14px;
+    padding: 25px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e9ecef;
+  }
+
+  .card-title {
+    font-size: 18px;
+    color: #212529;
+    font-weight: 600;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f1f3f4;
+  }
+
+  /* Order Header */
+  .order-main-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .order-id {
+    font-size: 24px;
+    color: #212529;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+  }
+
+  .order-date {
+    font-size: 14px;
+    color: #6c757d;
+    margin: 0;
+  }
+
+  .order-status-section {
+    text-align: right;
+  }
+
+  .status-badge {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .status-pending {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+  }
+
+  .status-processing {
+    background: #cce5ff;
+    color: #004085;
+    border: 1px solid #b3d7ff;
+  }
+
+  .status-shipped {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+  }
+
+  .status-completed {
+    background: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+  }
+
+  .status-cancelled {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+
+  .status-failed {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+
+  /* Vendor Controls */
+  .status-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 15px;
+  }
+
+  .status-dropdown {
+    padding: 10px 15px;
+    border: 1px solid #dee2e6;
+    border-radius: 7px;
+    background: white;
+    color: #495057;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    outline: none;
+  }
+
+  .status-dropdown:focus {
+    border-color: #adb5bd;
+    box-shadow: 0 0 0 2px rgba(173, 181, 189, 0.25);
+  }
+
+  .update-status-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .update-status-btn:hover {
+    background: #218838;
+    transform: translateY(-1px);
+  }
+
+  .update-status-btn:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Products List */
+  .products-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .product-item {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+  }
+
+  .product-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .product-details {
+    flex: 1;
+  }
+
+  .product-name {
+    font-size: 16px;
+    color: #212529;
+    font-weight: 600;
+    margin: 0 0 6px 0;
+  }
+
+  .product-meta {
+    font-size: 13px;
+    color: #6c757d;
+    margin: 0 0 4px 0;
+  }
+
+  .vendor-earnings {
+    font-size: 12px;
+    color: #28a745;
+    font-weight: 500;
+    margin: 0;
+  }
+
+  .product-total {
+    text-align: right;
+  }
+
+  .product-price {
+    font-size: 16px;
+    color: #212529;
+    font-weight: 600;
+  }
+
+  /* Two Column Layout */
+  .two-column-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .column-card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #e9ecef;
+  }
+
+  .column-title {
+    font-size: 16px;
+    color: #212529;
+    font-weight: 600;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #dee2e6;
+  }
+
+  /* Shipping Address */
+  .address-details {
+    line-height: 1.6;
+  }
+
+  .address-name {
+    font-size: 16px;
+    color: #212529;
+    font-weight: 600;
+    margin: 0 0 6px 0;
+  }
+
+  .address-phone {
+    font-size: 14px;
+    color: #495057;
+    font-weight: 500;
+    margin: 0 0 8px 0;
+  }
+
+  .address-line {
+    font-size: 14px;
+    color: #6c757d;
+    margin: 0 0 4px 0;
+  }
+
+  /* Order Summary */
+  .summary-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+  }
+
+  .summary-label {
+    font-size: 14px;
+    color: #495057;
+    font-weight: 500;
+  }
+
+  .summary-value {
+    font-size: 14px;
+    color: #212529;
+    font-weight: 600;
+  }
+
+  .summary-value.discount {
+    color: #28a745;
+  }
+
+  .summary-value.total {
+    font-size: 16px;
+    color: #212529;
+    font-weight: 700;
+  }
+
+  .summary-value.vendor-earnings {
+    color: #28a745;
+    font-weight: 700;
+  }
+
+  .summary-value.commission {
+    color: #fd7e14;
+    font-weight: 700;
+  }
+
+  /* Other Details */
+  .other-details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+
+  .detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+  }
+
+  .detail-label {
+    font-size: 14px;
+    color: #495057;
+    font-weight: 500;
+  }
+
+  .detail-value {
+    font-size: 14px;
+    color: #212529;
+    font-weight: 600;
+  }
+
+  .payment-status {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .payment-completed {
+    background: #d4edda;
+    color: #155724;
+  }
+
+  .payment-pending {
+    background: #fff3cd;
+    color: #856404;
+  }
+
+  .payment-failed {
+    background: #f8d7da;
+    color: #721c24;
+  }
+
+  /* Order Tracking */
+  .tracking-timeline {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    margin: 20px 0;
+  }
+
+  .tracking-timeline::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 25px;
+    right: 25px;
+    height: 2px;
+    background: #e9ecef;
+    z-index: 1;
+  }
+
+  .timeline-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    max-width: 120px;
+  }
+
+  .step-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #e9ecef;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 8px;
+    transition: all 0.2s ease;
+  }
+
+  .timeline-step.active .step-icon {
+    background: #212529;
+    color: white;
+  }
+
+  .step-title {
+    font-size: 14px;
+    color: #495057;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+  }
+
+  .timeline-step.active .step-title {
+    color: #212529;
+  }
+
+  .step-desc {
+    font-size: 12px;
+    color: #6c757d;
+    margin: 0;
+  }
+
+  /* Action Buttons */
+  .action-buttons {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  .invoice-button,
+  .back-button {
+    background: #212529;
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    min-width: 130px;
+  }
+
+  .back-button {
+    background: #6c757d;
+  }
+
+  .invoice-button:hover {
+    background: #495057;
+    transform: translateY(-1px);
+  }
+
+  .back-button:hover {
+    background: #5c636a;
+    transform: translateY(-1px);
+  }
+
+  .invoice-button:active,
+  .back-button:active {
+    transform: translateY(0);
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .two-column-layout {
+      grid-template-columns: 1fr;
+      gap: 15px;
     }
 
+    .other-details-grid {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .detail-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      padding: 8px 0;
+    }
+
+    .order-main-info {
+      flex-direction: column;
+      gap: 15px;
+      align-items: flex-start;
+    }
+
+    .order-status-section {
+      text-align: left;
+      width: 100%;
+    }
+
+    .status-controls {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .status-dropdown,
+    .update-status-btn {
+      width: 100%;
+    }
+
+    .tracking-timeline {
+      flex-direction: column;
+      gap: 15px;
+      align-items: stretch;
+    }
+
+    .tracking-timeline::before {
+      display: none;
+    }
+
+    .timeline-step {
+      flex-direction: row;
+      text-align: left;
+      max-width: none;
+      gap: 15px;
+    }
+
+    .step-icon {
+      margin-bottom: 0;
+      flex-shrink: 0;
+    }
+
+    .action-buttons {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .invoice-button,
+    .back-button {
+      width: 100%;
+      min-width: auto;
+    }
+  }
+
+  @media (max-width: 640px) {
     .profile-container {
-        flex: 1;
-        max-width: 800px;
-        width: 100%;
-        margin: 0;
-        padding: 18px;
+      padding: 12px;
     }
 
-    .breadcrumb {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 25px;
-        font-size: 14px;
-        color: #6c757d;
-    }
-
-    .breadcrumb a {
-        color: #6c757d;
-        text-decoration: none;
-        transition: color 0.2s ease;
-    }
-
-    .breadcrumb a:hover {
-        color: #212529;
-    }
-
-    .breadcrumb-separator {
-        color: #adb5bd;
-    }
-
-    .welcome-section {
-        text-align: center;
-        margin-bottom: 25px;
-    }
-
-    .welcome-title {
-        font-size: 22px;
-        color: #212529;
-        font-weight: 400;
-        letter-spacing: 0.5px;
-    }
-
-    .order-details-section {
-        width: 100%;
-    }
-
-    .order-details-container {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-    }
-
-    /* Card Base Styles */
     .order-header-card,
     .order-tracking-card,
     .other-details-card,
     .order-actions-card,
     .vendor-controls-card {
-        background: white;
-        border-radius: 14px;
-        padding: 25px;
-        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
-        border: 1px solid #e9ecef;
+      padding: 20px;
+      border-radius: 11px;
     }
 
-    .card-title {
-        font-size: 18px;
-        color: #212529;
-        font-weight: 600;
-        margin-bottom: 18px;
-        padding-bottom: 12px;
-        border-bottom: 1px solid #f1f3f4;
+    .welcome-title {
+      font-size: 20px;
     }
 
-    /* Order Header */
-    .order-main-info {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
+    .profile-page {
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .breadcrumb {
+      font-size: 13px;
     }
 
     .order-id {
-        font-size: 24px;
-        color: #212529;
-        font-weight: 600;
-        margin: 0 0 8px 0;
-    }
-
-    .order-date {
-        font-size: 14px;
-        color: #6c757d;
-        margin: 0;
-    }
-
-    .order-status-section {
-        text-align: right;
-    }
-
-    .status-badge {
-        display: inline-block;
-        padding: 8px 16px;
-        border-radius: 20px;
-        font-size: 13px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .status-processing {
-        background: #cce5ff;
-        color: #004085;
-        border: 1px solid #b3d7ff;
-    }
-
-    .status-shipped {
-        background: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
-    }
-
-    .status-completed {
-        background: #d1ecf1;
-        color: #0c5460;
-        border: 1px solid #bee5eb;
-    }
-
-    .status-cancelled {
-        background: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-    }
-
-    .status-failed {
-        background: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-    }
-
-    /* Vendor Controls */
-    .status-controls {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        margin-top: 15px;
-    }
-
-    .status-dropdown {
-        padding: 10px 15px;
-        border: 1px solid #dee2e6;
-        border-radius: 7px;
-        background: white;
-        color: #495057;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        outline: none;
-    }
-
-    .status-dropdown:focus {
-        border-color: #adb5bd;
-        box-shadow: 0 0 0 2px rgba(173, 181, 189, 0.25);
-    }
-
-    .update-status-btn {
-        background: #28a745;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 7px;
-        font-size: 13px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .update-status-btn:hover {
-        background: #218838;
-        transform: translateY(-1px);
-    }
-
-    .update-status-btn:disabled {
-        background: #6c757d;
-        cursor: not-allowed;
-        transform: none;
-    }
-
-    /* Products List */
-    .products-list {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
+      font-size: 20px;
     }
 
     .product-item {
-        display: flex;
-        align-items: center;
-        gap: 18px;
-        padding: 15px;
-        background: #f8f9fa;
-        border-radius: 12px;
-        border: 1px solid #e9ecef;
-    }
-
-    .product-image {
-        width: 60px;
-        height: 60px;
-        border-radius: 10px;
-        overflow: hidden;
-        flex-shrink: 0;
-    }
-
-    .product-image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+      flex-direction: column;
+      text-align: center;
+      gap: 12px;
     }
 
     .product-details {
-        flex: 1;
+      text-align: center;
     }
-
-    .product-name {
-        font-size: 16px;
-        color: #212529;
-        font-weight: 600;
-        margin: 0 0 6px 0;
-    }
-
-    .product-meta {
-        font-size: 13px;
-        color: #6c757d;
-        margin: 0 0 4px 0;
-    }
-
-    .vendor-earnings {
-        font-size: 12px;
-        color: #28a745;
-        font-weight: 500;
-        margin: 0;
-    }
-
-    .product-total {
-        text-align: right;
-    }
-
-    .product-price {
-        font-size: 16px;
-        color: #212529;
-        font-weight: 600;
-    }
-
-    /* Two Column Layout */
-    .two-column-layout {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-    }
-
-    .column-card {
-        background: #f8f9fa;
-        border-radius: 12px;
-        padding: 20px;
-        border: 1px solid #e9ecef;
-    }
-
-    .column-title {
-        font-size: 16px;
-        color: #212529;
-        font-weight: 600;
-        margin-bottom: 15px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #dee2e6;
-    }
-
-    /* Shipping Address */
-    .address-details {
-        line-height: 1.6;
-    }
-
-    .address-name {
-        font-size: 16px;
-        color: #212529;
-        font-weight: 600;
-        margin: 0 0 6px 0;
-    }
-
-    .address-phone {
-        font-size: 14px;
-        color: #495057;
-        font-weight: 500;
-        margin: 0 0 8px 0;
-    }
-
-    .address-line {
-        font-size: 14px;
-        color: #6c757d;
-        margin: 0 0 4px 0;
-    }
-
-    /* Order Summary */
-    .summary-list {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .summary-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 4px 0;
-    }
-
-    .summary-label {
-        font-size: 14px;
-        color: #495057;
-        font-weight: 500;
-    }
-
-    .summary-value {
-        font-size: 14px;
-        color: #212529;
-        font-weight: 600;
-    }
-
-    .summary-value.discount {
-        color: #28a745;
-    }
-
-    .summary-value.total {
-        font-size: 16px;
-        color: #212529;
-        font-weight: 700;
-    }
-
-    .summary-value.vendor-earnings {
-        color: #28a745;
-        font-weight: 700;
-    }
-
-    .summary-value.commission {
-        color: #fd7e14;
-        font-weight: 700;
-    }
-
-    /* Other Details */
-    .other-details-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
-        margin-bottom: 20px;
-    }
-
-    .detail-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 12px 0;
-    }
-
-    .detail-label {
-        font-size: 14px;
-        color: #495057;
-        font-weight: 500;
-    }
-
-    .detail-value {
-        font-size: 14px;
-        color: #212529;
-        font-weight: 600;
-    }
-
-    .payment-status {
-        font-size: 12px;
-        padding: 4px 10px;
-        border-radius: 12px;
-        font-weight: 600;
-        text-transform: uppercase;
-    }
-
-    .payment-completed {
-        background: #d4edda;
-        color: #155724;
-    }
-
-    .payment-pending {
-        background: #fff3cd;
-        color: #856404;
-    }
-
-    .payment-failed {
-        background: #f8d7da;
-        color: #721c24;
-    }
-
-    /* Order Tracking */
-    .tracking-timeline {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        position: relative;
-        margin: 20px 0;
-    }
-
-    .tracking-timeline::before {
-        content: '';
-        position: absolute;
-        top: 20px;
-        left: 25px;
-        right: 25px;
-        height: 2px;
-        background: #e9ecef;
-        z-index: 1;
-    }
-
-    .timeline-step {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        position: relative;
-        z-index: 2;
-        flex: 1;
-        max-width: 120px;
-    }
-
-    .step-icon {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: #e9ecef;
-        color: #6c757d;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 600;
-        font-size: 14px;
-        margin-bottom: 8px;
-        transition: all 0.2s ease;
-    }
-
-    .timeline-step.active .step-icon {
-        background: #212529;
-        color: white;
-    }
-
-    .step-title {
-        font-size: 14px;
-        color: #495057;
-        font-weight: 600;
-        margin: 0 0 4px 0;
-    }
-
-    .timeline-step.active .step-title {
-        color: #212529;
-    }
-
-    .step-desc {
-        font-size: 12px;
-        color: #6c757d;
-        margin: 0;
-    }
-
-    /* Action Buttons */
-    .action-buttons {
-        display: flex;
-        gap: 15px;
-        flex-wrap: wrap;
-        justify-content: center;
-        margin-bottom: 20px;
-    }
-
-    .invoice-button,
-    .back-button {
-        background: #212529;
-        color: white;
-        border: none;
-        padding: 12px 28px;
-        border-radius: 7px;
-        font-size: 13px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        text-transform: uppercase;
-        letter-spacing: 0.8px;
-        text-decoration: none;
-        display: inline-block;
-        text-align: center;
-        min-width: 130px;
-    }
-
-    .back-button {
-        background: #6c757d;
-    }
-
-    .invoice-button:hover {
-        background: #495057;
-        transform: translateY(-1px);
-    }
-
-    .back-button:hover {
-        background: #5c636a;
-        transform: translateY(-1px);
-    }
-
-    .invoice-button:active,
-    .back-button:active {
-        transform: translateY(0);
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-        .two-column-layout {
-            grid-template-columns: 1fr;
-            gap: 15px;
-        }
-
-        .other-details-grid {
-            grid-template-columns: 1fr;
-            gap: 10px;
-        }
-
-        .detail-item {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 4px;
-            padding: 8px 0;
-        }
-
-        .order-main-info {
-            flex-direction: column;
-            gap: 15px;
-            align-items: flex-start;
-        }
-
-        .order-status-section {
-            text-align: left;
-            width: 100%;
-        }
-
-        .status-controls {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 10px;
-        }
-
-        .status-dropdown,
-        .update-status-btn {
-            width: 100%;
-        }
-
-        .tracking-timeline {
-            flex-direction: column;
-            gap: 15px;
-            align-items: stretch;
-        }
-
-        .tracking-timeline::before {
-            display: none;
-        }
-
-        .timeline-step {
-            flex-direction: row;
-            text-align: left;
-            max-width: none;
-            gap: 15px;
-        }
-
-        .step-icon {
-            margin-bottom: 0;
-            flex-shrink: 0;
-        }
-
-        .action-buttons {
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .invoice-button,
-        .back-button {
-            width: 100%;
-            min-width: auto;
-        }
-    }
-
-    @media (max-width: 640px) {
-        .profile-container {
-            padding: 12px;
-        }
-
-        .order-header-card,
-        .order-tracking-card,
-        .other-details-card,
-        .order-actions-card,
-        .vendor-controls-card {
-            padding: 20px;
-            border-radius: 11px;
-        }
-
-        .welcome-title {
-            font-size: 20px;
-        }
-
-        .profile-page {
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .breadcrumb {
-            font-size: 13px;
-        }
-
-        .order-id {
-            font-size: 20px;
-        }
-
-        .product-item {
-            flex-direction: column;
-            text-align: center;
-            gap: 12px;
-        }
-
-        .product-details {
-            text-align: center;
-        }
-    }
+  }
 </style>
+
 <div class="profile-page">
-    <div class="profile-container">
-        <div class="breadcrumb">
-            <a href="/vendor/dashboard">dashboard</a>
-            <span class="breadcrumb-separator">></span>
-            <a href="/vendor/orders">orders</a>
-            <span class="breadcrumb-separator">></span>
-            <span>order details</span>
-        </div>
-
-        <div class="welcome-section">
-            <h1 class="welcome-title">Order Management</h1>
-        </div>
-
-        <section class="order-details-section">
-            <div class="order-details-container">
-                <!-- Vendor Controls -->
-                <article class="vendor-controls-card">
-                    <h3 class="card-title">Order Status Control</h3>
-                    <div class="status-controls">
-                        <label for="statusDropdown" style="font-weight: 500; color: #495057;">Update Status:</label>
-                        <select id="statusDropdown" class="status-dropdown">
-                            <option value="processing" <%=order.products[0].orderStatus==='processing' ? 'selected' : '' %>>processing
-                            </option>
-                            <option value="shipped" <%=order.products[0].orderStatus==='shipped' ? 'selected' : '' %>>Shipped
-                            </option>
-                            <option value="completed" <%=order.products[0].orderStatus==='completed' ? 'selected' : '' %>>completed
-                            </option>
-                            <option value="cancelled" <%=order.products[0].orderStatus==='cancelled' ? 'selected' : '' %>>Cancelled
-                            </option>
-                        </select>
-                        <button id="updateStatusBtn" class="update-status-btn">Update Status</button>
-                    </div>
-                </article>
-
-                <!-- Order Header -->
-                <article class="order-header-card">
-                    <div class="order-main-info">
-                        <div class="order-id-section">
-                            <h2 class="order-id">Order #<%= order.orderId %>
-                            </h2>
-                            <p class="order-date">Placed on <%= new Date(order.invoiceDate).toLocaleDateString('en-IN',
-                                    { year: 'numeric' , month: 'long' , day: 'numeric' }) %>
-                            </p>
-                        </div>
-                        <div class="order-status-section">
-                            <span id="currentStatusBadge" class="status-badge status-<%= order.products[0].orderStatus %>">
-                                <%= order.products[0].orderStatus %>
-                            </span>
-                        </div>
-                    </div>
-
-                    <!-- Items Ordered -->
-                    <h3 style="margin-top: 25px" class="card-title">Items Ordered</h3>
-                    <div class="products-list">
-                        <% order.products.forEach(product=> { %>
-                            <% const productTotal=product.quantity * product.priceAtPurchase; const commissionRate=0.15;
-                                // 15% commission const vendorShare=productTotal * (1 - commissionRate); const
-                                commissionShare=productTotal * commissionRate; %>
-                                <div class="product-item">
-                                    <div class="product-image">
-                                        <img src="<%= product.image %>" alt="<%= product.name %>"
-                                            onerror="this.src='/images/default-product.jpg'" />
-                                    </div>
-                                    <div class="product-details">
-                                        <h4 class="product-name">
-                                            <%= product.name %>
-                                        </h4>
-                                        <p class="product-meta">Price: ₹<%=
-                                                product.priceAtPurchase.toLocaleString('en-IN') %> × <%=
-                                                    product.quantity %>
-                                        </p>
-                                        <p class="vendor-earnings">
-                                            Your Earnings: ₹<%= Math.round(vendorShare).toLocaleString('en-IN') %> |
-                                                Commission: ₹<%= Math.round(commissionShare).toLocaleString('en-IN') %>
-                                        </p>
-                                    </div>
-                                    <div class="product-total">
-                                        <span class="product-price">₹<%= productTotal.toLocaleString('en-IN') %></span>
-                                    </div>
-                                </div>
-                                <% }) %>
-                    </div>
-                </article>
-
-                <!-- Other Details -->
-                <article class="other-details-card">
-                    <h3 class="card-title">Payment & Other Details</h3>
-                    <div class="other-details-grid">
-                        <div class="detail-item">
-                            <span class="detail-label">Payment Method</span>
-                            <span class="detail-value">
-                                <%= order.paymentMethod %>
-                            </span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Payment Status</span>
-                            <span class="payment-status payment-<%= order.paymentStatus %>">
-                                <%= order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1) %>
-                            </span>
-                        </div>
-                        <% if (order.couponCode) { %>
-                            <div class="detail-item">
-                                <span class="detail-label">Coupon Applied</span>
-                                <span class="detail-value">
-                                    <%= order.couponCode %>
-                                </span>
-                            </div>
-                            <% } %>
-                    </div>
-
-                    <div class="two-column-layout">
-                        <!-- Shipping Address -->
-                        <div class="column-card">
-                            <h4 class="column-title">Shipping Address</h4>
-                            <div class="address-details">
-                                <p class="address-name">
-                                    <%= order.shippingAddress.type %>
-                                </p>
-                                <p class="address-phone">
-                                    <%= order.shippingAddress.phone %>
-                                </p>
-                                <p class="address-line">
-                                    <%= order.shippingAddress.fullAddress %>
-                                </p>
-                                <p class="address-line">
-                                    <%= order.shippingAddress.district %>
-                                </p>
-                                <p class="address-line">
-                                    <%= order.shippingAddress.city %>, <%= order.shippingAddress.state %> - <%=
-                                                order.shippingAddress.pincode %>
-                                </p>
-                            </div>
-                        </div>
-
-                        <!-- Order Summary -->
-                        <div class="column-card">
-                            <h4 class="column-title">Order Summary</h4>
-                            <div class="summary-list">
-                                <% const subtotal=order.products.reduce((total, product)=> total + (product.quantity *
-                                    product.priceAtPurchase), 0);
-                                    const totalItems = order.products.reduce((total, product) => total +
-                                    product.quantity, 0);
-                                    const gst = Math.round(subtotal * 0.18); // 18% GST
-                                    const discountedSubtotal = order.couponDiscount ? (subtotal - order.couponDiscount)
-                                    : subtotal;
-                                    const finalTotal = discountedSubtotal + gst; // shipping is free
-
-                                    // Vendor earnings calculation
-                                    const commissionRate = 0.15; // 15% commission
-                                    const totalVendorEarnings = Math.round(discountedSubtotal * (1 - commissionRate));
-                                    const totalCommissionAmount = Math.round(discountedSubtotal * commissionRate);
-                                    %>
-
-                                    <div class="summary-item">
-                                        <span class="summary-label">Total Items</span>
-                                        <span class="summary-value">
-                                            <%= totalItems %>
-                                        </span>
-                                    </div>
-
-                                    <div class="summary-item">
-                                        <span class="summary-label">Subtotal</span>
-                                        <span class="summary-value">₹<%= subtotal.toLocaleString('en-IN') %></span>
-                                    </div>
-
-                                    <% if (order.couponCode && order.couponDiscount) { %>
-                                        <div class="summary-item">
-                                            <span class="summary-label">Coupon Discount</span>
-                                            <span class="summary-value discount">-₹<%=
-                                                    order.couponDiscount.toLocaleString('en-IN') %></span>
-                                        </div>
-                                        <% } %>
-
-                                            <div class="summary-item">
-                                                <span class="summary-label">GST (18%)</span>
-                                                <span class="summary-value">₹<%= gst.toLocaleString('en-IN') %></span>
-                                            </div>
-
-                                            <div class="summary-item">
-                                                <span class="summary-label">Shipping</span>
-                                                <span class="summary-value">Free</span>
-                                            </div>
-
-                                            <hr style="border: none; border-top: 1px solid #dee2e6; margin: 10px 0;" />
-
-                                            <div class="summary-item">
-                                                <span class="summary-label">Final Total</span>
-                                                <span class="summary-value total">₹<%=
-                                                        finalTotal.toLocaleString('en-IN') %></span>
-                                            </div>
-
-                                            <hr style="border: none; border-top: 2px solid #28a745; margin: 15px 0;" />
-
-                                            <div class="summary-item">
-                                                <span class="summary-label">Your Earnings</span>
-                                                <span class="summary-value vendor-earnings">₹<%=
-                                                        totalVendorEarnings.toLocaleString('en-IN') %></span>
-                                            </div>
-
-                                            <div class="summary-item">
-                                                <span class="summary-label">Admin Commission</span>
-                                                <span class="summary-value commission">₹<%=
-                                                        totalCommissionAmount.toLocaleString('en-IN') %></span>
-                                            </div>
-                            </div>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- Order Tracking -->
-                <article class="order-tracking-card">
-                    <h3 class="card-title">Order Tracking</h3>
-                    <div id="trackingTimeline" class="tracking-timeline">
-                        <div class="timeline-step <%= order.orderStatus === 'processing' || order.orderStatus === 'shipped' || order.orderStatus === 'completed' ? 'active' : '' %>"
-                            data-status="processing">
-                            <div class="step-icon">1</div>
-                            <div class="step-info">
-                                <p class="step-title">processing</p>
-                                <p class="step-desc">Order confirmed</p>
-                            </div>
-                        </div>
-                        <div class="timeline-step <%= order.orderStatus === 'shipped' || order.orderStatus === 'completed' ? 'active' : '' %>"
-                            data-status="shipped">
-                            <div class="step-icon">2</div>
-                            <div class="step-info">
-                                <p class="step-title">Shipped</p>
-                                <p class="step-desc">On the way</p>
-                            </div>
-                        </div>
-                        <div class="timeline-step <%= order.orderStatus === 'completed' ? 'active' : '' %>"
-                            data-status="completed">
-                            <div class="step-icon">3</div>
-                            <div class="step-info">
-                                <p class="step-title">Completed</p>
-                                <p class="step-desc">Delivered</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="action-buttons" style="margin-top: 50px;">
-                        <a href="/vendor/orders/invoice/<%= order.orderId %>" class="invoice-button">Download
-                            Invoice</a>
-                        <a href="/vendor/orders" class="back-button">Back to Orders</a>
-                    </div>
-                </article>
-            </div>
-        </section>
+  <div class="profile-container">
+    <div class="breadcrumb">
+      <a href="/vendor/dashboard">dashboard</a>
+      <span class="breadcrumb-separator">></span>
+      <a href="/vendor/orders">orders</a>
+      <span class="breadcrumb-separator">></span>
+      <span>order details</span>
     </div>
+
+    <div class="welcome-section">
+      <h1 class="welcome-title">Order Management</h1>
+    </div>
+
+    <section class="order-details-section">
+      <div class="order-details-container">
+
+        <!-- Vendor Controls -->
+        <article class="vendor-controls-card">
+          <h3 class="card-title">Order Status Control</h3>
+          <div class="status-controls">
+            <label for="statusDropdown" style="font-weight: 500; color: #495057;">Update Status:</label>
+
+            <% 
+    // Find the first non-cancelled product status
+    var currentStatus = 'processing'; // default fallback
+    var foundStatus = false;
+    
+    if (order && order.products && order.products.length > 0) {
+        // Loop through products to find first non-cancelled status
+        for (var idx = 0; idx < order.products.length; idx++) {
+            var productStatus = order.products[idx].orderStatus;
+            
+            if (productStatus && productStatus !== 'cancelled') {
+                currentStatus = productStatus;
+                foundStatus = true;
+                break;
+            }
+        }
+        
+        // If all products are cancelled, use the last product's status
+        if (!foundStatus && order.products[order.products.length - 1].orderStatus) {
+            currentStatus = order.products[order.products.length - 1].orderStatus;
+        }
+    }
+
+    // Define all status options
+    var allStatuses = ['pending', 'processing', 'shipped', 'completed', 'cancelled', 'failed'];
+    var allowedStatuses = [];
+
+    // Determine which statuses to show based on current status
+    if (currentStatus === 'pending') {
+        allowedStatuses = allStatuses; // Show all
+    } else if (currentStatus === 'processing') {
+        allowedStatuses = ['processing', 'shipped', 'completed', 'cancelled', 'failed']; // All except pending
+    } else if (currentStatus === 'shipped') {
+        allowedStatuses = ['shipped', 'completed', 'cancelled']; // Only these three
+    } else if (currentStatus === 'completed' || currentStatus === 'cancelled') {
+        allowedStatuses = [currentStatus]; // Only current status
+    } else {
+        allowedStatuses = allStatuses; // Fallback
+    }
+%>
+
+            <select id="statusDropdown" class="status-dropdown" <%= (currentStatus === 'completed' || currentStatus === 'cancelled') ? 'disabled' : '' %>>
+              <% for (var i = 0; i < allowedStatuses.length; i++) { 
+                var status = allowedStatuses[i]; 
+            %>
+              <option value="<%= status %>" <%= currentStatus === status ? 'selected' : '' %>>
+                <%= status.charAt(0).toUpperCase() + status.slice(1) %>
+              </option>
+              <% } %>
+            </select>
+
+            <% if (currentStatus !== 'completed' && currentStatus !== 'cancelled') { %>
+            <button id="updateStatusBtn" class="update-status-btn">Update Status</button>
+            <% } %>
+          </div>
+        </article>
+
+        <!-- Order Header -->
+        <article class="order-header-card">
+          <div class="order-main-info">
+            <div class="order-id-section">
+              <h2 class="order-id">Order #<%= order.orderId %></h2>
+              <% 
+                                var dateOpts = { year: 'numeric', month: 'long', day: 'numeric' };
+                                var formattedOrderDate = new Date(order.invoiceDate).toLocaleDateString('en-IN', dateOpts);
+                            %>
+              <p class="order-date">Placed on <%= formattedOrderDate %></p>
+            </div>
+            <div class="order-status-section">
+              <% 
+                                // Define priority list (highest first)
+                                var priority = ['processing', 'shipped', 'completed', 'cancelled', 'failed'];
+                                var displayStatus = 'processing'; // default
+                                
+                                for (var j = 0; j < priority.length; j++) {
+                                    var statusCheck = priority[j];
+                                    var hasStatus = false;
+                                    
+                                    for (var k = 0; k < order.products.length; k++) {
+                                        if (order.products[k].orderStatus === statusCheck) {
+                                            hasStatus = true;
+                                            break;
+                                        }
+                                    }
+                                    
+                                    if (hasStatus) {
+                                        displayStatus = statusCheck;
+                                        break;
+                                    }
+                                }
+                            %>
+
+              <span id="currentStatusBadge" class="status-badge status-<%= displayStatus %>">
+                <%= displayStatus %>
+              </span>
+            </div>
+          </div>
+
+          <!-- Items Ordered -->
+          <h3 style="margin-top: 25px" class="card-title">Items Ordered</h3>
+          <div class="products-list">
+            <% order.products.forEach(function(product) { %>
+            <div class="product-item">
+              <div class="product-image">
+                <img src="<%= product.image %>" alt="<%= product.name %>" onerror="this.src='/images/default-product.jpg'" />
+              </div>
+              <div class="product-details">
+                <h4 class="product-name"><%= product.name %></h4>
+                <p class="product-meta">
+                  Price: ₹<%= product.priceAtPurchase.toLocaleString('en-IN') %> × <%= product.quantity %>
+                </p>
+                <p class="vendor-earnings">
+                  Your Earnings: ₹<%= product.vendorEarning.toLocaleString('en-IN') %> |
+                  Commission: ₹<%= product.commissionAmount.toLocaleString('en-IN') %>
+                </p>
+              </div>
+              <div class="product-total">
+                <span class="product-price">₹<%= product.productTotal.toLocaleString('en-IN') %></span>
+              </div>
+              <% if (product.orderStatus === 'failed' || product.orderStatus === 'cancelled') { %>
+              <span class="status-badge status-<%= product.orderStatus %>">
+                <%= product.orderStatus.charAt(0).toUpperCase() + product.orderStatus.slice(1) %>
+              </span>
+              <% } %>
+            </div>
+            <% }); %>
+          </div>
+        </article>
+
+        <!-- Other Details -->
+        <article class="other-details-card">
+          <h3 class="card-title">Payment & Other Details</h3>
+          <div class="other-details-grid">
+            <div class="detail-item">
+              <span class="detail-label">Payment Method</span>
+              <span class="detail-value"><%= order.paymentMethod %></span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Payment Status</span>
+              <span class="payment-status payment-<%= order.paymentStatus %>">
+                <%= order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1) %>
+              </span>
+            </div>
+            <% if (order.couponDetails && order.couponDetails.code) { %>
+            <div class="detail-item">
+              <span class="detail-label">Coupon Applied</span>
+              <span class="detail-value"><%= order.couponDetails.code %></span>
+            </div>
+            <% } %>
+          </div>
+
+          <div class="two-column-layout">
+            <!-- Shipping Address -->
+            <div class="column-card">
+              <h4 class="column-title">Shipping Address</h4>
+              <div class="address-details">
+                <p class="address-name"><%= order.shippingAddress.fullName %></p>
+                <p class="address-phone"><%= order.shippingAddress.phone %></p>
+                <p class="address-line"><%= order.shippingAddress.fullAddress %></p>
+                <p class="address-line"><%= order.shippingAddress.district %></p>
+                <p class="address-line">
+                  <%= order.shippingAddress.city %>, <%= order.shippingAddress.state %> - <%= order.shippingAddress.pincode %>
+                </p>
+              </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="column-card">
+              <h4 class="column-title">Order Summary</h4>
+              <div class="summary-list">
+                <div class="summary-item">
+                  <span class="summary-label">Total Items</span>
+                  <span class="summary-value"><%= summary.totalItems %></span>
+                </div>
+
+                <div class="summary-item">
+                  <span class="summary-label">Subtotal</span>
+                  <span class="summary-value">₹<%= summary.subtotal.toLocaleString('en-IN') %></span>
+                </div>
+
+                <% if (summary.discount && summary.discount > 0) { %>
+                <div class="summary-item">
+                  <span class="summary-label">
+                    Coupon Discount
+                    <% if (order.couponDetails && order.couponDetails.code) { %>
+                    (<%= order.couponDetails.code %>)
+                    <% } %>
+                  </span>
+                  <span class="summary-value discount">-₹<%= summary.discount.toLocaleString('en-IN') %></span>
+                </div>
+                <% } %>
+
+                <div class="summary-item">
+                  <span class="summary-label">GST (18%)</span>
+                  <span class="summary-value">₹<%= summary.gst.toLocaleString('en-IN') %></span>
+                </div>
+
+                <div class="summary-item">
+                  <span class="summary-label">Shipping</span>
+                  <span class="summary-value">Free</span>
+                </div>
+
+                <hr style="border: none; border-top: 1px solid #dee2e6; margin: 10px 0;" />
+
+                <div class="summary-item">
+                  <span class="summary-label">Final Total</span>
+                  <span class="summary-value total">₹<%= summary.finalTotal.toLocaleString('en-IN') %></span>
+                </div>
+
+                <hr style="border: none; border-top: 2px solid #28a745; margin: 15px 0;" />
+
+                <div class="summary-item">
+                  <span class="summary-label">Your Earnings</span>
+                  <span class="summary-value vendor-earnings">₹<%= summary.totalVendorEarnings.toLocaleString('en-IN') %></span>
+                </div>
+
+                <div class="summary-item">
+                  <span class="summary-label">Admin Commission</span>
+                  <span class="summary-value commission">₹<%= summary.totalCommission.toLocaleString('en-IN') %></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Order Tracking -->
+        <article class="order-tracking-card">
+          <h3 class="card-title">Order Tracking</h3>
+          <%
+                        var firstProductStatus = order.products[0].orderStatus;
+                        var isProcessingActive = firstProductStatus === 'pending' || firstProductStatus === 'processing' || firstProductStatus === 'shipped' || firstProductStatus === 'completed';
+                        var isShippedActive = firstProductStatus === 'shipped' || firstProductStatus === 'completed';
+                        var isCompletedActive = firstProductStatus === 'completed';
+                    %>
+          <div id="trackingTimeline" class="tracking-timeline">
+            <div class="timeline-step <%= isProcessingActive ? 'active' : '' %>" data-status="processing">
+              <div class="step-icon">1</div>
+              <div class="step-info">
+                <p class="step-title">Processing</p>
+                <p class="step-desc">Order confirmed</p>
+              </div>
+            </div>
+            <div class="timeline-step <%= isShippedActive ? 'active' : '' %>" data-status="shipped">
+              <div class="step-icon">2</div>
+              <div class="step-info">
+                <p class="step-title">Shipped</p>
+                <p class="step-desc">On the way</p>
+              </div>
+            </div>
+            <div class="timeline-step <%= isCompletedActive ? 'active' : '' %>" data-status="completed">
+              <div class="step-icon">3</div>
+              <div class="step-info">
+                <p class="step-title">Completed</p>
+                <p class="step-desc">Delivered</p>
+              </div>
+            </div>
+          </div>
+          <div class="action-buttons" style="margin-top: 50px;">
+            <a href="/vendor/orders/invoice/<%= order.orderId %>" class="invoice-button">Download Invoice</a>
+            <a href="/vendor/orders" class="back-button">Back to Orders</a>
+          </div>
+        </article>
+      </div>
+    </section>
+  </div>
 </div>
 
 <script>
-    // Initialize with current order status
-    let currentOrderStatus = '<%= order.products[0].orderStatus %>';
-    const orderId = '<%= order.orderId %>';
+  // Initialize with current order status
+  let currentOrderStatus = '<%= order.products[0].orderStatus %>';
+  const orderId = '<%= order.orderId %>';
 
-    // Update tracking timeline based on status
-    function updateTrackingTimeline(status) {
-        const steps = document.querySelectorAll('.timeline-step');
-        const statusOrder = ['processing', 'shipped', 'cancelled', "completed"];
+  // Update tracking timeline based on status
+  function updateTrackingTimeline(status) {
+    const steps = document.querySelectorAll('.timeline-step');
+    const statusOrder = ['pending', 'processing', 'shipped', 'completed'];
 
-        steps.forEach(step => {
-            step.classList.remove('active');
-        });
-
-        if (status === 'cancelled') {
-            steps[0].classList.add('active');
-            return;
-        }
-
-        const currentIndex = statusOrder.indexOf(status);
-        if (currentIndex !== -1) {
-            for (let i = 0; i <= currentIndex; i++) {
-                steps[i].classList.add('active');
-            }
-        }
-    }
-
-    // Update status badge
-    function updateStatusBadge(status) {
-        const badge = document.getElementById('currentStatusBadge');
-        badge.className = `status-badge status-${status}`;
-        badge.textContent = status.charAt(0).toUpperCase() + status.slice(1);
-    }
-
-    // Handle status update
-    document.getElementById('updateStatusBtn').addEventListener('click', async function () {
-        const newStatus = document.getElementById('statusDropdown').value;
-        const updateBtn = this;
-
-        if (newStatus === currentOrderStatus) {
-            Swal.fire({
-                icon: 'info',
-                title: 'No Changes',
-                text: 'The selected status is the same as current status.',
-                confirmButtonText: 'OK'
-            });
-            return;
-        }
-
-        // Confirm status change
-        const result = await Swal.fire({
-            title: 'Update Order Status?',
-            text: `Are you sure you want to change the order status to "${newStatus.toUpperCase()}"?`,
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, Update',
-            cancelButtonText: 'Cancel',
-            customClass: {
-                confirmButton: 'swal-confirm-black',
-                cancelButton: 'swal-cancel-gray'
-            }
-        });
-
-        if (!result.isConfirmed) return;
-
-        // Disable button during request
-        updateBtn.disabled = true;
-        updateBtn.textContent = 'Updating...';
-
-        try {
-            // Send PUT request to update status
-            const response = await axios.put(`/vendor/orders/${orderId}/status`, {
-                orderStatus: newStatus
-            });
-            currentOrderStatus = newStatus;
-            updateStatusBadge(newStatus);
-            updateTrackingTimeline(newStatus);
-
-            Swal.fire({
-                icon: 'success',
-                title: 'Status Updated!',
-                text: `Order status has been successfully updated to "${newStatus.toUpperCase()}".`,
-                confirmButtonText: 'OK',
-                customClass: { confirmButton: 'swal-confirm-black' }
-            });
-
-        } catch (error) {
-            console.error('Status update error:', error);
-
-            // Reset dropdown to current status 
-            document.getElementById('statusDropdown').value = currentOrderStatus;
-
-            Swal.fire({
-                icon: 'error',
-                title: 'Update Failed',
-                text: error.response?.data?.message || 'Failed to update order status. Please try again.',
-                confirmButtonText: 'OK'
-            });
-        } finally {
-            // Re-enable button
-            updateBtn.disabled = false;
-            updateBtn.textContent = 'Update Status';
-        }
+    steps.forEach(step => {
+      step.classList.remove('active');
     });
 
-    // Initialize timeline on page load
-    updateTrackingTimeline(currentOrderStatus);
+    if (status === 'cancelled') {
+      // Don't show any active steps for cancelled orders
+      return;
+    }
+
+    const currentIndex = statusOrder.indexOf(status);
+    if (currentIndex !== -1) {
+      for (let i = 0; i <= currentIndex; i++) {
+        if (i < steps.length) {
+          steps[i].classList.add('active');
+        }
+      }
+    }
+  }
+
+  // Update status badge
+  function updateStatusBadge(status) {
+    const badge = document.getElementById('currentStatusBadge');
+    badge.className = `status-badge status-${status}`;
+    badge.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+  }
+
+  // Handle status update
+  const updateBtn = document.getElementById('updateStatusBtn');
+  if (updateBtn) {
+    updateBtn.addEventListener('click', async function() {
+      const newStatus = document.getElementById('statusDropdown').value;
+
+      if (newStatus === currentOrderStatus) {
+        Swal.fire({
+          icon: 'info',
+          title: 'No Changes',
+          text: 'The selected status is the same as current status.',
+          confirmButtonText: 'OK'
+        });
+        return;
+      }
+
+      // Confirm status change
+      const result = await Swal.fire({
+        title: 'Update Order Status?',
+        text: `Are you sure you want to change the order status to "${newStatus.toUpperCase()}"?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, Update',
+        cancelButtonText: 'Cancel',
+        customClass: {
+          confirmButton: 'swal-confirm-black',
+          cancelButton: 'swal-cancel-gray'
+        }
+      });
+
+      if (!result.isConfirmed) return;
+
+      // Disable button during request
+      updateBtn.disabled = true;
+      updateBtn.textContent = 'Updating...';
+
+      try {
+        // Send PUT request to update status
+        const response = await axios.put(`/vendor/orders/${orderId}/status`, {
+          orderStatus: newStatus
+        });
+        currentOrderStatus = newStatus;
+        updateStatusBadge(newStatus);
+        updateTrackingTimeline(newStatus);
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Status Updated!',
+          text: `Order status has been successfully updated to "${newStatus.toUpperCase()}".`,
+          confirmButtonText: 'OK',
+          customClass: {
+            confirmButton: 'swal-confirm-black'
+          }
+        });
+        // refrsh the page after 1 second
+        setTimeout(() => {
+          location.reload();
+        }, 1000);
+
+      } catch (error) {
+        console.error('Status update error:', error);
+
+        // Reset dropdown to current status 
+        document.getElementById('statusDropdown').value = currentOrderStatus;
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Update Failed',
+          text: error.response?.data?.message || 'Failed to update order status. Please try again.',
+          confirmButtonText: 'OK'
+        });
+      } finally {
+        // Re-enable button
+        updateBtn.disabled = false;
+        updateBtn.textContent = 'Update Status';
+      }
+    });
+  }
+
+  // Initialize timeline on page load
+  updateTrackingTimeline(currentOrderStatus);
 </script>
