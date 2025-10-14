@@ -32,7 +32,6 @@ const userSchema = new Schema(
     isDeleted: { type: Boolean, default: false },
     isBlocked: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },
-    isReferred: { type: Boolean, default: false },
     referralCode: { type: String, unique: true, sparse: true, required: true },
     referredUsers: [{ type: Schema.Types.ObjectId, ref: "User" }],
     googleId: { type: String, unique: true, sparse: true },
