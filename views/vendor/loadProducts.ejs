@@ -78,6 +78,18 @@
         flex-wrap: wrap;
     }
 
+    .search-controls {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .filter-controls {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
     .control-group {
         display: flex;
         align-items: center;
@@ -88,6 +100,7 @@
         font-size: 14px;
         color: #495057;
         font-weight: 500;
+        white-space: nowrap;
     }
 
     .products-controls select {
@@ -104,6 +117,35 @@
     .products-controls select:hover {
         border-color: #adb5bd;
         background: #f8f9fa;
+    }
+
+    .search-box {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 15px;
+        background: #f8f9fa;
+        border: 1px solid #d4d5d6;
+        border-radius: 8px;
+        min-width: 250px;
+    }
+
+    .search-box i {
+        color: #6c757d;
+        font-size: 14px;
+    }
+
+    .search-box input {
+        border: none;
+        background: transparent;
+        font-size: 13px;
+        color: #212529;
+        width: 100%;
+        outline: none;
+    }
+
+    .search-box input::placeholder {
+        color: #adb5bd;
     }
 
     .add-product-btn {
@@ -624,9 +666,19 @@
             gap: 12px;
         }
 
+        .search-controls,
+        .filter-controls {
+            width: 100%;
+            justify-content: center;
+        }
+
         .add-product-btn {
             width: 100%;
             justify-content: center;
+        }
+
+        .search-box {
+            min-width: 100%;
         }
     }
 
@@ -670,6 +722,17 @@
             height: 32px;
             font-size: 13px;
         }
+
+        .search-controls,
+        .filter-controls {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .control-group {
+            width: 100%;
+            justify-content: center;
+        }
     }
 </style>
 
@@ -688,46 +751,52 @@
 
         <section class="products-section">
             <div class="products-controls">
-                <div style="display: flex; gap: 15px; align-items: center;">
-                    <!-- Sort Dropdown -->
+                <!-- LEFT: Search Controls -->
+                <div class="search-controls">
                     <div class="control-group">
-                        <label for="sort" class="control-label">Sort by:</label>
-                        <select id="sort" onchange="applyFilters()">
-                            <option value="newest" <%=typeof sort !=='undefined' && sort==='newest' ? 'selected' : '' %>
-                                >Newest</option>
-                            <option value="oldest" <%=typeof sort !=='undefined' && sort==='oldest' ? 'selected' : '' %>
-                                >Oldest</option>
-                            <option value="name" <%=typeof sort !=='undefined' && sort==='name' ? 'selected' : '' %>
-                                >Name</option>
-                            <option value="price" <%=typeof sort !=='undefined' && sort==='price' ? 'selected' : '' %>
-                                >Price</option>
-                        </select>
-                    </div>
-
-                    
-
-                    <!-- Status Filter -->
-                    <div class="control-group">
-                        <label for="status" class="control-label">Status:</label>
-                        <select id="status" onchange="applyFilters()">
-                            <option value="">All</option>
-                            <option value="approved" <%=typeof status !=='undefined' && status==='approved' ? 'selected'
-                                : '' %>>Approved</option>
-                            <option value="pending" <%=typeof status !=='undefined' && status==='pending' ? 'selected'
-                                : '' %>>Pending</option>
-                            <option value="rejected" <%=typeof status !=='undefined' && status==='rejected' ? 'selected'
-                                : '' %>>Rejected</option>
-                        </select>
+                        <label for="search" class="control-label">Search:</label>
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="search" placeholder="Search by Product ID or Name..." 
+                                value="<%= search || '' %>" onkeyup="debounceSearch()">
+                        </div>
                     </div>
                 </div>
 
-                <a href="/vendor/products/add-product" class="add-product-btn">
-                    <i class="fas fa-plus"></i>
-                    Add Product
-                </a>
+                <!-- RIGHT: Filter Controls + Add Button -->
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div class="filter-controls">
+                        <!-- Sort Dropdown -->
+                        <div class="control-group">
+                            <label for="sort" class="control-label">Sort by:</label>
+                            <select id="sort" onchange="applyFilters()">
+                                <option value="newest" <%=sort==='newest' ? 'selected' : '' %>>Newest</option>
+                                <option value="oldest" <%=sort==='oldest' ? 'selected' : '' %>>Oldest</option>
+                                <option value="name" <%=sort==='name' ? 'selected' : '' %>>Name</option>
+                                <option value="price" <%=sort==='price' ? 'selected' : '' %>>Price</option>
+                            </select>
+                        </div>
+
+                        <!-- Status Filter -->
+                        <div class="control-group">
+                            <label for="status" class="control-label">Status:</label>
+                            <select id="status" onchange="applyFilters()">
+                                <option value="">All</option>
+                                <option value="approved" <%=status==='approved' ? 'selected' : '' %>>Approved</option>
+                                <option value="pending" <%=status==='pending' ? 'selected' : '' %>>Pending</option>
+                                <option value="rejected" <%=status==='rejected' ? 'selected' : '' %>>Rejected</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <a href="/vendor/products/add-product" class="add-product-btn">
+                        <i class="fas fa-plus"></i>
+                        Add Product
+                    </a>
+                </div>
             </div>
 
-            <% if (products && products.length> 0) { %>
+            <% if (products && products.length > 0) { %>
                 <!-- Desktop Table View -->
                 <div class="table-container">
                     <table class="products-table">
@@ -909,58 +978,64 @@
                         </div>
                         <% }); %>
                 </div>
-                <% } else { %>
-                    <div class="empty-products">
-                        <div class="empty-products-icon">📦</div>
-                        <h3 class="empty-title">No Products Yet</h3>
-                        <p class="empty-message">Start building your inventory by adding your first product.</p>
-                        <a href="/vendor/products/add-product" class="add-product-btn">
-                            <i class="fas fa-plus"></i>
-                            Add Your First Product
-                        </a>
-                    </div>
-                    <% } %>
 
-                        <!-- Pagination -->
-                        <% if (products && products.length> 0) { %>
-                            <div class="pagination">
-                                <div class="pagination-info">
-                                    Showing 1-<%= products.length %> of <%= typeof totalProducts !=='undefined' ?
-                                            totalProducts : products.length %> products
-                                </div>
-                                <div class="pagination-controls">
-                                    <button class="pagination-btn" <%=typeof currentPage !=='undefined' &&
-                                        currentPage==1 ? 'disabled aria-disabled="true"' : '' %>
-                                        onclick="changePage(<%= typeof currentPage !=='undefined' ? currentPage - 1 : 1
-                                            %>)"
-                                            aria-label="Previous page">
-                                            <i class="fas fa-chevron-left" aria-hidden="true"></i>
-                                    </button>
-                                    <% const current=typeof currentPage !=='undefined' ? currentPage : 1; const
-                                        total=typeof totalPages !=='undefined' ? totalPages : 1; for (let i=1; i
-                                        <=total; i++) { %>
-                                        <button class="pagination-btn <%= i === current ? 'active' : '' %>"
-                                            aria-current="<%= i === current ? 'page' : 'false' %>"
-                                            onclick="changePage(<%= i %>)" aria-label="Page <%= i %>">
-                                            <%= i %>
-                                        </button>
-                                        <% } %>
-                                            <button class="pagination-btn" <%=typeof currentPage !=='undefined' &&
-                                                typeof totalPages !=='undefined' && currentPage==totalPages
-                                                ? 'disabled aria-disabled="true"' : '' %>
-                                                onclick="changePage(<%= typeof currentPage !=='undefined' ? currentPage
-                                                    + 1 : 2 %>)"
-                                                    aria-label="Next page">
-                                                    <i class="fas fa-chevron-right" aria-hidden="true"></i>
-                                            </button>
-                                </div>
-                            </div>
-                            <% } %>
+                <!-- Pagination -->
+                <div class="pagination">
+                    <div class="pagination-info">
+                        Showing <%= ((currentPage - 1) * limit) + 1 %>-<%= Math.min(currentPage * limit, totalProducts) %> of <%= totalProducts %> products
+                    </div>
+                    <div class="pagination-controls">
+                        <button class="pagination-btn" <%=currentPage===1 ? 'disabled' : '' %> onclick="changePage(<%= currentPage - 1 %>)" aria-label="Previous page">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+
+                        <% for (let i=1; i <=totalPages; i++) { %>
+                        <button class="pagination-btn <%= i === currentPage ? 'active' : '' %>" onclick="changePage(<%= i %>)" aria-label="Page <%= i %>">
+                            <%= i %>
+                        </button>
+                        <% } %>
+
+                        <button class="pagination-btn" <%=currentPage===totalPages ? 'disabled' : '' %> onclick="changePage(<%= currentPage + 1 %>)" aria-label="Next page">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            <% } else { %>
+                <div class="empty-products">
+                    <div class="empty-products-icon">📦</div>
+                    <h3 class="empty-title">No Products Yet</h3>
+                    <p class="empty-message">Start building your inventory by adding your first product.</p>
+                    <a href="/vendor/products/add-product" class="add-product-btn">
+                        <i class="fas fa-plus"></i>
+                        Add Your First Product
+                    </a>
+                </div>
+            <% } %>
         </section>
     </div>
 </div>
 
 <script>
+    let searchTimeout;
+
+    // Debounced search
+    function debounceSearch() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(handleSearch, 1000);
+    }
+
+    function handleSearch() {
+        const searchValue = document.getElementById('search').value;
+        const url = new URL(window.location);
+        if (searchValue) {
+            url.searchParams.set('search', searchValue);
+        } else {
+            url.searchParams.delete('search');
+        }
+        url.searchParams.set('page', 1);
+        window.location.href = url.href;
+    }
+
     // Add event listeners to toggle switches after page load
     document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('.toggle-switch').forEach(toggle => {
@@ -1051,17 +1126,17 @@
 
     // Change page function
     function changePage(page) {
-        const url = new URL(window.location);
+        const url = new URL(window.location.href);
         url.searchParams.set('page', page);
 
-        // Preserve existing filters
+        // Preserve all filters
         const sort = document.getElementById('sort')?.value;
-        const category = document.getElementById('category')?.value;
         const status = document.getElementById('status')?.value;
+        const search = document.getElementById('search')?.value;
 
         if (sort) url.searchParams.set('sort', sort);
-        if (category) url.searchParams.set('category', category);
         if (status) url.searchParams.set('status', status);
+        if (search) url.searchParams.set('search', search);
 
         window.location.href = url.toString();
     }
@@ -1069,26 +1144,23 @@
     // Apply filters function
     function applyFilters() {
         const sort = document.getElementById('sort').value;
-        const category = document.getElementById('category').value;
         const status = document.getElementById('status').value;
+        const search = document.getElementById('search').value;
         const url = new URL(window.location.href);
 
-        // Reset to first page when applying filters
         url.searchParams.set('page', 1);
-
-        // Set filter parameters
         url.searchParams.set('sort', sort);
-
-        if (category) {
-            url.searchParams.set('category', category);
-        } else {
-            url.searchParams.delete('category');
-        }
 
         if (status) {
             url.searchParams.set('status', status);
         } else {
             url.searchParams.delete('status');
+        }
+
+        if (search) {
+            url.searchParams.set('search', search);
+        } else {
+            url.searchParams.delete('search');
         }
 
         window.location.href = url.toString();

@@ -49,10 +49,10 @@ const productSchema = Joi.object({
   }),
 
   offer: Joi.number().integer().min(1).max(100).required().messages({
-      "number.base": "offer must be a valid number.",
-      "number.min": "offer must be at least 1%.",
-      "number.max": "offer cannot exceed 100%.",
-    }),
+    "number.base": "offer must be a valid number.",
+    "number.min": "offer must be at least 1%.",
+    "number.max": "offer cannot exceed 100%.",
+  }),
 
   isListed: Joi.boolean().required().messages({
     "any.required": "Listing status is required",

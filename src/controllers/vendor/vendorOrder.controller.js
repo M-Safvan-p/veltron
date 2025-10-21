@@ -11,16 +11,22 @@ const loadOrders = async (req, res) => {
     let page = parseInt(req.query.page) || 1;
     let limit = 5;
     let skip = (page - 1) * limit;
-    // sort
+
     const sortOption = req.query.sort === "oldest" ? 1 : -1;
-    // filter
+
     let matchStage = { "products.vendorId": vendorId };
+
     if (req.query.status) {
       matchStage["products.orderStatus"] = req.query.status;
     }
-    // total orders
+
+    if (req.query.search) {
+      const searchTerm = req.query.search;
+      matchStage.orderId = { $regex: searchTerm, $options: "i" };
+    }
+
     const totalOrders = await Order.countDocuments(matchStage);
-    // find
+
     const orders = await Order.find(matchStage).sort({ createdAt: sortOption }).skip(skip).limit(limit).populate("products.productId").lean();
 
     res.render("vendor/orders", {
@@ -33,6 +39,7 @@ const loadOrders = async (req, res) => {
       activePage: "orders",
       sort: req.query.sort || "newest",
       status: req.query.status || "",
+      search: req.query.search || "",
     });
   } catch (err) {
     console.error("Error loading orders:", err);
@@ -125,7 +132,7 @@ const handleStatus = async (req, res) => {
     } else if (statuses.every((s) => s === "failed")) {
       fullOrder.orderStatus = "failed";
     } else if (statuses.every((s) => s === "returned")) {
-      fullOrder.orderStatus = "cancelled";
+      fullOrder.orderStatus = "returned";
     } else {
       const activeStatuses = statuses.filter((s) => !["cancelled", "failed", "returned"].includes(s));
 
@@ -157,7 +164,7 @@ const handleStatus = async (req, res) => {
         }
       }
     }
-    if ((orderStatus === "cancelled" || orderStatus === "failed") && orderData.paymentMethod !== "COD" && orderData.paymentStatus === "completed") {
+    if ((orderStatus === "cancelled" || orderStatus === "failed") && orderData.paymentMethod !== "COD" && orderData.paymentStatus === "paid") {
       let refundAmount = 0;
       orderData.products.forEach((product) => {
         if (product.vendorId.toString() === vendorId && (product.orderStatus === "cancelled" || product.orderStatus === "failed")) {
@@ -171,7 +178,7 @@ const handleStatus = async (req, res) => {
         userWallet.transactionHistory.push({
           type: "credit",
           amount: refundAmount,
-          description: `Refund for cancelled products from vendor`,
+          message: `Refund for cancelled products from vendor`,
           date: new Date(),
         });
         await userWallet.save();
@@ -183,7 +190,7 @@ const handleStatus = async (req, res) => {
             {
               type: "credit",
               amount: refundAmount,
-              description: `Refund for cancelled products from vendor`,
+              message: `Refund for cancelled products from vendor`,
               date: new Date(),
             },
           ],

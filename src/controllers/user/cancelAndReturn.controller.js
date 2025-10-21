@@ -75,7 +75,7 @@ const cancelOrder = async (req, res) => {
       if (productIndex === -1) continue;
 
       const orderProduct = order.products[productIndex];
-      if(orderProduct.orderStatus === "cancelled") continue;
+      if (orderProduct.orderStatus === "cancelled") continue;
       order.products[productIndex].orderStatus = "cancelled";
       cancelledItems.push(orderProduct);
 
@@ -92,8 +92,8 @@ const cancelOrder = async (req, res) => {
       reduceTax += item.tax || 0;
     }
 
-    // Refund amount to wallet 
-    if (order.paymentMethod !== "COD" && order.paymentStatus === "completed") {
+    // Refund amount to wallet
+    if (order.paymentMethod !== "COD" && order.paymentStatus === "paid") {
       let refundAmount = 0;
       for (let i = 0; i < cancelledItems.length; i++) {
         refundAmount += cancelledItems[i].productTotal;
@@ -111,18 +111,17 @@ const cancelOrder = async (req, res) => {
       }
     }
 
-    // recalculate order summary
-    order.totalAmount -= reduceTotalAmount;
-    if (order.subTotal !== undefined) order.subTotal -= reduceSubTotal;
-    if (order.discount !== undefined) order.discount -= reduceDiscount;
-    if (order.tax !== undefined) order.tax -= reduceTax;
-
     // if all prodcut cancel
     const allItemsCancelled = order.products.every((p) => p.orderStatus === "cancelled");
     if (allItemsCancelled) {
       order.orderStatus = "cancelled";
+    } else {
+      // recalculate order summary
+      order.totalAmount -= reduceTotalAmount;
+      order.subTotal -= reduceSubTotal;
+      order.tax -= reduceTax;
+      if (order.discount !== undefined) order.discount -= reduceDiscount;
     }
-    
 
     await order.save();
 

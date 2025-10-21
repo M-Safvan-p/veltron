@@ -10,10 +10,11 @@ const { noCache } = require("../middleware/noCache");
 const validate = require("../middleware/validate");
 
 const authController = require("../controllers/vendor/vendorAuth.controller");
-const pageController = require("../controllers/vendor/vendorPage.controller");
 const productController = require("../controllers/vendor/vendorProduct.controller");
 const orderController = require("../controllers/vendor/vendorOrder.controller");
 const returnController = require("../controllers/vendor/vendorReturn.controller");
+const saleController = require("../controllers/vendor/vendorSale.controller");
+const dashboardController = require("../controllers/vendor/vendorDashboard.controller");
 
 // Middleware to set vendor layout
 router.use((req, res, next) => {
@@ -31,7 +32,7 @@ router.get("/", vendorAuth.isLogin, authController.loadLogin);
 router.post("/", authController.login);
 router.post("/logout", authController.logout);
 
-router.get("/dashboard", vendorAuth.checkSession, pageController.loadDashboard);
+router.get("/dashboard", vendorAuth.checkSession, dashboardController.getVendorDashboard);
 
 //productss
 router.get("/products", vendorAuth.checkSession, productController.loadProducts);
@@ -49,6 +50,11 @@ router.put("/orders/:id/status", vendorAuth.checkSession, orderController.handle
 // returns
 router.get("/returns", vendorAuth.checkSession, returnController.loadReturns);
 router.put("/returns/:id/status", vendorAuth.checkSession, returnController.updateReturnStatus);
+
+//sales report
+router.get("/sales", vendorAuth.checkSession, saleController.loadSaleReport);
+router.get("/sales/export/pdf", vendorAuth.checkSession, saleController.exportPDF);
+router.get("/sales/export/excel", vendorAuth.checkSession, saleController.exportExcel);
 
 // Add this after your routes
 router.use((error, req, res, next) => {

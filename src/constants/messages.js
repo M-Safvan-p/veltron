@@ -13,6 +13,7 @@ const Messages = {
   OTP_RESENT_SUCCESS: "A new OTP has been sent to your email.",
   OTP_RESEND_FAILED: "Could not resend OTP. Please try again later.",
   GOOGLE_AUTH_USER: "This account was created using Google. Please continue with Google login.",
+  REFERRAL_CODE_INVALID: "Invalid referral code. Please check and try again.",
 
   // Login
   LOGIN_SUCCESS: "Login successful",

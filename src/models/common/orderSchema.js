@@ -102,12 +102,12 @@ const orderSchema = new mongoose.Schema(
         priceAtPurchase: { type: Number, required: true },
         productTotal: { type: Number, required: true },
         subTotal: { type: Number, required: true },
-        tax: { type: Number, required: true},
+        tax: { type: Number, required: true },
         discount: { type: Number },
         commissionAmount: { type: Number, required: true },
         vendorEarning: { type: Number, required: true },
         variantId: { type: String, required: true },
-        //return 
+        //return
         returnRequested: { type: Boolean, default: false },
         returnStatus: {
           type: String,

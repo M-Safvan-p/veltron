@@ -2,6 +2,52 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
+<style>
+  /* Image Zoom Styles */
+  .product-image-wrapper {
+    position: relative;
+    cursor: crosshair;
+  }
+
+  #zoomLens {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 2px solid #fff;
+    pointer-events: none;
+    display: none;
+    z-index: 10;
+  }
+
+  #zoomResult {
+    position: absolute;
+    top: 0;
+    right: -659px;
+    width: 630px;
+    height: 600px;
+    border: 1px solid #ccc;
+    background-repeat: no-repeat;
+    display: none;
+    z-index: 20;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border-radius: 8px;
+  }
+
+  /* Mobile responsive - hide zoom on small screens */
+  @media (max-width: 991px) {
+    #zoomResult {
+      display: none !important;
+    }
+    #zoomLens {
+      display: none !important;
+    }
+    .product-image-wrapper {
+      cursor: default;
+    }
+  }
+</style>
+
 <div class="container product-detail-container">
   <div class="row g-4">
     <!-- Product Images Section -->
@@ -20,9 +66,9 @@
                id="mainProductImage">
         <% } %>
         <!-- Zoom Lens -->
-        <div class="zoom-lens" id="zoomLens"></div>
+        <div id="zoomLens"></div>
         <!-- Zoomed Image Display -->
-        <div class="zoom-result" id="zoomResult"></div>
+        <div id="zoomResult"></div>
       </div>
 
       <!-- Thumbnail Gallery -->
@@ -371,9 +417,57 @@
 
 
 <script>
+// ==================== IMAGE ZOOM FUNCTIONALITY ====================
+function initializeImageZoom() {
+  const mainImg = document.getElementById('mainProductImage');
+  const lens = document.getElementById('zoomLens');
+  const zoomResult = document.getElementById('zoomResult');
+
+  if (!mainImg || !lens || !zoomResult) return;
+
+  // Show zoom elements on hover
+  mainImg.addEventListener('mouseenter', function() {
+    lens.style.display = 'block';
+    zoomResult.style.display = 'block';
+  });
+
+  // Hide zoom elements when mouse leaves
+  mainImg.addEventListener('mouseleave', function() {
+    lens.style.display = 'none';
+    zoomResult.style.display = 'none';
+  });
+
+  // Handle mouse movement for zoom effect
+  mainImg.addEventListener('mousemove', function(e) {
+    const rect = mainImg.getBoundingClientRect();
+    let x = e.clientX - rect.left;
+    let y = e.clientY - rect.top;
+
+    // Keep lens within image bounds
+    x = Math.max(lens.offsetWidth / 2, Math.min(x, rect.width - lens.offsetWidth / 2));
+    y = Math.max(lens.offsetHeight / 2, Math.min(y, rect.height - lens.offsetHeight / 2));
+
+    // Position the lens
+    lens.style.left = (x - lens.offsetWidth / 2) + 'px';
+    lens.style.top = (y - lens.offsetHeight / 2) + 'px';
+
+    // Calculate zoom (3x magnification)
+    const zoomLevel = 3;
+    zoomResult.style.backgroundImage = `url('${mainImg.src}')`;
+    zoomResult.style.backgroundSize = `${mainImg.width * zoomLevel}px ${mainImg.height * zoomLevel}px`;
+    zoomResult.style.backgroundPosition = 
+      `-${x * zoomLevel - zoomResult.offsetWidth / 2}px -${y * zoomLevel - zoomResult.offsetHeight / 2}px`;
+  });
+}
+
+// ==================== EXISTING FUNCTIONS (PRESERVED) ====================
 function changeMainImage(imageUrl, element) {
   const mainImage = document.getElementById('mainProductImage');
-  if (mainImage) mainImage.src = imageUrl;
+  if (mainImage) {
+    mainImage.src = imageUrl;
+    // Reinitialize zoom for new image
+    initializeImageZoom();
+  }
   document.querySelectorAll('.thumbnail-image').forEach(img => img.classList.remove('active'));
   element.classList.add('active');
 }
@@ -561,12 +655,19 @@ var toastMixin = Swal.mixin({
   }
 });
 
+// ==================== INITIALIZATION ====================
 document.addEventListener('DOMContentLoaded', function () {
   try {
+    // Initialize image zoom feature
+    initializeImageZoom();
+
+    // Initialize first variant
     const firstVariantOption = document.querySelector('.variant-option');
     if (firstVariantOption) {
       selectVariant(firstVariantOption, 0, firstVariantOption.textContent.trim());
     }
+
+    // Initialize wishlist button
     const wishlistBtn = document.getElementById('wishlistBtn');
     if (wishlistBtn) {
       wishlistBtn.addEventListener('click', addToWishlist);

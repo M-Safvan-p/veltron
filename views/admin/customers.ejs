@@ -1,170 +1,701 @@
-<link rel="stylesheet" href="../../styles/admin/customers.css">
-<!-- Main Content -->
-<div class="page-header">
-    <h1 class="page-title">CUSTOMER LIST</h1>
+<style>
+    .admin-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 18px;
+    }
+
+    .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 25px;
+        font-size: 14px;
+        color: #6c757d;
+    }
+
+    .breadcrumb a {
+        color: #6c757d;
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+
+    .breadcrumb a:hover {
+        color: #212529;
+    }
+
+    .breadcrumb-separator {
+        color: #adb5bd;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .page-header h1 {
+        font-size: 24px;
+        color: #212529;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .page-header p {
+        font-size: 14px;
+        color: #6c757d;
+        margin: 0;
+    }
+
+    .controls-section {
+        margin-bottom: 20px;
+    }
+
+    .controls-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #495057;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 15px;
+    }
+
+    .controls-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .search-box {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 15px;
+        background: #f8f9fa;
+        border: 1px solid #d4d5d6;
+        border-radius: 8px;
+        flex: 0 1 300px;
+    }
+
+    .search-box i {
+        color: #6c757d;
+        font-size: 14px;
+    }
+
+    .search-box input {
+        border: none;
+        background: transparent;
+        font-size: 13px;
+        color: #212529;
+        width: 100%;
+        outline: none;
+    }
+
+    .search-box input::placeholder {
+        color: #adb5bd;
+    }
+
+    .filter-controls {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .filter-select {
+        padding: 8px 12px;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 13px;
+        color: #212529;
+        background: white;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .filter-select:hover {
+        border-color: #adb5bd;
+        background: #f8f9fa;
+    }
+
+    .table-container {
+        background: white;
+        border-radius: 14px;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e9ecef;
+        overflow: hidden;
+        overflow-x: auto;
+    }
+
+    .customers-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+
+    .customers-table thead {
+        background: #f8f9fa;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .customers-table th {
+        padding: 18px 16px;
+        text-align: left;
+        font-weight: 600;
+        color: #495057;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+    }
+
+    .customers-table td {
+        padding: 16px;
+        border-bottom: 1px solid #f1f3f4;
+        vertical-align: middle;
+    }
+
+    .table-row {
+        transition: all 0.2s ease;
+    }
+
+    .table-row:hover {
+        background: #f8f9fa;
+    }
+
+    .table-row:last-child td {
+        border-bottom: none;
+    }
+
+    .customer-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .customer-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6a6f86 0%, #555158 100%);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 16px;
+        flex-shrink: 0;
+    }
+
+    .customer-details {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .customer-name {
+        font-weight: 500;
+        color: #212529;
+        font-size: 14px;
+    }
+
+    .customer-email {
+        font-size: 13px;
+        color: #495057;
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .customer-phone {
+        font-size: 13px;
+        color: #495057;
+        font-weight: 500;
+    }
+
+    .orders-count {
+        font-weight: 600;
+        color: #212529;
+        font-size: 14px;
+    }
+
+    .wallet-balance {
+        font-weight: 600;
+        color: #212529;
+        font-size: 14px;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 16px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+    }
+
+    .status-active {
+        background: #e6f4ea;
+        color: #1e4620;
+        border: 1px solid #bcd8c1;
+    }
+
+    .status-blocked {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+
+    .toggle-switch {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 50px;
+        height: 26px;
+        background: #e9ecef;
+        border-radius: 13px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        border: 1px solid #dee2e6;
+    }
+
+    .toggle-switch.active {
+        background: #1e4620;
+        border-color: #1e4620;
+    }
+
+    .toggle-switch.blocked {
+        background: #dc3545;
+        border-color: #dc3545;
+    }
+
+    .toggle-switch:hover {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transform: translateY(-1px);
+    }
+
+    .toggle-switch .slider {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        background: white;
+        border-radius: 50%;
+        position: absolute;
+        left: 3px;
+        top: 3px;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .toggle-switch.active .slider {
+        left: 27px;
+    }
+
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        background: #212529;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 14px;
+    }
+
+    .action-btn:hover {
+        background: #495057;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .action-btn i {
+        font-size: 14px;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        border-top: 1px solid #e9ecef;
+    }
+
+    .pagination-info {
+        font-size: 13px;
+        color: #6c757d;
+        font-weight: 500;
+    }
+
+    .pagination-controls {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .pagination-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border: 1px solid #e9ecef;
+        background: white;
+        border-radius: 8px;
+        font-size: 14px;
+        color: #212529;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .pagination-btn:hover:not(:disabled) {
+        background: #f8f9fa;
+        border-color: #ced4da;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .pagination-btn.active {
+        background: #212529;
+        color: white;
+        border-color: #212529;
+        font-weight: 600;
+    }
+
+    .pagination-btn:disabled {
+        background: #f1f3f4;
+        color: #adb5bd;
+        cursor: not-allowed;
+        border-color: #e9ecef;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+    }
+
+    .empty-icon {
+        font-size: 64px;
+        margin-bottom: 20px;
+    }
+
+    .empty-title {
+        font-size: 20px;
+        color: #212529;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .empty-message {
+        font-size: 14px;
+        color: #6c757d;
+        margin: 0;
+    }
+
+    @media (max-width: 1024px) {
+        .customers-table {
+            min-width: 900px;
+        }
+
+        .controls-content {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .search-box {
+            flex: 1;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .admin-container {
+            padding: 12px;
+        }
+
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .customers-table {
+            min-width: 800px;
+        }
+
+        .customer-email {
+            max-width: 120px;
+        }
+
+        .pagination {
+            flex-direction: column;
+            gap: 12px;
+        }
+    }
+</style>
+
+<div class="admin-container">
     <div class="breadcrumb">
         <a href="/admin/dashboard">Dashboard</a>
         <span class="breadcrumb-separator">></span>
         <a href="/admin/customers">Customers</a>
     </div>
-</div>
 
-<!-- Controls -->
-<!-- <div class="controls">
-    <div class="search-box">
-        <i class="fas fa-search"></i>
-        <input type="text" placeholder="Search customer...">
+    <div class="page-header">
+        <h1>Customers Management</h1>
+        <p>Manage and monitor all customers in your marketplace</p>
     </div>
-    <button class="filters-btn">
-        <i class="fas fa-filter"></i>
-        Filters
-    </button>
-</div> -->
 
-<!-- Customers Table -->
-<div class="customers-table">
-    <table>
-        <thead class="table-header">
-            <tr>
-                <th>Customer Name</th>
-                <th>Phone</th>
-                <th>Orders</th>
-                <th>Balance</th>
-                <th>Status</th>
-                <th>BLOCK/UNBLOCK</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% customers.forEach((customer, index)=> { %>
-                <tr class="table-row">
-                    <td>
-                        <div class="customer-info">
-                            <div class="customer-avatar">
-                                <%= customer.fullName[0].toUpperCase() || 'U' %>
-                            </div>
-                            <div class="customer-details">
-                                <div class="customer-name">
-                                    <%= customer.fullName %>
-                                </div>
-                                <div class="customer-email">
-                                    <%= customer.email %>
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <%= customer.phoneNumber %>
-                    </td>
-                    <td>
-                        <%= customer?.orders || 0 %>
-                    </td>
-                    <td>
-                        ₹<%= customer.wallet ? customer.wallet.balance.toFixed(2) : '0.00' %>
-                    </td>
-                    <td>
-                        <span class="status-badge <%= customer.isBlocked ? 'status-blocked' : 'status-active' %>">
-                            <%= customer.isBlocked ? "Blocked" : "Active" %>
-                        </span>
-                    </td>
-                    <td>
-                        <div class="toggle-switch <%= customer.isBlocked ? 'active' : 'blocked' %>"
-                            data-customer-id="<%= customer._id %>">
-                            <div class="slider"></div>
-                        </div>
-                    </td>
-                    <td>
-                        <button class="action-btn" onclick="viewCustomer('<%= customer.id %>')">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </td>
+    <!-- Filter and Search Controls -->
+    <div class="controls-section">
+        <div class="controls-title">
+            <i class="fas fa-filter"></i> Search & Filter
+        </div>
+        <div class="controls-content">
+            <!-- Search Box -->
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="customer-search" placeholder="Search customer name..."
+                    value="<%= query.search || '' %>" onkeyup="debounceSearch()">
+            </div>
+
+            <!-- Filters -->
+            <div class="filter-controls">
+                <!-- Status Filter -->
+                <select class="filter-select" name="status" onchange="applyFilters()">
+                    <option value="" <%=!query.status ? 'selected' : '' %>>All Status</option>
+                    <option value="active" <%=query.status==='active' ? 'selected' : '' %>>Active</option>
+                    <option value="blocked" <%=query.status==='blocked' ? 'selected' : '' %>>Blocked</option>
+                </select>
+
+                <!-- Sort Filter -->
+                <select class="filter-select" name="sort" onchange="applyFilters()">
+                    <option value="" <%=!query.sort ? 'selected' : '' %>>Sort By</option>
+                    <option value="name-asc" <%=query.sort==='name-asc' ? 'selected' : '' %>>Name: A to Z</option>
+                    <option value="name-desc" <%=query.sort==='name-desc' ? 'selected' : '' %>>Name: Z to A</option>
+                    <option value="orders-high" <%=query.sort==='orders-high' ? 'selected' : '' %>>Orders: High to Low
+                    </option>
+                    <option value="orders-low" <%=query.sort==='orders-low' ? 'selected' : '' %>>Orders: Low to High
+                    </option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customers Table -->
+    <div class="table-container">
+        <table class="customers-table">
+            <thead>
+                <tr>
+                    <th>Customer Name</th>
+                    <th>Phone</th>
+                    <th>Orders</th>
+                    <th>Balance</th>
+                    <th>Status</th>
+                    <th>Block/Unblock</th>
+                    <th>Action</th>
                 </tr>
-                <% }) %>
-        </tbody>
-    </table>
-</div>
-
-<!-- Pagination -->
-<div class="pagination">
-    <div class="pagination-info">
-        Showing 1-<%= customers.length %> from <%= totalCustomers %>
+            </thead>
+            <tbody>
+                <% if (customers && customers.length> 0) { %>
+                    <% customers.forEach(customer=> { %>
+                        <tr class="table-row">
+                            <td>
+                                <div class="customer-info">
+                                    <div class="customer-avatar">
+                                        <%= customer.fullName[0].toUpperCase() || 'U' %>
+                                    </div>
+                                    <div class="customer-details">
+                                        <div class="customer-name">
+                                            <%= customer.fullName %>
+                                        </div>
+                                        <div class="customer-email" title="<%= customer.email %>">
+                                            <%= customer.email %>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="customer-phone">
+                                    <%= customer.phoneNumber %>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="orders-count">
+                                    <%= customer.orderCount || 0 %>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="wallet-balance">
+                                    ₹<%= customer.wallet && customer.wallet.balance ? customer.wallet.balance.toFixed(2)
+                                        : '0.00' %>
+                                </span>
+                            </td>
+                            <td>
+                                <span
+                                    class="status-badge <%= customer.isBlocked ? 'status-blocked' : 'status-active' %>">
+                                    <%= customer.isBlocked ? 'Blocked' : 'Active' %>
+                                </span>
+                            </td>
+                            <td>
+                                <div class="toggle-switch <%= customer.isBlocked ? 'blocked' : 'active' %>"
+                                    data-customer-id="<%= customer._id %>" onclick="toggleCustomerStatus(this)">
+                                    <div class="slider"></div>
+                                </div>
+                            </td>
+                            <td>
+                                <button class="action-btn" onclick="viewCustomer('<%= customer._id %>')"
+                                    aria-label="View Customer" title="View Customer Details">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <% }) %>
+                            <% } else { %>
+                                <tr class="table-row">
+                                    <td colspan="7">
+                                        <div class="empty-state">
+                                            <div class="empty-icon">👥</div>
+                                            <h3 class="empty-title">No Customers Found</h3>
+                                            <p class="empty-message">No customers available in the marketplace.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <% } %>
+            </tbody>
+        </table>
     </div>
-    <div class="pagination-controls">
-        <button class="pagination-btn" <%=currentPage==1 ? 'disabled' : '' %> onclick="changePage(<%= currentPage - 1 %>
-                )" aria-label="Previous page">
-                <i class="fas fa-chevron-left" aria-hidden="true"></i>
-        </button>
-        <% for (let i=1; i <=totalPages; i++) { %>
-            <button class="pagination-btn <%= i === currentPage ? 'active' : '' %>" onclick="changePage(<%= i %>)"
-                aria-label="Page <%= i %>">
-                <%= i %>
-            </button>
-            <% } %>
-                <button class="pagination-btn" <%=currentPage==totalPages ? 'disabled' : '' %> onclick="changePage(<%=
-                        currentPage + 1 %>)" aria-label="Next page">
-                        <i class="fas fa-chevron-right" aria-hidden="true"></i>
+
+    <!-- Pagination -->
+    <% if (customers && customers.length> 0) { %>
+        <div class="pagination">
+            <div class="pagination-info">
+                Showing 1-<%= customers.length %> of <%= totalCustomers || 0 %>
+            </div>
+            <div class="pagination-controls">
+                <button class="pagination-btn" <%=currentPage===1 ? 'disabled' : '' %>
+                    onclick="changePage(<%= currentPage - 1 %>)"
+                        aria-label="Previous page">
+                        <i class="fas fa-chevron-left"></i>
                 </button>
-    </div>
+
+                <% for (let i=1; i <=totalPages; i++) { %>
+                    <button class="pagination-btn <%= i === currentPage ? 'active' : '' %>"
+                        onclick="changePage(<%= i %>)" aria-label="Page <%= i %>">
+                        <%= i %>
+                    </button>
+                    <% } %>
+
+                        <button class="pagination-btn" <%=currentPage===totalPages ? 'disabled' : '' %>
+                            onclick="changePage(<%= currentPage + 1 %>)"
+                                aria-label="Next page">
+                                <i class="fas fa-chevron-right"></i>
+                        </button>
+            </div>
+        </div>
+        <% } %>
 </div>
+
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // Toggle switch functionality
-        const toggleSwitches = document.querySelectorAll(".toggle-switch");
-        toggleSwitches.forEach((toggle) => {
-            toggle.addEventListener("click", async function () {
-                const customerId = this.dataset.customerId;
-                
-                // Current state: if toggle has 'active' class, customer is currently blocked
-                const currentlyBlocked = this.classList.contains("active");
-                
-                // New state will be opposite of current state
-                const newBlockedState = !currentlyBlocked;
+    let searchTimeout;
 
-                // Optimistically toggle the switch
-                this.classList.toggle("active");
-                this.classList.toggle("blocked");
+    function debounceSearch() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(handleSearch, 1000);
+    }
 
-                // Update the status badge text and class
-                const statusBadge = this.closest("tr").querySelector(".status-badge");
-                if (statusBadge) {
-                    statusBadge.textContent = newBlockedState ? "Blocked" : "Active";
-                    statusBadge.className = `status-badge ${newBlockedState ? 'status-blocked' : 'status-active'}`;
-                }
-
-                // Send update to server
-                try {
-                    const response = await axios.patch(`/admin/customers/${customerId}`, { 
-                        isBlocked: newBlockedState 
-                    });
-                    console.log('Customer status updated successfully');
-                } catch (error) {
-                    console.error("Failed to update status:", error);
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Failed to update customer status.",
-                    });
-
-                    // Revert toggle and badge on error
-                    this.classList.toggle("active");
-                    this.classList.toggle("blocked");
-                    if (statusBadge) {
-                        statusBadge.textContent = currentlyBlocked ? "Blocked" : "Active";
-                        statusBadge.className = `status-badge ${currentlyBlocked ? 'status-blocked' : 'status-active'}`;
-                    }
-                }
-            });
-        });
-    });
-
+    // Pagination
     function changePage(page) {
         const url = new URL(window.location);
         url.searchParams.set('page', page);
         window.location.href = url.href;
     }
 
+    // Search functionality
+    function handleSearch() {
+        const searchValue = document.getElementById('customer-search').value;
+        const url = new URL(window.location);
+
+        if (searchValue) {
+            url.searchParams.set('search', searchValue);
+        } else {
+            url.searchParams.delete('search');
+        }
+        url.searchParams.set('page', 1);
+        window.location.href = url.href;
+    }
+
+    // Apply filters
+    function applyFilters() {
+        const status = document.querySelector('select[name="status"]').value;
+        const sort = document.querySelector('select[name="sort"]').value;
+
+        const url = new URL(window.location);
+
+        if (status) {
+            url.searchParams.set('status', status);
+        } else {
+            url.searchParams.delete('status');
+        }
+
+        if (sort) {
+            url.searchParams.set('sort', sort);
+        } else {
+            url.searchParams.delete('sort');
+        }
+
+        url.searchParams.set('page', 1);
+        window.location.href = url.href;
+    }
+
+    // View customer details
     function viewCustomer(customerId) {
-        console.log("Viewing customer:", customerId);
         window.location.href = `/admin/customers/${customerId}`;
+    }
+
+    // Toggle customer block/unblock status
+    async function toggleCustomerStatus(element) {
+        const customerId = element.dataset.customerId;
+        const currentlyBlocked = element.classList.contains('blocked');
+        const newBlockedState = !currentlyBlocked;
+
+        try {
+            const response = await axios.patch(`/admin/customers/${customerId}`, {
+                isBlocked: newBlockedState
+            });
+
+            // Update UI
+            element.classList.remove('active', 'blocked');
+            element.classList.add(newBlockedState ? 'blocked' : 'active');
+
+            // Update status badge
+            const statusBadge = element.closest('tr').querySelector('.status-badge');
+            statusBadge.classList.remove('status-active', 'status-blocked');
+            statusBadge.classList.add(newBlockedState ? 'status-blocked' : 'status-active');
+            statusBadge.textContent = newBlockedState ? 'Blocked' : 'Active';
+
+            // Show success message
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: `Customer ${newBlockedState ? 'blocked' : 'unblocked'} successfully`,
+                timer: 2000,
+                showConfirmButton: false
+            });
+
+        } catch (error) {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Failed to update customer status'
+            });
+        }
     }
 </script>

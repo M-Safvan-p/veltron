@@ -16,11 +16,7 @@ const generateReferralCode = (name) => {
   try {
     // 1. Generate referral codes
     const usersWithoutCode = await User.find({
-      $or: [
-        { referralCode: { $exists: false } },
-        { referralCode: null },
-        { referralCode: "" },
-      ],
+      $or: [{ referralCode: { $exists: false } }, { referralCode: null }, { referralCode: "" }],
     });
 
     console.log(`Found ${usersWithoutCode.length} users without referral codes`);
@@ -36,10 +32,7 @@ const generateReferralCode = (name) => {
 
     // 2. Backfill wallets
     const usersWithoutWallet = await User.find({
-      $or: [
-        { wallet: { $exists: false } },
-        { wallet: null }
-      ]
+      $or: [{ wallet: { $exists: false } }, { wallet: null }],
     });
 
     console.log(`Found ${usersWithoutWallet.length} users without wallet reference\n`);

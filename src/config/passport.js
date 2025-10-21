@@ -33,11 +33,18 @@ passport.use(
           }
         }
 
+        // get referral code function
+        const newReferralCode = (fullName) => {
+          const random = Math.floor(1000 + Math.random() * 9000);
+          return fullName.slice(0, 4).toUpperCase() + random;
+        };
+
         const newUser = await User.create({
           fullName: profile.displayName,
           email,
           googleId: profile.id,
           authProvider: "google",
+          referralCode: newReferralCode(profile.displayName),
         });
 
         return done(null, newUser);

@@ -12,6 +12,7 @@ const customerController = require("../controllers/admin/adminCustomer.controlle
 const productController = require("../controllers/admin/adminProduct.controller");
 const orderController = require("../controllers/admin/adminOrder.controller");
 const couponController = require("../controllers/admin/adminCoupon.controller");
+const saleController = require("../controllers/admin/adminSale.controller");
 
 const { noCache } = require("../middleware/noCache");
 const adminAuth = require("../middleware/adminAuth");
@@ -30,7 +31,7 @@ router.post("/", authController.login);
 router.post("/logout", authController.logout);
 
 //  Dashboard
-router.get("/dashboard", adminAuth.checkSession, dashboardController.loadDashboard);
+router.get("/dashboard", adminAuth.checkSession, dashboardController.getDashboard);
 
 //  Vendors
 router.get("/vendors", adminAuth.checkSession, vendorController.loadVendors);
@@ -60,13 +61,18 @@ router.put("/category/edit-category/:id", adminAuth.checkSession, categoryContro
 
 //orders
 router.get("/orders", adminAuth.checkSession, orderController.loadOrders);
-// router.get("/orders/:id", adminAuth.checkSession, orderController.loadOrderDetails);
+router.get("/orders/:id", adminAuth.checkSession, orderController.loadOrderDetails);
 
 //coupon
 router.get("/coupons", adminAuth.checkSession, couponController.loadCoupons);
 router.post("/coupons", adminAuth.checkSession, validate(couponSchema), couponController.addCoupon);
 router.put("/coupons/:id", adminAuth.checkSession, validate(couponSchema), couponController.editCoupon);
 router.patch("/coupons/:id", adminAuth.checkSession, couponController.listAndUnlist);
+
+//sale
+router.get("/sales", adminAuth.checkSession, saleController.loadSaleReport);
+router.get("/sales/export/pdf", adminAuth.checkSession, saleController.exportPDF);
+router.get("/sales/export/excel", adminAuth.checkSession, saleController.exportExcel);
 
 //Page not found
 router.use((req, res) => res.status(404).render("errors/admin404"));

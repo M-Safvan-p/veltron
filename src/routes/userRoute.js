@@ -2,16 +2,18 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 
-const validate = require("../middleware/validate");
-const userSchema = require("../validators/user/userUpdate");
-const passwordSchema = require("../validators/user/changePassword");
-const addressSchema = require("../validators/user/address");
-const forgotSchema = require("../validators/user/forgotPassword");
 const upload = require("../config/multerConfig");
 
 const { noCache } = require("../middleware/noCache");
 const userAuth = require("../middleware/userAuth");
 const cartAuth = require("../middleware/cartAuth");
+const validate = require("../middleware/validate");
+
+const userSchema = require("../validators/user/userUpdate");
+const passwordSchema = require("../validators/user/changePassword");
+const addressSchema = require("../validators/user/address");
+const forgotSchema = require("../validators/user/forgotPassword");
+const contactSchema = require("../validators/user/contact");
 
 const authController = require("../controllers/user/userAuth.controller");
 const pageController = require("../controllers/user/userPage.controller");
@@ -37,6 +39,9 @@ router.use(noCache);
 router.get("/", userAuth.isLogin, pageController.loadLanding);
 router.get("/sale", productController.getProducts);
 router.get("/product/:id", productController.loadProductDetail);
+router.get("/about",pageController.loadAbout);
+router.get("/contact",pageController.loadContact);
+router.post("/contact/submit", validate(contactSchema), pageController.postContact);
 
 //  Auth Routes 
 router.get("/signUp", userAuth.isLogin, authController.loadSignUp);
@@ -75,6 +80,8 @@ router.post("/profile/forgot-password", userAuth.checkSession, validate(forgotSc
 router.get("/profile/change-email", userAuth.checkSession, profileController.loadChangeEmail);
 router.post("/profile/change-email", userAuth.checkSession, profileController.veriryEmail);
 router.put("/profile/verify-otp", userAuth.checkSession, profileController.verifyOtp);
+// Referral
+router.get("/profile/referral", userAuth.checkSession, pageController.loadReferral);
 
 //  Address 
 router.get("/profile/address", userAuth.checkSession, addressController.loadAddress);
@@ -108,7 +115,8 @@ router.post("/profile/orders/:id/return-items", userAuth.checkSession, cancelAnd
 
 //walllet
 router.get("/profile/wallet", userAuth.checkSession, walletController.loadWallet);
-router.post("/profile/wallet/add-money", userAuth.checkSession, walletController.addMoney);
+router.post("/profile/wallet/create-order", userAuth.checkSession, walletController.createWalletOrder);
+router.post("/profile/wallet/verify-payment", userAuth.checkSession, walletController.verifyWalletPayment);
 
 // wishlist 
 router.get("/profile/wishlist", userAuth.checkSession, wishlistController.loadWishlist);

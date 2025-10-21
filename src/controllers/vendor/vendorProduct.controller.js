@@ -11,8 +11,10 @@ const loadProducts = async (req, res) => {
   let page = parseInt(req.query.page) || 1;
   let limit = 5;
   let skip = (page - 1) * limit;
+
   // sort
   const sortOption = req.query.sort === "oldest" ? 1 : -1;
+
   // filter
   let matchStage = { vendorId: vendorId };
   if (req.query.status) {
@@ -21,10 +23,18 @@ const loadProducts = async (req, res) => {
   if (req.query.category) {
     matchStage["category"] = req.query.category;
   }
+
+  // Search by Product ID or Name
+  if (req.query.search) {
+    matchStage.$or = [{ _id: { $regex: req.query.search, $options: "i" } }, { name: { $regex: req.query.search, $options: "i" } }];
+  }
+
   // total products
   const totalProducts = await Product.countDocuments(matchStage);
+
   // products
   const products = await Product.find(matchStage).sort({ createdAt: sortOption }).skip(skip).limit(limit).populate("category").lean();
+
   // category
   const categories = await Category.find().lean();
 
@@ -36,8 +46,11 @@ const loadProducts = async (req, res) => {
     currentPage: page,
     totalPages: Math.ceil(totalProducts / limit),
     totalProducts,
+    limit,
     sort: req.query.sort || "newest",
     status: req.query.status || "",
+    category: req.query.category || "",
+    search: req.query.search || "",
     categories,
   });
 };
@@ -90,18 +103,18 @@ const addProduct = async (req, res) => {
     // discounted price
     let discountedPrice = 0;
     const checkCategory = await Category.findOne({ _id: category }).lean();
-    
-    if (checkCategory && offer !== null && offer !== undefined && offer !== '') {
+
+    if (checkCategory && offer !== null && offer !== undefined && offer !== "") {
       const productOffer = Number(offer);
       const categoryOffer = checkCategory.offer || 0;
-      
+
       if (productOffer > categoryOffer) {
-        discountedPrice = Math.round(price - (price * productOffer / 100));
+        discountedPrice = Math.round(price - (price * productOffer) / 100);
       } else {
-        discountedPrice = Math.round(price - (price * categoryOffer / 100));
+        discountedPrice = Math.round(price - (price * categoryOffer) / 100);
       }
     } else if (checkCategory && checkCategory.offer) {
-      discountedPrice = price - (price * checkCategory.offer / 100);
+      discountedPrice = price - (price * checkCategory.offer) / 100;
     }
     // Create and save product
     const newProduct = new Product({
@@ -110,7 +123,7 @@ const addProduct = async (req, res) => {
       description: description.trim(),
       price: Number(price),
       discountedPrice,
-      offer: (offer !== null && offer !== undefined && offer !== '') ? Number(offer) : undefined,
+      offer: offer !== null && offer !== undefined && offer !== "" ? Number(offer) : undefined,
       isListed: isListed === "true",
       category: category.trim(),
       specifications,
@@ -197,20 +210,20 @@ const editProduct = async (req, res) => {
     // discounted price
     let discountedPrice = 0;
     const checkCategory = await Category.findOne({ _id: category }).lean();
-    
-    if (checkCategory && offer !== null && offer !== undefined && offer !== '') {
+
+    if (checkCategory && offer !== null && offer !== undefined && offer !== "") {
       const productOffer = Number(offer);
       const categoryOffer = checkCategory.offer || 0;
-      
+
       if (productOffer > categoryOffer) {
-        discountedPrice = Math.round(price - (price * productOffer / 100));
+        discountedPrice = Math.round(price - (price * productOffer) / 100);
       } else {
-        discountedPrice = Math.round(price - (price * categoryOffer / 100));
+        discountedPrice = Math.round(price - (price * categoryOffer) / 100);
       }
     } else if (checkCategory && checkCategory.offer) {
-      discountedPrice = price - (price * checkCategory.offer / 100);
+      discountedPrice = price - (price * checkCategory.offer) / 100;
     }
-    
+
     // Update the product
     const updatedProduct = await Product.findOneAndUpdate(
       { _id: productId, vendorId },
@@ -219,7 +232,7 @@ const editProduct = async (req, res) => {
         description: description.trim(),
         price: Number(price),
         discountedPrice,
-        offer: (offer !== null && offer !== undefined && offer !== '') ? Number(offer) : undefined,
+        offer: offer !== null && offer !== undefined && offer !== "" ? Number(offer) : undefined,
         isListed: isListed === "true",
         category: category.trim(),
         specifications,

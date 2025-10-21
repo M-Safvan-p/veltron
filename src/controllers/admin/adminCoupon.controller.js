@@ -8,8 +8,19 @@ const loadCoupons = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = 4;
     const skip = (page - 1) * limit;
-    const totalCoupons = await Coupon.countDocuments();
-    const coupons = await Coupon.find().sort({ createdAt: -1 }).skip(skip).limit(limit);
+
+    const search = req.query.search || "";
+    const status = req.query.status || "";
+
+    const query = {};
+    if (search) {
+      query.code = { $regex: search, $options: "i" };
+    }
+    if (status === "listed") query.isActive = true;
+    if (status === "unlisted") query.isActive = false;
+
+    const totalCoupons = await Coupon.countDocuments(query);
+    const coupons = await Coupon.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit).lean();
 
     res.render("admin/coupon", {
       layout: "layouts/adminLayout",
@@ -18,11 +29,12 @@ const loadCoupons = async (req, res) => {
       coupons,
       currentPage: page,
       totalCoupons,
+      query: req.query,
       totalPages: Math.ceil(totalCoupons / limit),
     });
   } catch (err) {
     console.error("Error loading coupons:", err);
-    errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
+    res.status(500).send("Server Error");
   }
 };
 

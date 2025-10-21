@@ -10,8 +10,27 @@ const loadCategory = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = 5;
   const skip = (page - 1) * 5;
-  const totalCategories = await Category.countDocuments();
-  const category = await Category.find().sort({ createdAt: -1 }).skip(skip).limit(limit).lean();
+
+  const search = req.query.search || "";
+  const status = req.query.status || "";
+  const offer = req.query.offer || "";
+  const sort = req.query.sort || "";
+
+  const query = {};
+  if (search) query.name = { $regex: search, $options: "i" };
+  if (status === "listed") query.isListed = true;
+  if (status === "unlisted") query.isListed = false;
+  if (offer === "with-offer") query.offer = { $gt: 0 };
+  if (offer === "no-offer") query.offer = { $in: [0, null] };
+
+  let sortOption = { createdAt: -1 };
+  if (sort === "name-asc") sortOption = { name: 1 };
+  if (sort === "name-desc") sortOption = { name: -1 };
+  if (sort === "offer-high") sortOption = { offer: -1 };
+  if (sort === "offer-low") sortOption = { offer: 1 };
+
+  const totalCategories = await Category.countDocuments(query);
+  const category = await Category.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit).lean();
 
   res.render("admin/category", {
     layout: "layouts/adminLayout",
@@ -21,6 +40,7 @@ const loadCategory = async (req, res) => {
     currentPage: page,
     totalCategories,
     totalPages: Math.ceil(totalCategories / limit),
+    query: req.query,
   });
 };
 
@@ -113,11 +133,11 @@ const editCategory = async (req, res) => {
     });
 
     // discount price re calculate
-    const products = await Product.find({category:id});
-    for(const product of products){
-      if(offer > product.offer){
-        product.discountedPrice = Math.round(product.price - (product.price * offer)/ 100);
-        await product.save()
+    const products = await Product.find({ category: id });
+    for (const product of products) {
+      if (offer > product.offer) {
+        product.discountedPrice = Math.round(product.price - (product.price * offer) / 100);
+        await product.save();
       }
     }
     return success(res, HttpStatus.OK, Messages.CATEGORY_UPDATED, {

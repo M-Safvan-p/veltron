@@ -7,7 +7,6 @@ const { success, error: errorResponse } = require("../../helpers/responseHelper"
 const HttpStatus = require("../../constants/statusCodes");
 const Messages = require("../../constants/messages");
 const userQuery = require("../../helpers/userQuery");
-const { message } = require("../../validators/user/userUpdate");
 
 function loadSignUp(req, res) {
   try {

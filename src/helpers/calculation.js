@@ -1,10 +1,9 @@
 function calculateTotalAmount(cart, coupon = null, taxRate = 0.18) {
-  
   if (!cart || !Array.isArray(cart.items)) {
     return { subtotal: 0, discount: 0, tax: 0, total: 0 };
   }
 
-  // subtotal 
+  // subtotal
   let subtotal = 0;
   for (const item of cart.items) {
     subtotal += Number(item.discountedPrice) * Number(item.quantity);
@@ -19,17 +18,17 @@ function calculateTotalAmount(cart, coupon = null, taxRate = 0.18) {
   // price after applying coupon
   const priceAfterDiscount = subtotal - discount;
 
-  // tax 
+  // tax
   const tax = Math.round(priceAfterDiscount * taxRate);
 
   // total
-  const total = priceAfterDiscount + tax;
-  
+  const total = priceAfterDiscount + tax + 50; // 50 shipping charge
+
   return { total, subtotal, tax, discount };
 }
 
 function calculateCommission(total) {
-  const commission = total * 0.1; // 10% 
+  const commission = total * 0.1; // 10%
   const vendorEarnings = total - commission;
 
   return { commission, vendorEarnings };
@@ -43,11 +42,11 @@ function calculateProductTotal(product, couponDiscount = 0, taxRate = 0.18) {
     discount = (subtotal * couponDiscount) / 100;
   }
   const priceAfterDiscount = subtotal - discount;
-  
+
   const tax = Math.round(priceAfterDiscount * taxRate);
   // Final total
   const total = priceAfterDiscount + tax;
-  
+
   return { total, subtotal, tax, discount };
 }
 

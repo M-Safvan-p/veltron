@@ -79,16 +79,13 @@ const validateCategory = (categoryName, description, offer, isListed) => {
   // Offer: optional, but if given must be a number 1–100
   if (offer !== undefined && offer !== null && offer !== "") {
     const offerNumber = Number(offer);
-    if (
-      isNaN(offerNumber) ||offerNumber < 1 ||offerNumber > 100 ||!Number.isInteger(offerNumber)
-    ) {
+    if (isNaN(offerNumber) || offerNumber < 1 || offerNumber > 100 || !Number.isInteger(offerNumber)) {
       return "Offer must be an integer between 1 and 100 (if provided).";
     }
   }
 
   return null; // no validation errors
 };
-
 
 module.exports = {
   validateSignUp,

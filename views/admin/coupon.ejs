@@ -150,6 +150,80 @@
         overflow-x: hidden;
     }
 
+    /* Controls Section */
+    .controls-section {
+        margin-bottom: 20px;
+    }
+
+    .controls-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #495057;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 15px;
+    }
+
+    .controls-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .search-box {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 15px;
+        background: #f8f9fa;
+        border: 1px solid #d4d5d6;
+        border-radius: 8px;
+        flex: 0 1 300px;
+    }
+
+    .search-box i {
+        color: #6c757d;
+        font-size: 14px;
+    }
+
+    .search-box input {
+        border: none;
+        background: transparent;
+        font-size: 13px;
+        color: #212529;
+        width: 100%;
+        outline: none;
+    }
+
+    .search-box input::placeholder {
+        color: #adb5bd;
+    }
+
+    .filter-controls {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .filter-select {
+        padding: 8px 12px;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 13px;
+        color: #212529;
+        background: white;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .filter-select:hover {
+        border-color: #adb5bd;
+        background: #f8f9fa;
+    }
+
     .orders-controls {
         display: flex;
         justify-content: flex-end;
@@ -623,6 +697,15 @@
             gap: 20px;
             padding: 0 15px;
         }
+
+        .controls-content {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .search-box {
+            flex: 1;
+        }
     }
 
     @media (max-width: 768px) {
@@ -734,10 +817,34 @@
         </div>
 
         <section class="orders-section">
-            <div class="orders-controls">
-                <button class="add-coupon-btn" onclick="openAddCouponModal()" aria-label="Add new coupon">
-                    Add Coupon
-                </button>
+            <!-- Search & Filter Controls -->
+            <div class="controls-section">
+                <div class="controls-title">
+                    <i class="fas fa-filter"></i> Search & Filter
+                </div>
+                <div class="controls-content">
+                    <!-- Search Box -->
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="coupon-search" placeholder="Search coupon code..." 
+                            value="<%= query.search || '' %>" onkeyup="debounceSearch()">
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="filter-controls">
+                        <!-- Status Filter -->
+                        <select class="filter-select" name="status" onchange="applyFilters()">
+                            <option value="" <%= !query.status ? 'selected' : '' %>>All Status</option>
+                            <option value="active" <%= query.status === 'active' ? 'selected' : '' %>>Active</option>
+                            <option value="inactive" <%= query.status === 'inactive' ? 'selected' : '' %>>Inactive</option>
+                        </select>
+
+                        <!-- Add Coupon Button -->
+                        <button class="add-coupon-btn" onclick="openAddCouponModal()" aria-label="Add new coupon">
+                            Add Coupon
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <% if (coupons && coupons.length > 0) { %>
@@ -846,8 +953,8 @@
             <% } else { %>
                 <div class="empty-orders">
                     <div class="empty-orders-icon">🎟️</div>
-                    <h3 class="empty-title">No Coupons Yet</h3>
-                    <p class="empty-message">Create your first coupon to offer discounts to your customers.</p>
+                    <h3 class="empty-title">No Coupons Found</h3>
+                    <p class="empty-message">No coupons match your search criteria.</p>
                 </div>
             <% } %>
 
@@ -979,14 +1086,48 @@
     // Initialize coupons array from server-side data
     let coupons = <%- JSON.stringify(coupons || []) %>;
 
+    let searchTimeout;
+
+    function debounceSearch() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(handleSearch, 1000);
+    }
+
+    // Pagination
     function changePage(page) {
-        const url = new URL(window.location.href);
-        url.searchParams.set("page", page);
-        const sort = document.getElementById("sort")?.value;
-        const status = document.getElementById("status")?.value;
-        if (sort) url.searchParams.set("sort", sort);
-        if (status) url.searchParams.set("status", status);
-        window.location.href = url.toString();
+        const url = new URL(window.location);
+        url.searchParams.set('page', page);
+        window.location.href = url.href;
+    }
+
+    // Search functionality
+    function handleSearch() {
+        const searchValue = document.getElementById('coupon-search').value;
+        const url = new URL(window.location);
+
+        if (searchValue) {
+            url.searchParams.set('search', searchValue);
+        } else {
+            url.searchParams.delete('search');
+        }
+        url.searchParams.set('page', 1);
+        window.location.href = url.href;
+    }
+
+    // Apply filters
+    function applyFilters() {
+        const status = document.querySelector('select[name="status"]').value;
+
+        const url = new URL(window.location);
+
+        if (status) {
+            url.searchParams.set('status', status);
+        } else {
+            url.searchParams.delete('status');
+        }
+
+        url.searchParams.set('page', 1);
+        window.location.href = url.href;
     }
 
     function openAddCouponModal() {
@@ -1242,4 +1383,4 @@
             }
         });
     });
-</script>
+</script

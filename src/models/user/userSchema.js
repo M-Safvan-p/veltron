@@ -37,13 +37,6 @@ const userSchema = new Schema(
     googleId: { type: String, unique: true, sparse: true },
     wallet: { type: Schema.Types.ObjectId, ref: "UserWallet" },
     authProvider: { type: String, enum: ["local", "google"], required: true },
-    searchHistory: [
-      {
-        category: { type: Schema.Types.ObjectId, ref: "Category" },
-        vendor: { type: String },
-        searchOn: { type: Date, default: Date.now },
-      },
-    ],
   },
   { timestamps: true }
 );

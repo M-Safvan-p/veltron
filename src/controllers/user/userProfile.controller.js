@@ -5,8 +5,6 @@ const HttpStatus = require("../../constants/statusCodes");
 const passwordControl = require("../../helpers/passwordControl");
 const otpControl = require("../../helpers/otpControl");
 
-const userQuery = require("../../helpers/userQuery");
-
 const loadProfile = async (req, res) => {
   try {
     res.render("user/profile", {

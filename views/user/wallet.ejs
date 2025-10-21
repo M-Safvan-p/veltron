@@ -858,7 +858,8 @@
             <div class="wallet-icon"><i class="fas fa-wallet"></i></div>
             <h2 class="balance-title">Available Balance</h2>
           </div>
-          <div class="balance-amount">₹<%= wallet.balance.toLocaleString('en-IN') %></div>
+          <div class="balance-amount">₹<%= wallet.balance.toLocaleString('en-IN') %>
+          </div>
           <p class="balance-subtitle">Your current wallet balance</p>
         </div>
 
@@ -873,76 +874,85 @@
         <div class="transaction-history-card">
           <h3 class="transaction-title">Transaction History</h3>
 
-          <% if (wallet.transactionHistory && wallet.transactionHistory.length > 0) { %>
-          <div class="transaction-table-container">
-            <table class="transaction-table">
-              <thead>
-                <tr>
-                  <th>Transaction ID</th>
-                  <th>Date</th>
-                  <th>Amount</th>
-                  <th>Description</th>
-                  <th>Type</th>
-                </tr>
-              </thead>
-              <tbody>
-                <% transactions.forEach(t => { %>
-                <tr>
-                  <td data-label="Transaction ID">
-                    <span class="transaction-id"><%= t._id.toString().slice(-8).toUpperCase() %></span>
-                  </td>
-                  <td data-label="Date">
-                    <span class="transaction-date">
-                      <%= new Date(t.date).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' }) %>
-                    </span>
-                  </td>
-                  <td data-label="Amount">
-                    <span class="transaction-amount <%= t.type %>">
-                      <%= t.type === 'debit' ? '-' : '+' %>₹<%= Math.abs(t.amount).toLocaleString('en-IN') %>
-                    </span>
-                  </td>
-                  <td data-label="Description">
-                    <span class="transaction-description"><%= t.message %></span>
-                  </td>
-                  <td data-label="Type">
-                    <span class="transaction-type <%= t.type %>">
-                      <%= t.type === 'debit' ? 'Debited' : 'Credited' %>
-                    </span>
-                  </td>
-                </tr>
-                <% }) %>
-              </tbody>
-            </table>
-          </div>
-          <!-- Pagination -->
+          <% if (wallet.transactionHistory && wallet.transactionHistory.length> 0) { %>
+            <div class="transaction-table-container">
+              <table class="transaction-table">
+                <thead>
+                  <tr>
+                    <th>Transaction ID</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Description</th>
+                    <th>Type</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% transactions.forEach(t=> { %>
+                    <tr>
+                      <td data-label="Transaction ID">
+                        <span class="transaction-id">
+                          <%= t._id.toString().slice(-8).toUpperCase() %>
+                        </span>
+                      </td>
+                      <td data-label="Date">
+                        <span class="transaction-date">
+                          <%= new Date(t.date).toLocaleDateString('en-IN', { year: 'numeric' , month: 'short' ,
+                            day: 'numeric' }) %>
+                        </span>
+                      </td>
+                      <td data-label="Amount">
+                        <span class="transaction-amount <%= t.type %>">
+                          <%= t.type==='debit' ? '-' : '+' %>₹<%= Math.abs(t.amount).toLocaleString('en-IN') %>
+                        </span>
+                      </td>
+                      <td data-label="Description">
+                        <span class="transaction-description">
+                          <%= t.message %>
+                        </span>
+                      </td>
+                      <td data-label="Type">
+                        <span class="transaction-type <%= t.type %>">
+                          <%= t.type==='debit' ? 'Debited' : 'Credited' %>
+                        </span>
+                      </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+              </table>
+            </div>
+            <!-- Pagination -->
         </div>
-        <% if (totalTransactions > 0) { %>
-        <div class="pagination">
-          <div class="pagination-info">
-            Showing <%= 1* page %>–<%= transactions.length * page %> of <%= totalTransactions %> transactions
+        <% if (totalTransactions> 0) { %>
+          <div class="pagination">
+            <div class="pagination-info">
+              Showing <%= (page - 1) * 10 + 1 %>–<%= (page - 1) * 10 + transactions.length %> of <%= totalTransactions %> transactions
+            </div>
+            <div class="pagination-controls">
+              <button class="pagination-btn" <%=page===1 ? 'disabled aria-disabled="true"' : '' %> onclick="changePage(
+                <%= page - 1 %>)" aria-label="Previous page">
+                  <i class="fas fa-chevron-left" aria-hidden="true"></i>
+              </button>
+              <% for (let i=1; i <=totalPages; i++) { %>
+                <button class="pagination-btn <%= i === page ? 'active' : '' %>"
+                  aria-current="<%= i === page ? 'page' : 'false' %>" onclick="changePage(<%= i %>)"
+                  aria-label="Page <%= i %>">
+                  <%= i %>
+                </button>
+                <% } %>
+                  <button class="pagination-btn" <%=page===totalPages ? 'disabled aria-disabled="true"' : '' %>
+                    onclick="changePage(<%= page + 1 %>)" aria-label="Next page">
+                      <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                  </button>
+            </div>
           </div>
-          <div class="pagination-controls">
-            <button class="pagination-btn" <%= page === 1 ? 'disabled aria-disabled="true"' : '' %> onclick="changePage(<%= page - 1 %>)" aria-label="Previous page">
-              <i class="fas fa-chevron-left" aria-hidden="true"></i>
-            </button>
-            <% for (let i = 1; i <= totalPages; i++) { %>
-            <button class="pagination-btn <%= i === page ? 'active' : '' %>" aria-current="<%= i === page ? 'page' : 'false' %>" onclick="changePage(<%= i %>)" aria-label="Page <%= i %>">
-              <%= i %>
-            </button>
-            <% } %>
-            <button class="pagination-btn" <%= page === totalPages ? 'disabled aria-disabled="true"' : '' %> onclick="changePage(<%= page + 1 %>)" aria-label="Next page">
-              <i class="fas fa-chevron-right" aria-hidden="true"></i>
-            </button>
-          </div>
-        </div>
-        <% } %>
-        <% } else { %>
-        <div class="empty-transactions">
-          <div class="empty-transactions-icon"><i class="fas fa-file-alt"></i></div>
-          <h4 class="empty-title">No Transactions Yet</h4>
-          <p class="empty-message">Your transaction history will appear here once you start using your wallet.</p>
-        </div>
-        <% } %>
+          <% } %>
+            <% } else { %>
+              <div class="empty-transactions">
+                <div class="empty-transactions-icon"><i class="fas fa-file-alt"></i></div>
+                <h4 class="empty-title">No Transactions Yet</h4>
+                <p class="empty-message">Your transaction history will appear here once you start using your wallet.</p>
+              </div>
+              <% } %>
       </div>
     </section>
 
@@ -964,7 +974,8 @@
               <label class="amount-label" for="amountInput">Enter Amount</label>
               <div class="amount-input-wrapper">
                 <span class="currency-symbol">₹</span>
-                <input type="number" id="amountInput" class="amount-input" name="amount" placeholder="0" min="1" max="50000" step="1" required>
+                <input type="number" id="amountInput" class="amount-input" name="amount" placeholder="0" min="1"
+                  max="50000" step="1" required>
               </div>
               <div class="input-error" id="amountError">
                 Please enter a valid amount between ₹1 and ₹50,000
@@ -994,8 +1005,13 @@
     </div>
   </div>
 </div>
+<!-- razorpay -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
+  const userName = '<%= user?.name || "" %>';
+  const userEmail = '<%= user?.email || "" %>';
+  const userPhone = '<%= user?.phone || "" %>';
   // Modal functionality
   function openAddMoneyModal() {
     const modal = document.getElementById('addMoneyModal');
@@ -1068,47 +1084,103 @@
   }
 
   async function submitAddMoney() {
-    if (validateAmount()) {
-      const amount = document.getElementById('amountInput').value;
+    const amount = document.getElementById('amountInput').value;
 
-      try {
-        await axios.post('/profile/wallet/add-money', {
-          amount: parseFloat(amount)
-        });
-        closeAddMoneyModal();
-        window.location.reload();
-      } catch (error) {
-        swal("Error!", error.response?.data?.message || error.message, "error");
-        closeAddMoneyModal();
+    if (!validateAmount()) {
+      return;
+    }
+
+    const submitBtn = document.querySelector('.modal-btn-primary');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Processing...';
+
+    try {
+      const { data } = await axios.post('/profile/wallet/create-order', { amount: parseFloat(amount) });
+
+      if (!data.success) {
+        throw new Error('Failed to create payment order. Please try again.');
       }
+
+      const options = {
+        key: data.key,
+        amount: data.amount,
+        currency: 'INR',
+        name: 'Veltron Wallet',
+        description: 'Add Money to Wallet',
+        order_id: data.orderId,
+        handler: async function (response) {
+          try {
+            const verifyRes = await axios.post('/profile/wallet/verify-payment', {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              amount: parseFloat(amount),
+            });
+
+            if (verifyRes.data.success) {
+              closeAddMoneyModal();
+              swal.fire("Success ✅", "Money has been added to your wallet!", "success").then(()=>{
+                window.location.reload()
+              })
+            } else {
+              throw new Error(verifyRes.data.message || 'Unable to verify payment.');
+            }
+          } catch (err) {
+            console.error(err);
+            swal.fire("Error", err.response?.data?.message || "Something went wrong during verification.", "error");
+          }
+        },
+        prefill: {
+          name: userName,
+          email: userEmail,
+          contact: userPhone,
+        },
+        theme: { color: '#212529' },
+      };
+
+      const rzp = new Razorpay(options);
+      rzp.on('payment.failed', function (response) {
+        swal.fire("Payment Failed", response.error.description || "Payment was unsuccessful.", "error");
+      });
+      rzp.open();
+    } catch (error) {
+      console.error('Error in submitAddMoney:', error);
+      swal.fire("Error", error.response?.data?.message || error.message || "Something went wrong. Please try again.", "error");
+    } finally {
+      closeAddMoneyModal()
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Add Money';
     }
   }
 
-  function changePage(page) {
+
+
+
+function changePage(page) {
     const url = new URL(window.location.href);
     url.searchParams.set('page', page);
     window.location.href = url.toString();
   }
 
   // Event listeners
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     const modal = document.getElementById('addMoneyModal');
     const amountInput = document.getElementById('amountInput');
 
     // Close modal when clicking outside
-    modal.addEventListener('click', function(e) {
+    modal.addEventListener('click', function (e) {
       if (e.target === modal) {
         closeAddMoneyModal();
       }
     });
 
     // Prevent modal close when clicking inside modal content
-    document.querySelector('.add-money-modal').addEventListener('click', function(e) {
+    document.querySelector('.add-money-modal').addEventListener('click', function (e) {
       e.stopPropagation();
     });
 
     // ESC key to close modal
-    document.addEventListener('keydown', function(e) {
+    document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') {
         if (modal.classList.contains('show')) {
           closeAddMoneyModal();
@@ -1117,7 +1189,7 @@
     });
 
     // Enter key to submit form
-    document.addEventListener('keydown', function(e) {
+    document.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' && modal.classList.contains('show')) {
         e.preventDefault();
         submitAddMoney();
@@ -1125,13 +1197,13 @@
     });
 
     // Input validation on change
-    amountInput.addEventListener('input', function() {
+    amountInput.addEventListener('input', function () {
       clearQuickAmountSelection();
       validateAmount();
     });
 
     // Input validation on blur
-    amountInput.addEventListener('blur', function() {
+    amountInput.addEventListener('blur', function () {
       validateAmount();
     });
   });

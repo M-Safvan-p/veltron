@@ -54,10 +54,23 @@
 
   .returns-controls {
     display: flex;
-    justify-content: flex-end;
-    gap: 15px;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
+    gap: 15px;
     flex-wrap: wrap;
+  }
+
+  .search-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .other-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
   }
 
   .control-group {
@@ -70,6 +83,7 @@
     font-size: 14px;
     color: #495057;
     font-weight: 500;
+    white-space: nowrap;
   }
 
   .returns-controls select {
@@ -86,6 +100,35 @@
   .returns-controls select:hover {
     border-color: #adb5bd;
     background: #f8f9fa;
+  }
+
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+    background: #f8f9fa;
+    border: 1px solid #d4d5d6;
+    border-radius: 8px;
+    min-width: 250px;
+  }
+
+  .search-box i {
+    color: #6c757d;
+    font-size: 14px;
+  }
+
+  .search-box input {
+    border: none;
+    background: transparent;
+    font-size: 13px;
+    color: #212529;
+    width: 100%;
+    outline: none;
+  }
+
+  .search-box input::placeholder {
+    color: #adb5bd;
   }
 
   .table-container {
@@ -472,8 +515,14 @@
     }
 
     .returns-controls {
-      justify-content: flex-start;
-      gap: 10px;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .search-controls,
+    .other-controls {
+      width: 100%;
+      justify-content: center;
     }
 
     .control-group {
@@ -639,6 +688,10 @@
       height: 32px;
       font-size: 13px;
     }
+
+    .search-box {
+      min-width: 200px;
+    }
   }
 
   @media (max-width: 480px) {
@@ -667,9 +720,28 @@
       height: 30px;
       font-size: 12px;
     }
+
+    .search-controls,
+    .other-controls {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .control-group {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .returns-controls select {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .search-box {
+      min-width: 100%;
+    }
   }
 </style>
-
 
 <div class="admin-container">
   <div class="breadcrumb">
@@ -688,23 +760,36 @@
   </div>
 
   <div class="returns-controls">
-    <div class="control-group">
-      <label for="sort" class="control-label">Sort by:</label>
-      <select id="sort" onchange="applyFilters()">
-        <option value="newest" <%=sort==='newest' ? 'selected' : '' %>>Newest</option>
-        <option value="oldest" <%=sort==='oldest' ? 'selected' : '' %>>Oldest</option>
-      </select>
+    <div class="search-controls">
+      <div class="control-group">
+        <label for="search" class="control-label">Search:</label>
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" id="search" placeholder="Search by Order ID..." 
+              value="<%= search || '' %>" onkeyup="debounceSearch()">
+        </div>
+      </div>
     </div>
 
-    <div class="control-group">
-      <label for="status" class="control-label">Filter:</label>
-      <select id="status" onchange="applyFilters()">
-        <option value="">All</option>
-        <option value="pending" <%=status==='pending' ? 'selected' : '' %>>Pending</option>
-        <option value="approved" <%=status==='approved' ? 'selected' : '' %>>Approved</option>
-        <option value="rejected" <%=status==='rejected' ? 'selected' : '' %>>Rejected</option>
-        <option value="completed" <%=status==='completed' ? 'selected' : '' %>>Completed</option>
-      </select>
+    <div class="other-controls">
+      <div class="control-group">
+        <label for="sort" class="control-label">Sort by:</label>
+        <select id="sort" onchange="applyFilters()">
+          <option value="newest" <%=sort==='newest' ? 'selected' : '' %>>Newest</option>
+          <option value="oldest" <%=sort==='oldest' ? 'selected' : '' %>>Oldest</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="status" class="control-label">Filter:</label>
+        <select id="status" onchange="applyFilters()">
+          <option value="">All</option>
+          <option value="pending" <%=status==='pending' ? 'selected' : '' %>>Pending</option>
+          <option value="approved" <%=status==='approved' ? 'selected' : '' %>>Approved</option>
+          <option value="rejected" <%=status==='rejected' ? 'selected' : '' %>>Rejected</option>
+          <option value="completed" <%=status==='completed' ? 'selected' : '' %>>Completed</option>
+        </select>
+      </div>
     </div>
   </div>
 
@@ -750,7 +835,7 @@
                   <p class="product-name">
                     <%= item.name %>
                   </p>
-                  <p class="product-meta">Qty: <%= item.quantity || 0 %> | ₹
+                  <p class="product-meta">Qty: <%= item.quantity || 0 %> | Rs.
                     <%= (item.finalProductPrice || 0).toLocaleString('en-IN') %>
                   </p>
                 </div>
@@ -774,7 +859,7 @@
             </p>
           </td>
           <td class="refund-cell">
-            <div class="refund-amount">₹<%= (returnItem.refundAmount || 0).toLocaleString('en-IN') %>
+            <div class="refund-amount">Rs.<%= (returnItem.refundAmount || 0).toLocaleString('en-IN') %>
             </div>
           </td>
           <td class="status-cell">
@@ -829,7 +914,7 @@
               <p class="product-name">
                 <%= item.name %>
               </p>
-              <p class="product-meta">Qty: <%= item.quantity || 0 %> | ₹<%= (item.finalProductPrice ||
+              <p class="product-meta">Qty: <%= item.quantity || 0 %> | Rs.<%= (item.finalProductPrice ||
                               0).toLocaleString('en-IN') %>
               </p>
             </div>
@@ -859,7 +944,7 @@
 
       <div class="card-section">
         <p class="card-label">Refund Amount</p>
-        <div class="refund-amount">₹<%= (returnItem.refundAmount || 0).toLocaleString('en-IN') %>
+        <div class="refund-amount">Rs.<%= (returnItem.refundAmount || 0).toLocaleString('en-IN') %>
         </div>
       </div>
 
@@ -883,12 +968,10 @@
   <!-- Pagination -->
   <div class="pagination">
     <div class="pagination-info">
-      Showing <%= ((currentPage - 1) * limit) + 1 %>-<%= Math.min(currentPage * limit, totalReturns) %> of
-      <%= totalReturns %> returns
+      Showing <%= ((currentPage - 1) * limit) + 1 %>-<%= Math.min(currentPage * limit, totalReturns) %> of <%= totalReturns %> returns
     </div>
     <div class="pagination-controls">
-      <button class="pagination-btn" <%=currentPage===1 ? 'disabled' : '' %> onclick="changePage(<%= currentPage - 1
-            %>)" aria-label="Previous page">
+      <button class="pagination-btn" <%=currentPage===1 ? 'disabled' : '' %> onclick="changePage(<%= currentPage - 1 %>)" aria-label="Previous page">
         <i class="fas fa-chevron-left"></i>
       </button>
 
@@ -898,8 +981,7 @@
       </button>
       <% } %>
 
-      <button class="pagination-btn" <%=currentPage===totalPages ? 'disabled' : '' %> onclick="changePage(<%=
-                currentPage + 1 %>)" aria-label="Next page">
+      <button class="pagination-btn" <%=currentPage===totalPages ? 'disabled' : '' %> onclick="changePage(<%= currentPage + 1 %>)" aria-label="Next page">
         <i class="fas fa-chevron-right"></i>
       </button>
     </div>
@@ -914,15 +996,36 @@
 </div>
 
 <script>
+  let searchTimeout; 
+
+  function debounceSearch() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(handleSearch, 1000);
+  }
+
+  function handleSearch() {
+    const searchValue = document.getElementById('search').value;
+    const url = new URL(window.location);
+    if (searchValue) {
+      url.searchParams.set('search', searchValue);
+    } else {
+      url.searchParams.delete('search');
+    }
+    url.searchParams.set('page', 1);
+    window.location.href = url.href;
+  }
+
   function changePage(page) {
     const url = new URL(window.location.href);
     url.searchParams.set('page', page);
 
     const sort = document.getElementById('sort')?.value;
     const filterStatus = document.getElementById('status')?.value;
+    const search = document.getElementById('search')?.value;
 
     if (sort) url.searchParams.set('sort', sort);
     if (filterStatus) url.searchParams.set('status', filterStatus);
+    if (search) url.searchParams.set('search', search);
 
     window.location.href = url.toString();
   }
@@ -930,6 +1033,7 @@
   function applyFilters() {
     const sort = document.getElementById('sort').value;
     const filterStatus = document.getElementById('status').value;
+    const search = document.getElementById('search').value;
     const url = new URL(window.location.href);
 
     url.searchParams.set('page', 1);
@@ -941,83 +1045,87 @@
       url.searchParams.delete('status');
     }
 
+    if (search) {
+      url.searchParams.set('search', search);
+    } else {
+      url.searchParams.delete('search');
+    }
+
     window.location.href = url.toString();
   }
 
- async function changeStatus(returnId, newStatus, currentStatus) {
-  // Validation rules
-  if (currentStatus === 'rejected' || currentStatus === 'completed') {
-    await Swal.fire({
-      icon: 'warning',
-      title: 'Action not allowed',
-      text: 'Cannot change status once rejected or completed.',
-    });
-    location.reload();
-    return;
-  }
-
-  if (currentStatus === 'approved' && (newStatus === 'pending' || newStatus === 'rejected')) {
-    await Swal.fire({
-      icon: 'warning',
-      title: 'Action not allowed',
-      text: 'Cannot change status back to pending or rejected after approval.',
-    });
-    location.reload();
-    return;
-  }
-
-  if (newStatus === 'completed' && currentStatus !== 'approved') {
-    await Swal.fire({
-      icon: 'warning',
-      title: 'Action not allowed',
-      text: 'Can only mark as completed after approval.',
-    });
-    location.reload();
-    return;
-  }
-
-  // Confirm status change
-  const confirmResult = await Swal.fire({
-    title: `Change status to "${newStatus.toUpperCase()}"?`,
-    icon: 'question',
-    showCancelButton: true,
-    confirmButtonText: 'Yes, change it!',
-    cancelButtonText: 'Cancel'
-  });
-
-  if (!confirmResult.isConfirmed) {
-    location.reload();
-    return;
-  }
-
-  try {
-    const { data } = await axios.put(`/vendor/returns/${returnId}/status`, {
-      status: newStatus
-    });
-
-    if (data.success) {
+  async function changeStatus(returnId, newStatus, currentStatus) {
+    if (currentStatus === 'rejected' || currentStatus === 'completed') {
       await Swal.fire({
-        icon: 'success',
-        title: 'Success',
-        text: data.message || 'Status updated successfully!',
+        icon: 'warning',
+        title: 'Action not allowed',
+        text: 'Cannot change status once rejected or completed.',
       });
       location.reload();
-    } else {
+      return;
+    }
+
+    if (currentStatus === 'approved' && (newStatus === 'pending' || newStatus === 'rejected')) {
+      await Swal.fire({
+        icon: 'warning',
+        title: 'Action not allowed',
+        text: 'Cannot change status back to pending or rejected after approval.',
+      });
+      location.reload();
+      return;
+    }
+
+    if (newStatus === 'completed' && currentStatus !== 'approved') {
+      await Swal.fire({
+        icon: 'warning',
+        title: 'Action not allowed',
+        text: 'Can only mark as completed after approval.',
+      });
+      location.reload();
+      return;
+    }
+
+    const confirmResult = await Swal.fire({
+      title: `Change status to "${newStatus.toUpperCase()}"?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, change it!',
+      cancelButtonText: 'Cancel'
+    });
+
+    if (!confirmResult.isConfirmed) {
+      location.reload();
+      return;
+    }
+
+    try {
+      const { data } = await axios.put(`/vendor/returns/${returnId}/status`, {
+        status: newStatus
+      });
+
+      if (data.success) {
+        await Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: data.message || 'Status updated successfully!',
+        });
+        location.reload();
+      } else {
+        await Swal.fire({
+          icon: 'error',
+          title: 'Failed',
+          text: data.message || 'Failed to update status. Please try again.',
+        });
+        location.reload();
+      }
+    } catch (error) {
+      console.error('Error updating status:', error);
       await Swal.fire({
         icon: 'error',
-        title: 'Failed',
-        text: data.message || 'Failed to update status. Please try again.',
+        title: 'Error',
+        text: 'An error occurred while updating status. Please try again.',
       });
       location.reload();
     }
-  } catch (error) {
-    console.error('Error updating status:', error);
-    await Swal.fire({
-      icon: 'error',
-      title: 'Error',
-      text: 'An error occurred while updating status. Please try again.',
-    });
-    location.reload();
   }
-}
 </script>

@@ -1,7 +1,7 @@
 const User = require("../models/user/userSchema");
 const Messages = require("../constants/messages");
 const HttpStatus = require("../constants/statusCodes");
-const { success, error: errorResponse } = require("../helpers/responseHelper");
+const { error: errorResponse } = require("../helpers/responseHelper");
 
 const cartSession = async (req, res, next) => {
   try {

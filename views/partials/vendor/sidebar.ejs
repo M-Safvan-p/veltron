@@ -9,19 +9,19 @@
             <i class="fas fa-tachometer-alt"></i>
             <span>Dashboard</span>
         </a>
-
-        <a href="/vendor/products" class="nav-item <%= (activePage || '') === 'products' ? 'active' : '' %>">
-            <i class="fas fa-box"></i>
-            <span>Products</span>
+        
+        <a href="/vendor/sales" class="nav-item <%= (activePage || '') === 'sales' ? 'active' : '' %>">
+            <i class="fas fa-chart-line"></i>
+            <span>Sales</span>
             <span class="arrow">›</span>
         </a>
-
+        
         <a href="/vendor/orders" class="nav-item <%= (activePage || '') === 'orders' ? 'active' : '' %>">
             <i class="fas fa-clipboard-list"></i>
             <span>Orders</span>
             <span class="arrow">›</span>
         </a>
-
+        
         <!-- New Returns section -->
         <a href="/vendor/returns" class="nav-item <%= (activePage || '') === 'returns' ? 'active' : '' %>">
             <i class="fas fa-undo-alt"></i>
@@ -29,29 +29,35 @@
             <span class="arrow">›</span>
         </a>
 
-        <a href="/vendor/category" class="nav-item <%= (activePage || '') === 'category' ? 'active' : '' %>">
+        <a href="/vendor/products" class="nav-item <%= (activePage || '') === 'products' ? 'active' : '' %>">
+            <i class="fas fa-box"></i>
+            <span>Products</span>
+            <span class="arrow">›</span>
+        </a>
+
+        <!-- <a href="/vendor/category" class="nav-item <%= (activePage || '') === 'category' ? 'active' : '' %>">
             <i class="fas fa-tags"></i>
             <span>Category</span>
             <span class="arrow">›</span>
-        </a>
+        </a> -->
 
-        <a href="/vendor/wallet" class="nav-item <%= (activePage || '') === 'wallet' ? 'active' : '' %>">
+        <!-- <a href="/vendor/wallet" class="nav-item <%= (activePage || '') === 'wallet' ? 'active' : '' %>">
             <i class="fas fa-wallet"></i>
             <span>Wallet</span>
             <span class="arrow">›</span>
-        </a>
+        </a> -->
 
-        <a href="/vendor/profile" class="nav-item <%= (activePage || '') === 'profile' ? 'active' : '' %>">
+        <!-- <a href="/vendor/profile" class="nav-item <%= (activePage || '') === 'profile' ? 'active' : '' %>">
             <i class="fas fa-user"></i>
             <span>Profile</span>
             <span class="arrow">›</span>
-        </a>
+        </a> -->
     </div>
 
 
     <!-- Bottom buttons -->
     <div class="account-controls">
-        <a href="/vendor/account" class="account-btn">Account</a>
+        <!-- <a href="/vendor/account" class="account-btn">Account</a> -->
         <a href="/vendor/logout" class="account-btn logout-btn">Logout</a>
     </div>
 </div>

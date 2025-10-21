@@ -13,7 +13,7 @@ const categorySchema = new mongoose.Schema(
       required: false,
     },
     offer: {
-      type: Number, 
+      type: Number,
       default: 0,
     },
     isListed: {

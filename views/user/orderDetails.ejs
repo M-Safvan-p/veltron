@@ -1551,170 +1551,179 @@
           <h3 style="margin-top: 25px" class="card-title">Items Ordered</h3>
           <div class="products-list">
             <% order.products.forEach(product=> { %>
-            <div class="product-item">
-              <div class="product-image">
-                <img src="<%= product.image %>" alt="<%= product.name %>" onerror="this.src='/images/default-product.jpg'" />
-              </div>
-              <div class="product-details">
-                <h4 class="product-name">
-                  <%= product.name %>
-                </h4>
-                <p class="product-meta">Price: ₹<%= product.priceAtPurchase.toLocaleString('en-IN') %> × <%=
+              <div class="product-item">
+                <div class="product-image">
+                  <img src="<%= product.image %>" alt="<%= product.name %>"
+                    onerror="this.src='/images/default-product.jpg'" />
+                </div>
+                <div class="product-details">
+                  <h4 class="product-name">
+                    <%= product.name %>
+                  </h4>
+                  <p class="product-meta">Price: ₹<%= product.priceAtPurchase.toLocaleString('en-IN') %> × <%=
                         product.quantity %>
-                </p>
-              </div>
-              <div class="product-total">
-                <span class="product-price">₹<%= (product.quantity * product.priceAtPurchase).toLocaleString('en-IN')
+                  </p>
+                </div>
+                <div class="product-total">
+                  <span class="product-price">₹<%= (product.quantity * product.priceAtPurchase).toLocaleString('en-IN')
                       %></span>
-              </div>
-              <% if (product.orderStatus==='failed' || product.orderStatus==='cancelled' ) { %>
-              <span class="status-badge status-<%= product.orderStatus %>">
-                <%= product.orderStatus.charAt(0).toUpperCase() + product.orderStatus.slice(1) %>
-              </span>
-              <% } %>
-              <!-- if return requested -->
-              <% if (product.returnRequest && product.returnRequest.status) { %>
-              <span class="status-badge status-<%= product.returnRequest.status %>">
-                Return <%= product.returnRequest.status.charAt(0).toUpperCase() +
+                </div>
+                <% if (product.orderStatus==='failed' || product.orderStatus==='cancelled' ) { %>
+                  <span class="status-badge status-<%= product.orderStatus %>">
+                    <%= product.orderStatus.charAt(0).toUpperCase() + product.orderStatus.slice(1) %>
+                  </span>
+                  <% } %>
+                    <!-- if return requested -->
+                    <% if (product.returnRequest && product.returnRequest.status) { %>
+                      <span class="status-badge status-<%= product.returnRequest.status %>">
+                        Return <%= product.returnRequest.status.charAt(0).toUpperCase() +
                           product.returnRequest.status.slice(1) %>
-              </span>
-              <% } %>
-            </div>
-            <% }) %>
+                      </span>
+                      <% } %>
+              </div>
+              <% }) %>
         </article>
 
         <!-- Other Details -->
         <article class="other-details-card">
           <h3 class="card-title">Payment & Other Details</h3>
           <% if(order.paymentStatus==='failed' ) { %>
-          <div class="payment-failed-alert">
-            <div class="alert-icon">⚠️</div>
-            <div class="alert-content">
-              <strong>Payment Failed</strong>
-              <p>Your payment was unsuccessful. Please retry to complete your order.</p>
-            </div>
-          </div>
-          <% } %>
-          <div class="other-details-grid">
-            <div class="detail-item">
-              <span class="detail-label">Payment Method</span>
-              <span class="detail-value">
-                <%= order.paymentMethod %>
-              </span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">Payment Status</span>
-              <span class="payment-status payment-<%= order.paymentStatus %>">
-                <%= order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1) %>
-              </span>
-            </div>
-            <% if (order.couponApplied && order.couponDetails && order.couponDetails.code) { %>
-            <div class="detail-item">
-              <span class="detail-label">Coupon Applied</span>
-              <span class="detail-value">
-                <%= order.couponDetails.code %>
-              </span>
+            <div class="payment-failed-alert">
+              <div class="alert-icon">⚠️</div>
+              <div class="alert-content">
+                <strong>Payment Failed</strong>
+                <p>Your payment was unsuccessful. Please retry to complete your order.</p>
+              </div>
             </div>
             <% } %>
-            <% if (order.paymentMethod=="RAZORPAY" && order.paymentStatus=="failed" ) { %>
-            <div class="detail-item">
-              <span class="detail-label">Retry Payment</span>
-              <button class="retry-btn" onclick="retryPayment( '<%= order.razorpayOrderId %>', '<%= order.totalAmount %>', '<%= order.orderId %>')">
-                Pay Now
-              </button>
-            </div>
-            <% } %>
-          </div>
+              <div class="other-details-grid">
+                <div class="detail-item">
+                  <span class="detail-label">Payment Method</span>
+                  <span class="detail-value">
+                    <%= order.paymentMethod %>
+                  </span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Payment Status</span>
+                  <span class="payment-status payment-<%= order.paymentStatus %>">
+                    <%= order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1) %>
+                  </span>
+                </div>
+                <% if (order.couponApplied && order.couponDetails && order.couponDetails.code) { %>
+                  <div class="detail-item">
+                    <span class="detail-label">Coupon Applied</span>
+                    <span class="detail-value">
+                      <%= order.couponDetails.code %>
+                    </span>
+                  </div>
+                  <% } %>
+                    <% if (order.paymentMethod=="RAZORPAY" && order.paymentStatus=="failed" ) { %>
+                      <div class="detail-item">
+                        <span class="detail-label">Retry Payment</span>
+                        <button class="retry-btn"
+                          onclick="retryPayment( '<%= order.razorpayOrderId %>', '<%= order.totalAmount %>', '<%= order.orderId %>')">
+                          Pay Now
+                        </button>
+                      </div>
+                      <% } %>
+              </div>
 
-          <div class="two-column-layout">
-            <!-- Shipping Address -->
-            <div class="column-card">
-              <h4 class="column-title">Shipping Address</h4>
-              <div class="address-details">
-                <p class="address-name">
-                  <%= order.shippingAddress.type %>
-                </p>
-                <p class="address-phone">
-                  <%= order.shippingAddress.phone %>
-                </p>
-                <p class="address-line">
-                  <%= order.shippingAddress.fullAddress %>
-                </p>
-                <p class="address-line">
-                  <%= order.shippingAddress.district %>
-                </p>
-                <p class="address-line">
-                  <%= order.shippingAddress.city %>, <%= order.shippingAddress.state %> - <%=
+              <div class="two-column-layout">
+                <!-- Shipping Address -->
+                <div class="column-card">
+                  <h4 class="column-title">Shipping Address</h4>
+                  <div class="address-details">
+                    <p class="address-name">
+                      <%= order.shippingAddress.type %>
+                    </p>
+                    <p class="address-phone">
+                      <%= order.shippingAddress.phone %>
+                    </p>
+                    <p class="address-line">
+                      <%= order.shippingAddress.fullAddress %>
+                    </p>
+                    <p class="address-line">
+                      <%= order.shippingAddress.district %>
+                    </p>
+                    <p class="address-line">
+                      <%= order.shippingAddress.city %>, <%= order.shippingAddress.state %> - <%=
                             order.shippingAddress.pincode %>
-                </p>
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="column-card">
+                  <h4 class="column-title">Order Summary</h4>
+                  <div class="summary-list">
+                    <% const totalItems=Math.max( 1, order.products .filter(product=> product.orderStatus !==
+                      'cancelled' && product.orderStatus !== 'failed')
+                      .reduce((total, product) => total + product.quantity, 0)
+                      );
+                      %>
+
+                      <div class="summary-item">
+                        <span class="summary-label">Total Items</span>
+                        <span class="summary-value">
+                          <%= totalItems %>
+                        </span>
+                      </div>
+
+                      <div class="summary-item">
+                        <span class="summary-label">Subtotal</span>
+                        <span class="summary-value">₹<%= order.subTotal.toLocaleString('en-IN') %></span>
+                      </div>
+
+                      <% if (order.discount && order.discount> 0) { %>
+                        <div class="summary-item">
+                          <span class="summary-label">Coupon Discount</span>
+                          <span class="summary-value discount">-₹<%= order.discount.toLocaleString('en-IN') %>
+                          </span>
+                        </div>
+                        <% } %>
+
+                          <div class="summary-item">
+                            <span class="summary-label">GST (18%)</span>
+                            <span class="summary-value">₹<%= order.tax.toLocaleString('en-IN') %></span>
+                          </div>
+
+                          <div class="summary-item">
+                            <span class="summary-label">Shipping</span>
+                            <span class="summary-value">₹50</span>
+                          </div>
+
+                          <hr style="border: none; border-top: 1px solid #dee2e6; margin: 10px 0;" />
+
+                          <div class="summary-item">
+                            <span class="summary-label">Final Total</span>
+                            <span class="summary-value total">₹<%= order.totalAmount.toLocaleString('en-IN') %></span>
+                          </div>
+                  </div>
+                </div>
               </div>
-            </div>
-
-            <!-- Order Summary -->
-            <div class="column-card">
-              <h4 class="column-title">Order Summary</h4>
-              <div class="summary-list">
-                <% const totalItems=order.products.reduce((total, product)=> total + product.quantity, 0); %>
-
-                <div class="summary-item">
-                  <span class="summary-label">Total Items</span>
-                  <span class="summary-value">
-                    <%= totalItems %>
-                  </span>
-                </div>
-
-                <div class="summary-item">
-                  <span class="summary-label">Subtotal</span>
-                  <span class="summary-value">₹<%= order.subTotal.toLocaleString('en-IN') %></span>
-                </div>
-
-                <% if (order.discount && order.discount> 0) { %>
-                <div class="summary-item">
-                  <span class="summary-label">Coupon Discount</span>
-                  <span class="summary-value discount">-₹<%= order.discount.toLocaleString('en-IN') %>
-                  </span>
-                </div>
-                <% } %>
-
-                <div class="summary-item">
-                  <span class="summary-label">GST (18%)</span>
-                  <span class="summary-value">₹<%= order.tax.toLocaleString('en-IN') %></span>
-                </div>
-
-                <div class="summary-item">
-                  <span class="summary-label">Shipping</span>
-                  <span class="summary-value">Free</span>
-                </div>
-
-                <hr style="border: none; border-top: 1px solid #dee2e6; margin: 10px 0;" />
-
-                <div class="summary-item">
-                  <span class="summary-label">Final Total</span>
-                  <span class="summary-value total">₹<%= order.totalAmount.toLocaleString('en-IN') %></span>
-                </div>
-              </div>
-            </div>
-          </div>
         </article>
         <!-- Order Tracking -->
         <article class="order-tracking-card">
           <h3 class="card-title">Order Tracking</h3>
           <div class="tracking-timeline">
-            <div class="timeline-step <%= order.orderStatus === 'pending' || order.orderStatus === 'processing' || order.orderStatus === 'shipped' || order.orderStatus === 'completed' ? 'active' : '' %>">
+            <div
+              class="timeline-step <%= order.orderStatus === 'pending' || order.orderStatus === 'processing' || order.orderStatus === 'shipped' || order.orderStatus === 'completed' ? 'active' : '' %>">
               <div class="step-icon">1</div>
               <div class="step-info">
                 <p class="step-title">Pending</p>
                 <p class="step-desc">Order Not placed</p>
               </div>
             </div>
-            <div class="timeline-step <%= order.orderStatus === 'processing' || order.orderStatus === 'shipped' || order.orderStatus === 'completed' ? 'active' : '' %>">
+            <div
+              class="timeline-step <%= order.orderStatus === 'processing' || order.orderStatus === 'shipped' || order.orderStatus === 'completed' ? 'active' : '' %>">
               <div class="step-icon">2</div>
               <div class="step-info">
                 <p class="step-title">Processed</p>
                 <p class="step-desc">Order confirmed</p>
               </div>
             </div>
-            <div class="timeline-step <%= order.orderStatus === 'shipped' || order.orderStatus === 'completed' ? 'active' : '' %>">
+            <div
+              class="timeline-step <%= order.orderStatus === 'shipped' || order.orderStatus === 'completed' ? 'active' : '' %>">
               <div class="step-icon">3</div>
               <div class="step-info">
                 <p class="step-title">Shipped</p>
@@ -1734,325 +1743,365 @@
           <br>
           <div class="action-buttons">
             <% if (order.orderStatus==='pending' || order.orderStatus==='processing' ) { %>
-            <button class="cancel-button" onclick="openCancelModal()">Cancel
-              Order</button>
-            <% } %>
-            <% if (order.orderStatus==='completed' ) { %>
-            <button class="return-button" onclick="openReturnModal()">Return Order</button>
-            <% } %>
-            <a href="/profile/orders/invoice/<%= order.orderId %>" class="invoice-button">Download Invoice</a>
-            <a href="/profile/orders" class="back-button">Back to Orders</a>
+              <button class="cancel-button" onclick="openCancelModal()">Cancel
+                Order</button>
+              <% } %>
+                <% if (order.orderStatus==='completed' ) { %>
+                  <button class="return-button" onclick="openReturnModal()">Return Order</button>
+                  <% } %>
+                    <a href="/profile/orders/invoice/<%= order.orderId %>" class="invoice-button">Download Invoice</a>
+                    <a href="/profile/orders" class="back-button">Back to Orders</a>
           </div>
         </article>
 
         <!-- Return Details Section (Show if return data exists) -->
         <% if (typeof returnData !=='undefined' && returnData) { %>
-        <div class="welcome-section">
-          <h1 class="welcome-title">Return Details</h1>
-        </div>
-        <article class="return-details-card">
-          <!-- Return Header Info -->
-          <div class="return-header">
-            <div class="return-main-info">
-              <div class="return-id-section">
-                <h4 class="return-id">Return ID: #<%= returnData._id.toString().slice(-8).toUpperCase() %>
-                </h4>
-                <p class="return-date">Requested on <%= new Date(returnData.returnDate).toLocaleDateString('en-IN', {
-                      year: 'numeric' ,month: 'long' , day: 'numeric' }) %>
-                </p>
-              </div>
-              <div class="return-status-section">
-                <span class="return-status-badge return-status-<%= returnData.status %>">
-                  <%= returnData.status.charAt(0).toUpperCase() + returnData.status.slice(1) %>
-                </span>
-              </div>
-            </div>
-
-            <div class="return-reason">
-              <h5 class="return-reason-title">Return Reason</h5>
-              <p class="return-reason-text">
-                <%= returnData.reason %>
-              </p>
-            </div>
+          <div class="welcome-section">
+            <h1 class="welcome-title">Return Details</h1>
           </div>
-
-          <!-- Return Timeline -->
-<div class="return-timeline-section">
-  <h5 class="timeline-section-title">Return Progress</h5>
-  <div class="return-timeline">
-
-    <!-- Step 1: Request Submitted -->
-    <div class="return-timeline-step <%= ['pending','approved','rejected','completed'].includes(returnData.status) ? 'active' : '' %>">
-      <div class="return-step-icon">1</div>
-      <div class="return-step-info">
-        <p class="return-step-title">Request Submitted</p>
-        <p class="return-step-desc">Return request received</p>
-      </div>
-    </div>
-
-    <!-- Step 2: Approved / Rejected -->
-    <div class="return-timeline-step <%= ['approved','completed'].includes(returnData.status) ? 'active' : '' %> <%= returnData.status === 'rejected' ? 'rejected' : '' %>">
-      <div class="return-step-icon">2</div>
-      <div class="return-step-info">
-        <p class="return-step-title"><%= returnData.status === 'rejected' ? 'Rejected' : 'Approved' %></p>
-        <p class="return-step-desc"><%= returnData.status === 'rejected' ? 'Return declined' : 'Return approved' %></p>
-      </div>
-    </div>
-
-    <!-- Step 3: Refund Processed -->
-    <% const isStep3Active = ['processed','completed'].includes(returnData.refundStatus); %>
-    <div class="return-timeline-step <%= isStep3Active ? 'active' : '' %>">
-      <div class="return-step-icon">3</div>
-      <div class="return-step-info">
-        <p class="return-step-title">Refund Processed</p>
-        <p class="return-step-desc">Payment initiated</p>
-      </div>
-    </div>
-
-    <!-- Step 4: Completed -->
-    <div class="return-timeline-step <%= returnData.status === 'completed' && returnData.refundStatus === 'completed' ? 'active' : '' %>">
-      <div class="return-step-icon">4</div>
-      <div class="return-step-info">
-        <p class="return-step-title">Completed</p>
-        <p class="return-step-desc">Refund received</p>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-
-          <!-- Returned Items -->
-          <div class="returned-items-section">
-            <h5 class="returned-items-title">Returned Items</h5>
-            <div class="returned-items-list">
-              <% returnData.items.forEach(item=> { %>
-              <div class="returned-item">
-                <div class="returned-item-details">
-                  <img src=" <%= item.image %>" alt="">
-                  <h6 class="returned-item-name">
-                    <%= item.name %>
-                  </h6>
-                  <p class="returned-item-meta">Quantity: <%= item.quantity %> ×
-                    ₹<%=item.priceAtPurchase.toLocaleString('en-IN') %>
+          <article class="return-details-card">
+            <!-- Return Header Info -->
+            <div class="return-header">
+              <div class="return-main-info">
+                <div class="return-id-section">
+                  <h4 class="return-id">Return ID: #<%= returnData._id.toString().slice(-8).toUpperCase() %>
+                  </h4>
+                  <p class="return-date">Requested on <%= new Date(returnData.returnDate).toLocaleDateString('en-IN', {
+                      year: 'numeric' ,month: 'long' , day: 'numeric' }) %>
                   </p>
                 </div>
-                <div class="returned-item-total">
-                  <span class="returned-item-price">₹<%= (item.quantity *
-                          item.priceAtPurchase).toLocaleString('en-IN') %></span>
+                <div class="return-status-section">
+                  <span class="return-status-badge return-status-<%= returnData.status %>">
+                    <%= returnData.status.charAt(0).toUpperCase() + returnData.status.slice(1) %>
+                  </span>
                 </div>
               </div>
-              <% }) %>
-            </div>
-          </div>
 
-          <!-- Refund Information -->
-          <% if (returnData.refundAmount) { %>
-          <div class="refund-info-section">
-            <h5 class="refund-info-title">Refund Information</h5>
-            <div class="refund-details-grid">
-              <% if (returnData.refundAmount) { %>
-              <div class="refund-detail-item">
-                <span class="refund-detail-label">Refund Amount</span>
-                <span class="refund-detail-value">₹<%=returnData.refundAmount.toLocaleString('en-IN') %></span>
+              <div class="return-reason">
+                <h5 class="return-reason-title">Return Reason</h5>
+                <p class="return-reason-text">
+                  <%= returnData.reason %>
+                </p>
+              </div>
+            </div>
+
+            <!-- Return Timeline -->
+            <div class="return-timeline-section">
+              <h5 class="timeline-section-title">Return Progress</h5>
+              <div class="return-timeline">
+
+                <!-- Step 1: Request Submitted -->
+                <div
+                  class="return-timeline-step <%= ['pending','approved','rejected','completed'].includes(returnData.status) ? 'active' : '' %>">
+                  <div class="return-step-icon">1</div>
+                  <div class="return-step-info">
+                    <p class="return-step-title">Request Submitted</p>
+                    <p class="return-step-desc">Return request received</p>
+                  </div>
+                </div>
+
+                <!-- Step 2: Approved / Rejected -->
+                <div
+                  class="return-timeline-step <%= ['approved','completed'].includes(returnData.status) ? 'active' : '' %> <%= returnData.status === 'rejected' ? 'rejected' : '' %>">
+                  <div class="return-step-icon">2</div>
+                  <div class="return-step-info">
+                    <p class="return-step-title">
+                      <%= returnData.status==='rejected' ? 'Rejected' : 'Approved' %>
+                    </p>
+                    <p class="return-step-desc">
+                      <%= returnData.status==='rejected' ? 'Return declined' : 'Return approved' %>
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Step 3: Refund Processed -->
+                <% const isStep3Active=['processed','completed'].includes(returnData.refundStatus); %>
+                  <div class="return-timeline-step <%= isStep3Active ? 'active' : '' %>">
+                    <div class="return-step-icon">3</div>
+                    <div class="return-step-info">
+                      <p class="return-step-title">Refund Processed</p>
+                      <p class="return-step-desc">Payment initiated</p>
+                    </div>
+                  </div>
+
+                  <!-- Step 4: Completed -->
+                  <div
+                    class="return-timeline-step <%= returnData.status === 'completed' && returnData.refundStatus === 'completed' ? 'active' : '' %>">
+                    <div class="return-step-icon">4</div>
+                    <div class="return-step-info">
+                      <p class="return-step-title">Completed</p>
+                      <p class="return-step-desc">Refund received</p>
+                    </div>
+                  </div>
+
+              </div>
+            </div>
+
+
+            <!-- Returned Items -->
+            <div class="returned-items-section">
+              <h5 class="returned-items-title">Returned Items</h5>
+              <div class="returned-items-list">
+                <% returnData.items.forEach(item=> { %>
+                  <div class="returned-item">
+                    <div class="returned-item-details">
+                      <img src=" <%= item.image %>" alt="">
+                      <h6 class="returned-item-name">
+                        <%= item.name %>
+                      </h6>
+                      <p class="returned-item-meta">Quantity: <%= item.quantity %> ×
+                          ₹<%=item.priceAtPurchase.toLocaleString('en-IN') %>
+                      </p>
+                    </div>
+                    <div class="returned-item-total">
+                      <span class="returned-item-price">₹<%= (item.quantity *
+                          item.priceAtPurchase).toLocaleString('en-IN') %></span>
+                    </div>
+                  </div>
+                  <% }) %>
+              </div>
+            </div>
+
+            <!-- Refund Information -->
+            <% if (returnData.refundAmount) { %>
+              <div class="refund-info-section">
+                <h5 class="refund-info-title">Refund Information</h5>
+                <div class="refund-details-grid">
+                  <% if (returnData.refundAmount) { %>
+                    <div class="refund-detail-item">
+                      <span class="refund-detail-label">Refund Amount</span>
+                      <span class="refund-detail-value">₹<%=returnData.refundAmount.toLocaleString('en-IN') %></span>
+                    </div>
+                    <% } %>
+                      <div class="refund-detail-item">
+                        <span class="refund-detail-label">Refund Method</span>
+                        <span class="refund-detail-value">
+                          Wallet
+                        </span>
+                      </div>
+                      <div class="refund-detail-item">
+                        <span class="refund-detail-label">Refund Date</span>
+                        <span class="refund-detail-value">
+                          within 5-7 business days
+                        </span>
+                      </div>
+                      <div class="refund-detail-item">
+                        <span class="refund-detail-label">Refund Status</span>
+                        <span class="refund-status-badge refund-status-<%= returnData.refundStatus %>">
+                          <%= returnData.refundStatus.charAt(0).toUpperCase()+ returnData.refundStatus.slice(1) %>
+                        </span>
+                      </div>
+                </div>
               </div>
               <% } %>
-              <div class="refund-detail-item">
-                <span class="refund-detail-label">Refund Method</span>
-                <span class="refund-detail-value">
-                  Wallet
-                </span>
-              </div>
-              <div class="refund-detail-item">
-                <span class="refund-detail-label">Refund Date</span>
-                <span class="refund-detail-value">
-                  within 5-7 business days
-                </span>
-              </div>
-              <div class="refund-detail-item">
-                <span class="refund-detail-label">Refund Status</span>
-                <span class="refund-status-badge refund-status-<%= returnData.refundStatus %>">
-                  <%= returnData.refundStatus.charAt(0).toUpperCase()+ returnData.refundStatus.slice(1) %>
-                </span>
-              </div>
-            </div>
-          </div>
+          </article>
           <% } %>
-        </article>
-        <% } %>
       </div>
     </section>
 
     <!-- Cancel Order Modal -->
     <% if (order.orderStatus==='pending' || order.orderStatus==='processing' ) { %>
-    <div id="cancelModal" class="modal-overlay">
-      <div class="cancel-modal">
-        <div class="modal-header">
-          <h3 class="modal-title">Cancel Order Items</h3>
-          <button class="modal-close" onclick="closeCancelModal()">&times;</button>
-        </div>
-        <div class="modal-body">
-          <form id="cancelForm">
-            <div class="cancel-items-list">
-              <% order.products.forEach((product, index)=> { %>
-              <% if (product.orderStatus==='shipped' || product.orderStatus==='completed' ) { %>
-              <div class="cancel-item disabled">
-                <input type="checkbox" class="cancel-checkbox" id="cancel-item-<%= index %>" name="cancelItems" value="<%= product.productId %>" disabled>
-                <div class="cancel-item-image">
-                  <img src="<%= product.image %>" alt="<%= product.name %>" onerror="this.src='/images/default-product.jpg'" />
-                </div>
-                <div class="cancel-item-details">
-                  <h4 class="cancel-item-name">
-                    <%= product.name %>
-                  </h4>
-                  <p class="cancel-item-quantity">Quantity: <%= product.quantity %>
-                  </p>
-                  <span class="cannot-cancel-reason" style="color: #dc3545; font-size: 13px;">
-                    (Already shipped - can't cancel)
-                  </span>
-                </div>
+      <div id="cancelModal" class="modal-overlay">
+        <div class="cancel-modal">
+          <div class="modal-header">
+            <h3 class="modal-title">Cancel Order Items</h3>
+            <button class="modal-close" onclick="closeCancelModal()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <form id="cancelForm">
+              <div class="cancel-items-list">
+                <% order.products.forEach((product, index)=> { %>
+                  <% if (product.orderStatus==='shipped' || product.orderStatus==='completed' ) { %>
+                    <div class="cancel-item disabled">
+                      <input type="checkbox" class="cancel-checkbox" id="cancel-item-<%= index %>" name="cancelItems"
+                        value="<%= product.productId %>" disabled>
+                      <div class="cancel-item-image">
+                        <img src="<%= product.image %>" alt="<%= product.name %>"
+                          onerror="this.src='/images/default-product.jpg'" />
+                      </div>
+                      <div class="cancel-item-details">
+                        <h4 class="cancel-item-name">
+                          <%= product.name %>
+                        </h4>
+                        <p class="cancel-item-quantity">Quantity: <%= product.quantity %>
+                        </p>
+                        <span class="cannot-cancel-reason" style="color: #dc3545; font-size: 13px;">
+                          (Already shipped - can't cancel)
+                        </span>
+                      </div>
+                    </div>
+                    <% } else if (product.orderStatus==='cancelled' ) { %>
+                      <div class="cancel-item disabled">
+                        <input type="checkbox" class="cancel-checkbox" id="cancel-item-<%= index %>" name="cancelItems"
+                          value="<%= product.productId %>" disabled>
+                        <div class="cancel-item-image">
+                          <img src="<%= product.image %>" alt="<%= product.name %>"
+                            onerror="this.src='/images/default-product.jpg'" />
+                        </div>
+                        <div class="cancel-item-details">
+                          <h4 class="cancel-item-name">
+                            <%= product.name %>
+                          </h4>
+                          <p class="cancel-item-quantity">Quantity: <%= product.quantity %>
+                          </p>
+                          <span class="cannot-cancel-reason" style="color: #dc3545; font-size: 13px;">
+                            (Already cancelled - can't cancel again)
+                          </span>
+                        </div>
+                      </div>
+                      <% } else if (product.orderStatus==='failed' ) { %>
+                        <div class="cancel-item disabled">
+                          <input type="checkbox" class="cancel-checkbox" id="cancel-item-<%= index %>"
+                            name="cancelItems" value="<%= product.productId %>" disabled>
+                          <div class="cancel-item-image">
+                            <img src="<%= product.image %>" alt="<%= product.name %>"
+                              onerror="this.src='/images/default-product.jpg'" />
+                          </div>
+                          <div class="cancel-item-details">
+                            <h4 class="cancel-item-name">
+                              <%= product.name %>
+                            </h4>
+                            <p class="cancel-item-quantity">Quantity: <%= product.quantity %>
+                            </p>
+                            <span class="cannot-cancel-reason" style="color: #dc3545; font-size: 13px;">
+                              (Order failed - can't cancel)
+                            </span>
+                          </div>
+                        </div>
+                        <% } else { %>
+                          <div class="cancel-item">
+                            <input type="checkbox" class="cancel-checkbox" id="cancel-item-<%= index %>"
+                              name="cancelItems" value="<%= product.productId %>" data-name="<%= product.name %>"
+                              data-quantity="<%= product.quantity %>" data-variant-id="<%= product.variantId %>"
+                              data-vendor-id="<%= product.vendorId %>"
+                              data-vendor-earning="<%= product.vendorEarning %>"
+                              data-commission-amount="<%= product.commissionAmount %>"
+                              data-price-at-purchase="<%= product.priceAtPurchase %>"
+                              data-product-total="<%= product.productTotal %>"
+                              data-subtotal="<%= product.subTotal || (product.priceAtPurchase * product.quantity) %>"
+                              data-tax="<%= product.tax || 0 %>" data-discount="<%= product.discount || 0 %>">
+                            <div class="cancel-item-image">
+                              <img src="<%= product.image %>" alt="<%= product.name %>"
+                                onerror="this.src='/images/default-product.jpg'" />
+                            </div>
+                            <div class="cancel-item-details">
+                              <h4 class="cancel-item-name">
+                                <%= product.name %>
+                              </h4>
+                              <p class="cancel-item-quantity">Quantity: <%= product.quantity %>
+                              </p>
+                              <p class="cancel-item-price">Price: ₹<%= product.productTotal.toLocaleString('en-IN') %>
+                              </p>
+                            </div>
+                          </div>
+                          <% } %>
+                            <% }) %>
               </div>
-              <% } else if (product.orderStatus==='cancelled' ) { %>
-              <div class="cancel-item disabled">
-                <input type="checkbox" class="cancel-checkbox" id="cancel-item-<%= index %>" name="cancelItems" value="<%= product.productId %>" disabled>
-                <div class="cancel-item-image">
-                  <img src="<%= product.image %>" alt="<%= product.name %>" onerror="this.src='/images/default-product.jpg'" />
-                </div>
-                <div class="cancel-item-details">
-                  <h4 class="cancel-item-name">
-                    <%= product.name %>
-                  </h4>
-                  <p class="cancel-item-quantity">Quantity: <%= product.quantity %>
-                  </p>
-                  <span class="cannot-cancel-reason" style="color: #dc3545; font-size: 13px;">
-                    (Already cancelled - can't cancel again)
-                  </span>
-                </div>
-              </div>
-              <% } else if (product.orderStatus==='failed' ) { %>
-              <div class="cancel-item disabled">
-                <input type="checkbox" class="cancel-checkbox" id="cancel-item-<%= index %>" name="cancelItems" value="<%= product.productId %>" disabled>
-                <div class="cancel-item-image">
-                  <img src="<%= product.image %>" alt="<%= product.name %>" onerror="this.src='/images/default-product.jpg'" />
-                </div>
-                <div class="cancel-item-details">
-                  <h4 class="cancel-item-name">
-                    <%= product.name %>
-                  </h4>
-                  <p class="cancel-item-quantity">Quantity: <%= product.quantity %>
-                  </p>
-                  <span class="cannot-cancel-reason" style="color: #dc3545; font-size: 13px;">
-                    (Order failed - can't cancel)
-                  </span>
-                </div>
-              </div>
-              <% } else { %>
-              <div class="cancel-item">
-                <input type="checkbox" class="cancel-checkbox" id="cancel-item-<%= index %>" name="cancelItems" value="<%= product.productId %>" data-name="<%= product.name %>" data-quantity="<%= product.quantity %>" data-variant-id="<%= product.variantId %>" data-vendor-id="<%= product.vendorId %>" data-vendor-earning="<%= product.vendorEarning %>" data-commission-amount="<%= product.commissionAmount %>" data-price-at-purchase="<%= product.priceAtPurchase %>" data-product-total="<%= product.productTotal %>" data-subtotal="<%= product.subTotal || (product.priceAtPurchase * product.quantity) %>" data-tax="<%= product.tax || 0 %>" data-discount="<%= product.discount || 0 %>">
-                <div class="cancel-item-image">
-                  <img src="<%= product.image %>" alt="<%= product.name %>" onerror="this.src='/images/default-product.jpg'" />
-                </div>
-                <div class="cancel-item-details">
-                  <h4 class="cancel-item-name">
-                    <%= product.name %>
-                  </h4>
-                  <p class="cancel-item-quantity">Quantity: <%= product.quantity %>
-                  </p>
-                  <p class="cancel-item-price">Price: ₹<%= product.productTotal.toLocaleString('en-IN') %>
-                  </p>
-                </div>
-              </div>
-              <% } %>
-              <% }) %>
-            </div>
 
-            <div class="cancel-reason-group">
-              <label class="cancel-label" for="cancelReason">Reason for Cancellation *</label>
-              <textarea id="cancelReason" class="cancel-textarea" name="cancelReason" rows="4" placeholder="Please provide a detailed reason for cancelling the selected items..." required></textarea>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="modal-btn modal-btn-secondary" onclick="closeCancelModal()">Keep Order</button>
-          <button type="button" class="modal-btn modal-btn-primary" onclick="submitCancel()" style="background: #dc3545;">Cancel
-            Items</button>
+              <div class="cancel-reason-group">
+                <label class="cancel-label" for="cancelReason">Reason for Cancellation *</label>
+                <textarea id="cancelReason" class="cancel-textarea" name="cancelReason" rows="4"
+                  placeholder="Please provide a detailed reason for cancelling the selected items..."
+                  required></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="modal-btn modal-btn-secondary" onclick="closeCancelModal()">Keep Order</button>
+            <button type="button" class="modal-btn modal-btn-primary" onclick="submitCancel()"
+              style="background: #dc3545;">Cancel
+              Items</button>
+          </div>
         </div>
       </div>
-    </div>
-    <% } %>
+      <% } %>
 
-    <!-- Return Modal -->
-    <% if (order.orderStatus==='completed' ) { %>
-    <div id="returnModal" class="modal-overlay">
-      <div class="return-modal">
-        <div class="modal-header">
-          <h3 class="modal-title">Return Items</h3>
-          <button class="modal-close" onclick="closeReturnModal()">&times;</button>
-        </div>
-        <div class="modal-body">
-          <form id="returnForm">
-            <div class="return-items-list">
-              <% order.products.forEach((product, index)=> { %>
-              <!-- if product is already return requested or returned, disable the checkbox -->
-              <% const isReturnRequested=returnData && returnData.items.some(item=> item.productId ===
+        <!-- Return Modal -->
+        <% if (order.orderStatus==='completed' ) { %>
+          <div id="returnModal" class="modal-overlay">
+            <div class="return-modal">
+              <div class="modal-header">
+                <h3 class="modal-title">Return Items</h3>
+                <button class="modal-close" onclick="closeReturnModal()">&times;</button>
+              </div>
+              <div class="modal-body">
+                <form id="returnForm">
+                  <div class="return-items-list">
+                    <% order.products.forEach((product, index)=> { %>
+                      <!-- if product is already return requested or returned, disable the checkbox -->
+                      <% const isReturnRequested=returnData && returnData.items.some(item=> item.productId ===
                         product.productId);
                         const isNonReturnableStatus = product.orderStatus === "cancelled" || product.orderStatus ===
                         "failed";
                         const shouldDisable = isReturnRequested || isNonReturnableStatus;
                         %>
 
-              <% if (shouldDisable) { %>
-              <div class="return-item disabled">
-                <input type="checkbox" class="return-checkbox" id="item-<%= index %>" name="returnItems" value="<%= product.productId %>" disabled>
-                <div class="return-item-image">
-                  <img src="<%= product.image %>" alt="<%= product.name %>" onerror="this.src='/images/default-product.jpg'" />
-                </div>
-                <div class="return-item-details">
-                  <h4 class="return-item-name">
-                    <%= product.name %>
-                  </h4>
-                  <p class="return-item-quantity">Quantity: <%= product.quantity %>
-                  </p>
-                  <span class="cannot-return-reason" style="color: #dc3545; font-size: 13px;">
-                    <%= isReturnRequested ? '(Already return requested/processed)'
+                        <% if (shouldDisable) { %>
+                          <div class="return-item disabled">
+                            <input type="checkbox" class="return-checkbox" id="item-<%= index %>" name="returnItems"
+                              value="<%= product.productId %>" disabled>
+                            <div class="return-item-image">
+                              <img src="<%= product.image %>" alt="<%= product.name %>"
+                                onerror="this.src='/images/default-product.jpg'" />
+                            </div>
+                            <div class="return-item-details">
+                              <h4 class="return-item-name">
+                                <%= product.name %>
+                              </h4>
+                              <p class="return-item-quantity">Quantity: <%= product.quantity %>
+                              </p>
+                              <span class="cannot-return-reason" style="color: #dc3545; font-size: 13px;">
+                                <%= isReturnRequested ? '(Already return requested/processed)'
                                   : '(Order cancelled/failed - cannot return)' %>
-                  </span>
-                </div>
-              </div>
-              <% } else { %>
-              <div class="return-item">
-                <input type="checkbox" class="return-checkbox" id="item-<%= index %>" name="returnItems" value="<%= product.productId %>" data-name="<%= product.name %>" data-quantity="<%= product.quantity %>" data-variant-id="<%= product.variantId %>" data-vendor-id="<%= product.vendorId %>" data-vendor-earning="<%= product.vendorEarning %>" data-commission-amount="<%= product.commissionAmount %>" data-price-at-purchase="<%= product.priceAtPurchase %>" data-product-total="<%= product.productTotal %>" data-subtotal="<%= product.subTotal || (product.priceAtPurchase * product.quantity) %>" data-tax="<%= product.tax || 0 %>" data-discount="<%= product.discount || 0 %>">
-                <div class="return-item-image">
-                  <img src="<%= product.image %>" alt="<%= product.name %>" onerror="this.src='/images/default-product.jpg'" />
-                </div>
-                <div class="return-item-details">
-                  <h4 class="return-item-name">
-                    <%= product.name %>
-                  </h4>
-                  <p class="return-item-quantity">Quantity: <%= product.quantity %>
-                  </p>
-                  <p class="return-item-price">Price: ₹<%= product.productTotal.toLocaleString('en-IN') %>
-                  </p>
-                </div>
-              </div>
-              <% } %>
-              <% }) %>
-            </div>
+                              </span>
+                            </div>
+                          </div>
+                          <% } else { %>
+                            <div class="return-item">
+                              <input type="checkbox" class="return-checkbox" id="item-<%= index %>" name="returnItems"
+                                value="<%= product.productId %>" data-name="<%= product.name %>"
+                                data-quantity="<%= product.quantity %>" data-variant-id="<%= product.variantId %>"
+                                data-vendor-id="<%= product.vendorId %>"
+                                data-vendor-earning="<%= product.vendorEarning %>"
+                                data-commission-amount="<%= product.commissionAmount %>"
+                                data-price-at-purchase="<%= product.priceAtPurchase %>"
+                                data-product-total="<%= product.productTotal %>"
+                                data-subtotal="<%= product.subTotal || (product.priceAtPurchase * product.quantity) %>"
+                                data-tax="<%= product.tax || 0 %>" data-discount="<%= product.discount || 0 %>">
+                              <div class="return-item-image">
+                                <img src="<%= product.image %>" alt="<%= product.name %>"
+                                  onerror="this.src='/images/default-product.jpg'" />
+                              </div>
+                              <div class="return-item-details">
+                                <h4 class="return-item-name">
+                                  <%= product.name %>
+                                </h4>
+                                <p class="return-item-quantity">Quantity: <%= product.quantity %>
+                                </p>
+                                <p class="return-item-price">Price: ₹<%= product.productTotal.toLocaleString('en-IN') %>
+                                </p>
+                              </div>
+                            </div>
+                            <% } %>
+                              <% }) %>
+                  </div>
 
-            <div class="return-reason-group">
-              <label class="return-label" for="returnReason">Reason for Return *</label>
-              <textarea id="returnReason" class="return-textarea" name="returnReason" rows="4" placeholder="Please provide a detailed reason for returning the selected items..." required></textarea>
+                  <div class="return-reason-group">
+                    <label class="return-label" for="returnReason">Reason for Return *</label>
+                    <textarea id="returnReason" class="return-textarea" name="returnReason" rows="4"
+                      placeholder="Please provide a detailed reason for returning the selected items..."
+                      required></textarea>
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="modal-btn modal-btn-secondary" onclick="closeReturnModal()">Cancel</button>
+                <button type="button" class="modal-btn modal-btn-primary" onclick="submitReturn()">Submit
+                  Return</button>
+              </div>
             </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="modal-btn modal-btn-secondary" onclick="closeReturnModal()">Cancel</button>
-          <button type="button" class="modal-btn modal-btn-primary" onclick="submitReturn()">Submit
-            Return</button>
-        </div>
-      </div>
-    </div>
-    <% } %>
+          </div>
+          <% } %>
   </div>
 </div>
 
@@ -2063,7 +2112,7 @@
       amount: totalAmount * 100,
       currency: "INR",
       order_id: razorpayId,
-      handler: async function(razorpayResponse) {
+      handler: async function (razorpayResponse) {
         try {
           const verifyRes = await axios.post("/checkout/place-order/razorpay-verify", razorpayResponse);
           if (verifyRes.data.success) {
@@ -2168,7 +2217,7 @@
         }
       },
       modal: {
-        ondismiss: function() {
+        ondismiss: function () {
           Swal.fire({
             icon: 'error',
             title: '<i class="fas fa-times-circle"></i> Payment Failed',
@@ -2335,17 +2384,17 @@
   }
 
   // Event listeners for cancel modal
-  document.getElementById('cancelModal').addEventListener('click', function(e) {
+  document.getElementById('cancelModal').addEventListener('click', function (e) {
     if (e.target === this) {
       closeCancelModal();
     }
   });
 
-  document.querySelector('.cancel-modal').addEventListener('click', function(e) {
+  document.querySelector('.cancel-modal').addEventListener('click', function (e) {
     e.stopPropagation();
   });
 
-  document.addEventListener('keydown', function(e) {
+  document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
       const modal = document.getElementById('cancelModal');
       if (modal.classList.contains('show')) {
@@ -2396,124 +2445,124 @@
 </script>
 
 <% if (order.orderStatus==='completed' ) { %>
-<script>
-  function openReturnModal() {
-    const modal = document.getElementById('returnModal');
-    modal.classList.add('show');
-    document.body.classList.add('modal-open');
-  }
-
-  function closeReturnModal() {
-    const modal = document.getElementById('returnModal');
-    modal.classList.remove('show');
-    document.body.classList.remove('modal-open');
-
-    // Reset form
-    document.getElementById('returnForm').reset();
-  }
-
-  function submitReturn() {
-    const selectedItems = document.querySelectorAll('input[name="returnItems"]:checked');
-    const returnReason = document.getElementById('returnReason').value.trim();
-
-    if (selectedItems.length === 0) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'No Items Selected',
-        text: 'Please select at least one item to return.',
-        confirmButtonText: 'OK'
-      });
-      return;
+  <script>
+    function openReturnModal() {
+      const modal = document.getElementById('returnModal');
+      modal.classList.add('show');
+      document.body.classList.add('modal-open');
     }
 
-    if (!returnReason) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Missing Reason',
-        text: 'Please provide a reason for the return.',
-        confirmButtonText: 'OK'
-      });
-      return;
+    function closeReturnModal() {
+      const modal = document.getElementById('returnModal');
+      modal.classList.remove('show');
+      document.body.classList.remove('modal-open');
+
+      // Reset form
+      document.getElementById('returnForm').reset();
     }
 
-    const returnItems = Array.from(selectedItems).map(item => ({
-      productId: item.value,
-      variantId: item.dataset.variantId,
-      name: item.dataset.name,
-      quantity: parseInt(item.dataset.quantity, 10),
-      vendorId: item.dataset.vendorId,
-      vendorEarning: parseFloat(item.dataset.vendorEarning),
-      commissionAmount: parseFloat(item.dataset.commissionAmount),
-      priceAtPurchase: parseFloat(item.dataset.priceAtPurchase),
-      productTotal: parseInt(item.dataset.productTotal) || 0,
-      subTotal: parseInt(item.dataset.subtotal) || 0,
-      tax: parseInt(item.dataset.tax) || 0,
-      discount: parseInt(item.dataset.discount) || 0,
-    }));
+    function submitReturn() {
+      const selectedItems = document.querySelectorAll('input[name="returnItems"]:checked');
+      const returnReason = document.getElementById('returnReason').value.trim();
 
-    const returnData = {
-      orderId: '<%= order._id %>',
-      items: returnItems,
-      reason: returnReason
-    };
-
-    Swal.fire({
-      title: 'Submit Return Request?',
-      text: `You are requesting to return ${returnItems.length} item(s). This action cannot be undone.`,
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, Submit Return',
-      cancelButtonText: 'Cancel',
-      customClass: {
-        confirmButton: 'swal-confirm-blue',
-        cancelButton: 'swal-cancel-gray'
+      if (selectedItems.length === 0) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'No Items Selected',
+          text: 'Please select at least one item to return.',
+          confirmButtonText: 'OK'
+        });
+        return;
       }
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await axios.post(`/profile/orders/<%= order._id %>/return-items`, returnData);
 
-          Swal.fire({
-            icon: 'success',
-            title: 'Return Request Submitted!',
-            text: 'Your return request has been submitted successfully. We will process it within 1-2 business days.',
-            confirmButtonText: 'OK',
-            customClass: {
-              confirmButton: 'swal-confirm-black'
-            }
-          }).then(() => {
-            closeReturnModal();
-            window.location.reload();
-          });
-        } catch (error) {
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: error.response?.data?.message || 'Failed to submit return request. Please try again.',
-            confirmButtonText: 'OK'
-          });
+      if (!returnReason) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Missing Reason',
+          text: 'Please provide a reason for the return.',
+          confirmButtonText: 'OK'
+        });
+        return;
+      }
+
+      const returnItems = Array.from(selectedItems).map(item => ({
+        productId: item.value,
+        variantId: item.dataset.variantId,
+        name: item.dataset.name,
+        quantity: parseInt(item.dataset.quantity, 10),
+        vendorId: item.dataset.vendorId,
+        vendorEarning: parseFloat(item.dataset.vendorEarning),
+        commissionAmount: parseFloat(item.dataset.commissionAmount),
+        priceAtPurchase: parseFloat(item.dataset.priceAtPurchase),
+        productTotal: parseInt(item.dataset.productTotal) || 0,
+        subTotal: parseInt(item.dataset.subtotal) || 0,
+        tax: parseInt(item.dataset.tax) || 0,
+        discount: parseInt(item.dataset.discount) || 0,
+      }));
+
+      const returnData = {
+        orderId: '<%= order._id %>',
+        items: returnItems,
+        reason: returnReason
+      };
+
+      Swal.fire({
+        title: 'Submit Return Request?',
+        text: `You are requesting to return ${returnItems.length} item(s). This action cannot be undone.`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, Submit Return',
+        cancelButtonText: 'Cancel',
+        customClass: {
+          confirmButton: 'swal-confirm-blue',
+          cancelButton: 'swal-cancel-gray'
+        }
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            await axios.post(`/profile/orders/<%= order._id %>/return-items`, returnData);
+
+            Swal.fire({
+              icon: 'success',
+              title: 'Return Request Submitted!',
+              text: 'Your return request has been submitted successfully. We will process it within 1-2 business days.',
+              confirmButtonText: 'OK',
+              customClass: {
+                confirmButton: 'swal-confirm-black'
+              }
+            }).then(() => {
+              closeReturnModal();
+              window.location.reload();
+            });
+          } catch (error) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: error.response?.data?.message || 'Failed to submit return request. Please try again.',
+              confirmButtonText: 'OK'
+            });
+          }
+        }
+      });
+    }
+
+    document.getElementById('returnModal').addEventListener('click', function (e) {
+      if (e.target === this) {
+        closeReturnModal();
+      }
+    });
+
+    document.querySelector('.return-modal').addEventListener('click', function (e) {
+      e.stopPropagation();
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        const modal = document.getElementById('returnModal');
+        if (modal.classList.contains('show')) {
+          closeReturnModal();
         }
       }
     });
-  }
-
-  document.getElementById('returnModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-      closeReturnModal();
-    }
-  });
-
-  document.querySelector('.return-modal').addEventListener('click', function(e) {
-    e.stopPropagation();
-  });
-
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-      const modal = document.getElementById('returnModal');
-      if (modal.classList.contains('show')) {
-        closeReturnModal();
-      }
-    }
-  });
-</script>
-<% } %>
+  </script>
+  <% } %>

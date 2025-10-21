@@ -6,19 +6,94 @@ const Messages = require("../../constants/messages");
 
 const loadVendors = async (req, res) => {
   try {
-    const page = parseInt(req.query.page || 1);
+    const page = parseInt(req.query.page) || 1;
     const limit = 5;
     const skip = (page - 1) * limit;
-    const vendors = await Vendor.find({
+
+    const search = req.query.search || "";
+    const status = req.query.status || "";
+    const sort = req.query.sort || "";
+
+    // Build match stage
+    const matchStage = {
       permissionStatus: PermissionStatus.APPROVED,
-    })
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit)
-      .lean();
-    const totalVendors = await Vendor.countDocuments({
-      permissionStatus: PermissionStatus.APPROVED,
-    });
+    };
+
+    if (search) {
+      matchStage.brandName = { $regex: search, $options: "i" };
+    }
+
+    if (status === "active") matchStage.isBlocked = false;
+    if (status === "blocked") matchStage.isBlocked = true;
+
+    // Build sort stage
+    let sortStage = { createdAt: -1 };
+    if (sort === "name-asc") sortStage = { brandName: 1 };
+    if (sort === "name-desc") sortStage = { brandName: -1 };
+    if (sort === "sales-high") sortStage = { totalSales: -1 };
+    if (sort === "sales-low") sortStage = { totalSales: 1 };
+
+    // Aggregation pipeline
+    const pipeline = [
+      { $match: matchStage },
+      {
+        $lookup: {
+          from: "orders",
+          let: { vendorId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ["$orderStatus", "completed"] },
+              },
+            },
+            {
+              $unwind: "$products",
+            },
+            {
+              $match: {
+                $expr: { $eq: ["$products.vendorId", "$$vendorId"] },
+              },
+            },
+            {
+              $group: {
+                _id: null,
+                totalEarnings: { $sum: "$products.vendorEarning" },
+                totalOrders: { $sum: 1 },
+              },
+            },
+          ],
+          as: "salesData",
+        },
+      },
+      {
+        $addFields: {
+          sales: {
+            $cond: [{ $gt: [{ $size: "$salesData" }, 0] }, { $arrayElemAt: ["$salesData.totalEarnings", 0] }, 0],
+          },
+          orderCount: {
+            $cond: [{ $gt: [{ $size: "$salesData" }, 0] }, { $arrayElemAt: ["$salesData.totalOrders", 0] }, 0],
+          },
+          totalSales: {
+            $cond: [{ $gt: [{ $size: "$salesData" }, 0] }, { $arrayElemAt: ["$salesData.totalEarnings", 0] }, 0],
+          },
+        },
+      },
+      {
+        $project: {
+          salesData: 0, // Remove the lookup array
+        },
+      },
+      { $sort: sortStage },
+      { $skip: skip },
+      { $limit: limit },
+    ];
+
+    // Get total count for pagination
+    const countPipeline = [{ $match: matchStage }];
+
+    const vendors = await Vendor.aggregate(pipeline);
+    const countResult = await Vendor.aggregate(countPipeline);
+    const totalVendors = countResult.length;
 
     res.render("admin/vendors", {
       layout: "layouts/adminLayout",
@@ -28,6 +103,7 @@ const loadVendors = async (req, res) => {
       totalVendors,
       currentPage: page,
       totalPages: Math.ceil(totalVendors / limit),
+      query: req.query,
     });
   } catch (error) {
     console.log("Vendors page load Error", error);

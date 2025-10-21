@@ -2,7 +2,7 @@ const User = require("../models/user/userSchema");
 
 const checkSession = async (req, res, next) => {
   // skip loging when developing
-  req.session.user = "68cbc01f40bb1d2e2d25788d";
+  // req.session.user = "68cbc01f40bb1d2e2d25788d";
 
   try {
     if (req.session.user) {
@@ -33,7 +33,7 @@ const checkSession = async (req, res, next) => {
 const isLogin = async (req, res, next) => {
   try {
     // skip loging when developing
-    req.session.user = "68cbc01f40bb1d2e2d25788d";
+    // req.session.user = "68cbc01f40bb1d2e2d25788d";
 
     if (req.session.user) {
       const user = await User.findById(req.session.user).lean();

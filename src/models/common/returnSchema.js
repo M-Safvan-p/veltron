@@ -33,10 +33,10 @@ const returnSchema = new mongoose.Schema(
         finalProductPrice: { type: Number, required: true },
         vendorEarning: { type: Number, required: true },
         commissionAmount: { type: Number, required: true },
-        priceAtPurchase: {type: Number, required: true },
+        priceAtPurchase: { type: Number, required: true },
         subTotal: { type: Number, required: true },
-        tax: { type: Number, required: true},
-        discount: { type: Number},
+        tax: { type: Number, required: true },
+        discount: { type: Number },
       },
     ],
     reason: {

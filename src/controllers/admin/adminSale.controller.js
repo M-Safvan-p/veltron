@@ -14,9 +14,9 @@ const loadSaleReport = async (req, res) => {
     let startDate, endDate;
     if (filter === "custom" && customStartDate && customEndDate) {
       startDate = new Date(customStartDate);
-      startDate.setHours(0, 0, 0, 0); 
+      startDate.setHours(0, 0, 0, 0);
       endDate = new Date(customEndDate);
-      endDate.setHours(23, 59, 59, 999); 
+      endDate.setHours(23, 59, 59, 999);
     } else {
       const defaultFilter = filter === "custom" ? "month" : filter;
       var { startDate: sDate, endDate: eDate } = getDateRange(defaultFilter);
@@ -25,27 +25,26 @@ const loadSaleReport = async (req, res) => {
     }
 
     const page = parseInt(req.query.page) || 1;
-    const limit = 20;
+    const limit = 7;
     const skip = (page - 1) * limit;
 
-    // orders 
-    const orders = await Order.find({ 
-      invoiceDate: { $gte: startDate, $lte: endDate } 
+    // orders
+    const orders = await Order.find({
+      invoiceDate: { $gte: startDate, $lte: endDate },
     })
       .populate("customerId", "fullName email")
       .populate("products.vendorId", "brandName")
       .sort({ invoiceDate: -1 })
       .skip(skip)
       .limit(limit);
-    
-    const totalOrdersCount = await Order.countDocuments({ 
-      invoiceDate: { $gte: startDate, $lte: endDate } 
+
+    const totalOrdersCount = await Order.countDocuments({
+      invoiceDate: { $gte: startDate, $lte: endDate },
     });
     const totalPages = Math.ceil(totalOrdersCount / limit);
-    const allOrders = await Order.find({ 
-      invoiceDate: { $gte: startDate, $lte: endDate } 
-    })
-      .populate("products.vendorId", "brandName");
+    const allOrders = await Order.find({
+      invoiceDate: { $gte: startDate, $lte: endDate },
+    }).populate("products.vendorId", "brandName");
 
     // Calculate totals from ALL orders
     let totalRevenue = 0;
@@ -59,10 +58,10 @@ const loadSaleReport = async (req, res) => {
 
     allOrders.forEach((order) => {
       order.products.forEach((product) => {
-        vendorSet.add(product.vendorId._id.toString()); 
+        vendorSet.add(product.vendorId._id.toString());
         // Add to totals
         totalRevenue += product.productTotal;
-        totalCommission += (product.productTotal - product.vendorEarning);
+        totalCommission += product.productTotal - product.vendorEarning;
         totalProductsSold += product.quantity;
         if (product.orderStatus === "processing") processingOrders++;
         if (product.orderStatus === "shipped") shippedOrders++;
@@ -72,20 +71,20 @@ const loadSaleReport = async (req, res) => {
     });
 
     const reportData = {
-      orders: orders, 
+      orders: orders,
       filter: filter,
       totalOrders: totalOrdersCount,
       totalRevenue: totalRevenue.toFixed(2),
       totalCommission: totalCommission.toFixed(2),
       totalProductsSold: totalProductsSold,
-      activeVendors: vendorSet.size, 
+      activeVendors: vendorSet.size,
       processingOrders: processingOrders,
       shippedOrders: shippedOrders,
       completedOrders: completedOrders,
       cancelledOrders: cancelledOrders,
       // date
-      startDate: new Date(startDate).toLocaleDateString('en-GB'),
-      endDate: new Date(endDate).toLocaleDateString('en-GB'),
+      startDate: new Date(startDate).toLocaleDateString("en-GB"),
+      endDate: new Date(endDate).toLocaleDateString("en-GB"),
     };
 
     res.render("admin/sale", {
@@ -129,24 +128,21 @@ const exportPDF = async (req, res) => {
       .sort({ invoiceDate: -1 });
 
     // Create PDF with landscape orientation for better column space
-    const doc = new PDFDocument({ 
-      margin: 40, 
+    const doc = new PDFDocument({
+      margin: 40,
       size: "A4",
-      layout: "landscape"
+      layout: "landscape",
     });
 
     res.setHeader("Content-Type", "application/pdf");
-    res.setHeader(
-      "Content-Disposition", 
-      `attachment; filename=admin_sales_report_${new Date().toISOString().split('T')[0]}.pdf`
-    );
+    res.setHeader("Content-Disposition", `attachment; filename=admin_sales_report_${new Date().toISOString().split("T")[0]}.pdf`);
     doc.pipe(res);
 
     // Page dimensions (A4 landscape)
     const pageWidth = 841.89;
     const pageHeight = 595.28;
     const margin = 40;
-    
+
     // Enhanced column layout with vendor column
     const tableTop = 160;
     const columns = {
@@ -159,21 +155,19 @@ const exportPDF = async (req, res) => {
       total: { x: margin + 465, width: 75 },
       commission: { x: margin + 545, width: 75 },
       coupon: { x: margin + 635, width: 60 },
-      status: { x: margin + 700, width: 65 }
+      status: { x: margin + 700, width: 65 },
     };
 
     // Helper function to draw table header
     const drawTableHeader = (yPos) => {
       // Header background
-      doc.rect(margin, yPos - 8, pageWidth - (margin * 2), 28)
-        .fill("#1a2332");
-      
+      doc.rect(margin, yPos - 8, pageWidth - margin * 2, 28).fill("#1a2332");
+
       // Header text
-      doc.fontSize(8)
-        .fillColor("#ffffff")
-        .font("Helvetica-Bold");
-      
-      doc.text("Order ID", columns.orderId.x, yPos, { width: columns.orderId.width })
+      doc.fontSize(8).fillColor("#ffffff").font("Helvetica-Bold");
+
+      doc
+        .text("Order ID", columns.orderId.x, yPos, { width: columns.orderId.width })
         .text("Date", columns.date.x, yPos, { width: columns.date.width })
         .text("Customer", columns.customer.x, yPos, { width: columns.customer.width })
         .text("Vendor", columns.vendor.x, yPos, { width: columns.vendor.width })
@@ -183,9 +177,10 @@ const exportPDF = async (req, res) => {
         .text("Commission", columns.commission.x, yPos, { width: columns.commission.width, align: "right" })
         .text("Coupon", columns.coupon.x, yPos, { width: columns.coupon.width })
         .text("Status", columns.status.x, yPos, { width: columns.status.width });
-      
+
       // Bottom border
-      doc.moveTo(margin, yPos + 22)
+      doc
+        .moveTo(margin, yPos + 22)
         .lineTo(pageWidth - margin, yPos + 22)
         .strokeColor("#3498db")
         .lineWidth(2)
@@ -194,40 +189,39 @@ const exportPDF = async (req, res) => {
 
     // ===== HEADER SECTION =====
     // Header background with gradient effect
-    doc.rect(0, 0, pageWidth, 130)
-      .fill("#2c3e50");
-    
+    doc.rect(0, 0, pageWidth, 130).fill("#2c3e50");
+
     // Accent bar
-    doc.rect(0, 130, pageWidth, 5)
-      .fill("#3498db");
+    doc.rect(0, 130, pageWidth, 5).fill("#3498db");
 
     // Title
-    doc.fontSize(28)
+    doc
+      .fontSize(28)
       .fillColor("#ffffff")
       .font("Helvetica-Bold")
-      .text("ADMIN SALES REPORT", margin, 35, { 
-        align: "center", 
-        width: pageWidth - (margin * 2) 
+      .text("ADMIN SALES REPORT", margin, 35, {
+        align: "center",
+        width: pageWidth - margin * 2,
       });
 
     // Subtitle
-    doc.fontSize(14)
+    doc
+      .fontSize(14)
       .fillColor("#ecf0f1")
       .font("Helvetica")
-      .text("Platform-Wide Sales Overview", margin, 70, { 
-        align: "center", 
-        width: pageWidth - (margin * 2) 
+      .text("Platform-Wide Sales Overview", margin, 70, {
+        align: "center",
+        width: pageWidth - margin * 2,
       });
 
     // Date range
-    doc.fontSize(11)
+    doc
+      .fontSize(11)
       .fillColor("#bdc3c7")
-      .text(
-        `Period: ${new Date(startDate).toLocaleDateString("en-GB")} - ${new Date(endDate).toLocaleDateString("en-GB")}`,
-        margin,
-        95,
-        { align: "center", width: pageWidth - (margin * 2) }
-      );
+      .text(`Period: ${new Date(startDate).toLocaleDateString("en-GB")} - ${new Date(endDate).toLocaleDateString("en-GB")}`, margin, 95, {
+        align: "center",
+        width: pageWidth - margin * 2,
+      });
 
     // ===== TABLE SECTION =====
     drawTableHeader(tableTop);
@@ -243,24 +237,24 @@ const exportPDF = async (req, res) => {
     orders.forEach((order) => {
       // Group products by vendor
       const vendorGroups = {};
-      
+
       order.products.forEach((p) => {
         const vendorId = p.vendorId._id.toString();
         vendorSet.add(vendorId);
-        
+
         if (!vendorGroups[vendorId]) {
           vendorGroups[vendorId] = {
             vendorName: p.vendorId.storeName || p.vendorId.fullName || "Unknown",
             products: [],
             total: 0,
             commission: 0,
-            itemCount: 0
+            itemCount: 0,
           };
         }
-        
+
         vendorGroups[vendorId].products.push(p);
         vendorGroups[vendorId].total += p.productTotal;
-        vendorGroups[vendorId].commission += (p.productTotal - p.vendorEarning);
+        vendorGroups[vendorId].commission += p.productTotal - p.vendorEarning;
         vendorGroups[vendorId].itemCount += p.quantity;
       });
 
@@ -280,14 +274,11 @@ const exportPDF = async (req, res) => {
 
         // Alternate row background
         if (rowCount % 2 === 0) {
-          doc.rect(margin, yPosition - 6, pageWidth - (margin * 2), 24)
-            .fill("#f8f9fa");
+          doc.rect(margin, yPosition - 6, pageWidth - margin * 2, 24).fill("#f8f9fa");
         }
 
         // Row data
-        doc.fontSize(8)
-          .fillColor("#2c3e50")
-          .font("Helvetica");
+        doc.fontSize(8).fillColor("#2c3e50").font("Helvetica");
 
         const orderId = order.orderId?.toString().slice(-8) || order._id.toString().slice(-8);
         const orderDate = new Date(order.invoiceDate).toLocaleDateString("en-GB");
@@ -295,74 +286,74 @@ const exportPDF = async (req, res) => {
         const vendorName = vendorGroup.vendorName;
         const paymentMethod = order.paymentMethod || "N/A";
         const couponCode = order.couponDetails?.code || "-";
-        
+
         // Get status priority
-        const priority = ['processing', 'shipped', 'completed', 'cancelled'];
-        let status = 'processing';
+        const priority = ["processing", "shipped", "completed", "cancelled"];
+        let status = "processing";
         for (let s of priority) {
-          if (vendorGroup.products.some(p => p.orderStatus === s)) {
+          if (vendorGroup.products.some((p) => p.orderStatus === s)) {
             status = s;
             break;
           }
         }
 
-        doc.text(orderId, columns.orderId.x, yPosition, { 
-          width: columns.orderId.width,
-          ellipsis: true 
-        })
-        .text(orderDate, columns.date.x, yPosition, { 
-          width: columns.date.width 
-        })
-        .text(customerName, columns.customer.x, yPosition, { 
-          width: columns.customer.width,
-          ellipsis: true 
-        })
-        .text(vendorName, columns.vendor.x, yPosition, { 
-          width: columns.vendor.width,
-          ellipsis: true 
-        })
-        .text(vendorGroup.itemCount.toString(), columns.items.x, yPosition, { 
-          width: columns.items.width,
-          align: "center" 
-        })
-        .text(paymentMethod, columns.payment.x, yPosition, { 
-          width: columns.payment.width,
-          ellipsis: true 
-        });
+        doc
+          .text(orderId, columns.orderId.x, yPosition, {
+            width: columns.orderId.width,
+            ellipsis: true,
+          })
+          .text(orderDate, columns.date.x, yPosition, {
+            width: columns.date.width,
+          })
+          .text(customerName, columns.customer.x, yPosition, {
+            width: columns.customer.width,
+            ellipsis: true,
+          })
+          .text(vendorName, columns.vendor.x, yPosition, {
+            width: columns.vendor.width,
+            ellipsis: true,
+          })
+          .text(vendorGroup.itemCount.toString(), columns.items.x, yPosition, {
+            width: columns.items.width,
+            align: "center",
+          })
+          .text(paymentMethod, columns.payment.x, yPosition, {
+            width: columns.payment.width,
+            ellipsis: true,
+          });
 
         // Total with bold font
-        doc.font("Helvetica-Bold")
-          .text(`₹${vendorGroup.total.toFixed(2)}`, columns.total.x, yPosition, { 
-            width: columns.total.width,
-            align: "right" 
-          });
+        doc.font("Helvetica-Bold").text(`₹${vendorGroup.total.toFixed(2)}`, columns.total.x, yPosition, {
+          width: columns.total.width,
+          align: "right",
+        });
 
         // Commission with color
-        doc.fillColor("#856404")
-          .text(`₹${vendorGroup.commission.toFixed(2)}`, columns.commission.x, yPosition, { 
-            width: columns.commission.width,
-            align: "right" 
-          });
+        doc.fillColor("#856404").text(`₹${vendorGroup.commission.toFixed(2)}`, columns.commission.x, yPosition, {
+          width: columns.commission.width,
+          align: "right",
+        });
 
-        doc.fillColor("#2c3e50")
-          .font("Helvetica")
-          .text(couponCode, columns.coupon.x, yPosition, { 
-            width: columns.coupon.width,
-            ellipsis: true 
-          });
+        doc.fillColor("#2c3e50").font("Helvetica").text(couponCode, columns.coupon.x, yPosition, {
+          width: columns.coupon.width,
+          ellipsis: true,
+        });
 
         // Status with color coding
-        const statusColor = 
-          status === "completed" ? "#27ae60" :
-          status === "cancelled" ? "#e74c3c" :
-          status === "shipped" ? "#3498db" :
-          status === "processing" ? "#f39c12" : "#95a5a6";
-        
-        doc.fillColor(statusColor)
-          .fontSize(7)
-          .text(status.toUpperCase(), columns.status.x, yPosition, { 
-            width: columns.status.width 
-          });
+        const statusColor =
+          status === "completed"
+            ? "#27ae60"
+            : status === "cancelled"
+              ? "#e74c3c"
+              : status === "shipped"
+                ? "#3498db"
+                : status === "processing"
+                  ? "#f39c12"
+                  : "#95a5a6";
+
+        doc.fillColor(statusColor).fontSize(7).text(status.toUpperCase(), columns.status.x, yPosition, {
+          width: columns.status.width,
+        });
 
         yPosition += 24;
         rowCount++;
@@ -373,7 +364,8 @@ const exportPDF = async (req, res) => {
     yPosition += 20;
 
     // Separator line
-    doc.moveTo(margin, yPosition)
+    doc
+      .moveTo(margin, yPosition)
       .lineTo(pageWidth - margin, yPosition)
       .strokeColor("#bdc3c7")
       .lineWidth(1)
@@ -383,73 +375,64 @@ const exportPDF = async (req, res) => {
 
     // Summary box
     const summaryBoxHeight = 80;
-    doc.rect(margin, yPosition, pageWidth - (margin * 2), summaryBoxHeight)
-      .fill("#ecf0f1");
+    doc.rect(margin, yPosition, pageWidth - margin * 2, summaryBoxHeight).fill("#ecf0f1");
 
     yPosition += 15;
 
     // Summary details
-    doc.fontSize(10)
-      .fillColor("#2c3e50")
-      .font("Helvetica");
+    doc.fontSize(10).fillColor("#2c3e50").font("Helvetica");
 
     const summaryX = margin + 20;
     const summarySpacing = 160;
 
     // First row
-    doc.text(`Total Orders: ${orders.length}`, summaryX, yPosition)
+    doc
+      .text(`Total Orders: ${orders.length}`, summaryX, yPosition)
       .text(`Active Vendors: ${vendorSet.size}`, summaryX + summarySpacing, yPosition)
-      .text(`Total Items: ${totalItems}`, summaryX + (summarySpacing * 2), yPosition)
-      .text(`Avg Order: ₹${orders.length > 0 ? (grandTotal / orders.length).toFixed(2) : "0.00"}`, 
-        summaryX + (summarySpacing * 3), yPosition);
+      .text(`Total Items: ${totalItems}`, summaryX + summarySpacing * 2, yPosition)
+      .text(`Avg Order: ₹${orders.length > 0 ? (grandTotal / orders.length).toFixed(2) : "0.00"}`, summaryX + summarySpacing * 3, yPosition);
 
     // Second row - Totals
     yPosition += 30;
-    doc.fontSize(13)
-      .font("Helvetica-Bold");
+    doc.fontSize(13).font("Helvetica-Bold");
 
-    doc.fillColor("#27ae60")
-      .text("TOTAL REVENUE:", summaryX, yPosition);
-    
-    doc.fontSize(15)
-      .text(`₹${grandTotal.toFixed(2)}`, summaryX + 150, yPosition);
+    doc.fillColor("#27ae60").text("TOTAL REVENUE:", summaryX, yPosition);
 
-    doc.fontSize(13)
+    doc.fontSize(15).text(`₹${grandTotal.toFixed(2)}`, summaryX + 150, yPosition);
+
+    doc
+      .fontSize(13)
       .fillColor("#856404")
       .text("COMMISSION:", summaryX + 340, yPosition);
-    
-    doc.fontSize(15)
-      .text(`₹${totalCommission.toFixed(2)}`, summaryX + 480, yPosition);
+
+    doc.fontSize(15).text(`₹${totalCommission.toFixed(2)}`, summaryX + 480, yPosition);
 
     // Vendor payout calculation
     const vendorPayout = grandTotal - totalCommission;
-    doc.fontSize(11)
+    doc
+      .fontSize(11)
       .fillColor("#2c3e50")
       .font("Helvetica")
-      .text(`Vendor Payout: ₹${vendorPayout.toFixed(2)}`, summaryX + (summarySpacing * 3) + 20, yPosition + 5);
+      .text(`Vendor Payout: ₹${vendorPayout.toFixed(2)}`, summaryX + summarySpacing * 3 + 20, yPosition + 5);
 
     // ===== FOOTER =====
     const footerY = pageHeight - 35;
-    
-    doc.moveTo(margin, footerY)
+
+    doc
+      .moveTo(margin, footerY)
       .lineTo(pageWidth - margin, footerY)
       .strokeColor("#bdc3c7")
       .lineWidth(0.5)
       .stroke();
 
-    doc.fontSize(8)
+    doc
+      .fontSize(8)
       .fillColor("#95a5a6")
       .font("Helvetica")
       .text(`Generated on ${new Date().toLocaleString("en-GB")}`, margin, footerY + 8)
-      .text(
-        `Page 1 of 1 | Confidential - Admin Use Only`,
-        margin,
-        footerY + 8,
-        { align: "right", width: pageWidth - (margin * 2) }
-      );
+      .text(`Page 1 of 1 | Confidential - Admin Use Only`, margin, footerY + 8, { align: "right", width: pageWidth - margin * 2 });
 
     doc.end();
-
   } catch (error) {
     console.error("Error exporting admin sales PDF:", error);
     res.status(500).send("Error generating PDF");
@@ -510,7 +493,7 @@ const exportExcel = async (req, res) => {
     headerRow.fill = {
       type: "pattern",
       pattern: "solid",
-      fgColor: { argb: "FF2C3E50" }
+      fgColor: { argb: "FF2C3E50" },
     };
     headerRow.alignment = { vertical: "middle", horizontal: "center" };
     headerRow.height = 25;
@@ -526,11 +509,11 @@ const exportExcel = async (req, res) => {
     orders.forEach((order) => {
       // Group products by vendor
       const vendorGroups = {};
-      
+
       order.products.forEach((p) => {
         const vendorId = p.vendorId._id.toString();
         vendorSet.add(vendorId);
-        
+
         if (!vendorGroups[vendorId]) {
           vendorGroups[vendorId] = {
             vendorName: p.vendorId.brandName,
@@ -539,13 +522,13 @@ const exportExcel = async (req, res) => {
             total: 0,
             commission: 0,
             vendorEarning: 0,
-            itemCount: 0
+            itemCount: 0,
           };
         }
-        
+
         vendorGroups[vendorId].products.push(p);
         vendorGroups[vendorId].total += p.productTotal;
-        vendorGroups[vendorId].commission += (p.productTotal - p.vendorEarning);
+        vendorGroups[vendorId].commission += p.productTotal - p.vendorEarning;
         vendorGroups[vendorId].vendorEarning += p.vendorEarning;
         vendorGroups[vendorId].itemCount += p.quantity;
       });
@@ -558,19 +541,17 @@ const exportExcel = async (req, res) => {
         totalItems += vendorGroup.itemCount;
 
         // Get status priority
-        const priority = ['processing', 'shipped', 'completed', 'cancelled'];
-        let status = 'processing';
+        const priority = ["processing", "shipped", "completed", "cancelled"];
+        let status = "processing";
         for (let s of priority) {
-          if (vendorGroup.products.some(p => p.orderStatus === s)) {
+          if (vendorGroup.products.some((p) => p.orderStatus === s)) {
             status = s;
             break;
           }
         }
 
         // Calculate discount for this vendor's portion
-        const vendorDiscount = order.couponDetails.discount 
-          ? (order.couponDetails.discount * (vendorGroup.total / order.finalAmount)).toFixed(2)
-          : 0;
+        const vendorDiscount = order.couponDetails.discount ? (order.couponDetails.discount * (vendorGroup.total / order.finalAmount)).toFixed(2) : 0;
 
         if (order.couponDetails.discount) {
           totalDiscount += parseFloat(vendorDiscount);
@@ -595,26 +576,26 @@ const exportExcel = async (req, res) => {
 
         // Apply row styling
         row.alignment = { vertical: "middle", horizontal: "left" };
-        
+
         // Color code status
-        const statusCell = row.getCell('status');
-        if (status === 'completed') {
+        const statusCell = row.getCell("status");
+        if (status === "completed") {
           statusCell.font = { color: { argb: "FF27AE60" }, bold: true };
-        } else if (status === 'cancelled') {
+        } else if (status === "cancelled") {
           statusCell.font = { color: { argb: "FFE74C3C" }, bold: true };
-        } else if (status === 'shipped') {
+        } else if (status === "shipped") {
           statusCell.font = { color: { argb: "FF3498DB" }, bold: true };
-        } else if (status === 'processing') {
+        } else if (status === "processing") {
           statusCell.font = { color: { argb: "FFF39C12" }, bold: true };
         }
 
         // Highlight commission column
-        row.getCell('commission').fill = {
+        row.getCell("commission").fill = {
           type: "pattern",
           pattern: "solid",
-          fgColor: { argb: "FFFFF3CD" }
+          fgColor: { argb: "FFFFF3CD" },
         };
-        row.getCell('commission').font = { bold: true, color: { argb: "FF856404" } };
+        row.getCell("commission").font = { bold: true, color: { argb: "FF856404" } };
       });
     });
 
@@ -629,7 +610,7 @@ const exportExcel = async (req, res) => {
     summaryHeaderRow.fill = {
       type: "pattern",
       pattern: "solid",
-      fgColor: { argb: "FF3498DB" }
+      fgColor: { argb: "FF3498DB" },
     };
     summaryHeaderRow.height = 30;
     summaryHeaderRow.alignment = { vertical: "middle", horizontal: "center" };
@@ -657,14 +638,14 @@ const exportExcel = async (req, res) => {
       row.getCell(1).fill = {
         type: "pattern",
         pattern: "solid",
-        fgColor: { argb: "FFECF0F1" }
+        fgColor: { argb: "FFECF0F1" },
       };
-      
+
       // Highlight financial totals
       if (item.label.includes("Total") || item.label.includes("Average")) {
         row.getCell(2).font = { bold: true, size: 12, color: { argb: "FF27AE60" } };
       }
-      
+
       if (item.label === "Total Commission") {
         row.getCell(2).font = { bold: true, size: 12, color: { argb: "FF856404" } };
       }
@@ -680,23 +661,22 @@ const exportExcel = async (req, res) => {
     // Apply autofilter to main data
     worksheet.autoFilter = {
       from: { row: 1, column: 1 },
-      to: { row: 1, column: 14 }
+      to: { row: 1, column: 14 },
     };
 
     // Freeze header row
-    worksheet.views = [
-      { state: "frozen", xSplit: 0, ySplit: 1 }
-    ];
+    worksheet.views = [{ state: "frozen", xSplit: 0, ySplit: 1 }];
 
     // Add borders to all cells
     worksheet.eachRow((row, rowNumber) => {
       row.eachCell((cell) => {
-        if (rowNumber <= worksheet.lastRow.number - 15) { // Don't border summary section
+        if (rowNumber <= worksheet.lastRow.number - 15) {
+          // Don't border summary section
           cell.border = {
             top: { style: "thin", color: { argb: "FFE9ECEF" } },
             left: { style: "thin", color: { argb: "FFE9ECEF" } },
             bottom: { style: "thin", color: { argb: "FFE9ECEF" } },
-            right: { style: "thin", color: { argb: "FFE9ECEF" } }
+            right: { style: "thin", color: { argb: "FFE9ECEF" } },
           };
         }
       });
@@ -704,10 +684,9 @@ const exportExcel = async (req, res) => {
 
     // Write to response
     res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-    res.setHeader("Content-Disposition", `attachment; filename=admin_sales_report_${new Date().toISOString().split('T')[0]}.xlsx`);
+    res.setHeader("Content-Disposition", `attachment; filename=admin_sales_report_${new Date().toISOString().split("T")[0]}.xlsx`);
     await workbook.xlsx.write(res);
     res.end();
-
   } catch (error) {
     console.error("Error exporting admin sales Excel:", error);
     res.status(500).send("Error generating Excel");

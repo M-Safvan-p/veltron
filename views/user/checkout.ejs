@@ -80,27 +80,31 @@
                   <span class="wallet-balance-text">Wallet Balance:</span>
                   <span class="wallet-balance-amount">₹ <%= wallet.balance.toLocaleString() %></span>
                 </div>
-                
+
               </div>
             </label>
           </div>
 
           <div class="payment-option">
             <input type="radio" id="razorpay" name="paymentMethod" value="RAZORPAY" class="payment-radio">
-            <label for="razorpay" class="payment-label">
+
+            <label for="razorpay" class="payment-label" id="razorpayLabel">
               <div class="payment-content">
                 <span class="payment-title">Razorpay</span>
-                <span class="payment-desc">Pay securely using Razorpay</span>
+                <span id="razorpay-desc" class="payment-desc">
+                  Pay securely using Razorpay
+                </span>
               </div>
             </label>
           </div>
 
+
           <div class="payment-option">
             <input type="radio" id="cod" name="paymentMethod" value="COD" class="payment-radio">
-            <label for="cod" class="payment-label">
+            <label for="cod" class="payment-label" id="codLabel">
               <div class="payment-content">
                 <span class="payment-title">Cash on Delivery</span>
-                <span class="payment-desc">Pay when you receive your order</span>
+                <span id="cod-desc" class="payment-desc">Pay when you receive your order</span>
               </div>
             </label>
           </div>
@@ -192,8 +196,8 @@
             <span class="summary-value" id="taxValue">₹<%= tax.toLocaleString() %></span>
           </div>
           <div class="summary-row">
-            <span class="summary-label">Shipping</span>
-            <span class="summary-value shipping-free">FREE</span>
+            <span class="summary-label">Shipping <small>(No-Refund)</small></span>
+            <span class="summary-value shipping-free">₹50</span>
           </div>
           <!-- Coupon Discount Row - NEW -->
           <div class="summary-row coupon-discount-row" id="couponDiscountRow" style="display: none;">
@@ -352,7 +356,7 @@
                   <div class="coupon-condition">
                     Min. purchase: ₹<%= coupon.minPurchase.toLocaleString() %>
                   </div>
-                <% } %>
+                  <% } %>
               </div>
 
               <div class="coupon-card-footer">
@@ -380,9 +384,53 @@
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-  /* ========================================
-   AVAILABLE COUPONS MODAL - JAVASCRIPT
-   ======================================== */
+  // Initialize pricing variables
+  let originalSubtotal = <%= subtotal %>;
+  let originalTax = <%= tax %>;
+  let originalTotal = <%= total %>;
+  let appliedCouponData = null;
+
+  document.addEventListener('DOMContentLoaded', () => {
+    updateCODAvailability(originalTotal)
+    updateRazorpayAvailability(originalTotal)
+  });
+
+  function updateCODAvailability(total) {
+    const codRadio = document.getElementById('cod');
+    const codDesc = document.getElementById('cod-desc');
+    const codLabel = document.getElementById('codLabel');
+
+    if (total > 10000) {
+      codRadio.disabled = true;
+      codLabel.setAttribute('aria-disabled', 'true');
+      codDesc.innerHTML = `Pay when you receive your order <br>
+      <span style="color: red; font-size: 0.85em;">(Unavailable for orders above ₹10,000)</span>`;
+    } else {
+      codRadio.disabled = false;
+      codLabel.removeAttribute('aria-disabled');
+      codDesc.innerHTML = "Pay when you receive your order";
+    }
+  }
+  function updateRazorpayAvailability(total) {
+  const razorpayRadio = document.getElementById('razorpay');
+  const razorpayDesc = document.getElementById('razorpay-desc');
+  const razorpayLabel = document.getElementById('razorpayLabel');
+
+  if (total > 500000) {
+    razorpayRadio.disabled = true;
+    razorpayLabel.setAttribute('aria-disabled', 'true');
+    razorpayDesc.innerHTML = `Pay securely using Razorpay <br>
+      <span style="color: red; font-size: 0.85em;">
+        (Unavailable for orders above ₹5,00,000)
+      </span>`;
+  } else {
+    razorpayRadio.disabled = false;
+    razorpayLabel.removeAttribute('aria-disabled');
+    razorpayDesc.innerHTML = "Pay securely using Razorpay";
+  }
+}
+
+
 
   // Open Coupons Modal
   function openCouponsModal() {
@@ -450,11 +498,6 @@
     }
   });
 
-  // Initialize pricing variables
-  let originalSubtotal = <%= subtotal %>;
-  let originalTax = <%= tax %>;
-  let originalTotal = <%= total %>;
-  let appliedCouponData = null;
 
   function openAddressModal() {
     document.getElementById('addressModal').style.display = 'flex';
@@ -521,6 +564,8 @@
         };
 
         // Update pricing with backend data
+        updateCODAvailability(response.data.total);
+        updateRazorpayAvailability(response.data.total);
         updatePricingFromBackend(response.data);
         showAppliedCoupon(couponCode);
         showCouponMessage(`Coupon applied! You saved ₹${response.data.discount.toLocaleString()}`, 'success');
@@ -554,7 +599,7 @@
 
     const discountRow = document.getElementById('couponDiscountRow');
     const savingsInfo = document.getElementById('savingsInfo');
-    
+
     if (backendData.discount > 0) {
       discountRow.style.display = 'flex';
       document.getElementById('savingsAmount').textContent = `₹${backendData.discount.toLocaleString()}`;

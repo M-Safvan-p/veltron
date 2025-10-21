@@ -36,10 +36,10 @@
                             aria-label="Product price">
                     </div>
                     <div class="form-group">
-    <label class="form-label" for="offer">Offer (%)</label>
-    <input type="number" id="offer" name="offer" class="form-input" value="10" 
-           aria-label="Offer percentage">
-</div>
+                        <label class="form-label" for="offer">Offer (%)</label>
+                        <input type="number" id="offer" name="offer" class="form-input" value="10"
+                            aria-label="Offer percentage">
+                    </div>
                     <div class="form-group">
                         <label class="form-label">Listing Status</label>
                         <div class="radio-group">
@@ -150,8 +150,8 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="stockQuantity-0">Stock Quantity</label>
-                            <input type="number" value="20" id="stockQuantity-0" name="variants[0][stock]" class="form-input" min="0"
-                                aria-label="Stock quantity for variant 1">
+                            <input type="number" value="20" id="stockQuantity-0" name="variants[0][stock]"
+                                class="form-input" min="0" aria-label="Stock quantity for variant 1">
                         </div>
                     </div>
                 </div>
@@ -626,7 +626,7 @@
 
             // Validate the form data
             const validationResult = validateProductForm(productData);
-            
+
             if (!validationResult.isValid) {
                 Swal.fire({
                     title: "Validation Error!",
@@ -738,7 +738,7 @@
         // Product name validation
         const nameInput = document.getElementById('name');
         if (nameInput) {
-            nameInput.addEventListener('blur', function() {
+            nameInput.addEventListener('blur', function () {
                 validateProductName(this);
             });
         }
@@ -746,7 +746,7 @@
         // Description validation
         const descriptionInput = document.getElementById('description');
         if (descriptionInput) {
-            descriptionInput.addEventListener('blur', function() {
+            descriptionInput.addEventListener('blur', function () {
                 validateDescription(this);
             });
         }
@@ -754,7 +754,7 @@
         // Price validation
         const priceInput = document.getElementById('price');
         if (priceInput) {
-            priceInput.addEventListener('blur', function() {
+            priceInput.addEventListener('blur', function () {
                 validatePrice(this);
             });
         }
@@ -762,7 +762,7 @@
         // Offer validation
         const offerInput = document.getElementById('offer');
         if (offerInput) {
-            offerInput.addEventListener('blur', function() {
+            offerInput.addEventListener('blur', function () {
                 validateOffer(this);
             });
         }
@@ -770,7 +770,7 @@
         // Category validation
         const categorySelect = document.getElementById('category');
         if (categorySelect) {
-            categorySelect.addEventListener('change', function() {
+            categorySelect.addEventListener('change', function () {
                 validateCategory(this);
             });
         }
@@ -780,7 +780,7 @@
         specFields.forEach(fieldId => {
             const field = document.getElementById(fieldId);
             if (field) {
-                field.addEventListener('blur', function() {
+                field.addEventListener('blur', function () {
                     validateSpecificationField(this, fieldId);
                 });
             }
@@ -795,7 +795,7 @@
         // Color validation
         const colorInput = variantContainer.querySelector(`input[name="variants[${variantIndex}][color]"]`);
         if (colorInput) {
-            colorInput.addEventListener('blur', function() {
+            colorInput.addEventListener('blur', function () {
                 validateVariantColor(this, variantIndex);
             });
         }
@@ -803,7 +803,7 @@
         // Stock validation
         const stockInput = variantContainer.querySelector(`input[name="variants[${variantIndex}][stock]"]`);
         if (stockInput) {
-            stockInput.addEventListener('blur', function() {
+            stockInput.addEventListener('blur', function () {
                 validateVariantStock(this, variantIndex);
             });
         }
@@ -813,7 +813,7 @@
     function validateVariantColor(input, variantIndex) {
         const value = input.value.trim();
         const errorMsg = document.getElementById(`variant-${variantIndex}-color-error`) || createErrorElement(input, `variant-${variantIndex}-color-error`);
-        
+
         if (!value) {
             showFieldError(errorMsg, 'Color is required for this variant.');
             return false;
@@ -832,7 +832,7 @@
     function validateVariantStock(input, variantIndex) {
         const value = parseInt(input.value);
         const errorMsg = document.getElementById(`variant-${variantIndex}-stock-error`) || createErrorElement(input, `variant-${variantIndex}-stock-error`);
-        
+
         if (isNaN(value) || value < 0) {
             showFieldError(errorMsg, 'Stock must be 0 or more.');
             return false;
@@ -849,7 +849,7 @@
     function validateProductName(input) {
         const value = input.value.trim();
         const errorMsg = document.getElementById('name-error') || createErrorElement(input, 'name-error');
-        
+
         if (!value) {
             showFieldError(errorMsg, 'Product name is required.');
             return false;
@@ -868,7 +868,7 @@
     function validateDescription(input) {
         const value = input.value.trim();
         const errorMsg = document.getElementById('description-error') || createErrorElement(input, 'description-error');
-        
+
         if (!value) {
             showFieldError(errorMsg, 'Description is required.');
             return false;
@@ -887,7 +887,7 @@
     function validatePrice(input) {
         const value = parseFloat(input.value);
         const errorMsg = document.getElementById('price-error') || createErrorElement(input, 'price-error');
-        
+
         if (isNaN(value) || value <= 0) {
             showFieldError(errorMsg, 'Price must be greater than 0.');
             return false;
@@ -903,7 +903,7 @@
     function validateOffer(input) {
         const value = parseFloat(input.value);
         const errorMsg = document.getElementById('offer-error') || createErrorElement(input, 'offer-error');
-        
+
         if (input.value !== '' && (isNaN(value) || value < 0)) {
             showFieldError(errorMsg, 'Offer percentage must be 0 or more.');
             return false;
@@ -919,7 +919,7 @@
     function validateCategory(select) {
         const value = select.value;
         const errorMsg = document.getElementById('category-error') || createErrorElement(select, 'category-error');
-        
+
         if (!value || value === 'mechanical') {
             showFieldError(errorMsg, 'Please select a valid category.');
             return false;
@@ -933,7 +933,7 @@
         const value = input.value.trim();
         const errorMsg = document.getElementById(`${fieldId}-error`) || createErrorElement(input, `${fieldId}-error`);
         const fieldName = fieldId === 'AdditionalInformation' ? 'Additional Information' : fieldId;
-        
+
         // Additional Information is optional
         if (fieldId === 'AdditionalInformation') {
             if (value && value.length > 500) {
@@ -944,7 +944,7 @@
                 return true;
             }
         }
-        
+
         // Other fields are required
         if (!value) {
             showFieldError(errorMsg, `${fieldName} is required.`);
@@ -970,7 +970,7 @@
         errorDiv.style.fontSize = '0.875rem';
         errorDiv.style.marginTop = '0.25rem';
         errorDiv.style.display = 'none';
-        
+
         input.parentNode.insertBefore(errorDiv, input.nextSibling);
         return errorDiv;
     }

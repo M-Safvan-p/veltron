@@ -10,21 +10,22 @@ const loadReturns = async (req, res) => {
     const limit = 10;
     const skip = (page - 1) * limit;
 
-    // Filters
     const sort = req.query.sort || "newest";
     const filterStatus = req.query.status || "";
+    const search = req.query.search || "";
 
-    // Build query - only returns for this vendor's products
     let query = {
-      // Add vendor filter if you have vendor-specific returns
-      // vendorId: req.vendor._id 
+      "items.vendorId": req.session.vendor,
     };
-    
+
     if (filterStatus) {
       query.status = filterStatus;
     }
 
-    // Sort options
+    if (search) {
+      query.orderId = { $regex: search, $options: "i" };
+    }
+
     let sortOption = {};
     switch (sort) {
       case "oldest":
@@ -35,41 +36,35 @@ const loadReturns = async (req, res) => {
         sortOption = { returnDate: -1 };
     }
 
-    // Get returns with populated data
     const returns = await Return.find(query)
       .populate({
         path: "orderId",
-        select: "shippingAddress orderDate totalAmount"
+        select: "shippingAddress orderDate totalAmount orderId",
       })
       .populate({
         path: "userId",
-        select: "fullName email phone"
+        select: "fullName email phone",
       })
       .populate({
         path: "items.productId",
-        select: "name variants"
+        select: "name variants",
       })
       .sort(sortOption)
       .limit(limit)
       .skip(skip)
-      .lean(); // Add lean() for better performance
+      .lean();
 
     const totalReturns = await Return.countDocuments(query);
     const totalPages = Math.ceil(totalReturns / limit);
 
-    // Calculate stats
-    const pendingCount = await Return.countDocuments({ 
+    const pendingCount = await Return.countDocuments({
       ...query,
-      status: "pending" 
+      status: "pending",
     });
-    
+
     const currentDate = new Date();
-    const firstDayOfMonth = new Date(
-      currentDate.getFullYear(), 
-      currentDate.getMonth(), 
-      1
-    );
-    
+    const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+
     const monthlyCount = await Return.countDocuments({
       ...query,
       returnDate: { $gte: firstDayOfMonth },
@@ -85,6 +80,7 @@ const loadReturns = async (req, res) => {
       limit: limit,
       sort: sort,
       status: filterStatus,
+      search: search,
       pendingCount: pendingCount,
       monthlyCount: monthlyCount,
       activePage: "returns",
@@ -94,7 +90,6 @@ const loadReturns = async (req, res) => {
     errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
   }
 };
-
 const updateReturnStatus = async (req, res) => {
   try {
     const { id } = req.params;
@@ -103,16 +98,16 @@ const updateReturnStatus = async (req, res) => {
     // Find the return
     const returnItem = await Return.findById(id);
     if (!returnItem) {
-      return errorResponse(res, HttpStatus.NOT_FOUND, 'Return not found');
+      return errorResponse(res, HttpStatus.NOT_FOUND, "Return not found");
     }
     // Update status
     returnItem.status = status;
     if (status === "approved") {
-      returnItem.refundStatus = "processed"; 
+      returnItem.refundStatus = "processed";
     }
     if (status === "completed") {
-      returnItem.refundStatus = "completed"; 
-      // refund 
+      returnItem.refundStatus = "completed";
+      // refund
       const userWallet = await Wallet.findOne({ userId: returnItem.userId });
       if (userWallet) {
         userWallet.balance += returnItem.refundAmount;
@@ -127,28 +122,30 @@ const updateReturnStatus = async (req, res) => {
         const newWallet = new Wallet({
           userId: returnItem.userId,
           balance: returnItem.refundAmount,
-          transactionHistory: [{
-            type: "credit",
-            amount: returnItem.refundAmount,
-            message: `Refund for return products`,
-            date: new Date(),
-          }],
+          transactionHistory: [
+            {
+              type: "credit",
+              amount: returnItem.refundAmount,
+              message: `Refund for return products`,
+              date: new Date(),
+            },
+          ],
         });
         await newWallet.save();
       }
     }
     if (status === "rejected") {
-      returnItem.refundStatus = "failed"; 
+      returnItem.refundStatus = "failed";
     }
     await returnItem.save();
 
-    success(res, HttpStatus.OK, 'Status updated successfully', { return: returnItem });
+    success(res, HttpStatus.OK, "Status updated successfully", { return: returnItem });
   } catch (error) {
     console.error("Error updating return status:", error);
     errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
   }
 };
 module.exports = {
-    loadReturns,
-    updateReturnStatus,
+  loadReturns,
+  updateReturnStatus,
 };

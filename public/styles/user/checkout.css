@@ -1789,3 +1789,9 @@
     font-size: 13px;
   }
 }
+
+.non-refundable {
+  font-size: 0.85em;
+  color: #777;
+  margin-left: 4px;
+}

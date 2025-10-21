@@ -2,10 +2,6 @@ const Product = require("../../models/common/productSchema");
 const Category = require("../../models/common/categorySchema");
 const Vendor = require("../../models/vendor/vendorSchema");
 
-const HttpStatus = require("../../constants/statusCodes");
-const Messages = require("../../constants/messages");
-const { success, error: errorResponse } = require("../../helpers/responseHelper");
-
 const getProducts = async (req, res) => {
   try {
     const { search, category, vendor, priceRange, sort, page = 1 } = req.query;
