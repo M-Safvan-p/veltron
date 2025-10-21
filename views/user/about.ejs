@@ -1,0 +1,492 @@
+<style>
+  .main-wrapper {
+    width: 100%;
+    min-height: 100vh;
+    background: #ffffff;
+  }
+
+  /* Hero Banner */
+  .hero-banner {
+    color: rgb(0, 0, 0);
+    padding: 30px 10px;
+    text-align: center;
+  }
+
+  .hero-content {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .hero-title {
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+
+  .hero-tagline {
+    font-size: 18px;
+    color: rgba(0, 0, 0, 0.9);
+    margin: 0;
+  }
+
+  /* Main Container */
+  .page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  /* About Section */
+  .about-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+    padding: 60px 0;
+    border-bottom: 1px solid #e9ecef;
+  }
+
+  .about-content h2 {
+    font-size: 32px;
+    font-weight: 600;
+    color: #212529;
+    margin-bottom: 20px;
+  }
+
+  .about-content p {
+    font-size: 15px;
+    color: #495057;
+    line-height: 1.8;
+    margin-bottom: 16px;
+  }
+
+  .about-image {
+    width: 100%;
+    height: 350px;
+    border-radius: 12px;
+    background-image: url(https://res.cloudinary.com/ddj9jtbof/image/upload/v1760941980/download_lwxv9a.jpg);
+    display: flex;
+    background-size: cover;
+    background-position: center;
+    align-items: center;
+    justify-content: center;
+    font-size: 80px;
+    overflow: hidden;
+  }
+
+  .about-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Mission Section */
+  .mission-section {
+    padding: 60px 0;
+    border-bottom: 1px solid #e9ecef;
+  }
+
+  .mission-section h2 {
+    font-size: 32px;
+    font-weight: 600;
+    color: #212529;
+    margin-bottom: 30px;
+  }
+
+  .mission-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+
+  .mission-item {
+    padding: 24px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border-left: 4px solid #212529;
+  }
+
+  .mission-item h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #212529;
+    margin-bottom: 12px;
+  }
+
+  .mission-item p {
+    font-size: 14px;
+    color: #6c757d;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* Why Choose Us Section */
+  .why-choose-section {
+    padding: 60px 0;
+    border-bottom: 1px solid #e9ecef;
+  }
+
+  .why-choose-section h2 {
+    font-size: 32px;
+    font-weight: 600;
+    color: #212529;
+    margin-bottom: 40px;
+    text-align: center;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+  }
+
+  .feature-card {
+    text-align: center;
+    padding: 30px 20px;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+  }
+
+  .feature-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+    border-color: #dee2e6;
+  }
+
+  .feature-icon {
+    width: 45px;
+    height: 45px;
+    margin: 0 auto 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+  }
+
+  .feature-card h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #212529;
+    margin-bottom: 12px;
+  }
+
+  .feature-card p {
+    font-size: 14px;
+    color: #6c757d;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* Developer Section */
+  .developer-section {
+    padding: 60px 0;
+  }
+
+  .developer-card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 40px;
+    border-radius: 12px;
+    text-align: center;
+    border: 1px solid #e9ecef;
+  }
+
+  .developer-card h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #212529;
+    margin-bottom: 12px;
+  }
+
+  .developer-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: #212529;
+    margin-bottom: 12px;
+  }
+
+  .developer-bio {
+    font-size: 15px;
+    color: #495057;
+    line-height: 1.7;
+    margin: 0 0 20px 0;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .developer-links {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .dev-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    color: #212529;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .dev-link:hover {
+    background: #212529;
+    color: white;
+    border-color: #212529;
+  }
+
+  .dev-link i {
+    font-size: 14px;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .hero-title {
+      font-size: 36px;
+    }
+
+    .hero-tagline {
+      font-size: 16px;
+    }
+
+    .hero-banner {
+      padding: 60px 20px;
+    }
+
+    .about-section {
+      grid-template-columns: 1fr;
+      gap: 30px;
+      padding: 40px 0;
+    }
+
+    .about-content h2 {
+      font-size: 24px;
+    }
+
+    .about-image {
+      height: 280px;
+    }
+
+    .mission-section,
+    .why-choose-section,
+    .developer-section {
+      padding: 40px 0;
+    }
+
+    .mission-section h2,
+    .why-choose-section h2 {
+      font-size: 24px;
+    }
+
+    .features-grid {
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+    }
+
+    .feature-card {
+      padding: 20px 16px;
+    }
+
+    .feature-icon {
+      font-size: 36px;
+    }
+
+    .developer-card {
+      padding: 30px 20px;
+    }
+
+    .developer-card h2 {
+      font-size: 20px;
+    }
+
+    .developer-name {
+      font-size: 16px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .page-container {
+      padding: 0 15px;
+    }
+
+    .hero-title {
+      font-size: 28px;
+    }
+
+    .hero-tagline {
+      font-size: 14px;
+    }
+
+    .about-content h2,
+    .mission-section h2,
+    .why-choose-section h2 {
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+
+    .about-content p {
+      font-size: 14px;
+    }
+
+    .about-image {
+      height: 220px;
+      font-size: 60px;
+    }
+
+    .mission-grid,
+    .features-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .feature-card {
+      padding: 18px 14px;
+    }
+
+    .feature-icon {
+      font-size: 32px;
+    }
+
+    .developer-links {
+      gap: 10px;
+    }
+
+    .dev-link {
+      padding: 8px 14px;
+      font-size: 13px;
+    }
+  }
+</style>
+<!-- Font Awesome CDN -->
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+  integrity="sha512-K8uJH+n0tN0+4vX7nYc5PvM5smn6Y0R6WyvJvM8NYT3uV3+mnB4KTtCmC3a3C9Zz7lrfhHyJ5E9U1yNfZ8Vd3Q=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+/>
+
+
+<div class="main-wrapper">
+  <!-- Hero Banner -->
+  <div class="hero-banner">
+    <div class="hero-content">
+      <h1 class="hero-title">About Veltron</h1>
+      <p class="hero-tagline">Discover our story and mission</p>
+    </div>
+  </div>
+
+  <!-- About Section -->
+  <div class="page-container">
+    <section class="about-section">
+      <div class="about-content">
+        <h2>Welcome to Veltron</h2>
+        <p>
+          Veltron is a modern eCommerce platform dedicated to bringing you the finest selection of products at unbeatable prices. We believe that quality shopping should be accessible to everyone, which is why we've built our platform with you in mind.
+        </p>
+        <p>
+          Our carefully curated marketplace connects you with trusted brands and sellers, offering everything you need from electronics and fashion to home essentials and lifestyle products. Whether you're looking for everyday items or something special, we're here to make your shopping experience smooth, secure, and satisfying.
+        </p>
+        <p>
+          At Veltron, customer satisfaction is our top priority. We work tirelessly to ensure fast delivery, transparent pricing, and exceptional service every single time you shop with us.
+        </p>
+      </div>
+      <div class="about-image">
+        <i class="fas fa-shopping-bags"></i>
+      </div>
+    </section>
+
+    <!-- Mission Section -->
+    <section class="mission-section">
+      <h2>Our Mission</h2>
+      <div class="mission-grid">
+        <div class="mission-item">
+          <h3>Quality Products at Affordable Prices</h3>
+          <p>We believe everyone deserves access to high-quality products without breaking the bank. Our mission is to offer competitive prices without compromising on quality or authenticity.</p>
+        </div>
+        <div class="mission-item">
+          <h3>Easy & Secure Shopping Experience</h3>
+          <p>Shopping should be simple and worry-free. We've invested in state-of-the-art security measures and an intuitive interface to ensure your every transaction is safe and convenient.</p>
+        </div>
+        <div class="mission-item">
+          <h3>Customer Satisfaction & Trust</h3>
+          <p>Your trust is everything to us. We're committed to outstanding customer support, transparent policies, and genuine products that exceed your expectations every single time.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why Choose Us Section -->
+    <section class="why-choose-section">
+      <h2>Why Choose Veltron?</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-bolt"></i>
+          </div>
+          <h3>Fast Delivery</h3>
+          <p>Get your orders delivered quickly and reliably. We partner with trusted logistics providers to ensure your items arrive on time, every time.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-lock"></i>
+          </div>
+          <h3>Secure Payments</h3>
+          <p>Your payment information is protected with industry-leading encryption. Shop with confidence knowing your transactions are secure and verified.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-headset"></i>
+          </div>
+          <h3>24/7 Support</h3>
+          <p>Our dedicated support team is always available to help. Whether you have questions or concerns, we're here to assist you around the clock.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <h3>Trusted Brands</h3>
+          <p>We carefully verify all sellers and brands on our platform. Shop with peace of mind knowing every product comes from trusted, authentic sources.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Developer Section -->
+    <section class="developer-section">
+      <div class="developer-card">
+        <h2>Built with Passion</h2>
+        <p class="developer-name">Developed by Muhammed Safvan P</p>
+        <p class="developer-bio">
+          A self-taught full-stack developer specializing in React.js, Node.js, and modern web technologies. Passionate about creating intuitive, scalable eCommerce solutions that make online shopping seamless and enjoyable for users worldwide.
+        </p>
+        <div class="developer-links">
+          <a href="https://github.com" class="dev-link" target="_blank" rel="noopener noreferrer">
+            <i class="fab fa-github"></i>
+            GitHub
+          </a>
+          <a href="https://linkedin.com" class="dev-link" target="_blank" rel="noopener noreferrer">
+            <i class="fab fa-linkedin"></i>
+            LinkedIn
+          </a>
+          <a href="mailto:muhammedsafvanp96@example.com" class="dev-link">
+            <i class="fas fa-envelope"></i>
+            Email
+          </a>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
