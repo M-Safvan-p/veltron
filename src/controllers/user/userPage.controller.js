@@ -1,7 +1,8 @@
 const Product = require("../../models/common/productSchema");
+const Contact = require("../../models/common/contactForm.schema");
 const HttpStatus = require("../../constants/statusCodes");
 const Messages = require("../../constants/messages");
-const { error: errorResponse } = require("../../helpers/responseHelper");
+const { error: errorResponse, success } = require("../../helpers/responseHelper");
 
 const loadLanding = async (req, res) => {
   try {
@@ -116,7 +117,21 @@ const loadContact = async (req, res) => {
 };
 
 const postContact = async (req, res) => {
-  res.send("hi");
+  try {
+    const { fullName, email, subject, message } = req.body;
+    // save data
+    const newContactForm = new Contact({
+      fullName,
+      email,
+      subject,
+      message
+    });
+    await newContactForm.save();
+    success(res, HttpStatus.CREATED);
+  } catch (error) {
+    console.log("error when saving contact form",error);
+    errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
+  }
 };
 
 module.exports = {
