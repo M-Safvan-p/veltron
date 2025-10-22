@@ -158,7 +158,7 @@ const placeOrder = async (req, res) => {
     const products = filtered.map((item) => {
       const { total, subtotal, tax, discount } = calculator.calculateProductTotal(item, couponUsed ? couponUsed.discount : 0);
       const { commission: productCommission, vendorEarnings: productVendorEarnings } = calculator.calculateCommission(total);
-
+      
       return {
         productId: item.productId,
         vendorId: item.vendorId,
@@ -245,7 +245,6 @@ const placeOrder = async (req, res) => {
           razorpayOrderId: razorpayOrder.id,
           couponApplied: couponUsed ? couponUsed._id : null,
           couponDetails: couponUsed ? { code: couponUsed.code, discount: appliedDiscount } : undefined,
-          invoiceDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
         });
         await orderPlace.save();
       }
@@ -274,7 +273,6 @@ const placeOrder = async (req, res) => {
         paymentStatus: "pending",
         couponApplied: couponUsed ? couponUsed._id : null,
         couponDetails: couponUsed ? { code: couponUsed.code, discount: appliedDiscount } : undefined,
-        invoiceDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
       });
       await orderPlace.save();
     }
@@ -304,7 +302,6 @@ const placeOrder = async (req, res) => {
         products,
         paymentStatus: "paid",
         couponApplied: couponUsed ? couponUsed._id : null,
-        invoiceDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
         couponDetails: couponUsed ? { code: couponUsed.code, discount: appliedDiscount } : undefined,
       });
       await orderPlace.save();
