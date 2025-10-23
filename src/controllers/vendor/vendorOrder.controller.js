@@ -114,10 +114,13 @@ const handleStatus = async (req, res) => {
     if (!orderData) {
       return errorResponse(res, HttpStatus.NOT_FOUND, Messages.ORDER_NOT_FOUND);
     }
-
+    // check payment status 
+    if(orderData.paymentStatus==="failed"){
+      return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.PAYMENT_FAILED_ORDER);
+    }
     // update status
     orderData.products.forEach((product) => {
-      if (product.vendorId.toString() === vendorId && product.orderStatus !== "cancelled") {
+      if (product.vendorId.toString() === vendorId) {
         product.orderStatus = orderStatus;
       }
     });

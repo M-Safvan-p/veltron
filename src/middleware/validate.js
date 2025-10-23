@@ -22,7 +22,7 @@ const validate = (schema) => {
         error: err.message,
       });
     }
-  };
+  }; 
 };
 
 module.exports = validate;

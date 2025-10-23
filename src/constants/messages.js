@@ -95,11 +95,13 @@ const Messages = {
   // ORDER_OUT_FOR_DELIVERY: "Your order is out for delivery.",
   // ORDER_DELIVERED: "Your order has been delivered successfully.",
   // ORDER_FAILED: "We were unable to process your order. Please try again.",
+  PAYMENT_FAILED_ORDER:"Cannot proceed with payment failed order",
   ORDER_CANCELLED: "Your order has been cancelled.",
   ORDER_NOT_FOUND: "Order not found. Please check your order ID.",
   ORDER_STATUS_UPDATED: "Order status updated.",
   ORDER_ITEM_NOT_FOUND: (productId, variantId) => `Product ${productId} with variant ${variantId} not found in this order.`,
   ORDER_RETURN_QUANTITY_EXCEEDS: (productId) => `Return quantity for product ${productId} exceeds purchased quantity.`,
+
   // razorpay
   RAZORPAY_ORDER_CREAT: "Razorpay order created",
   // ORDER_UPDATE_FAILED: "Your order could not be updated at this time. Please try later.",
