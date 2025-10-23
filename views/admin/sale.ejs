@@ -742,7 +742,7 @@
         </div>
         <div class="metric-label">Total Orders</div>
         <div class="metric-value">
-          <%= reportData.totalOrders %>
+          <%= reportData.fullOrder %>
         </div>
         <div class="metric-subtitle">All platform orders</div>
       </div>
@@ -888,15 +888,7 @@
                 Object.values(vendorGroups).forEach((vendorGroup, index) => {
                   const totalItems = vendorGroup.products.reduce((sum, p) => sum + p.quantity, 0);
                   
-                  // Get status priority
-                  const priority = ['processing', 'shipped', 'completed', 'cancelled'];
-                  let orderStatus = 'processing';
-                  for (let status of priority) {
-                    if (vendorGroup.products.some(p => p.orderStatus === status)) {
-                      orderStatus = status;
-                      break;
-                    }
-                  }
+                  let orderStatus = order.orderStatus;
               %>
               <tr class="report-row">
                 <td>

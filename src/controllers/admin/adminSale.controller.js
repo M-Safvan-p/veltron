@@ -30,6 +30,7 @@ const loadSaleReport = async (req, res) => {
 
     // orders
     const orders = await Order.find({
+      orderStatus:"completed",
       invoiceDate: { $gte: startDate, $lte: endDate },
     })
       .populate("customerId", "fullName email")
@@ -39,12 +40,11 @@ const loadSaleReport = async (req, res) => {
       .limit(limit);
 
     const totalOrdersCount = await Order.countDocuments({
+      orderStatus:"completed",
       invoiceDate: { $gte: startDate, $lte: endDate },
     });
     const totalPages = Math.ceil(totalOrdersCount / limit);
-    const allOrders = await Order.find({
-      invoiceDate: { $gte: startDate, $lte: endDate },
-    }).populate("products.vendorId", "brandName");
+    const allOrders = await Order.find();
 
     // Calculate totals from ALL orders
     let totalRevenue = 0;
@@ -63,12 +63,13 @@ const loadSaleReport = async (req, res) => {
         totalRevenue += product.productTotal;
         totalCommission += product.productTotal - product.vendorEarning;
         totalProductsSold += product.quantity;
-        if (product.orderStatus === "processing") processingOrders++;
-        if (product.orderStatus === "shipped") shippedOrders++;
-        if (product.orderStatus === "completed") completedOrders++;
-        if (product.orderStatus === "cancelled") cancelledOrders++;
       });
+      if (order.orderStatus === "processing") processingOrders++;
+      if (order.orderStatus === "shipped") shippedOrders++;
+      if (order.orderStatus === "cancelled") cancelledOrders++;
+      if (order.orderStatus === "completed") completedOrders++;
     });
+    const fullOrder = allOrders.length;
 
     const reportData = {
       orders: orders,
@@ -78,6 +79,7 @@ const loadSaleReport = async (req, res) => {
       totalCommission: totalCommission.toFixed(2),
       totalProductsSold: totalProductsSold,
       activeVendors: vendorSet.size,
+      fullOrder:fullOrder,
       processingOrders: processingOrders,
       shippedOrders: shippedOrders,
       completedOrders: completedOrders,

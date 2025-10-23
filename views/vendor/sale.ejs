@@ -673,16 +673,20 @@
       </div>
 
       <div class="quick-filters">
-        <button class="filter-chip <%= reportData.filter === 'today' ? 'active' : '' %>" onclick="applyQuickFilter('today')">
+        <button class="filter-chip <%= reportData.filter === 'today' ? 'active' : '' %>"
+          onclick="applyQuickFilter('today')">
           Today
         </button>
-        <button class="filter-chip <%= reportData.filter === 'week' ? 'active' : '' %>" onclick="applyQuickFilter('week')">
+        <button class="filter-chip <%= reportData.filter === 'week' ? 'active' : '' %>"
+          onclick="applyQuickFilter('week')">
           This Week
         </button>
-        <button class="filter-chip <%= reportData.filter === 'month' ? 'active' : '' %>" onclick="applyQuickFilter('month')">
+        <button class="filter-chip <%= reportData.filter === 'month' ? 'active' : '' %>"
+          onclick="applyQuickFilter('month')">
           This Month
         </button>
-        <button class="filter-chip <%= reportData.filter === 'year' ? 'active' : '' %>" onclick="applyQuickFilter('year')">
+        <button class="filter-chip <%= reportData.filter === 'year' ? 'active' : '' %>"
+          onclick="applyQuickFilter('year')">
           This Year
         </button>
         <button class="filter-chip <%= reportData.filter === 'custom' ? 'active' : '' %>" onclick="toggleCustomRange()">
@@ -690,10 +694,10 @@
         </button>
       </div>
 
-      <div class="custom-date-range" id="custom-range">
+      <div class="custom-date-range <%= reportData.filter === 'custom' ? 'active' : '' %>" id="custom-range">
         <div class="date-input-group">
           <label>From Date</label>
-          <input type="date" id="start-date" >
+          <input type="date" id="start-date">
         </div>
         <div class="date-input-group">
           <label>To Date</label>
@@ -720,7 +724,7 @@
         </div>
         <div class="metric-label">Total Orders</div>
         <div class="metric-value">
-          <%= reportData.totalOrders %>
+          <%= reportData.fullOrder %>
         </div>
         <div class="metric-subtitle">Orders in period</div>
       </div>
@@ -732,7 +736,8 @@
           </div>
         </div>
         <div class="metric-label">Total Revenue</div>
-        <div class="metric-value">₹<%= parseFloat(reportData.totalRevenue).toLocaleString() %></div>
+        <div class="metric-value">₹<%= parseFloat(reportData.totalRevenue).toLocaleString() %>
+        </div>
         <div class="metric-subtitle">Gross sales</div>
       </div>
 
@@ -743,7 +748,8 @@
           </div>
         </div>
         <div class="metric-label">Your Earnings</div>
-        <div class="metric-value">₹<%= parseFloat(reportData.totalEarnings).toLocaleString() %></div>
+        <div class="metric-value">₹<%= parseFloat(reportData.totalEarnings).toLocaleString() %>
+        </div>
         <div class="metric-subtitle">After commission</div>
       </div>
 
@@ -819,7 +825,7 @@
         <h2 class="table-title">Detailed Sales Report</h2>
       </div>
 
-      <% if (reportData.orders && reportData.orders.length > 0) { %>
+      <% if (reportData.orders && reportData.orders.length> 0) { %>
         <table class="report-table">
           <thead>
             <tr>
@@ -834,65 +840,62 @@
             </tr>
           </thead>
           <tbody>
-            <% reportData.orders.forEach(order => { %>
-              <% 
-                // Filter vendor products
-                const vendorProducts = order.products.filter(p => p.vendorId.toString() === vendor._id.toString());
-                
-                if (vendorProducts.length === 0) return;
-                
-                // Calculate vendor total and earnings
-                const vendorTotal = vendorProducts.reduce((sum, p) => sum + p.productTotal, 0);
-                const vendorEarnings = vendorProducts.reduce((sum, p) => sum + p.vendorEarning, 0);
-                const totalItems = vendorProducts.reduce((sum, p) => sum + p.quantity, 0);
-                
-                // Format date
-                const dateOpts = { day: '2-digit', month: 'short', year: 'numeric' };
-                const formattedDate = new Date(order.invoiceDate).toLocaleDateString('en-IN', dateOpts);
-                
-                // Get status (priority: processing > shipped > completed > cancelled)
-                const priority = ['processing', 'shipped', 'completed', 'cancelled'];
-                let orderStatus = 'processing';
-                for (let status of priority) {
-                  if (vendorProducts.some(p => p.orderStatus === status)) {
-                    orderStatus = status;
-                    break;
-                  }
-                }
-                
-                // Customer info
-                const customerName = order.customerId.fullName;
-                const customerEmail = order.customerId?.email || '';
+            <% reportData.orders.forEach(order=> {
+              // Filter vendor products
+              const vendorProducts = order.products.filter(p => p.vendorId.toString() === vendor._id.toString());
+              if (vendorProducts.length === 0) return;
+
+              // Calculate vendor totals and earnings
+              const vendorTotal = vendorProducts.reduce((sum, p) => sum + p.productTotal, 0);
+              const vendorEarnings = vendorProducts.reduce((sum, p) => sum + p.vendorEarning, 0);
+              const totalItems = vendorProducts.reduce((sum, p) => sum + p.quantity, 0);
+
+              // Format date
+              const dateOpts = { day: '2-digit', month: 'short', year: 'numeric' };
+              const formattedDate = new Date(order.invoiceDate).toLocaleDateString('en-IN', dateOpts);
+              let orderStatus = order.orderStatus;
+
+              // Customer info
+              const customerName = order.customerId?.fullName || 'N/A';
+              const customerEmail = order.customerId?.email || '';
               %>
               <tr class="report-row">
+                <td><span class="order-id">#<%= order.orderId.substring(0, 10) %></span></td>
+                <td><span class="order-date">
+                    <%= formattedDate %>
+                  </span></td>
                 <td>
-                  <span class="order-id">#<%= order.orderId.substring(0, 10) %></span>
-                </td>
-                <td>
-                  <span class="order-date"><%= formattedDate %></span>
-                </td>
-                <td>
-                  <div class="customer-name"><%= customerName %></div>
+                  <div class="customer-name">
+                    <%= customerName %>
+                  </div>
                   <% if (customerEmail) { %>
-                    <div class="customer-email"><%= customerEmail %></div>
-                  <% } %>
+                    <div class="customer-email">
+                      <%= customerEmail %>
+                    </div>
+                    <% } %>
                 </td>
                 <td>
-                  <span class="items-count"><%= totalItems %> item<%= totalItems > 1 ? 's' : '' %></span>
+                  <span class="items-count">
+                    <%= totalItems %> item<%= totalItems> 1 ? 's' : '' %>
+                  </span>
+                </td>
+                <td><span class="payment-method">
+                    <%= order.paymentMethod || 'COD' %>
+                  </span></td>
+                <td>
+                  <div class="order-total">₹<%= vendorTotal.toLocaleString() %>
+                  </div>
+                  <div class="vendor-earning">Earning: ₹<%= vendorEarnings.toLocaleString() %>
+                  </div>
                 </td>
                 <td>
-                  <span class="payment-method"><%= order.paymentMethod || 'COD' %></span>
-                </td>
-                <td>
-                  <div class="order-total">₹<%= vendorTotal.toLocaleString() %></div>
-                  <div class="vendor-earning">Earning: ₹<%= vendorEarnings.toLocaleString() %></div>
-                </td>
-                <td>
-                  <% if (order.couponDetails.code) { %>
-                    <span class="coupon-code"><%= order.couponDetails.code %></span>
-                  <% } else { %>
-                    <span style="color: #adb5bd; font-size: 13px;">—</span>
-                  <% } %>
+                  <% if (order.couponDetails?.code) { %>
+                    <span class="coupon-code">
+                      <%= order.couponDetails.code %>
+                    </span>
+                    <% } else { %>
+                      <span style="color: #adb5bd; font-size: 13px;">—</span>
+                      <% } %>
                 </td>
                 <td>
                   <span class="status-badge status-<%= orderStatus %>">
@@ -900,43 +903,49 @@
                   </span>
                 </td>
               </tr>
-            <% }) %>
+              <% }); %>
           </tbody>
         </table>
-      <% } else { %>
-        <div class="empty-state">
-          <div class="empty-icon">📊</div>
-          <h3 class="empty-title">No Sales Data</h3>
-          <p class="empty-message">No orders found for the selected date range.</p>
+
+        <!-- Pagination -->
+        <div class="pagination">
+          <span class="pagination-info">
+            Showing <%= ((currentPage - 1) * limit) + 1 %>–<%= reportData.orders.length %> of <%=
+                  reportData.totalOrders.length %> items
+          </span>
+
+            <div class="pagination-controls">
+              <!-- Previous Button -->
+              <button class="pagination-btn" <%=currentPage===1 ? 'disabled' : '' %>
+                onclick="changePage(<%= currentPage - 1 %>)">
+                  &lt;
+              </button>
+
+              <!-- Page Numbers -->
+              <% for (let i=1; i <=totalPages; i++) { %>
+                <button class="pagination-btn <%= currentPage === i ? 'active' : '' %>" onclick="changePage(<%= i %>)">
+                  <%= i %>
+                </button>
+                <% } %>
+
+                  <!-- Next Button -->
+                  <button class="pagination-btn" <%=currentPage===totalPages ? 'disabled' : '' %>
+                    onclick="changePage(<%= currentPage + 1 %>)">
+                      &gt;
+                  </button>
+            </div>
         </div>
-      <% } %>
+
     </div>
-
-    <!-- Pagination -->
-    <% if (orders && orders.length > 0) { %>
-      <div class="pagination">
-        <div class="pagination-info">
-          Showing <%= (currentPage - 1) * 7 + 1 %>-<%= Math.min(currentPage * 7, reportData.totalOrders) %> of <%= reportData.totalOrders %> orders
-        </div>
-        <div class="pagination-controls">
-          <button class="pagination-btn" <%= currentPage === 1 ? 'disabled' : '' %> onclick="changePage(<%= currentPage - 1 %>)" aria-label="Previous page">
-            <i class="fas fa-chevron-left"></i>
-          </button>
-
-          <% for (let i = 1; i <= totalPages; i++) { %>
-            <button class="pagination-btn <%= i === currentPage ? 'active' : '' %>" onclick="changePage(<%= i %>)" aria-label="Page <%= i %>">
-              <%= i %>
-            </button>
-          <% } %>
-
-          <button class="pagination-btn" <%= currentPage === totalPages ? 'disabled' : '' %> onclick="changePage(<%= currentPage + 1 %>)" aria-label="Next page">
-            <i class="fas fa-chevron-right"></i>
-          </button>
-        </div>
+    <% } else { %>
+      <div class="empty-state">
+        <div class="empty-icon">📊</div>
+        <h3 class="empty-title">No Sales Data</h3>
+        <p class="empty-message">No orders found for the selected date range.</p>
       </div>
-    <% } %>
-
+      <% } %>
   </div>
+</div>
 </div>
 
 <script>
@@ -970,17 +979,6 @@
 
     if (!startDate || !endDate) {
       Swal.fire('Error', 'Please select both start and end dates', 'error');
-      return;
-    }
-
-    if (new Date(startDate) > new Date(endDate)) {
-      Swal.fire('Error', 'Start date cannot be after end date', 'error');
-      return;
-    }
-
-    const now = new Date();
-    if (new Date(startDate) > now || new Date(endDate) > now) {
-      Swal.fire('Error', 'Dates cannot be in the future', 'error');
       return;
     }
 

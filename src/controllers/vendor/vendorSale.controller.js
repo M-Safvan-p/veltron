@@ -15,13 +15,15 @@ const loadSaleReport = async (req, res) => {
     let startDate, endDate;
     if (filter === "custom" && customStartDate && customEndDate) {
       startDate = new Date(customStartDate);
-      endDate = new Date(customEndDate).setHours(23, 59, 59, 999);
+      endDate = new Date(customEndDate);
+      endDate.setHours(23, 59, 59, 999);
     } else {
       const defaultFilter = filter === "custom" ? "month" : filter;
-      var { startDate: sDate, endDate: eDate } = getDateRange(defaultFilter);
+      const { startDate: sDate, endDate: eDate } = getDateRange(defaultFilter);
       startDate = sDate;
       endDate = eDate;
     }
+
     const page = parseInt(req.query.page) || 1;
     const limit = 20;
     const skip = (page - 1) * limit;
@@ -29,19 +31,21 @@ const loadSaleReport = async (req, res) => {
     // Get orders
     const orders = await Order.find({
       "products.vendorId": vendorId,
+      orderStatus:"completed",
       invoiceDate: { $gte: startDate, $lte: endDate },
-    })
-      .populate("customerId", "fullName email")
+    }).populate("customerId", "fullName email")
       .sort({ invoiceDate: -1 })
       .skip(skip)
       .limit(limit);
 
-    const totalOrdersCount = await Order.countDocuments({
+    const totalOrders = await Order.countDocuments({
+      orderStatus:"completed",
       "products.vendorId": vendorId,
       invoiceDate: { $gte: startDate, $lte: endDate },
     });
-    const totalPages = Math.ceil(totalOrdersCount / limit);
+    const totalPages = Math.ceil(totalOrders / limit);
 
+    const totalOrdersCount = await Order.find({ "products.vendorId": vendorId });
     // Calculate totals
     let totalRevenue = 0;
     let totalEarnings = 0;
@@ -50,30 +54,28 @@ const loadSaleReport = async (req, res) => {
     let shippedOrders = 0;
     let completedOrders = 0;
     let cancelledOrders = 0;
+    let fullOrder = totalOrdersCount.length 
 
     // Loop through orders
-    orders.forEach((order) => {
-      order.products.forEach((product) => {
-        if (product.vendorId.toString() === vendorId.toString()) {
-          // Add to totals
-          totalRevenue += product.productTotal;
-          totalEarnings += product.vendorEarning;
-          totalProductsSold += product.quantity;
-
-          // Count status
-          if (product.orderStatus === "processing") processingOrders++;
-          if (product.orderStatus === "shipped") shippedOrders++;
-          if (product.orderStatus === "completed") completedOrders++;
-          if (product.orderStatus === "cancelled") cancelledOrders++;
-        }
+    totalOrdersCount.forEach((order) => {
+      const vendorProducts = order.products.filter((product) => product.vendorId.toString() === vendorId.toString());
+      // Calculate totals for vendor products
+      vendorProducts.forEach((product) => {
+        totalRevenue += product.productTotal;
+        totalEarnings += product.vendorEarning;
+        totalProductsSold += product.quantity;
       });
+      if (order.orderStatus === "processing") processingOrders++;
+      if (order.orderStatus === "shipped") shippedOrders++;
+      if (order.orderStatus === "cancelled") cancelledOrders++;
+      if (order.orderStatus === "completed") completedOrders++;
     });
 
     const reportData = {
       orders: orders,
       filter: filter,
       // Summary
-      totalOrders: totalOrdersCount,
+      totalOrders: totalOrders,
       totalRevenue: totalRevenue.toFixed(2),
       totalEarnings: totalEarnings.toFixed(2),
       totalProductsSold: totalProductsSold,
@@ -82,6 +84,7 @@ const loadSaleReport = async (req, res) => {
       shippedOrders: shippedOrders,
       completedOrders: completedOrders,
       cancelledOrders: cancelledOrders,
+      fullOrder:fullOrder,
       // Date info
       startDate: startDate.toLocaleDateString(),
       endDate: endDate.toLocaleDateString(),
@@ -95,6 +98,8 @@ const loadSaleReport = async (req, res) => {
       activePage: "sales",
       currentPage: page,
       totalPages: totalPages,
+      totalItems: totalOrdersCount,
+      limit,
     });
   } catch (error) {
     console.error("Error in sales report:", error);
