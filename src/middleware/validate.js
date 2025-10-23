@@ -1,6 +1,8 @@
 const validate = (schema) => {
   return (req, res, next) => {
     try {
+      //req body
+      console.log("data to validate ", req.body);
       const { error } = schema.validate(req.body, { abortEarly: false });
       if (error) {
         const errorMessages = error.details.map((err) => err.message);
@@ -20,7 +22,7 @@ const validate = (schema) => {
         error: err.message,
       });
     }
-  };
+  }; 
 };
 
 module.exports = validate;

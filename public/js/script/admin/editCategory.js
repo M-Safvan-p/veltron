@@ -25,12 +25,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const categoryId = document.getElementById("categoryId").value;
     const categoryName = document.getElementById("categoryName").value.trim();
     const description = document.getElementById("description").value.trim();
+    const offer = document.getElementById("offer").value.trim();
     const isListed = document.getElementById("isListed").value;
 
     try {
       const response = await axios.put(`/admin/category/edit-category/${categoryId}`, {
         name: categoryName,
         description: description,
+        offer,
         isListed: isListed,
       });
 

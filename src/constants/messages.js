@@ -13,6 +13,7 @@ const Messages = {
   OTP_RESENT_SUCCESS: "A new OTP has been sent to your email.",
   OTP_RESEND_FAILED: "Could not resend OTP. Please try again later.",
   GOOGLE_AUTH_USER: "This account was created using Google. Please continue with Google login.",
+  REFERRAL_CODE_INVALID: "Invalid referral code. Please check and try again.",
 
   // Login
   LOGIN_SUCCESS: "Login successful",
@@ -85,7 +86,7 @@ const Messages = {
   PAYMENT_METHOD_NOT_FOUND: "Payment method not found.",
   PAYMENT_VERIFIED_SUCCESS: "Payment verified successfully.",
   PAYMENT_VERIFIED_FAILED: "Payment verification failed.",
-  INVALID_AMOUNT:"Invalid amount. Please enter a positive number.",
+  INVALID_AMOUNT: "Invalid amount. Please enter a positive number.",
   INSUFFICIENT_BALANCE: "Insufficient balance. Please add money to the wallet to continue.",
   // Orders
   // ORDER_PLACED_SUCCESS: "Your order has been placed successfully.",
@@ -94,11 +95,13 @@ const Messages = {
   // ORDER_OUT_FOR_DELIVERY: "Your order is out for delivery.",
   // ORDER_DELIVERED: "Your order has been delivered successfully.",
   // ORDER_FAILED: "We were unable to process your order. Please try again.",
+  PAYMENT_FAILED_ORDER:"Cannot proceed with payment failed order",
   ORDER_CANCELLED: "Your order has been cancelled.",
   ORDER_NOT_FOUND: "Order not found. Please check your order ID.",
   ORDER_STATUS_UPDATED: "Order status updated.",
   ORDER_ITEM_NOT_FOUND: (productId, variantId) => `Product ${productId} with variant ${variantId} not found in this order.`,
   ORDER_RETURN_QUANTITY_EXCEEDS: (productId) => `Return quantity for product ${productId} exceeds purchased quantity.`,
+
   // razorpay
   RAZORPAY_ORDER_CREAT: "Razorpay order created",
   // ORDER_UPDATE_FAILED: "Your order could not be updated at this time. Please try later.",
@@ -115,6 +118,8 @@ const Messages = {
   PRODUCT_ALREADY_EXISTS_IN_WISHLIST: "This product is already in your wishlist.",
   PRODUCT_ADDED_IN_WISHLIST: "Product has been added to your wishlist.",
 
+  // coupon
+  COUPON_ALREADY_EXIST: "Coupon already exist",
   // Server errors
   SERVER_ERROR: "An error occurred. Please try again later.",
 };

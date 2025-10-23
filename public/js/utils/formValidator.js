@@ -98,58 +98,72 @@ function validateProductForm(data) {
   let isValid = true;
   let messages = [];
 
-  // Product name
+  // Product name validation
   if (!data.name || data.name.trim().length < 3) {
     isValid = false;
     messages.push("Product name must be at least 3 characters long.");
+  } else if (data.name.trim().length > 100) {
+    isValid = false;
+    messages.push("Product name must not exceed 100 characters.");
   }
 
-  // Description (required)
+  // Description validation
   if (!data.description || data.description.trim().length === 0) {
     isValid = false;
     messages.push("Description is required.");
   } else if (data.description.trim().length < 10) {
     isValid = false;
     messages.push("Description must be at least 10 characters long.");
+  } else if (data.description.trim().length > 1000) {
+    isValid = false;
+    messages.push("Description must not exceed 1000 characters.");
   }
 
-  // Price (required)
+  // Price validation
   const price = parseFloat(data.price);
   if (isNaN(price) || price <= 0) {
     isValid = false;
     messages.push("Price must be greater than 0.");
+  } else if (price > 999999) {
+    isValid = false;
+    messages.push("Price must not exceed ₹9,99,999.");
   }
 
-  // Discounted Price (optional, but must be less than price if provided)
-  if (data.discountedPrice !== undefined && data.discountedPrice !== null && data.discountedPrice !== "") {
-    const discountedPrice = parseFloat(data.discountedPrice);
-    if (isNaN(discountedPrice) || discountedPrice < 0) {
+  // Offer validation
+  if (data.offer !== undefined && data.offer !== null && data.offer !== "") {
+    const offer = parseFloat(data.offer);
+    if (isNaN(offer) || offer < 0) {
       isValid = false;
-      messages.push("Discounted price must be 0 or more.");
-    }
-    if (!isNaN(price) && !isNaN(discountedPrice) && discountedPrice >= price) {
+      messages.push("Offer percentage must be 0 or more.");
+    } else if (offer > 100) {
       isValid = false;
-      messages.push("Discounted price must be less than actual price.");
+      messages.push("Offer percentage cannot exceed 100%.");
     }
   }
 
-  // Category (required ObjectId)
-  if (!data.category) {
+  // Category validation
+  if (!data.category || data.category === "mechanical") {
     isValid = false;
     messages.push("Please select a valid category.");
   }
 
-  // Variants (array, at least one required)
+  // Variants validation
   if (!data.variants || !Array.isArray(data.variants) || data.variants.length === 0) {
     isValid = false;
     messages.push("At least one variant is required.");
   } else {
     const variantColors = [];
     data.variants.forEach((variant, index) => {
-      // Color is required for each variant
+      // Color validation
       if (!variant.color || variant.color.trim() === "") {
         isValid = false;
         messages.push(`Variant ${index + 1}: Color is required.`);
+      } else if (variant.color.trim().length < 2) {
+        isValid = false;
+        messages.push(`Variant ${index + 1}: Color must be at least 2 characters long.`);
+      } else if (variant.color.trim().length > 30) {
+        isValid = false;
+        messages.push(`Variant ${index + 1}: Color must not exceed 30 characters.`);
       } else {
         // Check for duplicate colors
         const normalizedColor = variant.color.trim().toLowerCase();
@@ -161,12 +175,15 @@ function validateProductForm(data) {
         }
       }
 
-      // Stock validation (defaults to 0 in schema)
+      // Stock validation
       if (variant.stock !== undefined && variant.stock !== null) {
         const stock = parseInt(variant.stock.toString().trim());
         if (isNaN(stock) || stock < 0) {
           isValid = false;
           messages.push(`Variant ${index + 1}: Stock must be 0 or more.`);
+        } else if (stock > 9999) {
+          isValid = false;
+          messages.push(`Variant ${index + 1}: Stock must not exceed 9999.`);
         }
       }
 
@@ -181,19 +198,76 @@ function validateProductForm(data) {
     });
   }
 
-  // Specifications
+  // Specifications validation
   if (!data.specifications) {
     isValid = false;
     messages.push("Product specifications are required.");
   } else {
-    // Required specification fields based on schema
-    const requiredSpecFields = ["strapStyle"];
-    requiredSpecFields.forEach((field) => {
-      if (!data.specifications[field] || data.specifications[field].trim() === "") {
-        isValid = false;
-        messages.push(`${field} is required in specifications.`);
-      }
-    });
+    // Strap Style validation
+    if (!data.specifications.strapStyle || data.specifications.strapStyle.trim() === "") {
+      isValid = false;
+      messages.push("Strap Style is required.");
+    } else if (data.specifications.strapStyle.trim().length < 2) {
+      isValid = false;
+      messages.push("Strap Style must be at least 2 characters long.");
+    } else if (data.specifications.strapStyle.trim().length > 50) {
+      isValid = false;
+      messages.push("Strap Style must not exceed 50 characters.");
+    }
+
+    // Weight validation
+    if (!data.specifications.weight || data.specifications.weight.trim() === "") {
+      isValid = false;
+      messages.push("Weight is required.");
+    } else if (data.specifications.weight.trim().length < 2) {
+      isValid = false;
+      messages.push("Weight must be at least 2 characters long.");
+    } else if (data.specifications.weight.trim().length > 30) {
+      isValid = false;
+      messages.push("Weight must not exceed 30 characters.");
+    }
+
+    // Dial Type validation
+    if (!data.specifications.dialType || data.specifications.dialType.trim() === "") {
+      isValid = false;
+      messages.push("Dial Type is required.");
+    } else if (data.specifications.dialType.trim().length < 2) {
+      isValid = false;
+      messages.push("Dial Type must be at least 2 characters long.");
+    } else if (data.specifications.dialType.trim().length > 50) {
+      isValid = false;
+      messages.push("Dial Type must not exceed 50 characters.");
+    }
+
+    // Warranty Period validation
+    if (!data.specifications.warrantyPeriod || data.specifications.warrantyPeriod.trim() === "") {
+      isValid = false;
+      messages.push("Warranty Period is required.");
+    } else if (data.specifications.warrantyPeriod.trim().length < 2) {
+      isValid = false;
+      messages.push("Warranty Period must be at least 2 characters long.");
+    } else if (data.specifications.warrantyPeriod.trim().length > 50) {
+      isValid = false;
+      messages.push("Warranty Period must not exceed 50 characters.");
+    }
+
+    // Durability validation
+    if (!data.specifications.durability || data.specifications.durability.trim() === "") {
+      isValid = false;
+      messages.push("Durability is required.");
+    } else if (data.specifications.durability.trim().length < 2) {
+      isValid = false;
+      messages.push("Durability must be at least 2 characters long.");
+    } else if (data.specifications.durability.trim().length > 50) {
+      isValid = false;
+      messages.push("Durability must not exceed 50 characters.");
+    }
+
+    // Additional Information validation
+    if (data.specifications.additionalInformation && data.specifications.additionalInformation.trim().length > 500) {
+      isValid = false;
+      messages.push("Additional Information must not exceed 500 characters.");
+    }
   }
 
   return { isValid, messages };

@@ -1,0 +1,520 @@
+<style>
+    .main-wrapper {
+        width: 100%;
+        background: #ffffff;
+    }
+
+    /* Hero Banner */
+    .contact-hero {
+        color: rgb(0, 0, 0);
+        padding: 45px 10px;
+        text-align: center;
+    }
+
+    .hero-content {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .hero-title {
+        font-size: 48px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        line-height: 1.2;
+    }
+
+    .hero-subtitle {
+        font-size: 18px;
+        color: rgba(34, 34, 34, 0.9);
+        margin: 0;
+    }
+
+    /* Main Container */
+    .contact-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 60px 20px;
+    }
+
+    /* Two Column Layout */
+    .contact-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        align-items: start;
+    }
+
+    /* Form Section */
+    .contact-form-section h2 {
+        font-size: 24px;
+        font-weight: 600;
+        color: #212529;
+        margin-bottom: 24px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 14px;
+        font-weight: 500;
+        color: #212529;
+        margin-bottom: 8px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 14px;
+        color: #212529;
+        background: white;
+        font-family: inherit;
+        transition: all 0.2s ease;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #212529;
+        box-shadow: 0 0 0 3px rgba(33, 37, 41, 0.1);
+        background: #f8f9fa;
+    }
+
+    .form-group textarea {
+        min-height: 140px;
+        resize: vertical;
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+        color: #adb5bd;
+    }
+
+    .submit-btn {
+        width: 100%;
+        padding: 12px 24px;
+        background: #212529;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .submit-btn:hover {
+        background: #495057;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(33, 37, 41, 0.2);
+    }
+
+    .submit-btn:active {
+        transform: translateY(0);
+    }
+
+    .submit-btn:disabled {
+        background: #adb5bd;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    /* Contact Info Section */
+    .contact-info-section h2 {
+        font-size: 24px;
+        font-weight: 600;
+        color: #212529;
+        margin-bottom: 24px;
+    }
+
+    .info-card {
+        background: #f8f9fa;
+        padding: 24px;
+        border-radius: 10px;
+        border-left: 4px solid #212529;
+        margin-bottom: 20px;
+    }
+
+    .info-card:last-child {
+        margin-bottom: 0;
+    }
+
+    .info-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+
+    .info-icon {
+        font-size: 24px;
+        color: #212529;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .info-card h3 {
+        font-size: 16px;
+        font-weight: 600;
+        color: #212529;
+        margin: 0;
+    }
+
+    .info-card p,
+    .info-card a {
+        font-size: 14px;
+        color: #495057;
+        line-height: 1.6;
+        margin: 8px 0 0 0;
+    }
+
+    .info-card a {
+        color: #212529;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s ease;
+    }
+
+    .info-card a:hover {
+        color: #6c757d;
+        text-decoration: underline;
+    }
+
+    /* Map Container */
+    .map-container {
+        margin-top: 30px;
+        border-radius: 10px;
+        overflow: hidden;
+        height: 280px;
+    }
+
+    .map-container iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    /* Status Messages (for form feedback) */
+    .status-message {
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        font-size: 14px;
+        display: none;
+    }
+
+    .status-message.success {
+        background: #d1f7e1;
+        color: #146c43;
+        border: 1px solid #a8e5c0;
+        display: block;
+    }
+
+    .status-message.error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+        display: block;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 36px;
+        }
+
+        .hero-subtitle {
+            font-size: 16px;
+        }
+
+        .contact-hero {
+            padding: 50px 20px;
+        }
+
+        .contact-container {
+            padding: 40px 20px;
+        }
+
+        .contact-wrapper {
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        .contact-form-section h2,
+        .contact-info-section h2 {
+            font-size: 20px;
+        }
+
+        .info-card {
+            padding: 20px;
+        }
+
+        .map-container {
+            height: 240px;
+            margin-top: 20px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero-title {
+            font-size: 28px;
+        }
+
+        .hero-subtitle {
+            font-size: 14px;
+        }
+
+        .contact-container {
+            padding: 30px 15px;
+        }
+
+        .contact-form-section h2,
+        .contact-info-section h2 {
+            font-size: 18px;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            padding: 10px 12px;
+            font-size: 13px;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+        }
+
+        .submit-btn {
+            padding: 11px 20px;
+            font-size: 13px;
+        }
+
+        .info-card {
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .info-header {
+            gap: 10px;
+        }
+
+        .info-icon {
+            font-size: 20px;
+            width: 36px;
+            height: 36px;
+        }
+
+        .info-card h3 {
+            font-size: 14px;
+        }
+
+        .info-card p,
+        .info-card a {
+            font-size: 13px;
+        }
+
+        .map-container {
+            height: 200px;
+        }
+    }
+</style>
+
+<div class="main-wrapper">
+    <!-- Hero Banner -->
+    <div class="contact-hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Contact Us</h1>
+            <p class="hero-subtitle">We'd love to hear from you!</p>
+        </div>
+    </div>
+
+    <!-- Contact Content -->
+    <div class="contact-container">
+        <div class="contact-wrapper">
+            <!-- Left: Contact Form -->
+            <div class="contact-form-section">
+                <h2>Send us a Message</h2>
+
+                <!-- Status message (displayed after form submission) -->
+                <div id="form-status" class="status-message"></div>
+
+
+                <form id="contact-form" onsubmit="handleFormSubmit(event)">
+                    <div class="form-group">
+                        <label for="fullName">Full Name</label>
+                        <input type="text" id="fullName" name="fullName" placeholder="John Doe"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="text" id="email" name="email" placeholder="your.email@example.com" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input type="text" id="subject" name="subject" placeholder="How can we help?" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message"
+                            placeholder="Please share your message or question in detail..."></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="submit-btn">Send Message</button>
+                </form>
+            </div>
+
+            <!-- Right: Contact Info -->
+            <div class="contact-info-section">
+                <h2>Get in Touch</h2>
+
+                <!-- Address Card -->
+                <div class="info-card">
+                    <div class="info-header">
+                        <div class="info-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <h3>Address</h3>
+                    </div>
+                    <p>
+                        Veltron eCommerce Headquarters<br />
+                        123 Shopping Street, Commerce City<br />
+                        Kerala, India 695001
+                    </p>
+                </div>
+
+                <!-- Email Card -->
+                <div class="info-card">
+                    <div class="info-header">
+                        <div class="info-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <h3>Email</h3>
+                    </div>
+                    <p>
+                        <a href="mailto:support@veltron.com">support@veltron.com</a><br />
+                        <a href="mailto:muhammedsafvanp96@veltron.com">muhammedsafvanp96@gmail.com</a>
+                    </p>
+                </div>
+
+                <!-- Phone Card -->
+                <div class="info-card">
+                    <div class="info-header">
+                        <div class="info-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <h3>Phone</h3>
+                    </div>
+                    <p>
+                        <a href="tel:+91-1234567890">+91 9496432072</a><br />
+                        <span style="font-size: 12px; color: #6c757d;">Mon - Fri: 9:00 AM - 6:00 PM</span>
+                    </p>
+                </div>
+
+                <!-- Support Hours Card -->
+                <div class="info-card">
+                    <div class="info-header">
+                        <div class="info-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h3>Support Hours</h3>
+                    </div>
+                    <p>
+                        Monday - Friday: 9:00 AM - 6:00 PM<br />
+                        Saturday: 10:00 AM - 4:00 PM<br />
+                        Sunday: Closed
+                    </p>
+                </div>
+                <div class="map-container">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1820.117510734943!2d75.99548617122427!3d11.124537219133803!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba649001b4df4df%3A0x590754390f43a972!2sViruthiyil%20House!5e0!3m2!1sen!2sin!4v1760943914190!5m2!1sen!2sin"
+                        loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Veltron Location"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    async function handleFormSubmit(event) {
+        event.preventDefault();
+
+        const form = document.getElementById('contact-form');
+        const statusDiv = document.getElementById('form-status');
+        const submitBtn = document.getElementById('submit-btn');
+
+        // Reset status message
+        statusDiv.textContent = '';
+        statusDiv.classList.remove('success', 'error');
+
+        // Collect data
+        const fullName = document.getElementById('fullName').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const subject = document.getElementById('subject').value.trim();
+        const message = document.getElementById('message').value.trim();
+
+        // Basic validation
+        if (!fullName || !email || !subject || !message) {
+            return showStatus('Please fill in all fields.', 'error');
+        }
+
+        if (fullName.length < 2) {
+            return showStatus('Name must be at least 2 characters.', 'error');
+        }
+
+        if (message.length < 10) {
+            return showStatus('Message must be at least 10 characters.', 'error');
+        }
+
+        // Disable button while sending
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending...';
+
+        try {
+            // Send request with Axios
+            const response = await axios.post("/contact/submit", {
+                fullName,
+                email,
+                subject,
+                message,
+            });
+
+            if (response.data.success) {
+                showStatus("Message sent successfully! We'll get back to you soon.", 'success');
+                form.reset();
+            }
+        } catch (error) {
+            let errorMsg = error.response.data.message || "Error sending message. Please try again later.";
+            console.error(error);
+            errorMsg = errorMsg.split(/<br\s*\/?>/gi).join(', ');
+            showStatus(errorMsg, 'error');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Send Message';
+        }
+    }
+
+    // Helper to show messages
+    function showStatus(message, type) {
+        const statusDiv = document.getElementById('form-status');
+        statusDiv.textContent = message;
+        statusDiv.classList.add(type);
+        statusDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+</script>

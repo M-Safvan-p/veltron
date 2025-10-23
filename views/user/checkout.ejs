@@ -13,53 +13,54 @@
         <h2 class="section-title">Shipping Address</h2>
 
         <% if (userAddresses && userAddresses.length> 0) { %>
-        <div class="address-options">
-          <% userAddresses.forEach(function(address, index) { %>
-          <div class="address-option <%= address.isDefault ? 'default-address' : '' %>">
-            <input type="radio" id="address-<%= index %>" name="selectedAddress" value="<%= address._id %>" class="address-radio" aria-label="Select address <%= index + 1 %>" <%=address.isDefault ? 'checked' : ''
-                                    %>>
+          <div class="address-options">
+            <% userAddresses.forEach(function(address, index) { %>
+              <div class="address-option <%= address.isDefault ? 'default-address' : '' %>">
+                <input type="radio" id="address-<%= index %>" name="selectedAddress" value="<%= address._id %>"
+                  class="address-radio" aria-label="Select address <%= index + 1 %>" <%=address.isDefault ? 'checked'
+                  : '' %>>
 
-            <label for="address-<%= index %>" class="address-label">
-              <div class="address-content">
-                <div class="address-header">
-                  <span class="address-title">
-                    <%= address.type %>
-                    <% if (address.isDefault) { %>
-                    <span class="default-badge">Default</span>
-                    <% } %>
-                  </span>
-                  <span class="address-phone">
-                    <%= address.phone %>
-                  </span>
-                </div>
-                <div class="address-details">
-                  <%= address.formattedAddress || (address.fullAddress + ', ' + address.city
-                                                + ', ' + address.state + ' - ' + address.pincode) %>
-                </div>
+                <label for="address-<%= index %>" class="address-label">
+                  <div class="address-content">
+                    <div class="address-header">
+                      <span class="address-title">
+                        <%= address.type %>
+                          <% if (address.isDefault) { %>
+                            <span class="default-badge">Default</span>
+                            <% } %>
+                      </span>
+                      <span class="address-phone">
+                        <%= address.phone %>
+                      </span>
+                    </div>
+                    <div class="address-details">
+                      <%= address.formattedAddress || (address.fullAddress + ', ' + address.city + ', ' + address.state
+                        + ' - ' + address.pincode) %>
+                    </div>
+                  </div>
+                </label>
               </div>
-            </label>
+              <% }); %>
           </div>
-          <% }); %>
-        </div>
-        <% if(userAddresses.length < 4) { %>
-        <div class="add-new-address-section">
-          <button type="button" class="add-address-link" onclick="openAddressModal()">+ Add New
-            Address</button>
-        </div>
-        <% } %>
-        <% } else { %>
-        <div class="no-addresses">
-          <div class="no-addresses-content">
-            <p class="no-addresses-text">You don't have any saved addresses yet.</p>
-            <p class="no-addresses-subtext">Add a shipping address to complete your order.
-            </p>
+          <% if(userAddresses.length < 4) { %>
             <div class="add-new-address-section">
-              <button type="button" class="add-address-link" onclick="openAddressModal()">+ Add
-                New Address</button>
+              <button type="button" class="add-address-link" onclick="openAddressModal()">+ Add New
+                Address</button>
             </div>
-          </div>
-        </div>
-        <% } %>
+            <% } %>
+              <% } else { %>
+                <div class="no-addresses">
+                  <div class="no-addresses-content">
+                    <p class="no-addresses-text">You don't have any saved addresses yet.</p>
+                    <p class="no-addresses-subtext">Add a shipping address to complete your order.
+                    </p>
+                    <div class="add-new-address-section">
+                      <button type="button" class="add-address-link" onclick="openAddressModal()">+ Add
+                        New Address</button>
+                    </div>
+                  </div>
+                </div>
+                <% } %>
       </div>
 
       <!-- Payment Method -->
@@ -73,25 +74,37 @@
                 <span class="payment-title">Wallet</span>
                 <span class="payment-desc">Pay easily using your wallet balance</span>
               </div>
-            </label>
-          </div>
+              <div class="wallet-balance-section">
+                <div class="wallet-balance-content">
+                  <i class="fas fa-wallet wallet-icon"></i>
+                  <span class="wallet-balance-text">Wallet Balance:</span>
+                  <span class="wallet-balance-amount">₹ <%= wallet.balance.toLocaleString() %></span>
+                </div>
 
-          <div class="payment-option">
-            <input type="radio" id="razorpay" name="paymentMethod" value="RAZORPAY" class="payment-radio">
-            <label for="razorpay" class="payment-label">
-              <div class="payment-content">
-                <span class="payment-title">Razorpay</span>
-                <span class="payment-desc">Pay securely using Razorpay</span>
               </div>
             </label>
           </div>
 
           <div class="payment-option">
-            <input type="radio" id="cod" name="paymentMethod" value="COD" class="payment-radio" >
-            <label for="cod" class="payment-label">
+            <input type="radio" id="razorpay" name="paymentMethod" value="RAZORPAY" class="payment-radio">
+
+            <label for="razorpay" class="payment-label" id="razorpayLabel">
+              <div class="payment-content">
+                <span class="payment-title">Razorpay</span>
+                <span id="razorpay-desc" class="payment-desc">
+                  Pay securely using Razorpay
+                </span>
+              </div>
+            </label>
+          </div>
+
+
+          <div class="payment-option">
+            <input type="radio" id="cod" name="paymentMethod" value="COD" class="payment-radio">
+            <label for="cod" class="payment-label" id="codLabel">
               <div class="payment-content">
                 <span class="payment-title">Cash on Delivery</span>
-                <span class="payment-desc">Pay when you receive your order</span>
+                <span id="cod-desc" class="payment-desc">Pay when you receive your order</span>
               </div>
             </label>
           </div>
@@ -106,40 +119,67 @@
         <h2 class="section-title">Order Items</h2>
         <div class="order-items">
           <% if (cart && cart.items.length> 0) { %>
-          <% cart.items.forEach(function(item) { %>
-          <div class="order-item">
-            <img src="<%= item.image %>" alt="<%= item.productName %>" class="item-image">
-            <div class="item-details">
-              <h3 class="item-name">
-                <%= item.productName %>
-              </h3>
-              <% if (item.selectedColor) { %>
-              <div class="item-color">Colour: <%= item.selectedColor %>
+            <% cart.items.forEach(function(item) { %>
+              <div class="order-item">
+                <img src="<%= item.image %>" alt="<%= item.productName %>" class="item-image">
+                <div class="item-details">
+                  <h3 class="item-name">
+                    <%= item.productName %>
+                  </h3>
+                  <% if (item.selectedColor) { %>
+                    <div class="item-color">Colour: <%= item.selectedColor %>
+                    </div>
+                    <% } %>
+                      <div class="item-price">
+                        <% if (item.price> item.discountedPrice) { %>
+                          <span class="original-price">₹<%= item.price.toLocaleString() %>
+                          </span>
+                          <% } %>
+                            <span class="discounted-price">₹<%= item.discountedPrice ?
+                                item.discountedPrice.toLocaleString() : "0" %></span>
+                      </div>
+                </div>
+                <div class="item-quantity">
+                  <span class="quantity-label">Qty: <%= item.quantity %></span>
+                </div>
+                <div class="item-total">
+                  ₹<%= (item.discountedPrice * item.quantity).toLocaleString() %>
+                </div>
               </div>
-              <% } %>
-              <div class="item-price">
-                <% if (item.price> item.discountedPrice) { %>
-                <span class="original-price">₹<%= item.price.toLocaleString() %>
-                </span>
-                <% } %>
-                <span class="discounted-price">₹<%= item.discountedPrice ?
-                                                                item.discountedPrice.toLocaleString() : "0" %></span>
-              </div>
-            </div>
-            <div class="item-quantity">
-              <span class="quantity-label">Qty: <%= item.quantity %></span>
-            </div>
-            <div class="item-total">
-              ₹<%= (item.discountedPrice * item.quantity).toLocaleString() %>
-            </div>
+              <% }); %>
+                <% } else { %>
+                  <div class="empty-items">
+                    <p>No items in cart</p>
+                    <a href="/sale" class="continue-shopping-link">Continue Shopping</a>
+                  </div>
+                  <% } %>
+        </div>
+      </div>
+
+      <!-- Coupon Section - NEW -->
+      <div class="checkout-section">
+        <h2 class="section-title">Apply Coupon</h2>
+        <div class="coupon-container">
+          <div class="coupon-input-wrapper">
+            <input type="text" id="couponCode" class="coupon-input" placeholder="Enter coupon code" maxlength="20">
+            <button type="button" class="apply-coupon-btn" onclick="applyCoupon()">
+              Apply
+            </button>
           </div>
-          <% }); %>
-          <% } else { %>
-          <div class="empty-items">
-            <p>No items in cart</p>
-            <a href="/sale" class="continue-shopping-link">Continue Shopping</a>
+          <button type="button" class="view-coupons-btn" onclick="openCouponsModal()">
+            <i class="fas fa-ticket-alt"></i>
+            View Available Coupons
+          </button>
+          <div id="couponMessage" class="coupon-message" style="display: none;"></div>
+          <div id="appliedCoupon" class="applied-coupon-badge" style="display: none;">
+            <span class="coupon-badge-text">
+              <i class="fas fa-tag"></i>
+              <span id="appliedCouponCode"></span>
+            </span>
+            <button type="button" class="remove-coupon-btn" onclick="removeCoupon()">
+              ×
+            </button>
           </div>
-          <% } %>
         </div>
       </div>
 
@@ -149,20 +189,31 @@
         <div class="order-summary">
           <div class="summary-row">
             <span class="summary-label">Subtotal</span>
-            <span class="summary-value">₹<%= subtotal.toLocaleString() %></span>
+            <span class="summary-value" id="subtotalValue">₹<%= subtotal.toLocaleString() %></span>
           </div>
           <div class="summary-row">
             <span class="summary-label">Tax (GST 18%)</span>
-            <span class="summary-value">₹<%= tax.toLocaleString() %></span>
+            <span class="summary-value" id="taxValue">₹<%= tax.toLocaleString() %></span>
           </div>
           <div class="summary-row">
-            <span class="summary-label">Shipping</span>
-            <span class="summary-value shipping-free">FREE</span>
+            <span class="summary-label">Shipping <small>(No-Refund)</small></span>
+            <span class="summary-value shipping-free">₹50</span>
+          </div>
+          <!-- Coupon Discount Row - NEW -->
+          <div class="summary-row coupon-discount-row" id="couponDiscountRow" style="display: none;">
+            <span class="summary-label coupon-discount-label">
+              <i class="fas fa-ticket-alt"></i> Coupon Discount
+            </span>
+            <span class="summary-value coupon-discount-value" id="couponDiscountValue">-₹0</span>
           </div>
           <div class="summary-divider"></div>
           <div class="summary-row total-row">
             <span class="summary-label">Total</span>
-            <span class="summary-value total-value">₹<%= total.toLocaleString() %></span>
+            <span class="summary-value total-value" id="totalValue">₹<%= total.toLocaleString() %></span>
+          </div>
+          <div id="savingsInfo" class="savings-info" style="display: none;">
+            <i class="fas fa-check-circle"></i>
+            <span>You're saving <strong id="savingsAmount">₹0</strong> on this order!</span>
           </div>
         </div>
       </div>
@@ -170,7 +221,7 @@
       <!-- Place Order Button -->
       <div class="checkout-section">
         <button type="button" class="place-order-btn" onclick="placeOrder()">
-          Place Order - ₹<%= total.toLocaleString() %>
+          Place Order - <span id="placeOrderTotal">₹<%= total.toLocaleString() %></span>
         </button>
         <p class="order-note">
           By placing your order, you agree to our terms and conditions.
@@ -207,7 +258,8 @@
         <div class="form-section">
           <div class="form-group full-width">
             <label class="form-label" for="addressLine1">Address</label>
-            <textarea id="addressLine1" name="fullAddress" class="form-input textarea-input" placeholder="House Name, House Number, Locality"></textarea>
+            <textarea id="addressLine1" name="fullAddress" class="form-input textarea-input"
+              placeholder="House Name, House Number, Locality"></textarea>
           </div>
 
           <div class="form-grid">
@@ -228,7 +280,8 @@
             </div>
             <div class="form-group">
               <label class="form-label" for="pincode">Pin Code</label>
-              <input type="text" id="pincode" name="pincode" class="form-input" placeholder="eg: 689230" pattern="[0-9]{6}">
+              <input type="text" id="pincode" name="pincode" class="form-input" placeholder="eg: 689230"
+                pattern="[0-9]{6}">
             </div>
           </div>
 
@@ -252,7 +305,8 @@
             </div>
             <div class="form-group">
               <label class="form-label" for="phoneNumber">Phone Number</label>
-              <input type="tel" id="phoneNumber" name="phone" class="form-input" placeholder="eg: +91 6892303458" pattern="[+]?[0-9\s-]+">
+              <input type="tel" id="phoneNumber" name="phone" class="form-input" placeholder="eg: +91 6892303458"
+                pattern="[+]?[0-9\s-]+">
             </div>
           </div>
         </div>
@@ -265,8 +319,186 @@
     </div>
   </div>
 </div>
+
+<!-- Coupons Modal -->
+<div id="couponsModal" class="coupons-modal-overlay" style="display:none;">
+  <div class="coupons-modal-content">
+    <div class="coupons-modal-header">
+      <h2><i class="fas fa-tags"></i> Available Coupons</h2>
+      <button class="coupons-modal-close" onclick="closeCouponsModal()">×</button>
+    </div>
+
+    <div class="coupons-modal-body">
+      <% if (availableCoupons && availableCoupons.length> 0) { %>
+        <div class="coupons-grid">
+          <% availableCoupons.forEach(function(coupon) { %>
+            <div class="coupon-card">
+              <div class="coupon-card-header">
+                <div class="coupon-icon">
+                  <i class="fas fa-tag"></i>
+                </div>
+                <div class="coupon-code-display">
+                  <%= coupon.code %>
+                </div>
+              </div>
+
+              <div class="coupon-card-body">
+                <div class="coupon-description">
+                  <strong>
+                    <%= coupon.discount %>% OFF
+                  </strong>
+                  <span class="coupon-subtitle">
+                    <%= coupon.description || 'on your order' %>
+                  </span>
+                </div>
+
+                <% if (coupon.minPurchase) { %>
+                  <div class="coupon-condition">
+                    Min. purchase: ₹<%= coupon.minPurchase.toLocaleString() %>
+                  </div>
+                  <% } %>
+              </div>
+
+              <div class="coupon-card-footer">
+                <button type="button" class="copy-coupon-btn" onclick="copyCouponCode('<%= coupon.code %>', this)"
+                  data-code="<%= coupon.code %>">
+                  <i class="fas fa-copy"></i>
+                  Copy Code
+                </button>
+              </div>
+            </div>
+            <% }); %>
+        </div>
+        <% } else { %>
+          <div class="no-coupons-message">
+            <div class="no-coupons-icon">
+              <i class="fas fa-ticket-alt"></i>
+            </div>
+            <h3>No Coupons Available</h3>
+            <p>Check back soon for exciting offers and discounts!</p>
+          </div>
+          <% } %>
+    </div>
+  </div>
+</div>
+
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
+  // Initialize pricing variables
+  let originalSubtotal = <%= subtotal %>;
+  let originalTax = <%= tax %>;
+  let originalTotal = <%= total %>;
+  let appliedCouponData = null;
+
+  document.addEventListener('DOMContentLoaded', () => {
+    updateCODAvailability(originalTotal)
+    updateRazorpayAvailability(originalTotal)
+  });
+
+  function updateCODAvailability(total) {
+    const codRadio = document.getElementById('cod');
+    const codDesc = document.getElementById('cod-desc');
+    const codLabel = document.getElementById('codLabel');
+
+    if (total > 10000) {
+      codRadio.disabled = true;
+      codLabel.setAttribute('aria-disabled', 'true');
+      codDesc.innerHTML = `Pay when you receive your order <br>
+      <span style="color: red; font-size: 0.85em;">(Unavailable for orders above ₹10,000)</span>`;
+    } else {
+      codRadio.disabled = false;
+      codLabel.removeAttribute('aria-disabled');
+      codDesc.innerHTML = "Pay when you receive your order";
+    }
+  }
+  function updateRazorpayAvailability(total) {
+  const razorpayRadio = document.getElementById('razorpay');
+  const razorpayDesc = document.getElementById('razorpay-desc');
+  const razorpayLabel = document.getElementById('razorpayLabel');
+
+  if (total > 500000) {
+    razorpayRadio.disabled = true;
+    razorpayLabel.setAttribute('aria-disabled', 'true');
+    razorpayDesc.innerHTML = `Pay securely using Razorpay <br>
+      <span style="color: red; font-size: 0.85em;">
+        (Unavailable for orders above ₹5,00,000)
+      </span>`;
+  } else {
+    razorpayRadio.disabled = false;
+    razorpayLabel.removeAttribute('aria-disabled');
+    razorpayDesc.innerHTML = "Pay securely using Razorpay";
+  }
+}
+
+
+
+  // Open Coupons Modal
+  function openCouponsModal() {
+    document.getElementById('couponsModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+
+  // Close Coupons Modal
+  function closeCouponsModal() {
+    document.getElementById('couponsModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+  }
+
+  // Copy Coupon Code to Clipboard
+  function copyCouponCode(code, buttonElement) {
+    const tempInput = document.createElement('input');
+    tempInput.value = code;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    tempInput.setSelectionRange(0, 99999);
+
+    try {
+      document.execCommand('copy');
+      const originalHTML = buttonElement.innerHTML;
+      buttonElement.classList.add('copied');
+      buttonElement.innerHTML = '<i class="fas fa-check"></i> Copied!';
+
+      const couponInput = document.getElementById('couponCode');
+      if (couponInput) {
+        couponInput.value = code;
+        couponInput.focus();
+      }
+
+      setTimeout(() => {
+        closeCouponsModal();
+      }, 800);
+
+      setTimeout(() => {
+        buttonElement.classList.remove('copied');
+        buttonElement.innerHTML = originalHTML;
+      }, 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+      showCouponMessage('Failed to copy coupon code. Please try again.', 'error');
+    }
+
+    document.body.removeChild(tempInput);
+  }
+
+  // Close modal when clicking outside
+  document.addEventListener('click', function (event) {
+    const modal = document.getElementById('couponsModal');
+    if (modal && event.target === modal) {
+      closeCouponsModal();
+    }
+  });
+
+  // Close modal on Escape key
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') {
+      const modal = document.getElementById('couponsModal');
+      if (modal && modal.style.display === 'flex') {
+        closeCouponsModal();
+      }
+    }
+  });
+
+
   function openAddressModal() {
     document.getElementById('addressModal').style.display = 'flex';
   }
@@ -293,14 +525,138 @@
       Swal.fire({
         icon: 'error',
         title: 'Failed to add address',
-        text: error.response?.data?.message || 'Please try again.'
+        html: error.response?.data?.message || 'Please try again.'
       });
+    }
+  });
+
+  // Coupon Functions
+  async function applyCoupon() {
+    const couponInput = document.getElementById('couponCode');
+    const couponCode = couponInput.value.trim().toUpperCase();
+
+    if (!couponCode) {
+      showCouponMessage('Please enter a coupon code', 'error');
+      return;
+    }
+
+    if (appliedCouponData && appliedCouponData.code === couponCode) {
+      showCouponMessage('This coupon is already applied', 'info');
+      return;
+    }
+
+    const applyBtn = document.querySelector('.apply-coupon-btn');
+    const originalText = applyBtn.textContent;
+    try {
+      applyBtn.textContent = 'Applying...';
+      applyBtn.disabled = true;
+
+      const response = await axios.post('/checkout/apply-coupon', {
+        couponCode: couponCode,
+      });
+
+      if (response.data.success) {
+        appliedCouponData = {
+          code: couponCode,
+          discount: response.data.discount,
+          discountType: response.data.discountType,
+          discountValue: response.data.discountValue
+        };
+
+        // Update pricing with backend data
+        updateCODAvailability(response.data.total);
+        updateRazorpayAvailability(response.data.total);
+        updatePricingFromBackend(response.data);
+        showAppliedCoupon(couponCode);
+        showCouponMessage(`Coupon applied! You saved ₹${response.data.discount.toLocaleString()}`, 'success');
+        couponInput.value = '';
+      }
+
+      applyBtn.textContent = originalText;
+      applyBtn.disabled = false;
+    } catch (error) {
+      applyBtn.textContent = originalText;
+      applyBtn.disabled = false;
+      const errorMessage = error.response?.data?.message || 'Invalid or expired coupon code';
+      showCouponMessage(errorMessage, 'error');
+    }
+  }
+
+  function removeCoupon() {
+    appliedCouponData = null;
+    resetPricingToOriginal();
+    hideAppliedCoupon();
+    showCouponMessage('Coupon removed', 'info');
+  }
+
+  function updatePricingFromBackend(backendData) {
+    // Update all values from backend response
+    document.getElementById('subtotalValue').textContent = `₹${backendData.subtotal.toLocaleString()}`;
+    document.getElementById('taxValue').textContent = `₹${backendData.tax.toLocaleString()}`;
+    document.getElementById('couponDiscountValue').textContent = `-₹${backendData.discount.toLocaleString()}`;
+    document.getElementById('totalValue').textContent = `₹${backendData.total.toLocaleString()}`;
+    document.getElementById('placeOrderTotal').textContent = `₹${backendData.total.toLocaleString()}`;
+
+    const discountRow = document.getElementById('couponDiscountRow');
+    const savingsInfo = document.getElementById('savingsInfo');
+
+    if (backendData.discount > 0) {
+      discountRow.style.display = 'flex';
+      document.getElementById('savingsAmount').textContent = `₹${backendData.discount.toLocaleString()}`;
+      savingsInfo.style.display = 'flex';
+    } else {
+      discountRow.style.display = 'none';
+      savingsInfo.style.display = 'none';
+    }
+  }
+
+  function resetPricingToOriginal() {
+    // Reset to original values when coupon is removed
+    document.getElementById('subtotalValue').textContent = `₹${originalSubtotal.toLocaleString()}`;
+    document.getElementById('taxValue').textContent = `₹${originalTax.toLocaleString()}`;
+    document.getElementById('totalValue').textContent = `₹${originalTotal.toLocaleString()}`;
+    document.getElementById('placeOrderTotal').textContent = `₹${originalTotal.toLocaleString()}`;
+
+    const discountRow = document.getElementById('couponDiscountRow');
+    const savingsInfo = document.getElementById('savingsInfo');
+    discountRow.style.display = 'none';
+    savingsInfo.style.display = 'none';
+  }
+
+  function showCouponMessage(message, type) {
+    const messageEl = document.getElementById('couponMessage');
+    messageEl.textContent = message;
+    messageEl.className = `coupon-message coupon-message-${type}`;
+    messageEl.style.display = 'block';
+
+    setTimeout(() => {
+      messageEl.style.display = 'none';
+    }, 4000);
+  }
+
+  function showAppliedCoupon(code) {
+    document.getElementById('appliedCouponCode').textContent = code;
+    document.getElementById('appliedCoupon').style.display = 'flex';
+    document.querySelector('.coupon-input-wrapper').style.display = 'none';
+  }
+
+  function hideAppliedCoupon() {
+    document.getElementById('appliedCoupon').style.display = 'none';
+    document.querySelector('.coupon-input-wrapper').style.display = 'flex';
+  }
+
+  document.getElementById('couponCode').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+      applyCoupon();
     }
   });
 
   async function placeOrder() {
     const checkPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
     const checkSelectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
+
+    const couponInput = document.getElementById('couponCode');
+    const couponCode = couponInput.value.trim().toUpperCase();
 
     if (!checkPaymentMethod) {
       Swal.fire({
@@ -321,14 +677,14 @@
       return;
     }
 
-
+    // Use appliedCouponData for coupon code instead of input field
     const orderData = {
       paymentMethod: checkPaymentMethod.value,
       address: checkSelectedAddress.value,
+      couponCode: appliedCouponData ? appliedCouponData.code : null
     };
 
     try {
-      // Show loading
       Swal.fire({
         title: 'Processing Order...',
         text: 'Please wait while we process your order.',
@@ -336,18 +692,18 @@
         showConfirmButton: false,
         willOpen: () => Swal.showLoading()
       });
-      await new Promise(resolve => setTimeout(resolve, 2000));
+
       const response = await axios.post('/checkout/place-order', orderData);
-      Swal.close(); 
+      Swal.close();
 
       // Razorpay Payment
       if (response.data.razorpayOrderId) {
         const options = {
-          key: "<%= process.env.RAZORPAY_KEY_ID %>",
-          amount: response.data.totalAmount * 100, 
+          key: "<%= razorpayKey %>",
+          amount: response.data.totalAmount * 100,
           currency: response.data.currency,
           order_id: response.data.razorpayOrderId,
-          handler: async function(razorpayResponse) {
+          handler: async function (razorpayResponse) {
             try {
               const verifyRes = await axios.post("/checkout/place-order/razorpay-verify", razorpayResponse);
               if (verifyRes.data.success) {
@@ -355,28 +711,28 @@
                   icon: 'success',
                   title: '<i class="fas fa-check-circle"></i> Order Placed Successfully',
                   html: `
-                        <div style="text-align: center; padding: 20px;">
-                            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #e9ecef;">
-                                <h3 style="margin: 0 0 15px 0; font-size: 18px; color: #212529; font-weight: 500;">
-                                    <i class="fas fa-thumbs-up"></i> Thank you for your purchase
-                                </h3>
-                                <div style="background: #ffffff; padding: 15px; border-radius: 6px; border: 1px solid #dee2e6; margin-top: 15px;">
-                                    <p style="margin: 0; font-size: 16px; color: #495057;">
-                                        <strong><i class="fas fa-receipt"></i> Order ID:</strong>
-                                        <br>
-                                        <span style="font-family: 'Courier New', monospace; background: #f8f9fa; padding: 8px 12px; border-radius: 4px; color: #212529; border: 1px solid #e9ecef; display: inline-block; margin-top: 8px; font-size: 15px;">
-                                            ${response.data.orderId}
-                                        </span>
-                                    </p>
-                                </div>
-                                <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #e9ecef;">
-                                    <p style="margin: 0; font-size: 14px; color: #6c757d;">
-                                        <i class="fas fa-truck"></i> Your order is being processed and will be shipped soon
-                                    </p>
-                                </div>
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #e9ecef;">
+                            <h3 style="margin: 0 0 15px 0; font-size: 18px; color: #212529; font-weight: 500;">
+                                <i class="fas fa-thumbs-up"></i> Thank you for your purchase
+                            </h3>
+                            <div style="background: #ffffff; padding: 15px; border-radius: 6px; border: 1px solid #dee2e6; margin-top: 15px;">
+                                <p style="margin: 0; font-size: 16px; color: #495057;">
+                                    <strong><i class="fas fa-receipt"></i> Order ID:</strong>
+                                    <br>
+                                    <span style="font-family: 'Courier New', monospace; background: #f8f9fa; padding: 8px 12px; border-radius: 4px; color: #212529; border: 1px solid #e9ecef; display: inline-block; margin-top: 8px; font-size: 15px;">
+                                        ${response.data.orderId}
+                                    </span>
+                                </p>
+                            </div>
+                            <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #e9ecef;">
+                                <p style="margin: 0; font-size: 14px; color: #6c757d;">
+                                    <i class="fas fa-truck"></i> Your order is being processed and will be shipped soon
+                                </p>
                             </div>
                         </div>
-                    `,
+                    </div>
+                  `,
                   showCancelButton: true,
                   confirmButtonText: '<i class="fas fa-list-alt"></i> View Orders',
                   cancelButtonText: '<i class="fas fa-shopping-bag"></i> Continue Shopping',
@@ -412,28 +768,28 @@
                 icon: 'error',
                 title: '<i class="fas fa-times-circle"></i> Payment Failed',
                 html: `
-        <div style="text-align: center; padding: 20px;">
-            <div style="background: #fff5f5; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #f8d7da;">
-                <h3 style="margin: 0 0 15px 0; font-size: 18px; color: #721c24; font-weight: 500;">
-                    <i class="fas fa-exclamation-triangle"></i> Oops! Something went wrong
-                </h3>
-                <div style="background: #ffffff; padding: 15px; border-radius: 6px; border: 1px solid #f5c6cb; margin-top: 15px;">
-                    <p style="margin: 0; font-size: 16px; color: #721c24;">
-                        <strong><i class="fas fa-credit-card"></i> Payment Status:</strong>
-                        <br>
-                        <span style="font-family: 'Courier New', monospace; background: #fff5f5; padding: 8px 12px; border-radius: 4px; color: #721c24; border: 1px solid #f5c6cb; display: inline-block; margin-top: 8px; font-size: 15px;">
-                            Transaction Failed
-                        </span>
-                    </p>
-                </div>
-                <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #f8d7da;">
-                    <p style="margin: 0; font-size: 14px; color: #856404;">
-                        <i class="fas fa-info-circle"></i> Please try again or use a different payment method
-                    </p>
-                </div>
-            </div>
-        </div>
-    `,
+                  <div style="text-align: center; padding: 20px;">
+                      <div style="background: #fff5f5; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #f8d7da;">
+                          <h3 style="margin: 0 0 15px 0; font-size: 18px; color: #721c24; font-weight: 500;">
+                              <i class="fas fa-exclamation-triangle"></i> Oops! Something went wrong
+                          </h3>
+                          <div style="background: #ffffff; padding: 15px; border-radius: 6px; border: 1px solid #f5c6cb; margin-top: 15px;">
+                              <p style="margin: 0; font-size: 16px; color: #721c24;">
+                                  <strong><i class="fas fa-credit-card"></i> Payment Status:</strong>
+                                  <br>
+                                  <span style="font-family: 'Courier New', monospace; background: #fff5f5; padding: 8px 12px; border-radius: 4px; color: #721c24; border: 1px solid #f5c6cb; display: inline-block; margin-top: 8px; font-size: 15px;">
+                                      Transaction Failed
+                                  </span>
+                              </p>
+                          </div>
+                          <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #f8d7da;">
+                              <p style="margin: 0; font-size: 14px; color: #856404;">
+                                  <i class="fas fa-info-circle"></i> Please try again or use a different payment method
+                              </p>
+                          </div>
+                      </div>
+                  </div>
+                `,
                 showCancelButton: true,
                 confirmButtonText: '<i class="fas fa-redo"></i> Try Again',
                 cancelButtonText: '<i class="fas fa-home"></i> Back to Home',
@@ -457,7 +813,6 @@
                       Swal.showLoading();
                     }
                   });
-                  // Redirect to retry payment page
                   window.location.reload();
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
                   window.location.href = '/home';
@@ -466,33 +821,33 @@
             }
           },
           modal: {
-            ondismiss: function() {
+            ondismiss: function () {
               Swal.fire({
                 icon: 'error',
                 title: '<i class="fas fa-times-circle"></i> Payment Failed',
                 html: `
-    <div style="text-align: center; padding: 20px;">
-        <div style="background: #fff5f5; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #f8d7da;">
-            <h3 style="margin: 0 0 15px 0; font-size: 18px; color: #721c24; font-weight: 500;">
-                <i class="fas fa-exclamation-triangle"></i> Oops! Something went wrong
-            </h3>
-            <div style="background: #ffffff; padding: 15px; border-radius: 6px; border: 1px solid #f5c6cb; margin-top: 15px;">
-                <p style="margin: 0; font-size: 16px; color: #721c24;">
-                    <strong><i class="fas fa-credit-card"></i> Payment Status:</strong>
-                    <br>
-                    <span style="font-family: 'Courier New', monospace; background: #fff5f5; padding: 8px 12px; border-radius: 4px; color: #721c24; border: 1px solid #f5c6cb; display: inline-block; margin-top: 8px; font-size: 15px;">
-                        Transaction Failed
-                    </span>
-                </p>
-            </div>
-            <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #f8d7da;">
-                <p style="margin: 0; font-size: 14px; color: #856404;">
-                    <i class="fas fa-info-circle"></i> Please try again or use a different payment method
-                </p>
-            </div>
-        </div>
-    </div>
-  `,
+                  <div style="text-align: center; padding: 20px;">
+                      <div style="background: #fff5f5; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #f8d7da;">
+                          <h3 style="margin: 0 0 15px 0; font-size: 18px; color: #721c24; font-weight: 500;">
+                              <i class="fas fa-exclamation-triangle"></i> Oops! Something went wrong
+                          </h3>
+                          <div style="background: #ffffff; padding: 15px; border-radius: 6px; border: 1px solid #f5c6cb; margin-top: 15px;">
+                              <p style="margin: 0; font-size: 16px; color: #721c24;">
+                                  <strong><i class="fas fa-credit-card"></i> Payment Status:</strong>
+                                  <br>
+                                  <span style="font-family: 'Courier New', monospace; background: #fff5f5; padding: 8px 12px; border-radius: 4px; color: #721c24; border: 1px solid #f5c6cb; display: inline-block; margin-top: 8px; font-size: 15px;">
+                                      Transaction Failed
+                                  </span>
+                              </p>
+                          </div>
+                          <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #f8d7da;">
+                              <p style="margin: 0; font-size: 14px; color: #856404;">
+                                  <i class="fas fa-info-circle"></i> Please try again or use a different payment method
+                              </p>
+                          </div>
+                      </div>
+                  </div>
+                `,
                 showCancelButton: true,
                 confirmButtonText: '<i class="fas fa-redo"></i> Try Again',
                 cancelButtonText: '<i class="fas fa-list-alt"></i> Go to Orders',
@@ -516,10 +871,8 @@
                       Swal.showLoading();
                     }
                   });
-                  // Reload checkout page
                   window.location.reload();
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
-                  // Redirect to orders page
                   window.location.href = '/profile/orders';
                 }
               });
@@ -532,34 +885,34 @@
         return;
       }
 
-      // COD (Cash on Delivery)
+      // COD or Wallet Payment
       if (response.data.success) {
         Swal.fire({
           icon: 'success',
           title: '<i class="fas fa-check-circle"></i> Order Placed Successfully',
           html: `
-                        <div style="text-align: center; padding: 20px;">
-                            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #e9ecef;">
-                                <h3 style="margin: 0 0 15px 0; font-size: 18px; color: #212529; font-weight: 500;">
-                                    <i class="fas fa-thumbs-up"></i> Thank you for your purchase
-                                </h3>
-                                <div style="background: #ffffff; padding: 15px; border-radius: 6px; border: 1px solid #dee2e6; margin-top: 15px;">
-                                    <p style="margin: 0; font-size: 16px; color: #495057;">
-                                        <strong><i class="fas fa-receipt"></i> Order ID:</strong>
-                                        <br>
-                                        <span style="font-family: 'Courier New', monospace; background: #f8f9fa; padding: 8px 12px; border-radius: 4px; color: #212529; border: 1px solid #e9ecef; display: inline-block; margin-top: 8px; font-size: 15px;">
-                                            ${response.data.orderId}
-                                        </span>
-                                    </p>
-                                </div>
-                                <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #e9ecef;">
-                                    <p style="margin: 0; font-size: 14px; color: #6c757d;">
-                                        <i class="fas fa-truck"></i> Your order is being processed and will be shipped soon
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    `,
+            <div style="text-align: center; padding: 20px;">
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #e9ecef;">
+                    <h3 style="margin: 0 0 15px 0; font-size: 18px; color: #212529; font-weight: 500;">
+                        <i class="fas fa-thumbs-up"></i> Thank you for your purchase
+                    </h3>
+                    <div style="background: #ffffff; padding: 15px; border-radius: 6px; border: 1px solid #dee2e6; margin-top: 15px;">
+                        <p style="margin: 0; font-size: 16px; color: #495057;">
+                            <strong><i class="fas fa-receipt"></i> Order ID:</strong>
+                            <br>
+                            <span style="font-family: 'Courier New', monospace; background: #f8f9fa; padding: 8px 12px; border-radius: 4px; color: #212529; border: 1px solid #e9ecef; display: inline-block; margin-top: 8px; font-size: 15px;">
+                                ${response.data.orderId}
+                            </span>
+                        </p>
+                    </div>
+                    <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #e9ecef;">
+                        <p style="margin: 0; font-size: 14px; color: #6c757d;">
+                            <i class="fas fa-truck"></i> Your order is being processed and will be shipped soon
+                        </p>
+                    </div>
+                </div>
+            </div>
+          `,
           showCancelButton: true,
           confirmButtonText: '<i class="fas fa-list-alt"></i> View Orders',
           cancelButtonText: '<i class="fas fa-shopping-bag"></i> Continue Shopping',
@@ -591,34 +944,33 @@
       }
     } catch (error) {
       console.error('Error placing order:', error);
-      const backendMessage = error.response.data.message; 
-      console.log(error.message,"mes")
+      const backendMessage = error.response?.data?.message || 'An error occurred while placing the order';
       Swal.fire({
         icon: 'error',
-        title: '<i class="fas fa-times-circle"></i> Payment Failed',
+        title: '<i class="fas fa-times-circle"></i> Order Failed',
         html: `
-    <div style="text-align: center; padding: 20px;">
-        <div style="background: #fff5f5; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #f8d7da;">
-            <h3 style="margin: 0 0 15px 0; font-size: 18px; color: #721c24; font-weight: 500;">
-                <i class="fas fa-exclamation-triangle"></i> ${backendMessage}
-            </h3>
-            <div style="background: #ffffff; padding: 15px; border-radius: 6px; border: 1px solid #f5c6cb; margin-top: 15px;">
-                <p style="margin: 0; font-size: 16px; color: #721c24;">
-                    <strong><i class="fas fa-credit-card"></i> Payment Status:</strong>
-                    <br>
-                    <span style="font-family: 'Courier New', monospace; background: #fff5f5; padding: 8px 12px; border-radius: 4px; color: #721c24; border: 1px solid #f5c6cb; display: inline-block; margin-top: 8px; font-size: 15px;">
-                        Transaction Failed
-                    </span>
-                </p>
-            </div>
-            <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #f8d7da;">
-                <p style="margin: 0; font-size: 14px; color: #856404;">
-                    <i class="fas fa-info-circle"></i> Please try again or use a different payment method
-                </p>
-            </div>
-        </div>
-    </div>
-  `,
+          <div style="text-align: center; padding: 20px;">
+              <div style="background: #fff5f5; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #f8d7da;">
+                  <h3 style="margin: 0 0 15px 0; font-size: 18px; color: #721c24; font-weight: 500;">
+                      <i class="fas fa-exclamation-triangle"></i> ${backendMessage}
+                  </h3>
+                  <div style="background: #ffffff; padding: 15px; border-radius: 6px; border: 1px solid #f5c6cb; margin-top: 15px;">
+                      <p style="margin: 0; font-size: 16px; color: #721c24;">
+                          <strong><i class="fas fa-exclamation-circle"></i> Status:</strong>
+                          <br>
+                          <span style="font-family: 'Courier New', monospace; background: #fff5f5; padding: 8px 12px; border-radius: 4px; color: #721c24; border: 1px solid #f5c6cb; display: inline-block; margin-top: 8px; font-size: 15px;">
+                              Failed
+                          </span>
+                      </p>
+                  </div>
+                  <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #f8d7da;">
+                      <p style="margin: 0; font-size: 14px; color: #856404;">
+                          <i class="fas fa-info-circle"></i> Please try again or contact support
+                      </p>
+                  </div>
+              </div>
+          </div>
+        `,
         showCancelButton: true,
         confirmButtonText: '<i class="fas fa-redo"></i> Try Again',
         cancelButtonText: '<i class="fas fa-list-alt"></i> Go to Orders',
@@ -632,8 +984,8 @@
       }).then((result) => {
         if (result.isConfirmed) {
           Swal.fire({
-            title: '<i class="fas fa-spinner fa-spin"></i> Retrying Payment...',
-            text: 'Please wait while we redirect you to checkout',
+            title: '<i class="fas fa-spinner fa-spin"></i> Retrying...',
+            text: 'Please wait while we reload the page',
             allowOutsideClick: false,
             showConfirmButton: false,
             background: '#ffffff',
@@ -642,15 +994,11 @@
               Swal.showLoading();
             }
           });
-          // Redirect to retry payment page
           window.location.reload();
         } else if (result.dismiss === Swal.DismissReason.cancel) {
-          // Redirect to Orders
           window.location.href = '/profile/orders';
         }
       });
-
-
     }
   }
 </script>

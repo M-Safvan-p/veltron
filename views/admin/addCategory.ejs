@@ -1,58 +1,65 @@
 <link rel="stylesheet" href="../../styles/admin/addCategory.css">
 <div class="page-header">
-    <h1 class="page-title">ADD CATEGORY</h1>
-    <div class="breadcrumb">
-        <a href="/admin/dashboard">Dashboard</a>
-        <span class="breadcrumb-separator">></span> 
-        <a href="/admin/category">Categories</a> 
-        <span class="breadcrumb-separator">></span>
-        Add Category
-    </div>
+  <h1 class="page-title">ADD CATEGORY</h1>
+  <div class="breadcrumb">
+    <a href="/admin/dashboard">Dashboard</a>
+    <span class="breadcrumb-separator">></span>
+    <a href="/admin/category">Categories</a>
+    <span class="breadcrumb-separator">></span>
+    Add Category
+  </div>
 </div>
 
 <!-- Form Container -->
 <div class="form-container">
-    <form id="categoryForm">
-        <!-- Category Information -->
-        <div class="form-section">
-            <h3>Category Information</h3>
+  <form id="categoryForm">
+    <!-- Category Information -->
+    <div class="form-section">
+      <h3>Category Information</h3>
 
-            <div class="form-group">
-                <label class="form-label" for="categoryName">Category Name *</label>
-                <input type="text" id="categoryName" name="categoryName" class="form-input"
-                    placeholder="Enter category name..." >
-                <div class="error-message" id="nameError"></div>
+      <div class="form-group">
+        <label class="form-label" for="categoryName">Category Name *</label>
+        <input type="text" id="categoryName" name="categoryName" class="form-input" placeholder="Enter category name...">
+        <div class="error-message" id="nameError"></div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="description">Description (Optional)</label>
+        <textarea id="description" name="description" class="form-input form-textarea" placeholder="Enter category description..."></textarea>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="offer">Offer Percentage (Optional)</label>
+      <div class="input-with-suffix">
+        <input type="number" id="offer" name="offer" class="form-input offer-input" placeholder="Enter offer percentage (e.g., 10)" min="0" max="100" step="1">
+        <span class="input-suffix">%</span>
+      </div>
+      <small class="form-hint">Enter a discount percentage between 0 and 100. Leave empty for no offer.</small>
+      <div class="error-message" id="offerError"></div>
+    </div>
+    <!-- Category Status -->
+    <div class="form-section">
+      <h3>Category Status</h3>
+
+      <div class="form-group">
+        <div class="status-group">
+          <span class="status-label">List this category:</span>
+          <div class="toggle-container">
+            <div class="toggle-switch active" id="statusToggle">
+              <div class="slider"></div>
             </div>
-
-            <div class="form-group">
-                <label class="form-label" for="description">Description (Optional)</label>
-                <textarea id="description" name="description" class="form-input form-textarea"
-                    placeholder="Enter category description..."></textarea>
-            </div>
+            <span class="toggle-text listed" id="statusText">Listed</span>
+          </div>
         </div>
-        <!-- Category Status -->
-        <div class="form-section">
-            <h3>Category Status</h3>
+        <input type="hidden" id="isListed" name="isListed" value="true">
+      </div>
+    </div>
 
-            <div class="form-group">
-                <div class="status-group">
-                    <span class="status-label">List this category:</span>
-                    <div class="toggle-container">
-                        <div class="toggle-switch active" id="statusToggle">
-                            <div class="slider"></div>
-                        </div>
-                        <span class="toggle-text listed" id="statusText">Listed</span>
-                    </div>
-                </div>
-                <input type="hidden" id="isListed" name="isListed" value="true">
-            </div>
-        </div>
-
-        <!-- Form Actions -->
-        <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Add Category</button>
-            <a href="/admin/Category" class="btn btn-secondary">Cancel</a>
-        </div>
-    </form>
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Add Category</button>
+      <a href="/admin/Category" class="btn btn-secondary">Cancel</a>
+    </div>
+  </form>
 </div>
 <script src="../../js/script/admin/addCategory.js"></script>

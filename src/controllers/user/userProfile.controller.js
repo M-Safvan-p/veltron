@@ -5,8 +5,6 @@ const HttpStatus = require("../../constants/statusCodes");
 const passwordControl = require("../../helpers/passwordControl");
 const otpControl = require("../../helpers/otpControl");
 
-const userQuery = require("../../helpers/userQuery");
-
 const loadProfile = async (req, res) => {
   try {
     res.render("user/profile", {
@@ -130,6 +128,10 @@ const forgotPassword = async (req, res) => {
     //save
     req.session.otp = null;
     await updatedUser.save();
+    req.session.user = null;
+    delete req.session.user;
+    res.clearCookie("connect.sid");
+    res.setHeader("Cache-Control", "no-store");
     success(res, HttpStatus.OK);
   } catch (error) {
     ("password update error:", error);

@@ -1,3 +1,518 @@
-<link rel="stylesheet" href="../../styles/admin/dashboard.css">
-<h1>Welcome to Admin Dashboard</h1>
-<p>This is your dashboard page. Use the sidebar to navigate</p>
+<!-- Admin Dashboard with Real Data -->
+
+<style>
+  .main-content {
+    width: 100%;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .admin-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 18px;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 25px;
+    font-size: 14px;
+    color: #6c757d;
+  }
+
+  .page-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .header-left {
+    text-align: center;
+  }
+
+  .header-left h1 {
+    font-size: 28px;
+    color: #212529;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .header-left p {
+    font-size: 14px;
+    color: #6c757d;
+    margin: 0;
+  }
+
+  .chart-section {
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e9ecef;
+    padding: 24px;
+    margin-bottom: 30px;
+  }
+
+  .chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .chart-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #212529;
+    margin: 0;
+  }
+
+  .filter-dropdown {
+    padding: 8px 14px;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #212529;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .filter-dropdown:hover {
+    border-color: #adb5bd;
+    background: #f8f9fa;
+  }
+
+  .chart-container {
+    position: relative;
+    height: 320px;
+    margin-bottom: 20px;
+  }
+
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+    margin-top: 30px;
+  }
+
+  .metric-section {
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e9ecef;
+    padding: 24px;
+  }
+
+  .metric-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #f1f3f4;
+  }
+
+  .metric-icon {
+    font-size: 24px;
+  }
+
+  .metric-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #212529;
+    margin: 0;
+  }
+
+  .metric-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .metric-table thead {
+    background: #f8f9fa;
+  }
+
+  .metric-table th {
+    padding: 12px 10px;
+    text-align: left;
+    font-weight: 600;
+    color: #495057;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #e9ecef;
+  }
+
+  .metric-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid #f1f3f4;
+    color: #495057;
+  }
+
+  .metric-table tbody tr:hover {
+    background: #f8f9fa;
+  }
+
+  .metric-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .rank-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: #212529;
+    color: white;
+    border-radius: 50%;
+    font-weight: 600;
+    font-size: 12px;
+  }
+
+  .rank-badge.top {
+    background: #d1f7e1;
+    color: #146c43;
+  }
+
+  .item-name {
+    font-weight: 500;
+    color: #212529;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .quantity-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    background: #cce5ff;
+    color: #004085;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 12px;
+  }
+
+  .empty-metric {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6c757d;
+  }
+
+  .empty-metric-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+    opacity: 0.5;
+  }
+
+  .empty-metric-text {
+    font-size: 14px;
+    margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    .admin-container {
+      padding: 12px;
+    }
+
+    .chart-container {
+      height: 280px;
+    }
+
+    .metrics-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .metric-section {
+      padding: 16px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .chart-container {
+      height: 240px;
+    }
+
+    .metric-table {
+      font-size: 12px;
+    }
+
+    .metric-table th,
+    .metric-table td {
+      padding: 8px 6px;
+    }
+  }
+</style>
+
+  <div class="admin-container">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <span>Dashboard</span>
+    </div>
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="header-left">
+        <h1>Admin Dashboard</h1>
+        <p>Overview of your store performance and analytics</p>
+      </div>
+    </div>
+
+    <!-- Sales Chart Section -->
+    <div class="chart-section">
+      <div class="chart-header">
+        <h2 class="chart-title">Sales Performance</h2>
+        <select class="filter-dropdown" id="chart-filter" onchange="updateChart()">
+          <option value="weekly">This Week</option>
+          <option value="monthly" selected>This Month</option>
+          <option value="yearly">This Year</option>
+        </select>
+      </div>
+      <div class="chart-container">
+        <canvas id="salesChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Metrics Grid -->
+    <div class="metrics-grid">
+      <!-- Top 10 Best Selling Products -->
+      <div class="metric-section">
+        <div class="metric-header">
+          <div class="metric-icon">🛍️</div>
+          <h3 class="metric-title">Top 10 Products</h3>
+        </div>
+        <% if (topProducts && topProducts.length > 0) { %>
+          <table class="metric-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Product Name</th>
+                <th>Sold</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% topProducts.forEach((product, index) => { %>
+                <tr>
+                  <td>
+                    <span class="rank-badge <%= index < 3 ? 'top' : '' %>">
+                      <%= index + 1 %>
+                    </span>
+                  </td>
+                  <td class="item-name" title="<%= product.name %>">
+                    <%= product.name %>
+                  </td>
+                  <td>
+                    <span class="quantity-badge">
+                      <%= product.quantity %>
+                    </span>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        <% } else { %>
+          <div class="empty-metric">
+            <div class="empty-metric-icon">📦</div>
+            <p class="empty-metric-text">No product data available</p>
+          </div>
+        <% } %>
+      </div>
+
+      <!-- Top 10 Categories -->
+      <div class="metric-section">
+        <div class="metric-header">
+          <div class="metric-icon">🗂️</div>
+          <h3 class="metric-title">Top <%= topCategories.length || 10 %> Categories</h3>
+        </div>
+        <% if (topCategories && topCategories.length > 0) { %>
+          <table class="metric-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Category Name</th>
+                <th>Revenue</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% topCategories.forEach((category, index) => { %>
+                <tr>
+                  <td>
+                    <span class="rank-badge <%= index < 3 ? 'top' : '' %>">
+                      <%= index + 1 %>
+                    </span>
+                  </td>
+                  <td class="item-name" title="<%= category.categoryName %>">
+                    <%= category.categoryName %>
+                  </td>
+                  <td>
+                    <span class="quantity-badge">
+                      ₹<%= Math.round(category.totalRevenue).toLocaleString('en-IN') %>
+                    </span>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        <% } else { %>
+          <div class="empty-metric">
+            <div class="empty-metric-icon">📁</div>
+            <p class="empty-metric-text">No category data available</p>
+          </div>
+        <% } %>
+      </div>
+
+      <!-- Top 10 Brands -->
+      <div class="metric-section">
+        <div class="metric-header">
+          <div class="metric-icon">🏷️</div>
+          <h3 class="metric-title">Top <%= topBrands.length || 10 %> Brands</h3>
+        </div>
+        <% if (topBrands && topBrands.length > 0) { %>
+          <table class="metric-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Brand Name</th>
+                <th>Revenue</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% topBrands.forEach((brand, index) => { %>
+                <tr>
+                  <td>
+                    <span class="rank-badge <%= index < 3 ? 'top' : '' %>">
+                      <%= index + 1 %>
+                    </span>
+                  </td>
+                  <td class="item-name" title="<%= brand.name %>">
+                    <%= brand.name || 'Unknown Brand' %>
+                  </td>
+                  <td>
+                    <span class="quantity-badge">
+                      ₹<%= Math.round(brand.totalRevenue).toLocaleString('en-IN') %>
+                    </span>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        <% } else { %>
+          <div class="empty-metric">
+            <div class="empty-metric-icon">🏷️</div>
+            <p class="empty-metric-text">No brand data available</p>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<script>
+  const realChartData = <%- chartData %>;
+
+  let salesChart = null;
+
+  function initChart() {
+    const ctx = document.getElementById('salesChart');
+    if (!ctx) return;
+
+    const filter = document.getElementById('chart-filter').value;
+    const data = realChartData[filter];
+
+    if (!data || !data.labels || !data.data) {
+      console.error('Invalid chart data:', data);
+      return;
+    }
+
+    if (salesChart) {
+      salesChart.destroy();
+    }
+
+    salesChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: data.labels,
+        datasets: [{
+          label: 'Sales Revenue (₹)',
+          data: data.data,
+          borderColor: '#212529',
+          backgroundColor: 'rgba(33, 37, 41, 0.05)',
+          borderWidth: 2,
+          fill: true,
+          tension: 0.4,
+          pointBackgroundColor: '#212529',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          pointRadius: 5,
+          pointHoverRadius: 7,
+          pointHoverBackgroundColor: '#495057'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true,
+            labels: {
+              font: {
+                size: 13,
+                weight: '500'
+              },
+              color: '#495057',
+              padding: 20,
+              usePointStyle: true
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              font: {
+                size: 12
+              },
+              color: '#6c757d',
+              callback: function(value) {
+                return '₹' + (value / 1000).toFixed(0) + 'K';
+              }
+            },
+            grid: {
+              drawBorder: false,
+              color: '#f1f3f4'
+            }
+          },
+          x: {
+            ticks: {
+              font: {
+                size: 12
+              },
+              color: '#6c757d'
+            },
+            grid: {
+              display: false,
+              drawBorder: false
+            }
+          }
+        }
+      }
+    });
+  }
+
+  function updateChart() {
+    initChart();
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    initChart();
+  });
+</script>

@@ -181,3 +181,51 @@
 .btn-secondary:hover {
   background: #545b62;
 }
+/* Offer Input with Percentage Suffix */
+.input-with-suffix {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.offer-input {
+  padding-right: 40px !important;
+}
+
+.input-suffix {
+  position: absolute;
+  right: 15px;
+  color: #666;
+  font-weight: 600;
+  font-size: 14px;
+  pointer-events: none;
+}
+
+.form-hint {
+  display: block;
+  color: #666;
+  font-size: 12px;
+  margin-top: 6px;
+  font-style: italic;
+}
+
+/* Error Message */
+.error-message {
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 5px;
+  display: none;
+  font-weight: 500;
+}
+
+.error-message.show {
+  display: block;
+}
+
+.form-input.error {
+  border-color: #dc3545;
+}
+
+.form-input.error:focus {
+  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.1);
+}

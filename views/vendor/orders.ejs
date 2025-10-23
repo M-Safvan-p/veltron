@@ -1,909 +1,1024 @@
 <style>
-    .main-content {
-        /* background-color: white; */
-        width: 100%;
-        min-height: 100vh;
-        padding: 20px;
-    }
+  .main-content {
+    width: 100%;
+    min-height: 100vh;
+    padding: 20px;
+  }
 
-    .vendor-page {
-        display: flex;
-        gap: 30px;
-        align-items: flex-start;
-        max-width: 1400px;
-        margin: 0 auto;
-    }
+  .vendor-page {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
 
-    .sidebar {
-        flex-shrink: 0;
-    }
+  .sidebar {
+    flex-shrink: 0;
+  }
 
-    .vendor-container {
-        flex: 1;
-        width: 100%;
-        margin: 0;
-        padding: 18px;
-    }
+  .vendor-container {
+    flex: 1;
+    width: 100%;
+    margin: 0;
+    padding: 18px;
+  }
 
-    .breadcrumb {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 25px;
-        font-size: 14px;
-        color: #6c757d;
-    }
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 25px;
+    font-size: 14px;
+    color: #6c757d;
+  }
 
-    .breadcrumb a {
-        color: #6c757d;
-        text-decoration: none;
-        transition: color 0.2s ease;
-    }
+  .breadcrumb a {
+    color: #6c757d;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
 
-    .breadcrumb a:hover {
-        color: #212529;
-    }
+  .breadcrumb a:hover {
+    color: #212529;
+  }
 
-    .breadcrumb-separator {
-        color: #adb5bd;
-    }
+  .breadcrumb-separator {
+    color: #adb5bd;
+  }
 
-    .page-header {
-        text-align: center;
-        margin-bottom: 30px;
-    }
+  .page-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
 
-    .page-title {
-        font-size: 24px;
-        color: #212529;
-        font-weight: 600;
-        margin-bottom: 8px;
-    }
+  .page-title {
+    font-size: 24px;
+    color: #212529;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
 
-    .page-subtitle {
-        font-size: 14px;
-        color: #6c757d;
-        margin: 0;
-    }
+  .page-subtitle {
+    font-size: 14px;
+    color: #6c757d;
+    margin: 0;
+  }
 
-    .orders-section {
-        width: 100%;
-    }
+  .orders-section {
+    width: 100%;
+  }
 
-    /* Table Styles (Desktop) */
+  .table-container {
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e9ecef;
+    overflow: hidden;
+    overflow-x: auto;
+  }
+
+  .orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  .orders-table thead {
+    background: #f8f9fa;
+    border-bottom: 2px solid #e9ecef;
+  }
+
+  .orders-table th {
+    padding: 18px 16px;
+    text-align: left;
+    font-weight: 600;
+    color: #495057;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  .orders-table td {
+    padding: 16px;
+    border-bottom: 1px solid #f1f3f4;
+    vertical-align: middle;
+  }
+
+  .order-row {
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+
+  .order-row:hover {
+    background: #f8f9fa;
+  }
+
+  .order-row:last-child td {
+    border-bottom: none;
+  }
+
+  .order-id-cell {
+    min-width: 120px;
+  }
+
+  .order-id {
+    font-weight: 600;
+    color: #212529;
+    font-size: 13px;
+  }
+
+  .product-cell {
+    min-width: 250px;
+  }
+
+  .product-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .product-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 1px solid #e9ecef;
+  }
+
+  .product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .product-details {
+    flex: 1;
+  }
+
+  .product-name {
+    font-size: 14px;
+    color: #212529;
+    font-weight: 500;
+    margin: 0 0 4px 0;
+    line-height: 1.3;
+  }
+
+  .product-meta {
+    font-size: 12px;
+    color: #6c757d;
+    margin: 0;
+  }
+
+  .date-cell {
+    min-width: 100px;
+  }
+
+  .order-date {
+    font-size: 13px;
+    color: #495057;
+    font-weight: 500;
+  }
+
+  .customer-cell {
+    min-width: 180px;
+  }
+
+  .customer-name {
+    font-size: 14px;
+    color: #212529;
+    font-weight: 500;
+    margin: 0 0 4px 0;
+  }
+
+  .customer-location {
+    font-size: 12px;
+    color: #6c757d;
+    margin: 0;
+  }
+
+  .status-cell {
+    min-width: 120px;
+    text-align: center;
+  }
+
+  .status-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .status-pending {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+  }
+
+  .status-processing {
+    background: #cce5ff;
+    color: #004085;
+    border: 1px solid #b3d7ff;
+  }
+
+  .status-processing::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent);
+    animation: loading 1.2s linear infinite;
+  }
+
+  @keyframes loading {
+    100% {
+      left: 100%;
+    }
+  }
+
+  .status-shipped {
+    background: #d1f7e1;
+    color: #146c43;
+    border: 1px solid #a8e5c0;
+  }
+
+  .status-completed {
+    background: #e6f4ea;
+    color: #1e4620;
+    border: 1px solid #bcd8c1;
+  }
+
+  .status-cancelled {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+
+  .status-failed {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+
+  .action-cell {
+    min-width: 80px;
+    text-align: center;
+  }
+
+  .action-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: #212529;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .action-button:hover {
+    background: #495057;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(33, 37, 41, 0.2);
+  }
+
+  .action-button svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .cards-container {
+    display: none;
+    gap: 16px;
+    flex-direction: column;
+  }
+
+  .order-card {
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e9ecef;
+    transition: all 0.2s ease;
+  }
+
+  .order-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f1f3f4;
+  }
+
+  .order-info .order-id {
+    font-size: 16px;
+    font-weight: 600;
+    color: #212529;
+    margin: 0 0 4px 0;
+  }
+
+  .order-info .order-date {
+    font-size: 13px;
+    color: #6c757d;
+    margin: 0;
+  }
+
+  .card-content {
+    margin-bottom: 18px;
+  }
+
+  .card-content .product-info {
+    margin-bottom: 15px;
+  }
+
+  .card-content .product-image {
+    width: 50px;
+    height: 50px;
+  }
+
+  .customer-label {
+    font-size: 12px;
+    color: #6c757d;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin: 0 0 6px 0;
+  }
+
+  .card-actions {
+    text-align: center;
+  }
+
+  .view-details-button {
+    background: #212529;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .view-details-button:hover {
+    background: #495057;
+    transform: translateY(-1px);
+  }
+
+  .empty-orders {
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e9ecef;
+  }
+
+  .empty-orders-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+  }
+
+  .empty-title {
+    font-size: 24px;
+    color: #212529;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .empty-message {
+    font-size: 16px;
+    color: #6c757d;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .vendor-page .vendor-sidebar {
+    position: static !important;
+    left: auto !important;
+    width: 320px;
+    height: fit-content;
+    border-radius: 16px;
+    overflow: hidden;
+    transform: none !important;
+  }
+
+  @media (max-width: 1024px) {
     .table-container {
-        background: white;
-        border-radius: 14px;
-        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
-        border: 1px solid #e9ecef;
-        overflow: hidden;
-        overflow-x: auto;
+      overflow-x: auto;
     }
 
     .orders-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 14px;
+      min-width: 800px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .vendor-page {
+      flex-direction: column;
+      gap: 20px;
     }
 
-    .orders-table thead {
-        background: #f8f9fa;
-        border-bottom: 2px solid #e9ecef;
+    .sidebar .vendor-sidebar {
+      width: 100%;
     }
 
-    .orders-table th {
-        padding: 18px 16px;
-        text-align: left;
-        font-weight: 600;
-        color: #495057;
-        font-size: 13px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        white-space: nowrap;
+    .table-container {
+      display: none;
     }
 
-    .orders-table td {
-        padding: 16px;
-        border-bottom: 1px solid #f1f3f4;
-        vertical-align: middle;
-    }
-
-    .order-row {
-        transition: all 0.2s ease;
-        cursor: pointer;
-    }
-
-    .order-row:hover {
-        background: #f8f9fa;
-    }
-
-    .order-row:last-child td {
-        border-bottom: none;
-    }
-
-    /* Table Cell Styles */
-    .order-id-cell {
-        min-width: 120px;
-    }
-
-    .order-id {
-        font-weight: 600;
-        color: #212529;
-        font-size: 13px;
-    }
-
-    .product-cell {
-        min-width: 250px;
-    }
-
-    .product-info {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .product-image {
-        width: 40px;
-        height: 40px;
-        border-radius: 8px;
-        overflow: hidden;
-        flex-shrink: 0;
-        border: 1px solid #e9ecef;
-    }
-
-    .product-image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .product-details {
-        flex: 1;
-    }
-
-    .product-name {
-        font-size: 14px;
-        color: #212529;
-        font-weight: 500;
-        margin: 0 0 4px 0;
-        line-height: 1.3;
-    }
-
-    .product-meta {
-        font-size: 12px;
-        color: #6c757d;
-        margin: 0;
-    }
-
-    .date-cell {
-        min-width: 100px;
-    }
-
-    .order-date {
-        font-size: 13px;
-        color: #495057;
-        font-weight: 500;
-    }
-
-    .customer-cell {
-        min-width: 180px;
-    }
-
-    .customer-name {
-        font-size: 14px;
-        color: #212529;
-        font-weight: 500;
-        margin: 0 0 4px 0;
-    }
-
-    .customer-location {
-        font-size: 12px;
-        color: #6c757d;
-        margin: 0;
-    }
-
-    /* ================================
-   Status Badge Styles
-   ================================ */
-
-    /* Table cell wrapper */
-    .status-cell {
-        min-width: 120px;
-        text-align: center;
-    }
-
-    /* Base badge style */
-    .status-badge {
-        display: inline-block;
-        padding: 6px 12px;
-        border-radius: 16px;
-        font-size: 11px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        white-space: nowrap;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-        position: relative;
-        overflow: hidden;
-    }
-
-    /* ================================
-   Status Variants
-   ================================ */
-
-    /* Pending */
-    .status-pending {
-        background: #fff3cd;
-        color: #856404;
-        border: 1px solid #ffeeba;
-    }
-
-    /* Processing (with shimmer animation) */
-    .status-processing {
-        background: #cce5ff;
-        color: #004085;
-        border: 1px solid #b3d7ff;
-    }
-
-    .status-processing::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 200%;
-        height: 100%;
-        background: linear-gradient(90deg,
-                transparent,
-                rgba(255, 255, 255, 0.3),
-                transparent);
-        animation: loading 1.2s linear infinite;
-    }
-
-    @keyframes loading {
-        100% {
-            left: 100%;
-        }
-    }
-
-    /* Shipped */
-    .status-shipped {
-        background: #d1f7e1;
-        color: #146c43;
-        border: 1px solid #a8e5c0;
-    }
-
-    /* Completed */
-    .status-completed {
-        background: #e6f4ea;
-        color: #1e4620;
-        border: 1px solid #bcd8c1;
-    }
-
-    /* Cancelled */
-    .status-cancelled {
-        background: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-    }
-
-    /* Failed */
-    .status-failed {
-        background: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-    }
-
-    /* Action cell */
-    .action-cell {
-        min-width: 80px;
-        text-align: center;
-    }
-
-
-    .action-cell {
-        min-width: 80px;
-        text-align: center;
-    }
-
-    .action-button {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 36px;
-        height: 36px;
-        background: #212529;
-        color: white;
-        border-radius: 8px;
-        text-decoration: none;
-        transition: all 0.2s ease;
-    }
-
-    .action-button:hover {
-        background: #495057;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(33, 37, 41, 0.2);
-    }
-
-    .action-button svg {
-        width: 16px;
-        height: 16px;
-    }
-
-    /* Mobile Card Styles */
     .cards-container {
-        display: none;
-        gap: 16px;
-        flex-direction: column;
+      display: flex;
+    }
+
+    .page-title {
+      font-size: 22px;
+    }
+
+    .page-subtitle {
+      font-size: 13px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .vendor-container {
+      padding: 12px;
     }
 
     .order-card {
-        background: white;
-        border-radius: 14px;
-        padding: 20px;
-        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
-        border: 1px solid #e9ecef;
-        transition: all 0.2s ease;
+      padding: 16px;
+      border-radius: 11px;
     }
 
-    .order-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+    .breadcrumb {
+      font-size: 13px;
     }
 
-    .card-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 15px;
-        padding-bottom: 12px;
-        border-bottom: 1px solid #f1f3f4;
-    }
-
-    .order-info .order-id {
-        font-size: 16px;
-        font-weight: 600;
-        color: #212529;
-        margin: 0 0 4px 0;
-    }
-
-    .order-info .order-date {
-        font-size: 13px;
-        color: #6c757d;
-        margin: 0;
-    }
-
-    .card-content {
-        margin-bottom: 18px;
-    }
-
-    .card-content .product-info {
-        margin-bottom: 15px;
-    }
-
-    .card-content .product-image {
-        width: 50px;
-        height: 50px;
-    }
-
-    .customer-label {
-        font-size: 12px;
-        color: #6c757d;
-        text-transform: uppercase;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-        margin: 0 0 6px 0;
-    }
-
-    .card-actions {
-        text-align: center;
-    }
-
-    .view-details-button {
-        background: #212529;
-        color: white;
-        border: none;
-        padding: 10px 24px;
-        border-radius: 7px;
-        font-size: 12px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        text-transform: uppercase;
-        letter-spacing: 0.8px;
-        text-decoration: none;
-        display: inline-block;
-    }
-
-    .view-details-button:hover {
-        background: #495057;
-        transform: translateY(-1px);
-    }
-
-    /* Empty State */
     .empty-orders {
-        text-align: center;
-        padding: 60px 20px;
-        background: white;
-        border-radius: 14px;
-        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
-        border: 1px solid #e9ecef;
+      padding: 40px 15px;
     }
 
     .empty-orders-icon {
-        font-size: 64px;
-        margin-bottom: 20px;
+      font-size: 48px;
     }
 
     .empty-title {
-        font-size: 24px;
-        color: #212529;
-        font-weight: 600;
-        margin-bottom: 10px;
+      font-size: 20px;
     }
 
     .empty-message {
-        font-size: 16px;
-        color: #6c757d;
-        margin: 0;
-        line-height: 1.5;
+      font-size: 14px;
     }
 
-    .vendor-page .vendor-sidebar {
-        position: static !important;
-        left: auto !important;
-        width: 320px;
-        height: fit-content;
-        border-radius: 16px;
-        overflow: hidden;
-        transform: none !important;
+    .card-header {
+      flex-direction: column;
+      gap: 10px;
+      align-items: flex-start;
     }
 
-    /* Responsive Design */
-    @media (max-width: 1024px) {
-        .table-container {
-            overflow-x: auto;
-        }
-
-        .orders-table {
-            min-width: 800px;
-        }
+    .card-content .product-info {
+      flex-direction: column;
+      text-align: center;
+      gap: 10px;
     }
+  }
 
-    @media (max-width: 768px) {
-        .vendor-page {
-            flex-direction: column;
-            gap: 20px;
-        }
+  .pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding: 10px 0;
+    font-size: 14px;
+    color: #495057;
+  }
 
-        .sidebar .vendor-sidebar {
-            width: 100%;
-        }
+  .pagination-info {
+    font-weight: 500;
+    color: #6c757d;
+  }
 
-        .table-container {
-            display: none;
-        }
+  .pagination-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
 
-        .cards-container {
-            display: flex;
-        }
+  .pagination-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid #e9ecef;
+    background: white;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #212529;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
 
-        .page-title {
-            font-size: 22px;
-        }
+  .pagination-btn:hover:not(:disabled) {
+    background: #f8f9fa;
+    border-color: #ced4da;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
 
-        .page-subtitle {
-            font-size: 13px;
-        }
-    }
+  .pagination-btn.active {
+    background: #212529;
+    color: white;
+    border-color: #212529;
+    font-weight: 600;
+  }
 
-    @media (max-width: 640px) {
-        .vendor-container {
-            padding: 12px;
-        }
+  .pagination-btn:disabled {
+    background: #f1f3f4;
+    color: #adb5bd;
+    cursor: not-allowed;
+    border-color: #e9ecef;
+  }
 
-        .order-card {
-            padding: 16px;
-            border-radius: 11px;
-        }
+  .pagination-btn i {
+    font-size: 12px;
+  }
 
-        .breadcrumb {
-            font-size: 13px;
-        }
-
-        .empty-orders {
-            padding: 40px 15px;
-        }
-
-        .empty-orders-icon {
-            font-size: 48px;
-        }
-
-        .empty-title {
-            font-size: 20px;
-        }
-
-        .empty-message {
-            font-size: 14px;
-        }
-
-        .card-header {
-            flex-direction: column;
-            gap: 10px;
-            align-items: flex-start;
-        }
-
-        .card-content .product-info {
-            flex-direction: column;
-            text-align: center;
-            gap: 10px;
-        }
-    }
-
-    /* Pagination Styles */
+  @media (max-width: 640px) {
     .pagination {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 20px;
-        padding: 10px 0;
-        font-size: 14px;
-        color: #495057;
+      flex-direction: column;
+      gap: 12px;
     }
 
     .pagination-info {
-        font-weight: 500;
-        color: #6c757d;
-    }
-
-    .pagination-controls {
-        display: flex;
-        gap: 8px;
-        align-items: center;
+      font-size: 13px;
     }
 
     .pagination-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 36px;
-        height: 36px;
-        border: 1px solid #e9ecef;
-        background: white;
-        border-radius: 8px;
-        font-size: 14px;
-        color: #212529;
-        cursor: pointer;
-        transition: all 0.2s ease;
+      width: 32px;
+      height: 32px;
+      font-size: 13px;
     }
+  }
 
-    .pagination-btn:hover:not(:disabled) {
-        background: #f8f9fa;
-        border-color: #ced4da;
-        transform: translateY(-1px);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
+  .orders-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
 
-    .pagination-btn.active {
-        background: #212529;
-        color: white;
-        border-color: #212529;
-        font-weight: 600;
-    }
+  .search-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
 
-    .pagination-btn:disabled {
-        background: #f1f3f4;
-        color: #adb5bd;
-        cursor: not-allowed;
-        border-color: #e9ecef;
-    }
+  .other-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
 
-    .pagination-btn i {
-        font-size: 12px;
-    }
+  .control-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
 
-    /* Responsive Pagination */
-    @media (max-width: 640px) {
-        .pagination {
-            flex-direction: column;
-            gap: 12px;
-        }
+  .control-label {
+    font-size: 14px;
+    color: #495057;
+    font-weight: 500;
+    white-space: nowrap;
+  }
 
-        .pagination-info {
-            font-size: 13px;
-        }
+  .orders-controls select {
+    padding: 8px 12px;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #212529;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
 
-        .pagination-btn {
-            width: 32px;
-            height: 32px;
-            font-size: 13px;
-        }
-    }
+  .orders-controls select:hover {
+    border-color: #adb5bd;
+    background: #f8f9fa;
+  }
 
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+    background: #f8f9fa;
+    border: 1px solid #d4d5d6;
+    border-radius: 8px;
+    min-width: 250px;
+  }
+
+  .search-box i {
+    color: #6c757d;
+    font-size: 14px;
+  }
+
+  .search-box input {
+    border: none;
+    background: transparent;
+    font-size: 13px;
+    color: #212529;
+    width: 100%;
+    outline: none;
+  }
+
+  .search-box input::placeholder {
+    color: #adb5bd;
+  }
+
+  @media (max-width: 768px) {
     .orders-controls {
-        display: flex;
-        justify-content: flex-end;
-        gap: 15px;
-        margin-bottom: 20px;
-        flex-wrap: wrap;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .search-controls,
+    .other-controls {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .search-controls,
+    .other-controls {
+      flex-direction: column;
+      gap: 10px;
     }
 
     .control-group {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .control-label {
-        font-size: 14px;
-        color: #495057;
-        font-weight: 500;
+      width: 100%;
+      justify-content: center;
     }
 
     .orders-controls select {
-        padding: 8px 12px;
-        border: 1px solid #e9ecef;
-        border-radius: 8px;
-        font-size: 14px;
-        color: #212529;
-        background: white;
-        cursor: pointer;
-        transition: all 0.2s ease;
+      flex: 1;
+      min-width: 0;
     }
 
-    .orders-controls select:hover {
-        border-color: #adb5bd;
-        background: #f8f9fa;
+    .search-box {
+      min-width: 100%;
     }
+  }
 </style>
 
 <div class="vendor-page">
-    <div class="vendor-container">
-        <div class="breadcrumb">
-            <a href="/vendor/dashboard">dashboard</a>
-            <span class="breadcrumb-separator">></span>
-            <span>orders</span>
-        </div>
-
-        <div class="page-header">
-            <h1 class="page-title">Orders Management</h1>
-            <p class="page-subtitle">Manage and track all your product orders</p>
-        </div>
-
-        <section class="orders-section">
-            <div class="orders-controls">
-                <!-- Sort Dropdown -->
-                <div class="control-group">
-                    <label for="sort" class="control-label">Sort by:</label>
-                    <select id="sort" onchange="applyFilters()">
-                        <option value="newest" <%=sort==='newest' ? 'selected' : '' %>>Newest</option>
-                        <option value="oldest" <%=sort==='oldest' ? 'selected' : '' %>>Oldest</option>
-                    </select>
-                </div>
-
-                <!-- Status Filter -->
-                <div class="control-group">
-                    <label for="status" class="control-label">Status:</label>
-                    <select id="status" onchange="applyFilters()">
-                        <option value="">All</option>
-                        <option value="processing" <%=status==='processing' ? 'selected' : '' %>>Processing
-                        </option>
-                        <option value="shipped" <%=status==='shipped' ? 'selected' : '' %>>Shipped</option>
-                        <option value="completed" <%=status==='completed' ? 'selected' : '' %>>Completed
-                        </option>
-                        <option value="cancelled" <%=status==='cancelled' ? 'selected' : '' %>>Cancelled
-                        </option>
-                    </select>
-                </div>
-            </div>
-            <% if (orders && orders.length> 0) { %>
-                <!-- Desktop Table View -->
-                <div class="table-container">
-
-                    <table class="orders-table">
-                        <thead>
-                            <tr>
-                                <th>Order ID</th>
-                                <th>Product</th>
-                                <th>Date</th>
-                                <th>Customer</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% orders.forEach(order=> { %>
-                                <% order.products.forEach((product, productIndex)=> { %>
-                                    <% if (product.vendorId.toString()===vendor._id.toString()) { %>
-                                        <tr class="order-row">
-                                            <td class="order-id-cell">
-                                                <span class="order-id">#<%= order.orderId.substring(0, 10) %></span>
-                                            </td>
-                                            <td class="product-cell">
-                                                <div class="product-info">
-                                                    <div class="product-image">
-                                                        <img src="<%= product.image %>" alt="<%= product.name %>"
-                                                            onerror="this.src='/images/default-product.jpg'">
-                                                    </div>
-                                                    <div class="product-details">
-                                                        <p class="product-name">
-                                                            <%= product.name %>
-                                                        </p>
-                                                        <p class="product-meta">Qty: <%= product.quantity %> | Color:
-                                                                <%= product.selectedColor %>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="date-cell">
-                                                <span class="order-date">
-                                                    <%= new Date(order.invoiceDate).toLocaleDateString('en-IN', {
-                                                        day: '2-digit' , month: 'short' , year: 'numeric' }) %>
-                                                </span>
-                                            </td>
-                                            <td class="customer-cell">
-                                                <div class="customer-info">
-                                                    <p class="customer-name">
-                                                        <%= order.shippingAddress.fullName %>
-                                                    </p>
-                                                    <p class="customer-location">
-                                                        <%= order.shippingAddress.city %>, <%=
-                                                                order.shippingAddress.state %>
-                                                    </p>
-                                                </div>
-                                            </td>
-                                            <% const status=product.orderStatus || 'pending' ; %>
-                                                <td class="status-cell">
-                                                    <span class="status-badge status-<%= status %>">
-                                                        <%= status.charAt(0).toUpperCase() + status.slice(1) %>
-                                                    </span>
-                                                </td>
-                                                <td class="action-cell">
-                                                    <a href="/vendor/orders/<%= order.orderId %>" class="action-button"
-                                                        title="View Order Details">
-                                                        <svg width="16" height="16" fill="currentColor"
-                                                            viewBox="0 0 16 16">
-                                                            <path
-                                                                d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z" />
-                                                            <path
-                                                                d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z" />
-                                                        </svg>
-                                                    </a>
-                                                </td>
-                                        </tr>
-                                        <% } %>
-                                            <% }) %>
-                                                <% }) %>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Mobile Card View -->
-                <div class="cards-container">
-                    <% orders.forEach(order=> { %>
-                        <% order.products.forEach((product, productIndex)=> { %>
-                            <% if (product.vendorId.toString()===vendor._id.toString()) { %>
-                                <div class="order-card">
-                                    <div class="card-header">
-                                        <div class="order-info">
-                                            <p class="order-id">#<%= order.orderId %>
-                                            </p>
-                                            <p class="order-date">
-                                                <%= new Date(order.invoiceDate).toLocaleDateString('en-IN', {
-                                                    day: '2-digit' , month: 'short' , year: 'numeric' }) %>
-                                            </p>
-                                        </div>
-                                        <span class="status-badge status-<%= order.orderStatus %>">
-                                            <%= order.orderStatus.charAt(0).toUpperCase() + order.orderStatus.slice(1)
-                                                %>
-                                        </span>
-                                    </div>
-
-                                    <div class="card-content">
-                                        <div class="product-info">
-                                            <div class="product-image">
-                                                <img src="<%= product.image %>" alt="<%= product.name %>"
-                                                    onerror="this.src='/images/default-product.jpg'">
-                                            </div>
-                                            <div class="product-details">
-                                                <p class="product-name">
-                                                    <%= product.name %>
-                                                </p>
-                                                <p class="product-meta">Qty: <%= product.quantity %> | Color: <%=
-                                                            product.selectedColor %>
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <div class="customer-info">
-                                            <p class="customer-label">Customer:</p>
-                                            <p class="customer-name">
-                                                <%= order.shippingAddress.fullName %>
-                                            </p>
-                                            <p class="customer-location">
-                                                <%= order.shippingAddress.city %>, <%= order.shippingAddress.state %>
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div class="card-actions">
-                                        <a href="/vendor/orders/<%= order._id %>" class="view-details-button">
-                                            View Details
-                                        </a>
-                                    </div>
-                                </div>
-                                <% } %>
-                                    <% }) %>
-                                        <% }) %>
-                </div>
-                <% } else { %>
-                    <div class="empty-orders">
-                        <div class="empty-orders-icon">📋</div>
-                        <h3 class="empty-title">No Orders Yet</h3>
-                        <p class="empty-message">Orders for your products will appear here once customers start
-                            purchasing.</p>
-                    </div>
-                    <% } %>
-
-                        <!-- Pagination -->
-                        <% if (orders && orders.length> 0) { %>
-                            <div class="pagination">
-                                <div class="pagination-info">
-                                    Showing 1-<%= orders.length %> of <%= totalOrders %> orders
-                                </div>
-                                <div class="pagination-controls">
-                                    <button class="pagination-btn" <%=currentPage==1 ? 'disabled aria-disabled="true"'
-                                        : '' %>
-                                        onclick="changePage(<%= currentPage - 1 %>)" aria-label="Previous page">
-                                            <i class="fas fa-chevron-left" aria-hidden="true"></i>
-                                    </button>
-                                    <% for (let i=1; i <=totalPages; i++) { %>
-                                        <button class="pagination-btn <%= i === currentPage ? 'active' : '' %>"
-                                            aria-current="<%= i === currentPage ? 'page' : 'false' %>"
-                                            onclick="changePage(<%= i %>)" aria-label="Page <%= i %>">
-                                            <%= i %>
-                                        </button>
-                                        <% } %>
-                                            <button class="pagination-btn" <%=currentPage==totalPages
-                                                ? 'disabled aria-disabled="true"' : '' %>
-                                                onclick="changePage(<%= currentPage + 1 %>)" aria-label="Next page">
-                                                    <i class="fas fa-chevron-right" aria-hidden="true"></i>
-                                            </button>
-                                </div>
-                            </div>
-                            <% } %>
-        </section>
+  <div class="vendor-container">
+    <div class="breadcrumb">
+      <a href="/vendor/dashboard">dashboard</a>
+      <span class="breadcrumb-separator">></span>
+      <span>orders</span>
     </div>
+
+    <div class="page-header">
+      <h1 class="page-title">Orders Management</h1>
+      <p class="page-subtitle">Manage and track all your product orders</p>
+    </div>
+
+    <section class="orders-section">
+      <div class="orders-controls">
+        <div class="search-controls">
+          <div class="control-group">
+            <label for="search" class="control-label">Search:</label>
+            <div class="search-box">
+              <i class="fas fa-search"></i>
+              <input type="text" id="search" placeholder="Search by Order ID..." 
+                  value="<%= search || '' %>" onkeyup="debounceSearch()">
+            </div>
+          </div>
+        </div>
+
+        <div class="other-controls">
+          <div class="control-group">
+            <label for="sort" class="control-label">Sort by:</label>
+            <select id="sort" onchange="applyFilters()">
+              <option value="newest" <%=sort==='newest' ? 'selected' : '' %>>Newest</option>
+              <option value="oldest" <%=sort==='oldest' ? 'selected' : '' %>>Oldest</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <label for="status" class="control-label">Status:</label>
+            <select id="status" onchange="applyFilters()">
+              <option value="">All</option>
+              <option value="processing" <%=status==='processing' ? 'selected' : '' %>>Processing</option>
+              <option value="shipped" <%=status==='shipped' ? 'selected' : '' %>>Shipped</option>
+              <option value="completed" <%=status==='completed' ? 'selected' : '' %>>Completed</option>
+              <option value="cancelled" <%=status==='cancelled' ? 'selected' : '' %>>Cancelled</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      
+      <% if (orders && orders.length> 0) { %>
+      <div class="table-container">
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Product</th>
+              <th>Date</th>
+              <th>Customer</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% orders.forEach(order=> { %>
+            <% 
+              const vendorProducts = order.products.filter(product => 
+                  product.vendorId.toString() === vendor._id.toString()
+              );
+              
+              if (vendorProducts.length === 0) return;
+              
+              const orderStatus = vendorProducts[0].orderStatus || order.orderStatus || 'pending';
+              
+              const vendorTotal = vendorProducts.reduce((sum, product) => sum + product.productTotal, 0);
+            %>
+            <tr class="order-row">
+              <td class="order-id-cell">
+                <span class="order-id">#<%= order.orderId.substring(0, 10) %></span>
+              </td>
+              <td class="product-cell">
+                <div class="product-info">
+                  <% if (vendorProducts.length === 1) { %>
+                  <div class="product-image">
+                    <img src="<%= vendorProducts[0].image %>" alt="<%= vendorProducts[0].name %>" onerror="this.src='/images/default-product.jpg'">
+                  </div>
+                  <div class="product-details">
+                    <p class="product-name">
+                      <%= vendorProducts[0].name %>
+                    </p>
+                    <p class="product-meta">Qty: <%= vendorProducts[0].quantity %> | Color: <%= vendorProducts[0].selectedColor %></p>
+                  </div>
+                  <% } else { %>
+                  <div class="product-image" style="position: relative;">
+                    <img src="<%= vendorProducts[0].image %>" alt="<%= vendorProducts[0].name %>" onerror="this.src='/images/default-product.jpg'">
+                    <div style="position: absolute; top: -5px; right: -5px; background: #212529; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600;">
+                      +<%= vendorProducts.length - 1 %>
+                    </div>
+                  </div>
+                  <div class="product-details">
+                    <p class="product-name">
+                      <%= vendorProducts[0].name %>
+                      <% if (vendorProducts.length > 1) { %>
+                      <span style="color: #6c757d; font-size: 12px;">and <%= vendorProducts.length - 1 %> more</span>
+                      <% } %>
+                    </p>
+                    <p class="product-meta">
+                      Total Items: <%= vendorProducts.reduce((sum, p) => sum + p.quantity, 0) %>
+                      | Amount: ₹<%= vendorTotal.toLocaleString() %>
+                    </p>
+                  </div>
+                  <% } %>
+                </div>
+              </td>
+              <td class="date-cell">
+                <span class="order-date">
+                  <%= new Date(order.invoiceDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) %>
+                </span>
+              </td>
+              <td class="customer-cell">
+                <div class="customer-info">
+                  <p class="customer-name">
+                    <%= order.shippingAddress.fullName %>
+                  </p>
+                  <p class="customer-location">
+                    <%= order.shippingAddress.city %>, <%= order.shippingAddress.state %>
+                  </p>
+                </div>
+              </td>
+              <td class="status-cell">
+                <span class="status-badge status-<%= orderStatus %>">
+                  <%= orderStatus.charAt(0).toUpperCase() + orderStatus.slice(1) %>
+                </span>
+              </td>
+              <td class="action-cell">
+                <a href="/vendor/orders/<%= order.orderId %>" class="action-button" title="View Order Details">
+                  <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z" />
+                    <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z" />
+                  </svg>
+                </a>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="cards-container">
+        <% orders.forEach(order=> { %>
+        <%
+          const priority = ['processing', 'shipped', 'completed', 'cancelled', 'failed'];
+          const vendorProducts = order.products.filter(product => 
+              product.vendorId.toString() === vendor._id.toString()
+          );
+
+          if (vendorProducts.length === 0) return;
+
+          let orderStatus = 'processing';
+          for (let status of priority) {
+            if (vendorProducts.some(p => p.orderStatus === status)) {
+              orderStatus = status;
+              break;
+            }
+          }
+
+          const vendorTotal = vendorProducts.reduce((sum, product) => sum + product.productTotal, 0);
+        %>
+        <div class="order-card">
+          <div class="card-header">
+            <div class="order-info">
+              <p class="order-id">#<%= order.orderId %></p>
+              <p class="order-date">
+                <%= new Date(order.invoiceDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) %>
+              </p>
+            </div>
+            <span class="status-badge status-<%= orderStatus %>">
+              <%= orderStatus.charAt(0).toUpperCase() + orderStatus.slice(1) %>
+            </span>
+          </div>
+
+          <div class="card-content">
+            <div class="product-info">
+              <% if (vendorProducts.length === 1) { %>
+              <div class="product-image">
+                <img src="<%= vendorProducts[0].image %>" alt="<%= vendorProducts[0].name %>" onerror="this.src='/images/default-product.jpg'">
+              </div>
+              <div class="product-details">
+                <p class="product-name">
+                  <%= vendorProducts[0].name %>
+                </p>
+                <p class="product-meta">Qty: <%= vendorProducts[0].quantity %> | Color: <%= vendorProducts[0].selectedColor %></p>
+              </div>
+              <% } else { %>
+              <div class="product-image" style="position: relative;">
+                <img src="<%= vendorProducts[0].image %>" alt="<%= vendorProducts[0].name %>" onerror="this.src='/images/default-product.jpg'">
+                <div style="position: absolute; top: -5px; right: -5px; background: #212529; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600;">
+                  +<%= vendorProducts.length - 1 %>
+                </div>
+              </div>
+              <div class="product-details">
+                <p class="product-name">
+                  <%= vendorProducts[0].name %>
+                  <span style="color: #6c757d; font-size: 12px;">and <%= vendorProducts.length - 1 %> more</span>
+                </p>
+                <p class="product-meta">
+                  Total Items: <%= vendorProducts.reduce((sum, p) => sum + p.quantity, 0) %>
+                  | Amount: ₹<%= vendorTotal.toLocaleString() %>
+                </p>
+              </div>
+              <% } %>
+            </div>
+
+            <div class="customer-info">
+              <p class="customer-label">Customer:</p>
+              <p class="customer-name">
+                <%= order.shippingAddress.fullName %>
+              </p>
+              <p class="customer-location">
+                <%= order.shippingAddress.city %>, <%= order.shippingAddress.state %>
+              </p>
+            </div>
+          </div>
+
+          <div class="card-actions">
+            <a href="/vendor/orders/<%= order.orderId %>" class="view-details-button">
+              View Details
+            </a>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+      <% } else { %>
+      <div class="empty-orders">
+        <div class="empty-orders-icon">📋</div>
+        <h3 class="empty-title">No Orders Yet</h3>
+        <p class="empty-message">Orders for your products will appear here once customers start purchasing.</p>
+      </div>
+      <% } %>
+
+      <% if (orders && orders.length> 0) { %>
+      <div class="pagination">
+        <div class="pagination-info">
+          Showing 1-<%= orders.length %> of <%= totalOrders %> orders
+        </div>
+        <div class="pagination-controls">
+          <button class="pagination-btn" <%=currentPage==1 ? 'disabled aria-disabled="true"' : '' %> onclick="changePage(<%= currentPage - 1 %>)" aria-label="Previous page">
+            <i class="fas fa-chevron-left" aria-hidden="true"></i>
+          </button>
+          <% for (let i=1; i <=totalPages; i++) { %>
+          <button class="pagination-btn <%= i === currentPage ? 'active' : '' %>" aria-current="<%= i === currentPage ? 'page' : 'false' %>" onclick="changePage(<%= i %>)" aria-label="Page <%= i %>">
+            <%= i %>
+          </button>
+          <% } %>
+          <button class="pagination-btn" <%=currentPage==totalPages ? 'disabled aria-disabled="true"' : '' %> onclick="changePage(<%= currentPage + 1 %>)" aria-label="Next page">
+            <i class="fas fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+      <% } %>
+    </section>
+  </div>
 </div>
+
 <script>
-    function changePage(page) {
-        const url = new URL(window.location.href);
+  let searchTimeout; 
+  function debounceSearch() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(handleSearch, 1000);
+  }
 
-        url.searchParams.set("page", page);
-
-        const sort = document.getElementById("sort")?.value;
-        const status = document.getElementById("status")?.value;
-
-        if (sort) url.searchParams.set("sort", sort);
-        if (status) url.searchParams.set("status", status);
-
-        window.location.href = url.toString();
+  function handleSearch() {
+    const searchValue = document.getElementById('search').value;
+    const url = new URL(window.location);
+    if (searchValue) {
+      url.searchParams.set('search', searchValue);
+    } else {
+      url.searchParams.delete('search');
     }
-    function applyFilters() {
-        const sort = document.getElementById("sort").value;
-        const status = document.getElementById("status").value;
-        const url = new URL(window.location.href);
-        
-        url.searchParams.set("page", 1);
+    url.searchParams.set('page', 1);
+    window.location.href = url.href;
+  }
 
-        url.searchParams.set("sort", sort);
+  function changePage(page) {
+    const url = new URL(window.location.href);
+    url.searchParams.set("page", page);
 
-        if (status) {
-            url.searchParams.set("status", status);
-        } else {
-            url.searchParams.delete("status");
-        }
+    const sort = document.getElementById("sort")?.value;
+    const status = document.getElementById("status")?.value;
+    const search = document.getElementById("search")?.value;
 
-        window.location.href = url.toString();
+    if (sort) url.searchParams.set("sort", sort);
+    if (status) url.searchParams.set("status", status);
+    if (search) url.searchParams.set("search", search);
+    window.location.href = url.toString();
+  }
+
+  function applyFilters() {
+    const sort = document.getElementById("sort").value;
+    const status = document.getElementById("status").value;
+    const search = document.getElementById("search").value;
+    const url = new URL(window.location.href);
+
+    url.searchParams.set("page", 1);
+    url.searchParams.set("sort", sort);
+
+    if (status) {
+      url.searchParams.set("status", status);
+    } else {
+      url.searchParams.delete("status");
     }
 
+    if (search) {
+      url.searchParams.set("search", search);
+    } else {
+      url.searchParams.delete("search");
+    }
+
+    window.location.href = url.toString();
+  }
 </script>

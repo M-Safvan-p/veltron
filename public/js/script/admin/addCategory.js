@@ -25,12 +25,14 @@ document.getElementById("categoryForm").addEventListener("submit", async (e) => 
 
   const name = document.getElementById("categoryName").value.trim();
   const description = document.getElementById("description").value.trim();
+  const offer = document.getElementById("offer").value.trim();
   const isListed = document.getElementById("isListed").value;
 
   try {
     const response = await axios.post("/admin/category/add-category", {
       name,
       description,
+      offer,
       isListed,
     });
 

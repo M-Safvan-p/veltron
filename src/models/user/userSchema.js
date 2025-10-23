@@ -32,19 +32,11 @@ const userSchema = new Schema(
     isDeleted: { type: Boolean, default: false },
     isBlocked: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },
-    isReferred: { type: Boolean, default: false },
-    referralCode: { type: String, unique: true, sparse: true },
+    referralCode: { type: String, unique: true, sparse: true, required: true },
     referredUsers: [{ type: Schema.Types.ObjectId, ref: "User" }],
     googleId: { type: String, unique: true, sparse: true },
     wallet: { type: Schema.Types.ObjectId, ref: "UserWallet" },
     authProvider: { type: String, enum: ["local", "google"], required: true },
-    searchHistory: [
-      {
-        category: { type: Schema.Types.ObjectId, ref: "Category" },
-        vendor: { type: String },
-        searchOn: { type: Date, default: Date.now },
-      },
-    ],
   },
   { timestamps: true }
 );

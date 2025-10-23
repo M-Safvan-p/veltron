@@ -2,6 +2,9 @@ const Vendor = require("../models/vendor/vendorSchema");
 
 const checkSession = async (req, res, next) => {
   try {
+    // skip loging when developing
+    // req.session.vendor = "68ac1da41273d1277a64606e";
+
     if (req.session.vendor) {
       const vendor = await Vendor.findById(req.session.vendor).lean();
       if (!vendor) {
@@ -28,6 +31,9 @@ const checkSession = async (req, res, next) => {
 
 const isLogin = async (req, res, next) => {
   try {
+    // skip loging when developing
+    // req.session.vendor = "68ac1da41273d1277a64606e";
+
     if (req.session.vendor) {
       const vendor = await Vendor.findById(req.session.vendor).lean();
 

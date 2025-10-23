@@ -1,0 +1,1131 @@
+<style>
+  .main-content {
+    width: 100%;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .admin-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 18px;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 25px;
+    font-size: 14px;
+    color: #6c757d;
+  }
+
+  .breadcrumb a {
+    color: #6c757d;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .breadcrumb a:hover {
+    color: #212529;
+  }
+
+  .breadcrumb-separator {
+    color: #adb5bd;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .page-header h1 {
+    font-size: 24px;
+    color: #212529;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+  }
+
+  .page-header p {
+    font-size: 14px;
+    color: #6c757d;
+    margin: 0;
+  }
+
+  .returns-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+
+  .search-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .other-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .control-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .control-label {
+    font-size: 14px;
+    color: #495057;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .returns-controls select {
+    padding: 8px 12px;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #212529;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .returns-controls select:hover {
+    border-color: #adb5bd;
+    background: #f8f9fa;
+  }
+
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+    background: #f8f9fa;
+    border: 1px solid #d4d5d6;
+    border-radius: 8px;
+    min-width: 250px;
+  }
+
+  .search-box i {
+    color: #6c757d;
+    font-size: 14px;
+  }
+
+  .search-box input {
+    border: none;
+    background: transparent;
+    font-size: 13px;
+    color: #212529;
+    width: 100%;
+    outline: none;
+  }
+
+  .search-box input::placeholder {
+    color: #adb5bd;
+  }
+
+  .table-container {
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e9ecef;
+    overflow: hidden;
+    overflow-x: auto;
+  }
+
+  .returns-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  .returns-table thead {
+    background: #f8f9fa;
+    border-bottom: 2px solid #e9ecef;
+  }
+
+  .returns-table th {
+    padding: 18px 16px;
+    text-align: left;
+    font-weight: 600;
+    color: #495057;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  .returns-table td {
+    padding: 16px;
+    border-bottom: 1px solid #f1f3f4;
+    vertical-align: top;
+  }
+
+  .return-row {
+    transition: all 0.2s ease;
+  }
+
+  .return-row:hover {
+    background: #f8f9fa;
+  }
+
+  .return-row:last-child td {
+    border-bottom: none;
+  }
+
+  .return-id-cell {
+    min-width: 140px;
+  }
+
+  .return-id {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: #212529;
+    font-size: 13px;
+  }
+
+  .return-id i {
+    color: #6c757d;
+    font-size: 14px;
+  }
+
+  .return-date {
+    font-size: 12px;
+    color: #6c757d;
+    margin-top: 4px;
+  }
+
+  .products-cell {
+    min-width: 280px;
+    max-width: 320px;
+  }
+
+  .products-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .product-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+  }
+
+  .product-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 1px solid #e9ecef;
+  }
+
+  .product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .product-details {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .product-name {
+    font-size: 13px;
+    color: #212529;
+    font-weight: 500;
+    margin: 0 0 3px 0;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .product-meta {
+    font-size: 11px;
+    color: #6c757d;
+    margin: 0;
+  }
+
+  .customer-cell {
+    min-width: 200px;
+  }
+
+  .customer-name {
+    font-size: 14px;
+    color: #212529;
+    font-weight: 500;
+    margin: 0 0 6px 0;
+  }
+
+  .customer-address {
+    font-size: 12px;
+    color: #6c757d;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .reason-cell {
+    min-width: 220px;
+    max-width: 280px;
+  }
+
+  .reason-text {
+    font-size: 13px;
+    color: #495057;
+    line-height: 1.5;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .refund-cell {
+    min-width: 120px;
+    text-align: right;
+  }
+
+  .refund-amount {
+    font-size: 16px;
+    color: #212529;
+    font-weight: 600;
+  }
+
+  .status-cell {
+    min-width: 150px;
+  }
+
+  .status-select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23495057' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 30px;
+  }
+
+  .status-select.status-pending {
+    background-color: #fff3cd;
+    color: #856404;
+    border-color: #ffeeba;
+  }
+
+  .status-select.status-approved {
+    background-color: #d1f7e1;
+    color: #146c43;
+    border-color: #a8e5c0;
+  }
+
+  .status-select.status-rejected {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+  }
+
+  .status-select.status-completed {
+    background-color: #e6f4ea;
+    color: #1e4620;
+    border-color: #bcd8c1;
+  }
+
+  .status-select:disabled {
+    cursor: not-allowed;
+    opacity: 0.8;
+  }
+
+  .status-select:not(:disabled):hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding: 10px 0;
+    font-size: 14px;
+    color: #495057;
+  }
+
+  .pagination-info {
+    font-weight: 500;
+    color: #6c757d;
+  }
+
+  .pagination-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .pagination-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid #e9ecef;
+    background: white;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #212529;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .pagination-btn:hover:not(:disabled) {
+    background: #f8f9fa;
+    border-color: #ced4da;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .pagination-btn.active {
+    background: #212529;
+    color: white;
+    border-color: #212529;
+    font-weight: 600;
+  }
+
+  .pagination-btn:disabled {
+    background: #f1f3f4;
+    color: #adb5bd;
+    cursor: not-allowed;
+    border-color: #e9ecef;
+  }
+
+  .empty-returns {
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e9ecef;
+  }
+
+  .empty-returns-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+  }
+
+  .empty-title {
+    font-size: 24px;
+    color: #212529;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .empty-message {
+    font-size: 16px;
+    color: #6c757d;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .cards-container {
+    display: none;
+    gap: 16px;
+    flex-direction: column;
+  }
+
+  .return-card {
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e9ecef;
+    transition: all 0.2s ease;
+  }
+
+  .return-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f1f3f4;
+  }
+
+  .card-section {
+    margin-bottom: 15px;
+  }
+
+  .card-label {
+    font-size: 12px;
+    color: #6c757d;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin: 0 0 8px 0;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .returns-table {
+      min-width: 1000px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .admin-container {
+      padding: 12px;
+    }
+
+    .page-header {
+      margin-bottom: 20px;
+    }
+
+    .page-header h1 {
+      font-size: 20px;
+    }
+
+    .page-header p {
+      font-size: 13px;
+    }
+
+    .returns-controls {
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .search-controls,
+    .other-controls {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .control-group {
+      flex: 1;
+      min-width: 140px;
+    }
+
+    .control-label {
+      font-size: 13px;
+    }
+
+    .returns-controls select {
+      width: 100%;
+      font-size: 13px;
+      padding: 7px 10px;
+    }
+
+    .table-container {
+      display: none;
+    }
+
+    .cards-container {
+      display: flex;
+    }
+
+    .pagination {
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .pagination-info {
+      font-size: 13px;
+    }
+
+    .pagination-controls {
+      gap: 6px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .main-content {
+      padding: 12px;
+    }
+
+    .admin-container {
+      padding: 8px;
+    }
+
+    .breadcrumb {
+      font-size: 13px;
+      margin-bottom: 15px;
+    }
+
+    .page-header {
+      margin-bottom: 15px;
+    }
+
+    .page-header h1 {
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+
+    .page-header p {
+      font-size: 12px;
+    }
+
+    .returns-controls {
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .control-group {
+      width: 100%;
+    }
+
+    .return-card {
+      padding: 16px;
+      border-radius: 11px;
+    }
+
+    .card-header {
+      flex-direction: column;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .return-id {
+      font-size: 12px;
+    }
+
+    .return-date {
+      font-size: 11px;
+    }
+
+    .product-item {
+      padding: 6px;
+    }
+
+    .product-image {
+      width: 36px;
+      height: 36px;
+    }
+
+    .product-name {
+      font-size: 12px;
+    }
+
+    .product-meta {
+      font-size: 10px;
+    }
+
+    .customer-name {
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .customer-address {
+      font-size: 11px;
+    }
+
+    .reason-text {
+      font-size: 12px;
+    }
+
+    .refund-amount {
+      font-size: 15px;
+    }
+
+    .card-label {
+      font-size: 11px;
+    }
+
+    .status-select {
+      font-size: 11px;
+      padding: 7px 10px;
+      padding-right: 28px;
+    }
+
+    .empty-returns {
+      padding: 40px 15px;
+    }
+
+    .empty-returns-icon {
+      font-size: 48px;
+      margin-bottom: 15px;
+    }
+
+    .empty-title {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+
+    .empty-message {
+      font-size: 14px;
+    }
+
+    .pagination-info {
+      font-size: 12px;
+    }
+
+    .pagination-btn {
+      width: 32px;
+      height: 32px;
+      font-size: 13px;
+    }
+
+    .search-box {
+      min-width: 200px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .page-header h1 {
+      font-size: 16px;
+    }
+
+    .page-header p {
+      font-size: 11px;
+    }
+
+    .return-card {
+      padding: 12px;
+    }
+
+    .card-section {
+      margin-bottom: 12px;
+    }
+
+    .products-stack {
+      gap: 8px;
+    }
+
+    .pagination-btn {
+      width: 30px;
+      height: 30px;
+      font-size: 12px;
+    }
+
+    .search-controls,
+    .other-controls {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .control-group {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .returns-controls select {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .search-box {
+      min-width: 100%;
+    }
+  }
+</style>
+
+<div class="admin-container">
+  <div class="breadcrumb">
+    <a href="/vendor/dashboard">dashboard</a>
+    <span class="breadcrumb-separator">></span>
+    <a href="/vendor/orders">orders</a>
+    <span class="breadcrumb-separator">></span>
+    <span>returns</span>
+  </div>
+
+  <div class="page-header">
+    <div class="header-left">
+      <h1>Order Returns Management</h1>
+      <p>Review and manage customer return requests</p>
+    </div>
+  </div>
+
+  <div class="returns-controls">
+    <div class="search-controls">
+      <div class="control-group">
+        <label for="search" class="control-label">Search:</label>
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" id="search" placeholder="Search by Order ID..." 
+              value="<%= search || '' %>" onkeyup="debounceSearch()">
+        </div>
+      </div>
+    </div>
+
+    <div class="other-controls">
+      <div class="control-group">
+        <label for="sort" class="control-label">Sort by:</label>
+        <select id="sort" onchange="applyFilters()">
+          <option value="newest" <%=sort==='newest' ? 'selected' : '' %>>Newest</option>
+          <option value="oldest" <%=sort==='oldest' ? 'selected' : '' %>>Oldest</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="status" class="control-label">Filter:</label>
+        <select id="status" onchange="applyFilters()">
+          <option value="">All</option>
+          <option value="pending" <%=status==='pending' ? 'selected' : '' %>>Pending</option>
+          <option value="approved" <%=status==='approved' ? 'selected' : '' %>>Approved</option>
+          <option value="rejected" <%=status==='rejected' ? 'selected' : '' %>>Rejected</option>
+          <option value="completed" <%=status==='completed' ? 'selected' : '' %>>Completed</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <% if (returns && returns.length> 0) { %>
+  <!-- Desktop Table View -->
+  <div class="table-container">
+    <table class="returns-table">
+      <thead>
+        <tr>
+          <th>Return ID</th>
+          <th>Product(s)</th>
+          <th>Customer</th>
+          <th>Reason</th>
+          <th>Refund Amount</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% returns.forEach(returnItem=> { %>
+        <% const dateOpts={ day: '2-digit' , month: 'short' , year: 'numeric' }; const formattedDate=new
+              Date(returnItem.returnDate).toLocaleDateString('en-IN', dateOpts); const order=returnItem.orderId; const
+              user=returnItem.userId; %>
+        <tr class="return-row">
+          <td class="return-id-cell">
+            <div class="return-id">
+              RET-<%= returnItem._id.toString().slice(-8).toUpperCase() %>
+            </div>
+            <div class="return-date">
+              <%= formattedDate %>
+            </div>
+          </td>
+          <td class="products-cell">
+            <div class="products-stack">
+              <% returnItem.items.forEach(item=> { %>
+              <% const product=item.productId; const productImage=product?.variants?.find(v=> v._id.toString()
+                        === item.variantId)?.images?.[0]?.url || '/images/default-product.jpg';
+                        %>
+              <div class="product-item">
+                <div class="product-image">
+                  <img src="<%= productImage %>" alt="<%= item.name %>" onerror="this.src='/images/default-product.jpg'">
+                </div>
+                <div class="product-details">
+                  <p class="product-name">
+                    <%= item.name %>
+                  </p>
+                  <p class="product-meta">Qty: <%= item.quantity || 0 %> | Rs.
+                    <%= (item.finalProductPrice || 0).toLocaleString('en-IN') %>
+                  </p>
+                </div>
+              </div>
+              <% }) %>
+            </div>
+          </td>
+          <td class="customer-cell">
+            <p class="customer-name">
+              <%= user?.fullName || order?.shippingAddress?.fullName || 'N/A' %>
+            </p>
+            <p class="customer-address">
+              <%= order?.shippingAddress?.addressLine1 || '' %><br>
+              <%= order?.shippingAddress?.city || '' %>, <%= order?.shippingAddress?.state || '' %><br>
+              <%= order?.shippingAddress?.pincode || '' %>
+            </p>
+          </td>
+          <td class="reason-cell">
+            <p class="reason-text">
+              <%= returnItem.reason %>
+            </p>
+          </td>
+          <td class="refund-cell">
+            <div class="refund-amount">Rs.<%= (returnItem.refundAmount || 0).toLocaleString('en-IN') %>
+            </div>
+          </td>
+          <td class="status-cell">
+            <select class="status-select status-<%= returnItem.status %>" onchange="changeStatus('<%= returnItem._id %>', this.value, '<%= returnItem.status %>')" <%=(returnItem.status==='rejected' || returnItem.status==='completed' ) ? 'disabled' : '' %>>
+              <option value="pending" <%=returnItem.status==='pending' ? 'selected' : '' %> <%= (returnItem.status==='approved' || returnItem.status==='rejected' ||
+                        returnItem.status==='completed' ) ? 'disabled' : '' %>>Pending
+              </option>
+              <option value="approved" <%=returnItem.status==='approved' ? 'selected' : '' %>>Approved</option>
+              <option value="rejected" <%=returnItem.status==='rejected' ? 'selected' : '' %> <%= returnItem.status==='approved' ? 'disabled' : '' %>>Rejected
+              </option>
+              <option value="completed" <%=returnItem.status==='completed' ? 'selected' : '' %> <%= (returnItem.status !=='approved' && returnItem.status !=='completed' ) ? 'disabled' : '' %>>Completed
+              </option>
+            </select>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Mobile Card View -->
+  <div class="cards-container">
+    <% returns.forEach(returnItem=> { %>
+    <% const dateOpts={ day: '2-digit' , month: 'short' , year: 'numeric' }; const formattedDate=new
+          Date(returnItem.returnDate).toLocaleDateString('en-IN', dateOpts); const order=returnItem.orderId; const
+          user=returnItem.userId; %>
+    <div class="return-card">
+      <div class="card-header">
+        <div>
+          <div class="return-id">
+            <i class="fas fa-undo"></i>
+            RET-<%= returnItem._id.toString().slice(-8).toUpperCase() %>
+          </div>
+          <div class="return-date">
+            <%= formattedDate %>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-section">
+        <p class="card-label">Products</p>
+        <div class="products-stack">
+          <% returnItem.items.forEach(item=> { %>
+          <% const product=item.productId; const productImage=product?.variants?.find(v=> v._id.toString() ===
+                    item.variantId)?.images?.[0]?.url || '/images/default-product.jpg';
+                    %>
+          <div class="product-item">
+            <div class="product-image">
+              <img src="<%= productImage %>" alt="<%= item.name %>" onerror="this.src='/images/default-product.jpg'">
+            </div>
+            <div class="product-details">
+              <p class="product-name">
+                <%= item.name %>
+              </p>
+              <p class="product-meta">Qty: <%= item.quantity || 0 %> | Rs.<%= (item.finalProductPrice ||
+                              0).toLocaleString('en-IN') %>
+              </p>
+            </div>
+          </div>
+          <% }) %>
+        </div>
+      </div>
+
+      <div class="card-section">
+        <p class="card-label">Customer</p>
+        <p class="customer-name">
+          <%= user?.fullName || order?.shippingAddress?.fullName || 'N/A' %>
+        </p>
+        <p class="customer-address">
+          <%= order?.shippingAddress?.addressLine1 || '' %><br>
+          <%= order?.shippingAddress?.city || '' %>, <%= order?.shippingAddress?.state || '' %><br>
+          <%= order?.shippingAddress?.pincode || '' %>
+        </p>
+      </div>
+
+      <div class="card-section">
+        <p class="card-label">Reason</p>
+        <p class="reason-text">
+          <%= returnItem.reason %>
+        </p>
+      </div>
+
+      <div class="card-section">
+        <p class="card-label">Refund Amount</p>
+        <div class="refund-amount">Rs.<%= (returnItem.refundAmount || 0).toLocaleString('en-IN') %>
+        </div>
+      </div>
+
+      <div class="card-section">
+        <p class="card-label">Status</p>
+        <select class="status-select status-<%= returnItem.status %>" onchange="changeStatus('<%= returnItem._id %>', this.value, '<%= returnItem.status %>')" <%=(returnItem.status==='rejected' || returnItem.status==='completed' ) ? 'disabled' : '' %>>
+          <option value="pending" <%=returnItem.status==='pending' ? 'selected' : '' %> <%= (returnItem.status==='approved' || returnItem.status==='rejected' ||
+                    returnItem.status==='completed' ) ? 'disabled' : '' %>>Pending
+          </option>
+          <option value="approved" <%=returnItem.status==='approved' ? 'selected' : '' %>>Approved</option>
+          <option value="rejected" <%=returnItem.status==='rejected' ? 'selected' : '' %> <%= returnItem.status==='approved' ? 'disabled' : '' %>>Rejected
+          </option>
+          <option value="completed" <%=returnItem.status==='completed' ? 'selected' : '' %> <%= (returnItem.status !=='approved' && returnItem.status !=='completed' ) ? 'disabled' : '' %>>Completed
+          </option>
+        </select>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination">
+    <div class="pagination-info">
+      Showing <%= ((currentPage - 1) * limit) + 1 %>-<%= Math.min(currentPage * limit, totalReturns) %> of <%= totalReturns %> returns
+    </div>
+    <div class="pagination-controls">
+      <button class="pagination-btn" <%=currentPage===1 ? 'disabled' : '' %> onclick="changePage(<%= currentPage - 1 %>)" aria-label="Previous page">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+
+      <% for (let i=1; i <=totalPages; i++) { %>
+      <button class="pagination-btn <%= i === currentPage ? 'active' : '' %>" onclick="changePage(<%= i %>)" aria-label="Page <%= i %>">
+        <%= i %>
+      </button>
+      <% } %>
+
+      <button class="pagination-btn" <%=currentPage===totalPages ? 'disabled' : '' %> onclick="changePage(<%= currentPage + 1 %>)" aria-label="Next page">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+  <% } else { %>
+  <div class="empty-returns">
+    <div class="empty-returns-icon">📋</div>
+    <h3 class="empty-title">No Return Requests</h3>
+    <p class="empty-message">Customer return requests will appear here when submitted.</p>
+  </div>
+  <% } %>
+</div>
+
+<script>
+  let searchTimeout; 
+
+  function debounceSearch() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(handleSearch, 1000);
+  }
+
+  function handleSearch() {
+    const searchValue = document.getElementById('search').value;
+    const url = new URL(window.location);
+    if (searchValue) {
+      url.searchParams.set('search', searchValue);
+    } else {
+      url.searchParams.delete('search');
+    }
+    url.searchParams.set('page', 1);
+    window.location.href = url.href;
+  }
+
+  function changePage(page) {
+    const url = new URL(window.location.href);
+    url.searchParams.set('page', page);
+
+    const sort = document.getElementById('sort')?.value;
+    const filterStatus = document.getElementById('status')?.value;
+    const search = document.getElementById('search')?.value;
+
+    if (sort) url.searchParams.set('sort', sort);
+    if (filterStatus) url.searchParams.set('status', filterStatus);
+    if (search) url.searchParams.set('search', search);
+
+    window.location.href = url.toString();
+  }
+
+  function applyFilters() {
+    const sort = document.getElementById('sort').value;
+    const filterStatus = document.getElementById('status').value;
+    const search = document.getElementById('search').value;
+    const url = new URL(window.location.href);
+
+    url.searchParams.set('page', 1);
+    url.searchParams.set('sort', sort);
+
+    if (filterStatus) {
+      url.searchParams.set('status', filterStatus);
+    } else {
+      url.searchParams.delete('status');
+    }
+
+    if (search) {
+      url.searchParams.set('search', search);
+    } else {
+      url.searchParams.delete('search');
+    }
+
+    window.location.href = url.toString();
+  }
+
+  async function changeStatus(returnId, newStatus, currentStatus) {
+    if (currentStatus === 'rejected' || currentStatus === 'completed') {
+      await Swal.fire({
+        icon: 'warning',
+        title: 'Action not allowed',
+        text: 'Cannot change status once rejected or completed.',
+      });
+      location.reload();
+      return;
+    }
+
+    if (currentStatus === 'approved' && (newStatus === 'pending' || newStatus === 'rejected')) {
+      await Swal.fire({
+        icon: 'warning',
+        title: 'Action not allowed',
+        text: 'Cannot change status back to pending or rejected after approval.',
+      });
+      location.reload();
+      return;
+    }
+
+    if (newStatus === 'completed' && currentStatus !== 'approved') {
+      await Swal.fire({
+        icon: 'warning',
+        title: 'Action not allowed',
+        text: 'Can only mark as completed after approval.',
+      });
+      location.reload();
+      return;
+    }
+
+    const confirmResult = await Swal.fire({
+      title: `Change status to "${newStatus.toUpperCase()}"?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, change it!',
+      cancelButtonText: 'Cancel'
+    });
+
+    if (!confirmResult.isConfirmed) {
+      location.reload();
+      return;
+    }
+
+    try {
+      const { data } = await axios.put(`/vendor/returns/${returnId}/status`, {
+        status: newStatus
+      });
+
+      if (data.success) {
+        await Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: data.message || 'Status updated successfully!',
+        });
+        location.reload();
+      } else {
+        await Swal.fire({
+          icon: 'error',
+          title: 'Failed',
+          text: data.message || 'Failed to update status. Please try again.',
+        });
+        location.reload();
+      }
+    } catch (error) {
+      console.error('Error updating status:', error);
+      await Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'An error occurred while updating status. Please try again.',
+      });
+      location.reload();
+    }
+  }
+</script>

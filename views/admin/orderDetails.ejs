@@ -819,30 +819,6 @@
 
         <section class="order-details-section">
             <div class="order-details-container">
-                <!-- Admin Controls -->
-                <article class="admin-controls-card">
-                    <h3 class="card-title">Administrative Controls</h3>
-                    <div class="admin-controls">
-                        <label for="statusDropdown" style="font-weight: 500; color: #495057;">Update Status:</label>
-                        <select id="statusDropdown" class="status-dropdown">
-                            <option value="processing" <%=order.products[0].orderStatus==='processing' ? 'selected' : '' %>>Processing</option>
-                            <option value="shipped" <%=order.products[0].orderStatus==='shipped' ? 'selected' : '' %>>Shipped</option>
-                            <option value="completed" <%=order.products[0].orderStatus==='completed' ? 'selected' : '' %>>Completed</option>
-                            <option value="cancelled" <%=order.products[0].orderStatus==='cancelled' ? 'selected' : '' %>>Cancelled</option>
-                        </select>
-                        <button id="updateStatusBtn" class="admin-btn update-status-btn">Update Status</button>
-                        <button id="cancelOrderBtn" class="admin-btn cancel-order-btn">Cancel Order</button>
-                        <button id="refundBtn" class="admin-btn refund-btn">Process Refund</button>
-                    </div>
-                    
-                    <!-- Admin Notes Section -->
-                    <div class="admin-notes">
-                        <div class="notes-title">Administrative Notes</div>
-                        <textarea id="adminNotes" class="notes-textarea" placeholder="Add internal notes about this order..."><%= order.adminNotes || '' %></textarea>
-                        <button id="saveNotesBtn" class="save-notes-btn">Save Notes</button>
-                    </div>
-                </article>
-
                 <!-- Order Header -->
                 <article class="order-header-card">
                     <div class="order-main-info">
@@ -867,11 +843,11 @@
                             </div>
                             <div class="customer-detail-item">
                                 <span class="customer-label">Phone</span>
-                                <span class="customer-value"><%= order.shippingAddress.phoneNumber %></span>
+                                <span class="customer-value"><%= order.shippingAddress.phone %></span>
                             </div>
                             <div class="customer-detail-item">
                                 <span class="customer-label">Customer ID</span>
-                                <span class="customer-value"><%= order.customerId._id || order.customerId._id %></span>
+                                <span class="customer-value"><%= order.customerId._id %></span>
                             </div>
                             <div class="customer-detail-item">
                                 <span class="customer-label">Member Since</span>
@@ -915,28 +891,27 @@
                     <div class="vendor-details">
                         <div class="vendor-detail-item">
                             <span class="vendor-label">Vendor Name</span>
-                            <span class="vendor-value"><%= order.vendor.brandName || order.vendor.name %></span>
+                            <span class="vendor-value"><%= order.products[0].vendorId.brandName %></span>
                         </div>
                         <div class="vendor-detail-item">
                             <span class="vendor-label">Vendor ID</span>
-                            <span class="vendor-value"><%= order.vendor.vendorId || order.vendor._id %></span>
+                            <span class="vendor-value"><%= order.products[0].vendorId._id %></span>
                         </div>
                         <div class="vendor-detail-item">
                             <span class="vendor-label">Email</span>
-                            <a href="mailto:<%= order.vendor.brandEmail %>" class="vendor-value vendor-email"><%= order.vendor.brandEmail %></a>
+                            <a href="mailto:<%= order.products[0].vendorId.brandEmail %>" class="vendor-value vendor-email"><%= order.products[0].vendorId.brandEmail %></a>
                         </div>
                         <div class="vendor-detail-item">
                             <span class="vendor-label">Phone</span>
-                            <span class="vendor-value"><%= order.vendor.phoneNumber
-                                 %></span>
+                            <span class="vendor-value"><%= order.products[0].vendorId.phoneNumber %></span>
                         </div>
                         <div class="vendor-detail-item">
                             <span class="vendor-label">Business Type</span>
-                            <span class="vendor-value"><%= order.vendor.businessType || 'General' %></span>
+                            <span class="vendor-value"><%= order.products[0].vendorId.businessType || 'General' %></span>
                         </div>
                         <div class="vendor-detail-item">
                             <span class="vendor-label">Join Date</span>
-                            <span class="vendor-value"><%= new Date(order.vendor.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long' }) %></span>
+                            <span class="vendor-value"><%= new Date(order.products[0].vendorId.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long' }) %></span>
                         </div>
                     </div>
                 </article>
@@ -955,16 +930,16 @@
                                 <%= order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1) %>
                             </span>
                         </div>
-                        <% if (order.couponCode) { %>
+                        <% if (order.couponDetails && order.couponDetails.code) { %>
                         <div class="detail-item">
                             <span class="detail-label">Coupon Applied</span>
-                            <span class="detail-value"><%= order.couponCode %></span>
+                            <span class="detail-value"><%= order.couponDetails.code %></span>
                         </div>
                         <% } %>
-                        <% if (order.transactionId) { %>
+                        <% if (order.razorpayPaymentId) { %>
                         <div class="detail-item">
                             <span class="detail-label">Transaction ID</span>
-                            <span class="detail-value"><%= order.transactionId %></span>
+                            <span class="detail-value"><%= order.razorpayPaymentId %></span>
                         </div>
                         <% } %>
                     </div>
@@ -990,7 +965,8 @@
                                 const subtotal = order.products.reduce((total, product) => total + (product.quantity * product.priceAtPurchase), 0);
                                 const totalItems = order.products.reduce((total, product) => total + product.quantity, 0);
                                 const gst = Math.round(subtotal * 0.18); // 18% GST
-                                const discountedSubtotal = order.couponDiscount ? (subtotal - order.couponDiscount) : subtotal;
+                                const discountAmount = order.couponDetails && order.couponDetails.discount ? order.couponDetails.discount : 0;
+                                const discountedSubtotal = subtotal - discountAmount;
                                 const finalTotal = discountedSubtotal + gst; // shipping is free
                                 
                                 // Commission calculations
@@ -1009,10 +985,10 @@
                                     <span class="summary-value">₹<%= subtotal.toLocaleString('en-IN') %></span>
                                 </div>
 
-                                <% if (order.couponCode && order.couponDiscount) { %>
+                                <% if (order.couponDetails && order.couponDetails.discount && order.couponDetails.discount > 0) { %>
                                 <div class="summary-item">
                                     <span class="summary-label">Coupon Discount</span>
-                                    <span class="summary-value discount">-₹<%= order.couponDiscount.toLocaleString('en-IN') %></span>
+                                    <span class="summary-value discount">-₹<%= discountAmount.toLocaleString('en-IN') %></span>
                                 </div>
                                 <% } %>
 
@@ -1023,7 +999,7 @@
 
                                 <div class="summary-item">
                                     <span class="summary-label">Shipping</span>
-                                    <span class="summary-value">Free</span>
+                                    <span class="summary-value">₹50</span>
                                 </div>
 
                                 <hr style="border: none; border-top: 1px solid #dee2e6; margin: 10px 0;" />
@@ -1053,21 +1029,21 @@
                 <article class="order-tracking-card">
                     <h3 class="card-title">Order Tracking</h3>
                     <div id="trackingTimeline" class="tracking-timeline">
-                        <div class="timeline-step <%= order.orderStatus === 'processing' || order.orderStatus === 'shipped' || order.orderStatus === 'completed' ? 'active' : '' %>" data-status="processing">
+                        <div class="timeline-step <%= order.products[0].orderStatus === 'processing' || order.products[0].orderStatus === 'shipped' || order.products[0].orderStatus === 'completed' ? 'active' : '' %>" data-status="processing">
                             <div class="step-icon">1</div>
                             <div class="step-info">
                                 <p class="step-title">Processing</p>
                                 <p class="step-desc">Order confirmed</p>
                             </div>
                         </div>
-                        <div class="timeline-step <%= order.orderStatus === 'shipped' || order.orderStatus === 'completed' ? 'active' : '' %>" data-status="shipped">
+                        <div class="timeline-step <%= order.products[0].orderStatus === 'shipped' || order.products[0].orderStatus === 'completed' ? 'active' : '' %>" data-status="shipped">
                             <div class="step-icon">2</div>
                             <div class="step-info">
                                 <p class="step-title">Shipped</p>
                                 <p class="step-desc">On the way</p>
                             </div>
                         </div>
-                        <div class="timeline-step <%= order.orderStatus === 'completed' ? 'active' : '' %>" data-status="completed">
+                        <div class="timeline-step <%= order.products[0].orderStatus === 'completed' ? 'active' : '' %>" data-status="completed">
                             <div class="step-icon">3</div>
                             <div class="step-info">
                                 <p class="step-title">Completed</p>
@@ -1085,287 +1061,3 @@
     </div>
 </div>
 
-<script>
-    // Initialize with current order status
-    let currentOrderStatus = '<%= order.products[0].orderStatus %>';
-    const orderId = '<%= order.orderId %>';
-
-    // Update tracking timeline based on status
-    function updateTrackingTimeline(status) {
-        const steps = document.querySelectorAll('.timeline-step');
-        const statusOrder = ['processing', 'shipped', 'completed'];
-
-        steps.forEach(step => {
-            step.classList.remove('active');
-        });
-
-        if (status === 'cancelled') {
-            steps[0].classList.add('active');
-            return;
-        }
-
-        const currentIndex = statusOrder.indexOf(status);
-        if (currentIndex !== -1) {
-            for (let i = 0; i <= currentIndex; i++) {
-                steps[i].classList.add('active');
-            }
-        }
-    }
-
-    // Update status badge
-    function updateStatusBadge(status) {
-        const badge = document.getElementById('currentStatusBadge');
-        badge.className = `status-badge status-${status}`;
-        badge.textContent = status.charAt(0).toUpperCase() + status.slice(1);
-    }
-
-    // Handle status update
-    document.getElementById('updateStatusBtn').addEventListener('click', async function () {
-        const newStatus = document.getElementById('statusDropdown').value;
-        const updateBtn = this;
-
-        if (newStatus === currentOrderStatus) {
-            Swal.fire({
-                icon: 'info',
-                title: 'No Changes',
-                text: 'The selected status is the same as current status.',
-                confirmButtonText: 'OK'
-            });
-            return;
-        }
-
-        // Confirm status change
-        const result = await Swal.fire({
-            title: 'Update Order Status?',
-            text: `Are you sure you want to change the order status to "${newStatus.toUpperCase()}"?`,
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, Update',
-            cancelButtonText: 'Cancel',
-            customClass: {
-                confirmButton: 'swal-confirm-black',
-                cancelButton: 'swal-cancel-gray'
-            }
-        });
-
-        if (!result.isConfirmed) return;
-
-        // Disable button during request
-        updateBtn.disabled = true;
-        updateBtn.textContent = 'Updating...';
-
-        try {
-            // Send PUT request to update status
-            const response = await axios.put(`/admin/orders/${orderId}/status`, {
-                orderStatus: newStatus
-            });
-
-            currentOrderStatus = newStatus;
-            updateStatusBadge(newStatus);
-            updateTrackingTimeline(newStatus);
-
-            Swal.fire({
-                icon: 'success',
-                title: 'Status Updated!',
-                text: `Order status has been successfully updated to "${newStatus.toUpperCase()}".`,
-                confirmButtonText: 'OK',
-                customClass: { confirmButton: 'swal-confirm-black' }
-            });
-
-        } catch (error) {
-            console.error('Status update error:', error);
-
-            // Reset dropdown to current status 
-            document.getElementById('statusDropdown').value = currentOrderStatus;
-
-            Swal.fire({
-                icon: 'error',
-                title: 'Update Failed',
-                text: error.response?.data?.message || 'Failed to update order status. Please try again.',
-                confirmButtonText: 'OK'
-            });
-        } finally {
-            // Re-enable button
-            updateBtn.disabled = false;
-            updateBtn.textContent = 'Update Status';
-        }
-    });
-
-    // Handle order cancellation
-    document.getElementById('cancelOrderBtn').addEventListener('click', async function () {
-        if (currentOrderStatus === 'cancelled') {
-            Swal.fire({
-                icon: 'info',
-                title: 'Already Cancelled',
-                text: 'This order is already cancelled.',
-                confirmButtonText: 'OK'
-            });
-            return;
-        }
-
-        if (currentOrderStatus === 'completed') {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Cannot Cancel',
-                text: 'Completed orders cannot be cancelled. Use refund option instead.',
-                confirmButtonText: 'OK'
-            });
-            return;
-        }
-
-        const result = await Swal.fire({
-            title: 'Cancel Order?',
-            text: 'Are you sure you want to cancel this order? This action cannot be undone.',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, Cancel Order',
-            cancelButtonText: 'No, Keep Order',
-            confirmButtonColor: '#dc3545',
-            customClass: {
-                cancelButton: 'swal-cancel-gray'
-            }
-        });
-
-        if (!result.isConfirmed) return;
-
-        const cancelBtn = this;
-        cancelBtn.disabled = true;
-        cancelBtn.textContent = 'Cancelling...';
-
-        try {
-            await axios.put(`/admin/orders/${orderId}/cancel`);
-            
-            currentOrderStatus = 'cancelled';
-            document.getElementById('statusDropdown').value = 'cancelled';
-            updateStatusBadge('cancelled');
-            updateTrackingTimeline('cancelled');
-
-            Swal.fire({
-                icon: 'success',
-                title: 'Order Cancelled',
-                text: 'The order has been successfully cancelled.',
-                confirmButtonText: 'OK',
-                customClass: { confirmButton: 'swal-confirm-black' }
-            });
-
-        } catch (error) {
-            console.error('Cancel order error:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Cancellation Failed',
-                text: error.response?.data?.message || 'Failed to cancel order. Please try again.',
-                confirmButtonText: 'OK'
-            });
-        } finally {
-            cancelBtn.disabled = false;
-            cancelBtn.textContent = 'Cancel Order';
-        }
-    });
-
-    // Handle refund processing
-    document.getElementById('refundBtn').addEventListener('click', async function () {
-        if (currentOrderStatus !== 'completed' && currentOrderStatus !== 'cancelled') {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Cannot Process Refund',
-                text: 'Refunds can only be processed for completed or cancelled orders.',
-                confirmButtonText: 'OK'
-            });
-            return;
-        }
-
-        const { value: refundAmount } = await Swal.fire({
-            title: 'Process Refund',
-            input: 'number',
-            inputLabel: 'Refund Amount (₹)',
-            inputPlaceholder: 'Enter refund amount',
-            inputAttributes: {
-                min: 1,
-                step: 0.01
-            },
-            showCancelButton: true,
-            confirmButtonText: 'Process Refund',
-            cancelButtonText: 'Cancel',
-            customClass: {
-                confirmButton: 'swal-confirm-black',
-                cancelButton: 'swal-cancel-gray'
-            },
-            inputValidator: (value) => {
-                if (!value || value <= 0) {
-                    return 'Please enter a valid refund amount';
-                }
-            }
-        });
-
-        if (!refundAmount) return;
-
-        const refundBtn = this;
-        refundBtn.disabled = true;
-        refundBtn.textContent = 'Processing...';
-
-        try {
-            await axios.post(`/admin/orders/${orderId}/refund`, {
-                amount: parseFloat(refundAmount)
-            });
-
-            Swal.fire({
-                icon: 'success',
-                title: 'Refund Processed',
-                text: `Refund of ₹${parseFloat(refundAmount).toLocaleString('en-IN')} has been initiated.`,
-                confirmButtonText: 'OK',
-                customClass: { confirmButton: 'swal-confirm-black' }
-            });
-
-        } catch (error) {
-            console.error('Refund processing error:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Refund Failed',
-                text: error.response?.data?.message || 'Failed to process refund. Please try again.',
-                confirmButtonText: 'OK'
-            });
-        } finally {
-            refundBtn.disabled = false;
-            refundBtn.textContent = 'Process Refund';
-        }
-    });
-
-    // Handle admin notes saving
-    document.getElementById('saveNotesBtn').addEventListener('click', async function () {
-        const notes = document.getElementById('adminNotes').value.trim();
-        const saveBtn = this;
-
-        saveBtn.disabled = true;
-        saveBtn.textContent = 'Saving...';
-
-        try {
-            await axios.put(`/admin/orders/${orderId}/notes`, {
-                notes: notes
-            });
-
-            Swal.fire({
-                icon: 'success',
-                title: 'Notes Saved',
-                text: 'Administrative notes have been saved successfully.',
-                confirmButtonText: 'OK',
-                timer: 2000,
-                customClass: { confirmButton: 'swal-confirm-black' }
-            });
-
-        } catch (error) {
-            console.error('Save notes error:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Save Failed',
-                text: error.response?.data?.message || 'Failed to save notes. Please try again.',
-                confirmButtonText: 'OK'
-            });
-        } finally {
-            saveBtn.disabled = false;
-            saveBtn.textContent = 'Save Notes';
-        }
-    });
-
-    // Initialize timeline on page load
-    updateTrackingTimeline(currentOrderStatus);
-</script>

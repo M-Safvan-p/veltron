@@ -16,7 +16,7 @@ const orderSchema = new mongoose.Schema(
     },
     orderStatus: {
       type: String,
-      enum: ["pending","processing", "shipped", "completed", "cancelled", "failed"],
+      enum: ["pending", "processing", "shipped", "completed", "cancelled", "failed"],
       default: "processing",
       required: true,
     },
@@ -42,13 +42,21 @@ const orderSchema = new mongoose.Schema(
     couponDetails: {
       code: { type: String },
       discount: { type: Number },
-      discountType: { type: String },
-      maxDiscount: { type: Number },
-      minPurchase: { type: Number },
     },
     totalAmount: {
       type: Number,
       required: true,
+    },
+    subTotal: {
+      type: Number,
+      required: true,
+    },
+    tax: {
+      type: Number,
+      required: true,
+    },
+    discount: {
+      type: Number,
     },
     totalCommissionAmount: {
       type: Number,
@@ -83,7 +91,7 @@ const orderSchema = new mongoose.Schema(
         },
         orderStatus: {
           type: String,
-          enum: ["processing", "shipped", "cancelled", "completed"],
+          enum: ["pending","processing", "shipped", "cancelled", "completed", "failed", "returned"],
           default: "processing",
           required: true,
         },
@@ -93,9 +101,19 @@ const orderSchema = new mongoose.Schema(
         selectedColor: { type: String, required: true },
         priceAtPurchase: { type: Number, required: true },
         productTotal: { type: Number, required: true },
+        subTotal: { type: Number, required: true },
+        tax: { type: Number, required: true },
+        discount: { type: Number },
         commissionAmount: { type: Number, required: true },
         vendorEarning: { type: Number, required: true },
         variantId: { type: String, required: true },
+        //return
+        returnRequested: { type: Boolean, default: false },
+        returnStatus: {
+          type: String,
+          enum: ["none", "requested", "approved", "rejected", "completed"],
+          default: "none",
+        },
       },
     ],
     invoiceDate: {

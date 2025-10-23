@@ -1,0 +1,600 @@
+<style>
+  .main-content {
+    background-color: white;
+    width: 100%;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .profile-page {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .sidebar {
+    flex-shrink: 0;
+  }
+
+  .profile-container {
+    flex: 1;
+    max-width: 800px;
+    width: 100%;
+    margin: 0;
+    padding: 18px;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 25px;
+    font-size: 14px;
+    color: #6c757d;
+  }
+
+  .breadcrumb a {
+    color: #6c757d;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .breadcrumb a:hover {
+    color: #212529;
+  }
+
+  .breadcrumb-separator {
+    color: #adb5bd;
+  }
+
+  .welcome-section {
+    text-align: center;
+    margin-bottom: 25px;
+  }
+
+  .welcome-title {
+    font-size: 22px;
+    color: #212529;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+  }
+
+  .referral-section {
+    width: 100%;
+  }
+
+  .referral-container {
+    background: white;
+    border-radius: 14px;
+    padding: 40px 35px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e9ecef;
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .referral-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #212529 0%, #495057 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 25px;
+    color: white;
+    font-size: 32px;
+    box-shadow: 0 6px 20px rgba(33, 37, 41, 0.15);
+  }
+
+  .referral-title {
+    font-size: 24px;
+    color: #212529;
+    font-weight: 600;
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+  }
+
+  .referral-description {
+    font-size: 15px;
+    color: #6c757d;
+    line-height: 1.7;
+    margin-bottom: 35px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .referral-code-section {
+    margin-bottom: 30px;
+  }
+
+  .referral-code-label {
+    font-size: 13px;
+    color: #495057;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+    display: block;
+  }
+
+  .referral-code-box {
+    background: linear-gradient(135deg, #212529 0%, #495057 100%);
+    border-radius: 12px;
+    padding: 20px 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    box-shadow: 0 6px 20px rgba(33, 37, 41, 0.15);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .referral-code-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: shimmer 3s infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  .referral-code-text {
+    font-size: 28px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 3px;
+    font-family: 'Courier New', monospace;
+    user-select: all;
+    position: relative;
+    z-index: 1;
+  }
+
+  .copy-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .copy-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+  }
+
+  .copy-btn:active {
+    transform: scale(0.95);
+  }
+
+  .copy-btn i {
+    font-size: 18px;
+  }
+
+  .copy-feedback {
+    font-size: 14px;
+    color: #28a745;
+    font-weight: 600;
+    margin-top: 12px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .copy-feedback.show {
+    opacity: 1;
+  }
+
+  .copy-feedback i {
+    font-size: 16px;
+  }
+
+  .referral-benefits {
+    background: #f0f7ff;
+    border-radius: 10px;
+    padding: 25px;
+    margin-top: 35px;
+    border: 1px solid #e9ecef;
+  }
+
+  .benefits-title {
+    font-size: 16px;
+    color: #212529;
+    font-weight: 600;
+    margin-bottom: 18px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+
+  .benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+  }
+
+  .benefit-item {
+    text-align: center;
+    padding: 15px;
+  }
+
+  .benefit-icon {
+    width: 50px;
+    height: 50px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+    color: #212529;
+    font-size: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+
+  .benefit-amount {
+    font-size: 22px;
+    color: #212529;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .benefit-label {
+    font-size: 13px;
+    color: #6c757d;
+    line-height: 1.4;
+  }
+
+  .share-section {
+    margin-top: 30px;
+    padding-top: 30px;
+    border-top: 1px solid #e9ecef;
+  }
+
+  .share-title {
+    font-size: 14px;
+    color: #495057;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 15px;
+  }
+
+  .share-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .share-btn {
+    background: #212529;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+  }
+
+  .share-btn:hover {
+    background: #495057;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(33, 37, 41, 0.2);
+  }
+
+  .share-btn:active {
+    transform: translateY(0);
+  }
+
+  .share-btn i {
+    font-size: 16px;
+  }
+
+  .profile-page .profile-sidebar {
+    position: static !important;
+    left: auto !important;
+    width: 320px;
+    height: fit-content;
+    border-radius: 16px;
+    overflow: hidden;
+    transform: none !important;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .referral-container {
+      padding: 35px 25px;
+    }
+
+    .referral-code-text {
+      font-size: 22px;
+      letter-spacing: 2px;
+    }
+
+    .benefits-grid {
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+
+    .share-buttons {
+      flex-direction: column;
+    }
+
+    .share-btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .profile-container {
+      padding: 12px;
+    }
+
+    .referral-container {
+      padding: 30px 20px;
+      border-radius: 11px;
+    }
+
+    .welcome-title {
+      font-size: 20px;
+    }
+
+    .profile-page {
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .sidebar .profile-sidebar {
+      width: 100%;
+    }
+
+    .breadcrumb {
+      font-size: 13px;
+    }
+
+    .referral-icon {
+      width: 60px;
+      height: 60px;
+      font-size: 28px;
+    }
+
+    .referral-title {
+      font-size: 20px;
+    }
+
+    .referral-description {
+      font-size: 14px;
+    }
+
+    .referral-code-box {
+      padding: 18px 20px;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .referral-code-text {
+      font-size: 20px;
+      letter-spacing: 2px;
+    }
+
+    .copy-btn {
+      width: 100%;
+      height: 40px;
+    }
+
+    .referral-benefits {
+      padding: 20px;
+    }
+
+    .benefit-amount {
+      font-size: 20px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .referral-code-text {
+      font-size: 18px;
+      letter-spacing: 1.5px;
+    }
+
+    .benefit-icon {
+      width: 45px;
+      height: 45px;
+      font-size: 18px;
+    }
+  }
+</style>
+
+<div class="profile-page">
+  <aside class="sidebar">
+    <%- include('../partials/user/sidebar') %>
+  </aside>
+  <div class="profile-container">
+    <div class="breadcrumb">
+      <a href="/profile">profile</a>
+      <span class="breadcrumb-separator">></span>
+      <span>referral</span>
+    </div>
+
+    <div class="welcome-section">
+      <h1 class="welcome-title">My Referral Code</h1>
+    </div>
+
+    <section class="referral-section">
+      <div class="referral-container">
+        <div class="referral-icon">
+          <i class="fas fa-gift"></i>
+        </div>
+
+        <h2 class="referral-title">Invite Friends & Earn Rewards</h2>
+
+        <p class="referral-description">
+          Invite your friends and earn rewards! Share your unique referral code to get ₹500 credited to your wallet when they join, and your friend receives ₹200 too. Spread the word and start earning together!
+        </p>
+
+        <div class="referral-code-section">
+          <span class="referral-code-label">Your Unique Code</span>
+          <div class="referral-code-box">
+            <span class="referral-code-text" id="referralCode"><%= referralCode %></span>
+            <button class="copy-btn" onclick="copyReferralCode()" title="Copy to clipboard">
+              <i class="fas fa-copy"></i>
+            </button>
+          </div>
+          <div class="copy-feedback" id="copyFeedback">
+            <i class="fas fa-check-circle"></i>
+            Copied to clipboard!
+          </div>
+        </div>
+
+        <div class="referral-benefits">
+          <h3 class="benefits-title">How It Works</h3>
+          <div class="benefits-grid">
+            <div class="benefit-item">
+              <div class="benefit-icon">
+                <i class="fas fa-user-plus"></i>
+              </div>
+              <div class="benefit-amount">₹500</div>
+              <div class="benefit-label">You earn when your friend signs up</div>
+            </div>
+            <div class="benefit-item">
+              <div class="benefit-icon">
+                <i class="fas fa-gift"></i>
+              </div>
+              <div class="benefit-amount">₹200</div>
+              <div class="benefit-label">Your friend gets as welcome bonus</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="share-section">
+          <h3 class="share-title">Share Your Code</h3>
+          <div class="share-buttons">
+            <button class="share-btn" onclick="shareViaWhatsApp()">
+              <i class="fab fa-whatsapp"></i>
+              WhatsApp
+            </button>
+            <button class="share-btn" onclick="shareViaEmail()">
+              <i class="fas fa-envelope"></i>
+              Email
+            </button>
+            <button class="share-btn" onclick="shareGeneric()">
+              <i class="fas fa-share-alt"></i>
+              Share
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+  function copyReferralCode() {
+    const codeText = document.getElementById('referralCode').textContent;
+    const feedback = document.getElementById('copyFeedback');
+
+    // Copy to clipboard
+    navigator.clipboard.writeText(codeText).then(() => {
+      // Show feedback
+      feedback.classList.add('show');
+
+      // Hide feedback after 2 seconds
+      setTimeout(() => {
+        feedback.classList.remove('show');
+      }, 2000);
+    }).catch(err => {
+      console.error('Failed to copy:', err);
+      
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = codeText;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-999999px';
+      document.body.appendChild(textArea);
+      textArea.select();
+      
+      try {
+        document.execCommand('copy');
+        feedback.classList.add('show');
+        setTimeout(() => {
+          feedback.classList.remove('show');
+        }, 2000);
+      } catch (err) {
+        alert('Failed to copy. Please select and copy manually.');
+      }
+      
+      document.body.removeChild(textArea);
+    });
+  }
+
+  function shareViaWhatsApp() {
+    const code = document.getElementById('referralCode').textContent;
+    const message = `Hey! Join using my referral code ${code} and get ₹200 bonus!`;
+    const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
+  }
+
+  function shareViaEmail() {
+    const code = document.getElementById('referralCode').textContent;
+    const subject = 'Join and Get ₹200 Bonus!';
+    const body = `Hey!\n\nI wanted to share this amazing opportunity with you. Use my referral code ${code} when you sign up and get ₹200 credited to your wallet instantly!\n\nI'll also earn ₹500 when you join. It's a win-win!\n\nSign up now and start shopping!`;
+    const url = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = url;
+  }
+
+  function shareGeneric() {
+    const code = document.getElementById('referralCode').textContent;
+    const message = `Join using my referral code ${code} and get ₹200 bonus!`;
+
+    // Check if Web Share API is available
+    if (navigator.share) {
+      navigator.share({
+        title: 'Referral Code',
+        text: message,
+      }).catch(err => {
+        console.log('Share cancelled or failed:', err);
+      });
+    } else {
+      // Fallback: copy to clipboard
+      copyReferralCode();
+    }
+  }
+</script>

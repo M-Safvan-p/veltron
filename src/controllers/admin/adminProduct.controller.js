@@ -1,4 +1,5 @@
 const Product = require("../../models/common/productSchema");
+const Category = require("../../models/common/categorySchema");
 const { success, error: errorResponse } = require("../../helpers/responseHelper");
 const HttpStatus = require("../../constants/statusCodes");
 const PermissionStatus = require("../../constants/permissionStatus");
@@ -7,20 +8,24 @@ const Messages = require("../../constants/messages");
 const loadProducts = async (req, res) => {
   try {
     const page = parseInt(req.query.page || 1);
-    const limit = 5;
+    const limit = 10;
     const skip = (page - 1) * limit;
-    const products = await Product.find({
-      approvalStatus: { $ne: PermissionStatus.PENDING },
-    })
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit)
-      .populate("category")
-      .populate("vendorId")
-      .lean();
-    const totalProducts = await Product.countDocuments({
-      approvalStatus: { $ne: PermissionStatus.PENDING },
-    });
+
+    const search = req.query.search || "";
+    const category = req.query.category || "";
+    const status = req.query.status || "";
+
+    const query = {};
+    if (search) query.name = { $regex: search, $options: "i" };
+    if (status === "approved") query.isListed = true;
+    if (status === "rejected") query.isListed = false;
+    if (category) query.category = category;
+    query.approvalStatus = { $ne: PermissionStatus.PENDING };
+    console.log("query", query);
+    const products = await Product.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit).populate("category").populate("vendorId").lean();
+    const totalProducts = await Product.countDocuments(query);
+
+    const categories = await Category.find({ isListed: true });
 
     res.render("admin/products", {
       layout: "layouts/adminLayout",
@@ -28,7 +33,9 @@ const loadProducts = async (req, res) => {
       admin: req.admin,
       products,
       totalProducts,
+      categories,
       currentPage: page,
+      query: req.query,
       totalPages: Math.ceil(totalProducts / limit),
     });
   } catch (error) {
@@ -63,18 +70,26 @@ const loadProductsPendings = async (req, res) => {
     const page = parseInt(req.query.page || 1);
     const limit = 5;
     const skip = (page - 1) * limit;
-    const products = await Product.find({
-      approvalStatus: PermissionStatus.PENDING,
-    })
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit)
-      .populate("category")
-      .populate("vendorId")
-      .lean();
-    const totalProducts = await Product.countDocuments({
-      approvalStatus: PermissionStatus.PENDING,
-    });
+
+    const search = req.query.search || "";
+    const sort = req.query.sort || "";
+
+    // Build query
+    const query = { approvalStatus: PermissionStatus.PENDING };
+    if (search) {
+      query.name = { $regex: search, $options: "i" };
+    }
+
+    // Build sort
+    let sortStage = { createdAt: -1 };
+    if (sort === "name-asc") sortStage = { name: 1 };
+    if (sort === "name-desc") sortStage = { name: -1 };
+    if (sort === "price-high") sortStage = { price: -1 };
+    if (sort === "price-low") sortStage = { price: 1 };
+
+    const products = await Product.find(query).sort(sortStage).skip(skip).limit(limit).populate("category").populate("vendorId").lean();
+
+    const totalProducts = await Product.countDocuments(query);
 
     res.render("admin/productPendings", {
       layout: "layouts/adminLayout",
@@ -84,6 +99,7 @@ const loadProductsPendings = async (req, res) => {
       totalProducts,
       currentPage: page,
       totalPages: Math.ceil(totalProducts / limit),
+      query: req.query,
     });
   } catch (error) {
     console.error("Error loading pending products:", error);

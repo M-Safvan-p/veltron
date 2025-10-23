@@ -19,7 +19,7 @@ function loadSignUp(req, res) {
 
 const signUp = async (req, res) => {
   try {
-    const { fullName, email, phoneNumber, password, confirmPassword } = req.body;
+    const { fullName, email, phoneNumber, password, confirmPassword, refferalCode } = req.body;
     console.log(req.body);
 
     // Validation
@@ -37,10 +37,16 @@ const signUp = async (req, res) => {
     const findUser = await User.findOne({ email });
     if (findUser) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.USER_ALREADY_EXISTS);
 
-    // Check phone      exists
+    // Check phone exists
     const findPhone = await User.findOne({ phoneNumber });
     if (findPhone) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.PHONE_ALREADY_EXISTS);
 
+    // Check referral code
+    if (refferalCode) {
+      const refUser = await User.findOne({ referralCode: refferalCode.trim() });
+      if (!refUser) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.REFERRAL_CODE_INVALID);
+      req.session.referredBy = refUser._id;
+    }
     // Generate OTP and send email
     const otp = otpControl.generateOtp();
     const emailSent = await otpControl.sendVerificationEmail(email, otp);
@@ -92,6 +98,32 @@ const verifyOtp = async (req, res) => {
     // Compare OTP
     if (fullOtp !== req.session.userOtp) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.OTP_INVALID);
 
+    // Generate referral code
+    const newReferralCode = (fullName) => {
+      const random = Math.floor(1000 + Math.random() * 9000);
+      return fullName.slice(0, 4).toUpperCase() + random;
+    };
+
+    // Link referred by user
+    const referredBy = req.session.referredBy || null;
+    if (referredBy) {
+      const refUser = await User.findById(referredBy);
+      if (refUser) {
+        refUser.referredUsers.push(req.session.userData._id);
+        await refUser.save();
+      }
+      const referredByWallet = await UserWallet.findOne({ userId: referredBy });
+      if (referredByWallet) {
+        referredByWallet.balance += 500;
+        referredByWallet.transactionHistory.push({
+          type: "credit",
+          amount: 500,
+          message: `Referral bonus for referring ${req.session.userData.fullName}`,
+        });
+        await referredByWallet.save();
+      }
+    }
+
     // Save user in DB
     const userData = req.session.userData;
     const saveUserData = new User({
@@ -100,23 +132,41 @@ const verifyOtp = async (req, res) => {
       phoneNumber: userData.phoneNumber,
       password: userData.passwordHash,
       authProvider: "local",
+      referralCode: newReferralCode(userData.fullName),
     });
-    await saveUserData.save();
-    //wallet sett
-    const newWallet = new UserWallet({
-      userId: saveUserData._id,
-      balance: 0,
-      transactionHistory: [],
-    });
-    await newWallet.save();
-    //linnk
-    saveUserData.wallet = newWallet._id;
     await saveUserData.save();
 
+    //if referred give 200
+    if (referredBy) {
+      const newWallet = new UserWallet({
+        userId: saveUserData._id,
+        balance: 200,
+        transactionHistory: [
+          {
+            type: "credit",
+            amount: 200,
+            message: "Welcome bonus for using referral code",
+          },
+        ],
+      });
+      await newWallet.save();
+      saveUserData.wallet = newWallet._id;
+      await saveUserData.save();
+    } else {
+      const newWallet = new UserWallet({
+        userId: saveUserData._id,
+        balance: 0,
+        transactionHistory: [],
+      });
+      await newWallet.save();
+      saveUserData.wallet = newWallet._id;
+      await saveUserData.save();
+    }
     // Set user session
     req.session.user = saveUserData._id.toString();
 
     // Clear OTP from session
+    delete req.session.referredBy;
     delete req.session.userOtp;
     delete req.session.otpExpiry;
     delete req.session.userData;
@@ -290,7 +340,6 @@ const newPassword = async (req, res) => {
 
 const logout = (req, res) => {
   try {
-    console.log("log req reached");
     req.session.user = null;
     delete req.session.user;
     res.clearCookie("connect.sid");

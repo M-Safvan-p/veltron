@@ -1,4 +1,4 @@
-function errorHandler(err, req, res, next) {
+function errorHandler(err, req, res) {
   console.error("❌ Error:", err.stack || err);
   let statusCode = err.status || 500;
 

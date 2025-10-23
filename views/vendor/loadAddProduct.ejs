@@ -36,9 +36,9 @@
                             aria-label="Product price">
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="discountedPrice">Discount Price</label>
-                        <input type="number" value="500" id="discountedPrice" name="discountedPrice" class="form-input"
-                            step="0.01" min="0" aria-label="Discounted price">
+                        <label class="form-label" for="offer">Offer (%)</label>
+                        <input type="number" id="offer" name="offer" class="form-input" value="10"
+                            aria-label="Offer percentage">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Listing Status</label>
@@ -150,8 +150,8 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="stockQuantity-0">Stock Quantity</label>
-                            <input type="number" value="20" id="stockQuantity-0" name="variants[0][stock]" class="form-input" min="0"
-                                aria-label="Stock quantity for variant 1">
+                            <input type="number" value="20" id="stockQuantity-0" name="variants[0][stock]"
+                                class="form-input" min="0" aria-label="Stock quantity for variant 1">
                         </div>
                     </div>
                 </div>
@@ -249,6 +249,7 @@
         setupFormSubmission();
         setupCropModal();
         setupDeleteButtons();
+        setupFieldValidation();
     }
 
     // Set up the cropping modal
@@ -529,6 +530,7 @@
         if (newVariant) {
             setupFileInputs();
             setupDragAndDrop(newVariant);
+            setupVariantValidation(newVariant, variantCount);
         }
 
         variantCount++;
@@ -606,6 +608,11 @@
 
         // Update variantCount to reflect current number
         variantCount = variants.length;
+
+        // Re-setup validation for all variants
+        variants.forEach((variant, index) => {
+            setupVariantValidation(variant, index);
+        });
     }
 
 
@@ -617,14 +624,15 @@
             // Convert form data to object
             const productData = formDataToObject(form);
 
-            // Run validator with data (includes image validation)
-            const { isValid, messages } = validateProductForm(productData);
+            // Validate the form data
+            const validationResult = validateProductForm(productData);
 
-            if (!isValid) {
+            if (!validationResult.isValid) {
                 Swal.fire({
-                    title: "Error!",
-                    html: messages.join("<br>"),
+                    title: "Validation Error!",
+                    html: validationResult.messages.join("<br>"),
                     icon: "error",
+                    confirmButtonColor: '#000',
                     customClass: {
                         confirmButton: "swal-confirm-black"
                     }
@@ -723,6 +731,257 @@
         }
 
         return new Blob([u8arr], { type: mime });
+    }
+
+    // Set up real-time field validation
+    function setupFieldValidation() {
+        // Product name validation
+        const nameInput = document.getElementById('name');
+        if (nameInput) {
+            nameInput.addEventListener('blur', function () {
+                validateProductName(this);
+            });
+        }
+
+        // Description validation
+        const descriptionInput = document.getElementById('description');
+        if (descriptionInput) {
+            descriptionInput.addEventListener('blur', function () {
+                validateDescription(this);
+            });
+        }
+
+        // Price validation
+        const priceInput = document.getElementById('price');
+        if (priceInput) {
+            priceInput.addEventListener('blur', function () {
+                validatePrice(this);
+            });
+        }
+
+        // Offer validation
+        const offerInput = document.getElementById('offer');
+        if (offerInput) {
+            offerInput.addEventListener('blur', function () {
+                validateOffer(this);
+            });
+        }
+
+        // Category validation
+        const categorySelect = document.getElementById('category');
+        if (categorySelect) {
+            categorySelect.addEventListener('change', function () {
+                validateCategory(this);
+            });
+        }
+
+        // Specification fields validation
+        const specFields = ['StrapStyle', 'Weight', 'DialType', 'warrantyPeriod', 'Durability', 'AdditionalInformation'];
+        specFields.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.addEventListener('blur', function () {
+                    validateSpecificationField(this, fieldId);
+                });
+            }
+        });
+
+        // Set up validation for initial variant
+        setupVariantValidation(document.getElementById('variant-0'), 0);
+    }
+
+    // Set up validation for variant fields
+    function setupVariantValidation(variantContainer, variantIndex) {
+        // Color validation
+        const colorInput = variantContainer.querySelector(`input[name="variants[${variantIndex}][color]"]`);
+        if (colorInput) {
+            colorInput.addEventListener('blur', function () {
+                validateVariantColor(this, variantIndex);
+            });
+        }
+
+        // Stock validation
+        const stockInput = variantContainer.querySelector(`input[name="variants[${variantIndex}][stock]"]`);
+        if (stockInput) {
+            stockInput.addEventListener('blur', function () {
+                validateVariantStock(this, variantIndex);
+            });
+        }
+    }
+
+    // Variant validation functions
+    function validateVariantColor(input, variantIndex) {
+        const value = input.value.trim();
+        const errorMsg = document.getElementById(`variant-${variantIndex}-color-error`) || createErrorElement(input, `variant-${variantIndex}-color-error`);
+
+        if (!value) {
+            showFieldError(errorMsg, 'Color is required for this variant.');
+            return false;
+        } else if (value.length < 2) {
+            showFieldError(errorMsg, 'Color must be at least 2 characters long.');
+            return false;
+        } else if (value.length > 30) {
+            showFieldError(errorMsg, 'Color must not exceed 30 characters.');
+            return false;
+        } else {
+            hideFieldError(errorMsg);
+            return true;
+        }
+    }
+
+    function validateVariantStock(input, variantIndex) {
+        const value = parseInt(input.value);
+        const errorMsg = document.getElementById(`variant-${variantIndex}-stock-error`) || createErrorElement(input, `variant-${variantIndex}-stock-error`);
+
+        if (isNaN(value) || value < 0) {
+            showFieldError(errorMsg, 'Stock must be 0 or more.');
+            return false;
+        } else if (value > 9999) {
+            showFieldError(errorMsg, 'Stock must not exceed 9999.');
+            return false;
+        } else {
+            hideFieldError(errorMsg);
+            return true;
+        }
+    }
+
+    // Individual field validation functions
+    function validateProductName(input) {
+        const value = input.value.trim();
+        const errorMsg = document.getElementById('name-error') || createErrorElement(input, 'name-error');
+
+        if (!value) {
+            showFieldError(errorMsg, 'Product name is required.');
+            return false;
+        } else if (value.length < 3) {
+            showFieldError(errorMsg, 'Product name must be at least 3 characters long.');
+            return false;
+        } else if (value.length > 100) {
+            showFieldError(errorMsg, 'Product name must not exceed 100 characters.');
+            return false;
+        } else {
+            hideFieldError(errorMsg);
+            return true;
+        }
+    }
+
+    function validateDescription(input) {
+        const value = input.value.trim();
+        const errorMsg = document.getElementById('description-error') || createErrorElement(input, 'description-error');
+
+        if (!value) {
+            showFieldError(errorMsg, 'Description is required.');
+            return false;
+        } else if (value.length < 10) {
+            showFieldError(errorMsg, 'Description must be at least 10 characters long.');
+            return false;
+        } else if (value.length > 1000) {
+            showFieldError(errorMsg, 'Description must not exceed 1000 characters.');
+            return false;
+        } else {
+            hideFieldError(errorMsg);
+            return true;
+        }
+    }
+
+    function validatePrice(input) {
+        const value = parseFloat(input.value);
+        const errorMsg = document.getElementById('price-error') || createErrorElement(input, 'price-error');
+
+        if (isNaN(value) || value <= 0) {
+            showFieldError(errorMsg, 'Price must be greater than 0.');
+            return false;
+        } else if (value > 999999) {
+            showFieldError(errorMsg, 'Price must not exceed ₹9,99,999.');
+            return false;
+        } else {
+            hideFieldError(errorMsg);
+            return true;
+        }
+    }
+
+    function validateOffer(input) {
+        const value = parseFloat(input.value);
+        const errorMsg = document.getElementById('offer-error') || createErrorElement(input, 'offer-error');
+
+        if (input.value !== '' && (isNaN(value) || value < 0)) {
+            showFieldError(errorMsg, 'Offer percentage must be 0 or more.');
+            return false;
+        } else if (input.value !== '' && value > 100) {
+            showFieldError(errorMsg, 'Offer percentage cannot exceed 100%.');
+            return false;
+        } else {
+            hideFieldError(errorMsg);
+            return true;
+        }
+    }
+
+    function validateCategory(select) {
+        const value = select.value;
+        const errorMsg = document.getElementById('category-error') || createErrorElement(select, 'category-error');
+
+        if (!value || value === 'mechanical') {
+            showFieldError(errorMsg, 'Please select a valid category.');
+            return false;
+        } else {
+            hideFieldError(errorMsg);
+            return true;
+        }
+    }
+
+    function validateSpecificationField(input, fieldId) {
+        const value = input.value.trim();
+        const errorMsg = document.getElementById(`${fieldId}-error`) || createErrorElement(input, `${fieldId}-error`);
+        const fieldName = fieldId === 'AdditionalInformation' ? 'Additional Information' : fieldId;
+
+        // Additional Information is optional
+        if (fieldId === 'AdditionalInformation') {
+            if (value && value.length > 500) {
+                showFieldError(errorMsg, 'Additional Information must not exceed 500 characters.');
+                return false;
+            } else {
+                hideFieldError(errorMsg);
+                return true;
+            }
+        }
+
+        // Other fields are required
+        if (!value) {
+            showFieldError(errorMsg, `${fieldName} is required.`);
+            return false;
+        } else if (value.length < 2) {
+            showFieldError(errorMsg, `${fieldName} must be at least 2 characters long.`);
+            return false;
+        } else if (value.length > 50) {
+            showFieldError(errorMsg, `${fieldName} must not exceed 50 characters.`);
+            return false;
+        } else {
+            hideFieldError(errorMsg);
+            return true;
+        }
+    }
+
+    // Helper functions for error display
+    function createErrorElement(input, id) {
+        const errorDiv = document.createElement('div');
+        errorDiv.id = id;
+        errorDiv.className = 'field-error';
+        errorDiv.style.color = '#dc3545';
+        errorDiv.style.fontSize = '0.875rem';
+        errorDiv.style.marginTop = '0.25rem';
+        errorDiv.style.display = 'none';
+
+        input.parentNode.insertBefore(errorDiv, input.nextSibling);
+        return errorDiv;
+    }
+
+    function showFieldError(errorElement, message) {
+        errorElement.textContent = message;
+        errorElement.style.display = 'block';
+    }
+
+    function hideFieldError(errorElement) {
+        errorElement.style.display = 'none';
     }
 
     // Initialize the application when DOM is loaded

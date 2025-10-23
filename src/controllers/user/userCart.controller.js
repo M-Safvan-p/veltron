@@ -34,11 +34,11 @@ const cartAdd = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(variantId)) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.CART_ADD_FAILED);
     if (!mongoose.Types.ObjectId.isValid(productId)) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.CART_ADD_FAILED);
 
-
     // Find product
     const product = await Product.findById(productId);
     if (!product) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.PRODUCT_NOT_FOUND);
     const variant = product.variants.id(variantId);
+    console.log("va", variant);
 
     // Check if product is available
     if (!product.isListed) return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.PRODUCT_NOT_FOUND);

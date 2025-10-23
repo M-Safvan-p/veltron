@@ -517,13 +517,13 @@
 
     <section class="wishlist-section">
       <div class="wishlist-container">
-        <% if (items && items.length > 0) { %>
+        <% if (items?.length > 0) { %>
         <!-- Wishlist Stats -->
         <div class="wishlist-stats">
           <div class="stats-icon"><i class="fas fa-heart"></i></div>
           <div class="stats-text">
-            You have <span class="stats-count"><%= items.length %></span>
-            <%= items.length === 1 ? 'item' : 'items' %> in your wishlist
+            You have <span class="stats-count"><%= items?.length ?? 0 %></span>
+            <%= items?.length === 1 ? 'item' : 'items' %> in your wishlist
           </div>
         </div>
 
@@ -532,46 +532,57 @@
           <% items.forEach(item => { %>
           <div class="wishlist-card">
             <!-- Remove from Wishlist Button -->
-            <button class="remove-wishlist-btn" onclick="removeFromWishlist('<%= item.product._id %>', '<%= item.variant ? item.variant._id : '' %>', event)" title="Remove from wishlist">
+            <button
+              class="remove-wishlist-btn"
+              onclick="removeFromWishlist('<%= item?.product?._id ?? '' %>', '<%= item?.variant?._id ?? '' %>', event)"
+              title="Remove from wishlist"
+            >
               <i class="fas fa-times"></i>
             </button>
 
             <!-- Product Image -->
             <div class="product-image-container">
-              <img src="<%= item.variant && item.variant.images && item.variant.images.length > 0 ? item.variant.images[0].url : '/images/default-product.jpg' %>" alt="<%= item.product.name %>" class="product-image" onerror="this.src='/images/default-product.jpg'">
+              <img
+                src="<%= item?.variant?.images?.[0]?.url ?? '/images/default-product.jpg' %>"
+                alt="<%= item?.product?.name ?? 'Unnamed Product' %>"
+                class="product-image"
+                onerror="this.src='/images/default-product.jpg'"
+              >
             </div>
 
             <!-- Product Info -->
             <div class="product-info">
-              <h3 class="product-name"><%= item.product.name %></h3>
+              <h3 class="product-name"><%= item?.product?.name ?? 'Unknown Product' %></h3>
 
-              <% if (item.variant) { %>
+              <% if (item?.variant) { %>
               <div style="font-size: 13px; color: #6c757d; margin-bottom: 8px;">
-                Color: <strong><%= item.variant.color %></strong>
+                Color: <strong><%= item?.variant?.color ?? 'N/A' %></strong>
               </div>
               <% } %>
 
               <div class="product-pricing">
-                <% 
-                  // Price comes from product level, not variant
-                  const productPrice = item.product.discountedPrice || item.product.price;
-                  const originalPrice = item.product.price;
+                <%
+                  const productPrice = item?.product?.discountedPrice ?? item?.product?.price ?? 0;
+                  const originalPrice = item?.product?.price ?? 0;
                 %>
 
                 <div class="product-price">₹<%= productPrice.toLocaleString('en-IN') %></div>
 
-                <% if (item.product.discountedPrice && item.product.price > item.product.discountedPrice) { 
-                    const discountPercent = Math.round(((item.product.price - item.product.discountedPrice) / item.product.price) * 100);
+                <% if ((item?.product?.discountedPrice ?? 0) < (item?.product?.price ?? 0)) { 
+                    const discountPercent = Math.round(
+                      (((item?.product?.price ?? 0) - (item?.product?.discountedPrice ?? 0)) / (item?.product?.price ?? 1)) * 100
+                    );
                 %>
-                <span class="product-original-price">₹<%= item.product.price.toLocaleString('en-IN') %></span>
+                <span class="product-original-price">₹<%= originalPrice.toLocaleString('en-IN') %></span>
                 <span class="product-discount"><%= discountPercent %>% OFF</span>
                 <% } %>
               </div>
 
               <!-- Stock Status -->
-              <% if (item.variant && item.variant.stock && item.variant.stock > 0) { %>
-              <div class="stock-status stock-in-stock">In Stock </div>
-              <% } else if (item.variant && item.variant.stock === 0) { %>
+              <% const stock = item?.variant?.stock ?? null; %>
+              <% if (stock > 0) { %>
+              <div class="stock-status stock-in-stock">In Stock</div>
+              <% } else if (stock === 0) { %>
               <div class="stock-status stock-out-of-stock">Out of Stock</div>
               <% } else { %>
               <div class="stock-status stock-out-of-stock">Status Unknown</div>
@@ -580,24 +591,30 @@
 
             <!-- Product Actions -->
             <div class="product-actions">
-              <a href="/product/<%= item.product._id %>" class="view-product-btn">
+              <a href="/product/<%= item?.product?._id ?? '#' %>" class="view-product-btn">
                 <i class="fas fa-eye"></i> View Product
               </a>
               <% 
-                const variantId = item.variant && item.variant._id ? item.variant._id : '';
-                const isInStock = item.variant && item.variant.stock && item.variant.stock > 0;
+                const variantId = item?.variant?._id ?? '';
+                const isInStock = (item?.variant?.stock ?? 0) > 0;
               %>
               <% if (isInStock) { %>
-              <button class="add-to-cart-btn" onclick="addToCart('<%= item.product._id %>', '<%= variantId %>', event)">
+              <button
+                class="add-to-cart-btn"
+                onclick="addToCart('<%= item?.product?._id ?? '' %>', '<%= variantId %>', event)"
+              >
                 <i class="fas fa-shopping-cart"></i> Add to Cart
               </button>
               <% } else { %>
-              <button class="add-to-cart-btn" disabled style="background: #6c757d; cursor: not-allowed;">
+              <button
+                class="add-to-cart-btn"
+                disabled
+                style="background: #6c757d; cursor: not-allowed;"
+              >
                 <i class="fas fa-ban"></i> Out of Stock
               </button>
               <% } %>
             </div>
-
           </div>
           <% }) %>
         </div>
@@ -610,7 +627,9 @@
             You haven't added any items to your wishlist yet.
             Browse our products and save your favorites for later!
           </p>
-          <a href="/sale" class="continue-shopping-btn"><i class="fas fa-shopping-bag"></i> Continue Shopping</a>
+          <a href="/sale" class="continue-shopping-btn">
+            <i class="fas fa-shopping-bag"></i> Continue Shopping
+          </a>
         </div>
         <% } %>
       </div>
@@ -717,7 +736,7 @@
         console.error(err);
         button.innerHTML = originalText;
         button.disabled = false;
-        Swal.fire('Error', 'Something went wrong while adding item to cart', 'error');
+        Swal.fire('Error', err.response?.data?.message  || 'Something went wrong while adding item to cart', 'error');
       });
   }
 </script>

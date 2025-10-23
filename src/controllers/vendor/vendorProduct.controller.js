@@ -11,8 +11,10 @@ const loadProducts = async (req, res) => {
   let page = parseInt(req.query.page) || 1;
   let limit = 5;
   let skip = (page - 1) * limit;
+
   // sort
   const sortOption = req.query.sort === "oldest" ? 1 : -1;
+
   // filter
   let matchStage = { vendorId: vendorId };
   if (req.query.status) {
@@ -21,10 +23,18 @@ const loadProducts = async (req, res) => {
   if (req.query.category) {
     matchStage["category"] = req.query.category;
   }
+
+  // Search by Product ID or Name
+  if (req.query.search) {
+    matchStage.$or = [{ _id: { $regex: req.query.search, $options: "i" } }, { name: { $regex: req.query.search, $options: "i" } }];
+  }
+
   // total products
   const totalProducts = await Product.countDocuments(matchStage);
+
   // products
   const products = await Product.find(matchStage).sort({ createdAt: sortOption }).skip(skip).limit(limit).populate("category").lean();
+
   // category
   const categories = await Category.find().lean();
 
@@ -36,8 +46,11 @@ const loadProducts = async (req, res) => {
     currentPage: page,
     totalPages: Math.ceil(totalProducts / limit),
     totalProducts,
+    limit,
     sort: req.query.sort || "newest",
     status: req.query.status || "",
+    category: req.query.category || "",
+    search: req.query.search || "",
     categories,
   });
 };
@@ -66,7 +79,7 @@ const loadAddProduct = async (req, res) => {
 
 const addProduct = async (req, res) => {
   try {
-    const { name, description, price, discountedPrice, isListed, category, variants, specifications } = req.body;
+    const { name, description, price, offer, isListed, category, variants, specifications } = req.body;
 
     // Validate product
     const find = await Product.findOne({ name });
@@ -87,13 +100,30 @@ const addProduct = async (req, res) => {
     const processedVariants = await processVariants(normalizedVariants, req.files, res);
     if (!processedVariants) return; // error already sent in helper
 
+    // discounted price
+    let discountedPrice = 0;
+    const checkCategory = await Category.findOne({ _id: category }).lean();
+
+    if (checkCategory && offer !== null && offer !== undefined && offer !== "") {
+      const productOffer = Number(offer);
+      const categoryOffer = checkCategory.offer || 0;
+
+      if (productOffer > categoryOffer) {
+        discountedPrice = Math.round(price - (price * productOffer) / 100);
+      } else {
+        discountedPrice = Math.round(price - (price * categoryOffer) / 100);
+      }
+    } else if (checkCategory && checkCategory.offer) {
+      discountedPrice = price - (price * checkCategory.offer) / 100;
+    }
     // Create and save product
     const newProduct = new Product({
       vendorId,
       name: name.trim(),
       description: description.trim(),
       price: Number(price),
-      discountedPrice: discountedPrice ? Number(discountedPrice) : undefined,
+      discountedPrice,
+      offer: offer !== null && offer !== undefined && offer !== "" ? Number(offer) : undefined,
       isListed: isListed === "true",
       category: category.trim(),
       specifications,
@@ -141,7 +171,6 @@ const editProduct = async (req, res) => {
   try {
     const productId = req.params.id;
 
-    // 1️⃣ Validate product ID
     if (!mongoose.Types.ObjectId.isValid(productId)) {
       return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.INVALID_PRODUCT_ID);
     }
@@ -151,21 +180,19 @@ const editProduct = async (req, res) => {
       return errorResponse(res, HttpStatus.UNAUTHORIZED, Messages.VENDOR_NOT_FOUND);
     }
 
-    const { name, description, price, discountedPrice, isListed, category, variants, specifications } = req.body;
+    const { name, description, price, offer, isListed, category, variants, specifications } = req.body;
 
-    // 2️⃣ Check if product exists
     const existingProduct = await Product.findOne({ _id: productId, vendorId });
     if (!existingProduct) {
       return errorResponse(res, HttpStatus.NOT_FOUND, Messages.PRODUCT_NOT_FOUND);
     }
 
-    // 3️⃣ Check duplicate name
+    // Check duplicate name
     const duplicateProduct = await Product.findOne({ name: name.trim(), _id: { $ne: productId } });
     if (duplicateProduct) {
       return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.PRODUCT_ALREADY_EXISTS);
     }
 
-    // 4️⃣ Normalize variants (ensure array)
     let normalizedVariants = variants;
     if (normalizedVariants && typeof normalizedVariants === "object" && !Array.isArray(normalizedVariants)) {
       normalizedVariants = Object.keys(normalizedVariants)
@@ -173,23 +200,39 @@ const editProduct = async (req, res) => {
         .map((key) => normalizedVariants[key]);
     }
 
-    // Validate variants exist
     if (!normalizedVariants || normalizedVariants.length === 0) {
       return errorResponse(res, HttpStatus.BAD_REQUEST, "At least one variant is required.");
     }
 
-    // 5️⃣ Process variants + images using helper
     const processedVariants = await processVariants(normalizedVariants, req.files, res, existingProduct);
-    if (!processedVariants) return; // error already sent by helper
+    if (!processedVariants) return;
 
-    // 6️⃣ Update the product
+    // discounted price
+    let discountedPrice = 0;
+    const checkCategory = await Category.findOne({ _id: category }).lean();
+
+    if (checkCategory && offer !== null && offer !== undefined && offer !== "") {
+      const productOffer = Number(offer);
+      const categoryOffer = checkCategory.offer || 0;
+
+      if (productOffer > categoryOffer) {
+        discountedPrice = Math.round(price - (price * productOffer) / 100);
+      } else {
+        discountedPrice = Math.round(price - (price * categoryOffer) / 100);
+      }
+    } else if (checkCategory && checkCategory.offer) {
+      discountedPrice = price - (price * checkCategory.offer) / 100;
+    }
+
+    // Update the product
     const updatedProduct = await Product.findOneAndUpdate(
       { _id: productId, vendorId },
       {
         name: name.trim(),
         description: description.trim(),
         price: Number(price),
-        discountedPrice: discountedPrice ? Number(discountedPrice) : undefined,
+        discountedPrice,
+        offer: offer !== null && offer !== undefined && offer !== "" ? Number(offer) : undefined,
         isListed: isListed === "true",
         category: category.trim(),
         specifications,

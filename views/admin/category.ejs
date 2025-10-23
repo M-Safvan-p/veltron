@@ -1,92 +1,716 @@
-<link rel="stylesheet" href="../../styles/admin/category.css">
+<style>
+  .admin-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 18px;
+  }
 
-<!-- Page Header -->
-<div class="page-header">
-    <h1 class="page-title">CATEGORY LIST</h1>
-    <div class="breadcrumb">
-        <a href="/admin/dashboard">Dashboard</a>
-        <span class="breadcrumb-separator">></span>
-        <a href="/admin/category">Categories</a>
-    </div>
-</div>
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 25px;
+    font-size: 14px;
+    color: #6c757d;
+  }
 
-<!-- Controls -->
-<div class="controls">
-    <a href="/admin/category/add-category" class="add-category-btn">Add Category</a>
-</div>
+  .breadcrumb a {
+    color: #6c757d;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
 
-<!-- Categories Table -->
-<div class="categories-table">
-    <table>
-        <thead class="table-header">
-            <tr>
-                <th>Category Name</th>
-                <th>Description</th>
-                <th>Status</th>
-                <th>LIST/UNLIST</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% if (category && category.length > 0) { %>
-                <% category.forEach((category) => { %>
-                    <tr class="table-row">
-                        <td><%= category.name.charAt(0).toUpperCase() + category.name.slice(1) %></td>
-                        <td>
-                            <div class="description-text" title="<%= category.description %>">
-                                <%= category.description || 'No description available' %>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="status-badge <%= category.isListed ? 'status-listed' : 'status-unlisted' %>">
-                                <%= category.isListed ? "Listed" : "Unlisted" %>
-                            </span>
-                        </td>
-                        <td>
-                            <div class="toggle-switch <%= category.isListed ? 'active' : 'inactive' %>"
-                                 data-category-id="<%= category._id %>">
-                                <div class="slider"></div>
-                            </div>
-                        </td>
-                        <td>
-                            <button class="action-btn edit-btn" onclick="editCategory('<%= category._id %>')" aria-label="Edit Category">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                        </td>
-                    </tr>
-                <% }) %>
-            <% } else { %>
-                <tr>
-                    <td colspan="5" style="text-align:center;">No categories available</td>
-                </tr>
-            <% } %>
-        </tbody>
-    </table>
-</div>
-<!-- Pagination -->
-<div class="pagination">
-    <div class="pagination-info">
-        Showing 1-<%= category.length %> of <%= totalCategories  %> categories
-    </div>
-    <div class="pagination-controls">
-        <button class="pagination-btn" <%= currentPage == 1 ? 'disabled' : '' %> onclick="changePage(<%= currentPage - 1 %>)" aria-label="Previous page">
-            <i class="fas fa-chevron-left" aria-hidden="true"></i>
-        </button>
-        <% for (let i = 1; i <= totalPages; i++) { %>
-            <button class="pagination-btn <%= i === currentPage ? 'active' : '' %>" onclick="changePage(<%= i %>)" aria-label="Page <%= i %>">
-                <%= i %>
-            </button>
-        <% } %>
-        <button class="pagination-btn" <%= currentPage == totalPages ? 'disabled' : '' %> onclick="changePage(<%= currentPage + 1 %>)" aria-label="Next page">
-            <i class="fas fa-chevron-right" aria-hidden="true"></i>
-        </button>
-    </div>
-</div>
-<script>
-    function changePage(page) {
-        const url = new URL(window.location);
-        url.searchParams.set('page', page);
-        window.location.href = url.href;
+  .breadcrumb a:hover {
+    color: #212529;
+  }
+
+  .breadcrumb-separator {
+    color: #adb5bd;
+  }
+
+  .page-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .header-left {
+    text-align: center;
+  }
+
+  .header-left h1 {
+    font-size: 24px;
+    color: #212529;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .header-left p {
+    font-size: 14px;
+    color: #6c757d;
+    margin: 0;
+  }
+
+  .controls-section {
+    /* background: white;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e9ecef;  */
+    margin-bottom: 20px;
+  }
+
+  .controls-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #495057;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 15px;
+  }
+
+  .controls-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+    background: #f8f9fa;
+    border: 1px solid #d4d5d6;
+    border-radius: 8px;
+    flex: 0 1 300px;
+  }
+
+  .search-box i {
+    color: #6c757d;
+    font-size: 14px;
+  }
+
+  .search-box input {
+    border: none;
+    background: transparent;
+    font-size: 13px;
+    color: #212529;
+    width: 100%;
+    outline: none;
+  }
+
+  .search-box input::placeholder {
+    color: #adb5bd;
+  }
+
+  .filter-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .filter-select {
+    padding: 8px 12px;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #212529;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .filter-select:hover {
+    border-color: #adb5bd;
+    background: #f8f9fa;
+  }
+
+  .add-category-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: #212529;
+    color: white;
+    border: 1px solid #212529;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+  }
+
+  .add-category-btn:hover {
+    background: #495057;
+    border-color: #495057;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .add-category-btn i {
+    font-size: 12px;
+  }
+
+  .table-container {
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e9ecef;
+    overflow: hidden;
+    overflow-x: auto;
+  }
+
+  .categories-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  .categories-table thead {
+    background: #f8f9fa;
+    border-bottom: 2px solid #e9ecef;
+  }
+
+  .categories-table th {
+    padding: 18px 16px;
+    text-align: left;
+    font-weight: 600;
+    color: #495057;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  .categories-table td {
+    padding: 16px;
+    border-bottom: 1px solid #f1f3f4;
+    vertical-align: middle;
+  }
+
+  .table-row {
+    transition: all 0.2s ease;
+  }
+
+  .table-row:hover {
+    background: #f8f9fa;
+  }
+
+  .table-row:last-child td {
+    border-bottom: none;
+  }
+
+  .category-name {
+    font-weight: 600;
+    color: #212529;
+    font-size: 14px;
+  }
+
+  .description-text {
+    font-size: 13px;
+    color: #495057;
+    max-width: 250px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .offer-text {
+    display: inline-block;
+    padding: 6px 12px;
+    background: #d1f7e1;
+    color: #146c43;
+    border: 1px solid #a8e5c0;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .no-offer-text {
+    color: #6c757d;
+    font-size: 13px;
+  }
+
+  .status-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  .status-listed {
+    background: #e6f4ea;
+    color: #1e4620;
+    border: 1px solid #bcd8c1;
+  }
+
+  .status-unlisted {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+
+  .toggle-switch {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 26px;
+    background: #e9ecef;
+    border-radius: 13px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    border: 1px solid #dee2e6;
+  }
+
+  .toggle-switch.active {
+    background: #1e4620;
+    border-color: #1e4620;
+  }
+
+  .toggle-switch:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+  }
+
+  .toggle-switch .slider {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    left: 3px;
+    top: 3px;
+    transition: all 0.3s ease;
+  }
+
+  .toggle-switch.active .slider {
+    left: 27px;
+  }
+
+  .action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: #212529;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+  }
+
+  .action-btn:hover {
+    background: #495057;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .action-btn i {
+    font-size: 14px;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 3px;
+    padding: 10px;
+  }
+
+  .pagination-info {
+    font-size: 13px;
+    color: #6c757d;
+    font-weight: 500;
+  }
+
+  .pagination-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .pagination-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid #e9ecef;
+    background: white;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #212529;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .pagination-btn:hover:not(:disabled) {
+    background: #f8f9fa;
+    border-color: #ced4da;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .pagination-btn.active {
+    background: #212529;
+    color: white;
+    border-color: #212529;
+    font-weight: 600;
+  }
+
+  .pagination-btn:disabled {
+    background: #f1f3f4;
+    color: #adb5bd;
+    cursor: not-allowed;
+    border-color: #e9ecef;
+  }
+
+  .pagination-dots {
+    color: #adb5bd;
+    padding: 0 4px;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+  }
+
+  .empty-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+  }
+
+  .empty-title {
+    font-size: 20px;
+    color: #212529;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .empty-message {
+    font-size: 14px;
+    color: #6c757d;
+    margin: 0;
+  }
+
+  @media (max-width: 1024px) {
+    .categories-table {
+      min-width: 800px;
     }
+
+    .controls-content {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .search-box {
+      flex: 1;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .admin-container {
+      padding: 12px;
+    }
+
+    .page-header {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .description-text {
+      max-width: 150px;
+    }
+
+    .pagination {
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .pagination-info {
+      font-size: 12px;
+    }
+  }
+</style>
+
+<div class="admin-container">
+  <div class="breadcrumb">
+    <a href="/admin/dashboard">Dashboard</a>
+    <span class="breadcrumb-separator">></span>
+    <a href="/admin/category">Categories</a>
+  </div>
+
+  <div class="page-header">
+    <div class="header-left">
+      <h1>Category Management</h1>
+      <p>Manage and organize product categories</p>
+    </div>
+  </div>
+
+  <!-- Filter and Search Controls -->
+  <div class="controls-section">
+    <div class="controls-title">
+      <i class="fas fa-filter"></i> Search & Filter
+    </div>
+    <div class="controls-content">
+      <!-- Search Box -->
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="category-search" value="<%= query.search || '' %>" placeholder="Search category name..."
+          onkeyup="debounceSearch()">
+      </div>
+
+      <!-- Filters -->
+      <div class="filter-controls">
+        <!-- Status Filter -->
+        <select class="filter-select" name="status" onchange="applyFilters()">
+          <option value="" <%=!query.status ? 'selected' : '' %>>All Status</option>
+          <option value="listed" <%=query.status==='listed' ? 'selected' : '' %>>Listed</option>
+          <option value="unlisted" <%=query.status==='unlisted' ? 'selected' : '' %>>Unlisted</option>
+        </select>
+
+        <!-- Offer Filter -->
+        <select class="filter-select" name="offer" onchange="applyFilters()">
+          <option value="" <%=!query.offer ? 'selected' : '' %>>All Offers</option>
+          <option value="with-offer" <%=query.offer==='with-offer' ? 'selected' : '' %>>With Offer</option>
+          <option value="no-offer" <%=query.offer==='no-offer' ? 'selected' : '' %>>No Offer</option>
+        </select>
+
+        <!-- Sort Filter -->
+        <select class="filter-select" name="sort" onchange="applyFilters()">
+          <option value="" <%=!query.sort ? 'selected' : '' %>>Sort By</option>
+          <option value="name-asc" <%=query.sort==='name-asc' ? 'selected' : '' %>>Name: A to Z</option>
+          <option value="name-desc" <%=query.sort==='name-desc' ? 'selected' : '' %>>Name: Z to A</option>
+          <option value="offer-high" <%=query.sort==='offer-high' ? 'selected' : '' %>>Offer: High to Low</option>
+          <option value="offer-low" <%=query.sort==='offer-low' ? 'selected' : '' %>>Offer: Low to High</option>
+        </select>
+
+        <!-- Add Category Button -->
+        <a href="/admin/category/add-category" class="add-category-btn">
+          <i class="fas fa-plus"></i> Add Category
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Categories Table -->
+  <div class="table-container">
+    <table class="categories-table">
+      <thead>
+        <tr>
+          <th>Category Name</th>
+          <th>Description</th>
+          <th>Offer</th>
+          <th>Status</th>
+          <th>List/Unlist</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (category && category.length> 0) { %>
+          <% category.forEach(cat=> { %>
+            <tr class="table-row">
+              <td class="category-name">
+                <%= cat.name.charAt(0).toUpperCase() + cat.name.slice(1) %>
+              </td>
+              <td>
+                <div class="description-text" title="<%= cat.description %>">
+                  <%= cat.description || 'No description available' %>
+                </div>
+              </td>
+              <td>
+                <% if (cat.offer && cat.offer> 0) { %>
+                  <span class="offer-text">
+                    <%= cat.offer %>%
+                  </span>
+                  <% } else { %>
+                    <span class="no-offer-text">No offer</span>
+                    <% } %>
+              </td>
+              <td>
+                <span class="status-badge <%= cat.isListed ? 'status-listed' : 'status-unlisted' %>">
+                  <%= cat.isListed ? "Listed" : "Unlisted" %>
+                </span>
+              </td>
+              <td>
+                <div class="toggle-switch <%= cat.isListed ? 'active' : 'inactive' %>" data-category-id="<%= cat._id %>"
+                  onclick="toggleCategory(this)">
+                  <div class="slider"></div>
+                </div>
+              </td>
+              <td>
+                <button class="action-btn" onclick="editCategory('<%= cat._id %>')" aria-label="Edit Category"
+                  title="Edit Category">
+                  <i class="fas fa-edit"></i>
+                </button>
+              </td>
+            </tr>
+            <% }) %>
+              <% } else { %>
+                <tr>
+                  <td colspan="6">
+                    <div class="empty-state">
+                      <div class="empty-icon">📁</div>
+                      <h3 class="empty-title">No Categories Found</h3>
+                      <p class="empty-message">No categories available. Click "Add Category" to create one.</p>
+                    </div>
+                  </td>
+                </tr>
+                <% } %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <% if (category && category.length> 0) { %>
+    <div class="pagination">
+      <div class="pagination-info">
+        Showing 1-<%= category.length %> of <%= totalCategories || 0 %> categories
+      </div>
+      <div class="pagination-controls">
+        <button class="pagination-btn" <%=currentPage===1 ? 'disabled' : '' %>
+          onclick="changePage(<%= currentPage - 1 %>)"
+            aria-label="Previous page">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <% for (let i=1; i <=totalPages; i++) { %>
+          <button class="pagination-btn <%= i === currentPage ? 'active' : '' %>" onclick="changePage(<%= i %>)"
+            aria-label="Page <%= i %>">
+            <%= i %>
+          </button>
+          <% } %>
+
+            <button class="pagination-btn" <%=currentPage===totalPages ? 'disabled' : '' %>
+              onclick="changePage(<%= currentPage + 1 %>)"
+                aria-label="Next page">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            <span class="pagination-dots">...</span>
+      </div>
+    </div>
+    <% } %>
+</div>
+
+<script>
+  let searchTimeout;
+  function debounceSearch() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(handleSearch, 1000);
+  }
+  // Pagination
+  function changePage(page) {
+    const url = new URL(window.location);
+    url.searchParams.set('page', page);
+    window.location.href = url.href;
+  }
+
+  // Search functionality
+  function handleSearch() {
+    const searchValue = document.getElementById('category-search').value;
+    const url = new URL(window.location);
+
+    if (searchValue) {
+      url.searchParams.set('search', searchValue);
+    } else {
+      url.searchParams.delete('search');
+    }
+    url.searchParams.set('page', 1);
+    window.location.href = url.href;
+  }
+
+  // Apply filters and sort
+  function applyFilters() {
+    const status = document.querySelector('select[name="status"]').value;
+    const offer = document.querySelector('select[name="offer"]').value;
+    const sort = document.querySelector('select[name="sort"]').value;
+
+    const url = new URL(window.location);
+
+    if (status) {
+      url.searchParams.set('status', status);
+    } else {
+      url.searchParams.delete('status');
+    }
+
+    if (offer) {
+      url.searchParams.set('offer', offer);
+    } else {
+      url.searchParams.delete('offer');
+    }
+
+    if (sort) {
+      url.searchParams.set('sort', sort);
+    } else {
+      url.searchParams.delete('sort');
+    }
+
+    url.searchParams.set('page', 1);
+    window.location.href = url.href;
+  }
+
+  // Edit category
+  function editCategory(categoryId) {
+    window.location.href = `/admin/category/edit-category/${categoryId}`;
+  }
+
+  // Toggle category list/unlist
+  async function toggleCategory(element) {
+    const categoryId = element.dataset.categoryId;
+    const isCurrentlyActive = element.classList.contains('active');
+    const newStatus = !isCurrentlyActive;
+
+    try {
+      const response = await axios.patch(`/admin/category/${categoryId}`, {
+        isListed: newStatus
+      });
+
+      if (response.data.success) {
+        // Update UI
+        element.classList.toggle('active');
+
+        // Update status badge
+        const statusBadge = element.closest('tr').querySelector('.status-badge');
+        statusBadge.classList.toggle('status-listed');
+        statusBadge.classList.toggle('status-unlisted');
+        statusBadge.textContent = newStatus ? 'Listed' : 'Unlisted';
+
+        // Show success message
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: `Category ${newStatus ? 'listed' : 'unlisted'} successfully`,
+          timer: 2000
+        });
+      }
+    } catch (error) {
+      console.error('Error toggling category:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: 'Failed to update category status'
+      });
+
+      // Revert toggle on error
+      element.classList.toggle('active');
+    }
+  }
 </script>
-<script src="../../js/script/admin/category.js"></script>

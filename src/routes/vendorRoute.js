@@ -10,9 +10,11 @@ const { noCache } = require("../middleware/noCache");
 const validate = require("../middleware/validate");
 
 const authController = require("../controllers/vendor/vendorAuth.controller");
-const pageController = require("../controllers/vendor/vendorPage.controller");
 const productController = require("../controllers/vendor/vendorProduct.controller");
 const orderController = require("../controllers/vendor/vendorOrder.controller");
+const returnController = require("../controllers/vendor/vendorReturn.controller");
+const saleController = require("../controllers/vendor/vendorSale.controller");
+const dashboardController = require("../controllers/vendor/vendorDashboard.controller");
 
 // Middleware to set vendor layout
 router.use((req, res, next) => {
@@ -30,20 +32,29 @@ router.get("/", vendorAuth.isLogin, authController.loadLogin);
 router.post("/", authController.login);
 router.post("/logout", authController.logout);
 
-router.get("/dashboard", vendorAuth.checkSession, pageController.loadDashboard);
+router.get("/dashboard", vendorAuth.checkSession, dashboardController.getVendorDashboard);
 
 //productss
 router.get("/products", vendorAuth.checkSession, productController.loadProducts);
 router.patch("/products/:id", vendorAuth.checkSession, productController.listAndUnlist);
 router.get("/products/add-product", vendorAuth.checkSession, productController.loadAddProduct);
-router.post("/products/add-product",vendorAuth.checkSession,validate(productSchema),upload.any(),productController.addProduct);
+router.post("/products/add-product",vendorAuth.checkSession,upload.any(),validate(productSchema),productController.addProduct);
 router.get("/products/edit-product/:id",vendorAuth.checkSession,productController.loadEditProduct);
-router.put("/products/edit-product/:id",vendorAuth.checkSession,validate(productSchema),upload.any(),productController.editProduct);
+router.put("/products/edit-product/:id",vendorAuth.checkSession,upload.any(),validate(productSchema),productController.editProduct);
 
 //orders
 router.get("/orders", vendorAuth.checkSession, orderController.loadOrders);
 router.get("/orders/:id", vendorAuth.checkSession, orderController.loadOrderDetails);
 router.put("/orders/:id/status", vendorAuth.checkSession, orderController.handleStatus);
+
+// returns
+router.get("/returns", vendorAuth.checkSession, returnController.loadReturns);
+router.put("/returns/:id/status", vendorAuth.checkSession, returnController.updateReturnStatus);
+
+//sales report
+router.get("/sales", vendorAuth.checkSession, saleController.loadSaleReport);
+router.get("/sales/export/pdf", vendorAuth.checkSession, saleController.exportPDF);
+router.get("/sales/export/excel", vendorAuth.checkSession, saleController.exportExcel);
 
 // Add this after your routes
 router.use((error, req, res, next) => {

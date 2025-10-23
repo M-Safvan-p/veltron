@@ -1,6 +1,8 @@
 const Admin = require("../models/admin/adminSchema");
 
 const checkSession = async (req, res, next) => {
+  // skip login when developing
+  req.session.admin = true;
   if (req.session.admin) {
     const admin = await Admin.findOne();
     if (!admin) {
@@ -14,6 +16,8 @@ const checkSession = async (req, res, next) => {
 };
 
 const isLogin = async (req, res, next) => {
+  // skip login when developing
+  req.session.admin = true;
   if (req.session.admin) {
     const admin = await Admin.findOne();
     if (admin) {

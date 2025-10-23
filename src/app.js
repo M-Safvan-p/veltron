@@ -15,7 +15,6 @@ connectDB();
 // Logger
 app.use(logger);
 
-
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
