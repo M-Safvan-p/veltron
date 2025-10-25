@@ -9,8 +9,6 @@ const { PORT, SESSION_SECRET } = require("./config/env");
 const errorHandler = require("./middleware/errorHandler");
 const logger = require("./middleware/logger");
 
-// Connect DB
-connectDB();
 
 // Logger
 app.use(logger);
@@ -49,7 +47,11 @@ app.use("/", require("./routes/userRoute"));
 // error handling
 app.use(errorHandler);
 
-// Start Server
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-});
+// Connect DB
+connectDB().then(()=>{
+  // Start Server
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+  });
+})
+
