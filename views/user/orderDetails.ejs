@@ -2114,7 +2114,7 @@
       order_id: razorpayId,
       handler: async function (razorpayResponse) {
         try {
-          const verifyRes = await axios.post("/checkout/place-order/razorpay-verify", razorpayResponse);
+          const verifyRes = await axios.post("/profile/order/retry", razorpayResponse);
           if (verifyRes.data.success) {
             Swal.fire({
               icon: 'success',
