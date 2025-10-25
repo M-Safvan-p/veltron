@@ -32,12 +32,12 @@
                 <div class="price-row">
                     <div class="form-group">
                         <label class="form-label" for="price">Price</label>
-                        <input type="number" value="1000" id="price" name="price" class="form-input" step="0.01" min="0"
+                        <input type="number"  id="price" name="price" class="form-input" step="0.01" min="0"
                             aria-label="Product price">
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="offer">Offer (%)</label>
-                        <input type="number" id="offer" name="offer" class="form-input" value="10"
+                        <input type="number" id="offer" name="offer" class="form-input" 
                             aria-label="Offer percentage">
                     </div>
                     <div class="form-group">
@@ -77,7 +77,7 @@
                         <div class="variant-header">
                             <h4 class="variant-title">Variant 1</h4>
                             <div class="variant-controls">
-                                <input type="text" value="Yellow" placeholder="Color name" name="variants[0][color]"
+                                <input type="text" placeholder="Color name" name="variants[0][color]"
                                     class="form-input" aria-label="Color for variant 1">
                                 <button type="button" class="custom-btn custom-btn-secondary" onclick="removeVariant(0)"
                                     aria-label="Remove variant 1">Remove</button>
@@ -150,7 +150,7 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="stockQuantity-0">Stock Quantity</label>
-                            <input type="number" value="20" id="stockQuantity-0" name="variants[0][stock]"
+                            <input type="number"  id="stockQuantity-0" name="variants[0][stock]"
                                 class="form-input" min="0" aria-label="Stock quantity for variant 1">
                         </div>
                     </div>
@@ -169,7 +169,7 @@
                 <div class="specifications-grid">
                     <div class="form-group">
                         <label class="form-label" for="StrapStyle">Strap Style</label>
-                        <input type="text" value="Lether Strap" id="StrapStyle" name="specifications[strapStyle]"
+                        <input type="text" id="StrapStyle" name="specifications[strapStyle]"
                             class="form-input" aria-label="Strap style">
                     </div>
                     <div class="form-group">
