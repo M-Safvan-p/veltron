@@ -9,7 +9,7 @@ const loadOrders = async (req, res) => {
   try {
     let vendorId = req.session.vendor;
     let page = parseInt(req.query.page) || 1;
-    let limit = 5;
+    let limit = 10;
     let skip = (page - 1) * limit;
 
     const sortOption = req.query.sort === "oldest" ? 1 : -1;
