@@ -2105,6 +2105,7 @@
   </div>
 </div>
 
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
   function retryPayment(razorpayId, totalAmount, orderId) {
     const options = {
@@ -2114,7 +2115,7 @@
       order_id: razorpayId,
       handler: async function (razorpayResponse) {
         try {
-          const verifyRes = await axios.post("/profile/order/retry", razorpayResponse);
+          const verifyRes = await axios.post("/profile/orders/retry", razorpayResponse);
           if (verifyRes.data.success) {
             Swal.fire({
               icon: 'success',
@@ -2143,7 +2144,7 @@
                         </div>
                     `,
               showCancelButton: true,
-              confirmButtonText: '<i class="fas fa-list-alt"></i> View Orders',
+              confirmButtonText: '<i class="fas fa-list-alt"></i> View Order',
               cancelButtonText: '<i class="fas fa-shopping-bag"></i> Continue Shopping',
               confirmButtonColor: '#212529',
               cancelButtonColor: '#6c757d',
@@ -2165,7 +2166,7 @@
                     Swal.showLoading();
                   }
                 });
-                window.location.href = '/profile/orders';
+                window.location.reload()
               } else if (result.dismiss === Swal.DismissReason.cancel) {
                 window.location.href = '/sale';
               }

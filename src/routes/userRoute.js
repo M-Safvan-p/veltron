@@ -109,7 +109,7 @@ router.post("/checkout/place-order/razorpay-verify", userAuth.checkSession, orde
 router.get("/profile/orders", userAuth.checkSession, cancelAndReturnController.loadorders);
 router.get("/profile/orders/invoice/:id", userAuth.checkSession, invoiceController.generateInvoice);
 router.get("/profile/orders/:id", userAuth.checkSession, cancelAndReturnController.loadOrderDetails);
-router.post("/profile/order/retry", userAuth.checkSession, cancelAndReturnController.retryPayment );
+router.post("/profile/orders/retry", userAuth.checkSession, cancelAndReturnController.retryPayment );
 router.put("/profile/orders/:id/cancel-items", userAuth.checkSession, cancelAndReturnController.cancelOrder);
 //return 
 router.post("/profile/orders/:id/return-items", userAuth.checkSession, cancelAndReturnController.returnRequest);
