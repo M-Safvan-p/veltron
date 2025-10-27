@@ -158,7 +158,7 @@ const placeOrder = async (req, res) => {
     const products = filtered.map((item) => {
       const { total, subtotal, tax, discount } = calculator.calculateProductTotal(item, couponUsed ? couponUsed.discount : 0);
       const { commission: productCommission, vendorEarnings: productVendorEarnings } = calculator.calculateCommission(total);
-      
+
       return {
         productId: item.productId,
         vendorId: item.vendorId,
@@ -208,46 +208,31 @@ const placeOrder = async (req, res) => {
 
     // Razorpay payment
     if (paymentMethod === "RAZORPAY") {
-      orderPlace = await Order.findOne(
-        {
-          customerId: req.session.user,
-          paymentMethod: "RAZORPAY",
-          paymentStatus: "failed",
-          orderStatus: "pending",
-        },
-        {},
-        { sort: { createdAt: -1 } }
-      );
-
       const razorpayOrder = await razorpay.orders.create({
         amount: total * 100,
         currency: "INR",
         receipt: `receipt_order_${Date.now()}`,
       });
 
-      if (orderPlace) {
-        orderPlace.razorpayOrderId = razorpayOrder.id;
-        await orderPlace.save();
-      } else {
-        orderPlace = new Order({
-          customerId: req.session.user,
-          paymentMethod,
-          totalAmount: total,
-          subTotal: subtotal,
-          discount: discount,
-          tax,
-          totalCommissionAmount: commission,
-          totalVendorEarnings: vendorEarnings,
-          shippingAddress,
-          products,
-          paymentStatus: "failed",
-          orderStatus: "pending",
-          razorpayOrderId: razorpayOrder.id,
-          couponApplied: couponUsed ? couponUsed._id : null,
-          couponDetails: couponUsed ? { code: couponUsed.code, discount: appliedDiscount } : undefined,
-        });
-        await orderPlace.save();
-      }
+      orderPlace = new Order({
+        customerId: req.session.user,
+        paymentMethod,
+        totalAmount: total,
+        subTotal: subtotal,
+        discount: discount,
+        tax,
+        totalCommissionAmount: commission,
+        totalVendorEarnings: vendorEarnings,
+        shippingAddress,
+        products,
+        paymentStatus: "failed",
+        orderStatus: "pending",
+        razorpayOrderId: razorpayOrder.id,
+        couponApplied: couponUsed ? couponUsed._id : null,
+        couponDetails: couponUsed ? { code: couponUsed.code, discount: appliedDiscount } : undefined,
+      });
+      await orderPlace.save();
+      // }
 
       return success(res, HttpStatus.OK, Messages.RAZORPAY_ORDER_CREAT, {
         razorpayOrderId: razorpayOrder.id,

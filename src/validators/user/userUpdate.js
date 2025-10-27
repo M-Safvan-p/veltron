@@ -18,16 +18,28 @@ const profileSchema = Joi.object({
     .trim()
     .pattern(/^[0-9]{10}$/) // must be exactly 10 digits
     .custom((value, helpers) => {
+      // Disallow all zeros
       if (/^0{10}$/.test(value)) {
-        return helpers.error("any.invalid"); // reject 0000000000
+        return helpers.error("any.invalid", { message: "Phone number cannot be all zeros" });
       }
+
+      // Disallow sequential numbers like 1234567890 or 9876543210
+      if (value === "1234567890" || value === "9876543210") {
+        return helpers.error("any.invalid", { message: "Phone number cannot be sequential numbers" });
+      }
+
+      // Disallow all identical digits like 1111111111
+      if (/^(\d)\1{9}$/.test(value)) {
+        return helpers.error("any.invalid", { message: "Phone number cannot have all identical digits" });
+      }
+
       return value;
     })
     .required()
     .messages({
       "string.empty": "Phone number is required",
-      "string.pattern.base": "Phone number must be 10 digits",
-      "any.invalid": "Phone number cannot be all zeros",
+      "string.pattern.base": "Phone number must be exactly 10 digits",
+      "any.invalid": "{{#message}}",
     }),
 });
 

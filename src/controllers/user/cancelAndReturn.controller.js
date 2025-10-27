@@ -1,13 +1,16 @@
+const crypto = require("crypto")
+
 const Product = require("../../models/common/productSchema");
 const Return = require("../../models/common/returnSchema");
 const Order = require("../../models/common/orderSchema");
 const Wallet = require("../../models/user/userWalletSchema");
+const Cart = require("../../models/user/cartSchema");
 
 const { success, error: errorResponse } = require("../../helpers/responseHelper");
 const Messages = require("../../constants/messages");
 const HttpStatus = require("../../constants/statusCodes");
 
-const { RAZORPAY_KEY_ID } = require("../../config/env");
+const { RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET } = require("../../config/env");
 
 const loadorders = async (req, res) => {
   try {
@@ -49,6 +52,36 @@ const loadOrderDetails = async (req, res) => {
   } catch (error) {
     console.error("Load order error:", error);
     return res.redirect("/profile/orders");
+  }
+};
+
+const retryPayment = async (req, res) => {
+  try {
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+    const secret = RAZORPAY_KEY_SECRET;
+
+    // generate signature
+    const hmac = crypto.createHmac("sha256", secret);
+    hmac.update(`${razorpay_order_id}|${razorpay_payment_id}`);
+    const generatedSignature = hmac.digest("hex");
+
+    if (generatedSignature === razorpay_signature) {
+      const order = await Order.findOneAndUpdate({ razorpayOrderId: razorpay_order_id }, { paymentStatus: "paid", orderStatus: "processing" });
+      if (!order) {
+        return errorResponse(res, HttpStatus.NOT_FOUND, Messages.ORDER_NOT_FOUND);
+      }
+      // clear cart
+      const cart = await Cart.findOne({ userId: req.session.user });
+      cart.items = [];
+      await cart.save();
+      return success(res, HttpStatus.OK, Messages.PAYMENT_VERIFIED_SUCCESS);
+    } else {
+      await Order.findOneAndUpdate({ razorpayOrderId: razorpay_order_id }, { paymentStatus: "failed", orderStatus: "pending" });
+      return errorResponse(res, HttpStatus.BAD_REQUEST, Messages.PAYMENT_VERIFIED_FAILED);
+    }
+  } catch (error) {
+    console.log("Razorpay verify error:", error);
+    errorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, Messages.SERVER_ERROR);
   }
 };
 
@@ -201,6 +234,7 @@ const returnRequest = async (req, res) => {
 module.exports = {
   loadorders,
   loadOrderDetails,
+  retryPayment,
   cancelOrder,
   returnRequest,
 };
