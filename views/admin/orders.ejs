@@ -948,7 +948,8 @@ body {
       <% if (orders && orders.length> 0) { %>
       <div class="pagination">
         <div class="pagination-info">
-          Showing 1-<%= orders.length %> of <%= totalOrders %> orders
+          Showing <%= ((currentPage - 1) * 10) + 1 %>-<%= ((currentPage - 1) * 10) + orders.length %> of <%=
+                            totalOrders || 0 %> orders
         </div>
         <div class="pagination-controls">
           <button class="pagination-btn" <%=currentPage==1 ? 'disabled aria-disabled="true"' : '' %> onclick="changePage(<%= currentPage - 1 %>)" aria-label="Previous page">

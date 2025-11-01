@@ -582,7 +582,8 @@
     <% if (vendors && vendors.length > 0) { %>
         <div class="pagination">
             <div class="pagination-info">
-                Showing 1-<%= vendors.length %> of <%= totalVendors || 0 %>
+                Showing <%= ((currentPage - 1) * 5) + 1 %>-<%= ((currentPage - 1) * 5) + vendors.length %> of <%=
+                            totalVendors || 0 %>
             </div>
             <div class="pagination-controls">
                 <button class="pagination-btn" <%= currentPage === 1 ? 'disabled' : '' %>

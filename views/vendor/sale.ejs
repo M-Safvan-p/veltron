@@ -907,36 +907,35 @@
           </tbody>
         </table>
 
-        <!-- Pagination -->
-        <div class="pagination">
-          <span class="pagination-info">
-            Showing <%= ((currentPage - 1) * limit) + 1 %>–<%= reportData.orders.length %> of <%=
-                  reportData.totalOrders.length %> items
-          </span>
+        
+      </div>
+      <!-- Pagination -->
+      <div class="pagination">
+        <span class="pagination-info"> Showing <%= ((currentPage - 1) * 20) + 1 %>-<%= ((currentPage - 1) * 20) + reportData.orders.length %> of <%=
+                          reportData.totalOrders || 0 %> items
+        </span>
 
-            <div class="pagination-controls">
-              <!-- Previous Button -->
-              <button class="pagination-btn" <%=currentPage===1 ? 'disabled' : '' %>
-                onclick="changePage(<%= currentPage - 1 %>)">
-                  &lt;
+          <div class="pagination-controls">
+            <!-- Previous Button -->
+            <button class="pagination-btn" <%=currentPage===1 ? 'disabled' : '' %>
+              onclick="changePage(<%= currentPage - 1 %>)">
+                &lt;
+            </button>
+
+            <!-- Page Numbers -->
+            <% for (let i=1; i <=totalPages; i++) { %>
+              <button class="pagination-btn <%= currentPage === i ? 'active' : '' %>" onclick="changePage(<%= i %>)">
+                <%= i %>
               </button>
+              <% } %>
 
-              <!-- Page Numbers -->
-              <% for (let i=1; i <=totalPages; i++) { %>
-                <button class="pagination-btn <%= currentPage === i ? 'active' : '' %>" onclick="changePage(<%= i %>)">
-                  <%= i %>
+                <!-- Next Button -->
+                <button class="pagination-btn" <%=currentPage===totalPages ? 'disabled' : '' %>
+                  onclick="changePage(<%= currentPage + 1 %>)">
+                    &gt;
                 </button>
-                <% } %>
-
-                  <!-- Next Button -->
-                  <button class="pagination-btn" <%=currentPage===totalPages ? 'disabled' : '' %>
-                    onclick="changePage(<%= currentPage + 1 %>)">
-                      &gt;
-                  </button>
-            </div>
-        </div>
-
-    </div>
+          </div>
+      </div>
     <% } else { %>
       <div class="empty-state">
         <div class="empty-icon">📊</div>

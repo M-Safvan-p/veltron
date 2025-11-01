@@ -499,7 +499,7 @@
                     <th>Balance</th>
                     <th>Status</th>
                     <th>Block/Unblock</th>
-                    <th>Action</th>
+                    <!-- <th>Action</th> -->
                 </tr>
             </thead>
             <tbody>
@@ -549,12 +549,12 @@
                                     <div class="slider"></div>
                                 </div>
                             </td>
-                            <td>
+                            <!-- <td>
                                 <button class="action-btn" onclick="viewCustomer('<%= customer._id %>')"
                                     aria-label="View Customer" title="View Customer Details">
                                     <i class="fas fa-eye"></i>
                                 </button>
-                            </td>
+                            </td> -->
                         </tr>
                         <% }) %>
                             <% } else { %>
@@ -576,7 +576,8 @@
     <% if (customers && customers.length> 0) { %>
         <div class="pagination">
             <div class="pagination-info">
-                Showing 1-<%= customers.length %> of <%= totalCustomers || 0 %>
+                Showing <%= ((currentPage - 1) * 5) + 1 %>-<%= ((currentPage - 1) * 5) + customers.length %> of <%=
+                            totalCustomers || 0 %>
             </div>
             <div class="pagination-controls">
                 <button class="pagination-btn" <%=currentPage===1 ? 'disabled' : '' %>

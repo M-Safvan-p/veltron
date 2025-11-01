@@ -962,7 +962,8 @@
             <% if (coupons && coupons.length > 0) { %>
                 <div class="pagination">
                     <div class="pagination-info">
-                        Showing 1-<%= coupons.length %> of <%= totalCoupons %> coupons
+                        Showing <%= ((currentPage - 1) * 4) + 1 %>-<%= ((currentPage - 1) * 4) + coupons.length %> of <%=
+                            totalCoupons || 0 %> coupons
                     </div>
                     <div class="pagination-controls">
                         <button class="pagination-btn" <%= currentPage == 1 ? 'disabled aria-disabled="true"' : '' %>

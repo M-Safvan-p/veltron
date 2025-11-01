@@ -46,10 +46,9 @@ const loadCustomers = async (req, res) => {
           },
         },
       },
-      // 👇 Add wallet lookup
       {
         $lookup: {
-          from: "userwallets", // 👈 make sure this matches your actual MongoDB collection name
+          from: "userwallets", 
           localField: "wallet",
           foreignField: "_id",
           as: "walletData",

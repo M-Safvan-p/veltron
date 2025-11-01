@@ -608,7 +608,8 @@
     <% if (products && products.length> 0) { %>
         <div class="pagination">
             <div class="pagination-info">
-                Showing 1-<%= products.length %> of <%= totalProducts || 0 %>
+                Showing <%= ((currentPage - 1) * 10) + 1 %>-<%= ((currentPage - 1) * 10) + products.length %> of <%=
+                            totalProducts || 0 %> products
             </div>
             <div class="pagination-controls">
                 <button class="pagination-btn" <%=currentPage===1 ? 'disabled' : '' %>
