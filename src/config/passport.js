@@ -31,7 +31,7 @@ passport.use(
           }
         }
 
-        // get referral code function
+        //  generate referal
         const newReferralCode = (fullName) => {
           const random = Math.floor(1000 + Math.random() * 9000);
           return fullName.slice(0, 4).toUpperCase() + random;
