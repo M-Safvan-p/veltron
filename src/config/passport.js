@@ -12,11 +12,9 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        const email = profile.emails[0].value;
+        const email = profile.emails?.[0]?.value?.trim().toLowerCase(); 
 
-        let user = await User.findOne({ googleId: profile.id });
-        if (user) return done(null, user);
-        user = await User.findOne({ email });
+        let user = await User.findOne({ email });
         if (user) {
           if (user.authProvider === "google") {
             if (!user.googleId) {
