@@ -10,13 +10,13 @@ const userSchema = new Schema(
     },
     phoneNumber: {
       type: String,
-      unique: true,
-      sparse: true,
-      default: null,
     },
     email: {
       type: String,
+      required: true,
+      unique: true,
       lowercase: true,
+      trim: true,
     },
     password: {
       type: String,
