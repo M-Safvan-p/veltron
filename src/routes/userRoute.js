@@ -52,7 +52,7 @@ router.post("/resendOtp", authController.resendOtp);
 router.get("/logIn", userAuth.isLogin, authController.loadLogIn);
 router.post("/logIn", authController.logIn);
 router.post("/logout", userAuth.checkSession, authController.logout);
-router.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+router.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"], prompt: "select_account",  }));
 router.get(
   "/auth/google/callback",
   passport.authenticate("google", { failureRedirect: "/login?error=google", failureMessage: true }),
